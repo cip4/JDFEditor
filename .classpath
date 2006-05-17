@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="/JDFLib-J"/>
+	<classpathentry kind="var" path="PROJECT_ROOT/devTools_Base/common/commons-lang/commons-lang.jar"/>
+	<classpathentry kind="var" path="PROJECT_ROOT/devTools_Base/common/Xerces-J/xercesImpl.jar"/>
+	<classpathentry kind="var" path="PROJECT_ROOT/devTools_Base/common/commons-logging/commons-logging.jar"/>
+	<classpathentry kind="var" path="PROJECT_ROOT/devTools_Base/common/JAF/activation.jar"/>
+	<classpathentry kind="var" path="PROJECT_ROOT/devTools_Base/common/JavaMail/mail.jar"/>
+	<classpathentry kind="var" path="PROJECT_ROOT/devTools_Base/common/Xerces-J/xml-apis.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
