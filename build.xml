@@ -8,9 +8,7 @@
 		<echo>Make sure you have the JAR files listed in lib/DEPENDENCIES.txt</echo>
 		<!-- Sets properties -->
 		<tstamp />
-		<condition property="isMacOs">
-			<os family="mac" />
-		</condition>
+		<property file="version.properties" description="Contains major/minor version info" />
 		<property name="src.dir" value="./src" />
 		<property name="java.src.dir" value="${src.dir}/java" />
 		<property name="test.src.dir" value="${src.dir}/test" />
@@ -18,8 +16,9 @@
 		<property name="bin.dir" value="./bin" />
 		<property name="dist.dir" value="./dist" />
 		<property name="build.debug" value="true" />
-		<property name="base.filename" value="jdfeditor-${DSTAMP}" />
-		<property name="dist.bin.dir" value="${dist.dir}/${base.filename}" />
+		<property name="base.filename" value="jdfeditor-${major.version}.${minor.version}" />
+		<property name="jar.filename" value="jdfeditor.jar" />
+		<property name="dist.bin.dir" value="${dist.dir}/${base.filename}-bin" />
 		<property name="dist.src.dir" value="${dist.dir}/${base.filename}-src" />
 		<property name="verbose" value="true" />
 		<!-- Sets class path -->
@@ -40,16 +39,20 @@
 			<src path="${java.src.dir}" />
 			<classpath refid="project.class.path" />
 			<include name="**/*.java" />
-			
 		</javac>
-		<!--
-		<copy todir="${bin.dir}">
+	</target>
+	<target name="jar" depends="compile">
+		<jar destfile="${dist.dir}/${jar.filename}" basedir="${bin.dir}">
 			<fileset dir="${java.src.dir}">
-				<include name="**/*.properties" />
-				<include name="**/*.xml" />
+				<include name="org/cip4/jdfeditor/icons/*.*" />
+				<include name="org/cip4/jdfeditor/messages/*.properties" />
 			</fileset>
-		</copy>
-		-->
+			<manifest>
+				<attribute name="Main-Class" value="org.cip4.jdfeditor.Editor" />
+				<attribute name="Bundle-Name" value="JDF Editor ${major.version}.${minor.version}.${build.number}" />
+				<attribute name="Bundle-Vendor" value="CIP4" />
+			</manifest>
+		</jar>
 	</target>
 	<target name="clean" depends="-init" description="Cleans the build.">
 		<echo>Cleaning...</echo>
@@ -57,38 +60,24 @@
 		<delete dir="${dist.dir}" />
 		<delete dir="${bin.dir}" />
 	</target>
-	<target name="dist" depends="srcdist,bindist"/>
-	<target name="bindist" depends="compile" description="Builds a binary distribution of
+	<target name="dist" depends="srcdist,bindist" />
+	<target name="bindist" depends="jar" description="Builds a binary distribution of
         JDFEditor.">
 		<echo>Building JDFEditor binary distribution...</echo>
 		<!-- Create dist directories -->
 		<mkdir dir="${dist.dir}" />
 		<mkdir dir="${dist.bin.dir}" />
 		<mkdir dir="${dist.bin.dir}/bin" />
-		<mkdir dir="${dist.bin.dir}/conf" />
-		<mkdir dir="${dist.bin.dir}/classes" />
 		<mkdir dir="${dist.bin.dir}/lib" />
 		<!-- Copy files to dist directories -->
 		<copy todir="${dist.bin.dir}/bin">
 			<fileset dir="${src.dir}/bin">
-				<include name="**/*" />
-				<exclude name="Info.plist"/>
-			</fileset>
-		</copy>
-		<copy todir="${dist.bin.dir}/conf">
-			<fileset dir="${src.dir}/conf">
-				<include name="**/*" />
-			</fileset>
-		</copy>
-		<copy todir="${dist.bin.dir}/classes">
-			<fileset dir="${bin.dir}">
-				<include name="**/*" />
-			</fileset>
-			<fileset dir="${java.src.dir}">
-				<include name="org/cip4/jdfeditor/icons/*.*" />
+				<include name="jdfeditor.bat" />
+				<include name="jdfeditor.sh" />
 			</fileset>
 		</copy>
 		<copy todir="${dist.bin.dir}/lib">
+			<fileset file="${dist.dir}/${jar.filename}" />
 			<fileset dir="${lib.dir}">
 				<include name="**/*.jar" />
 				<include name="**/*.license" />
@@ -97,40 +86,32 @@
 		<copy file="src/README.txt" todir="${dist.bin.dir}" />
 		<copy file="src/LICENSE.txt" todir="${dist.bin.dir}" />
 		<buildnumber />
-		<!-- Update build number and timestamp 
-		<replace file="${dist.bin.dir}/conf/jdfeditor.properties">
-			<replacefilter token="@build.number@" value="${build.number}" />
-			<replacefilter token="@build.timestamp@" value="${DSTAMP}" />
-		</replace>
-		-->
 		<replace file="${dist.bin.dir}/README.txt">
-			<replacefilter token="@build.number@" value="${build.number}" />
+			<replacefilter token="@build.version@" value="${major.version}.${minor.version}.${build.number}" />
 			<replacefilter token="@build.timestamp@" value="${DSTAMP}" />
 		</replace>
-		<fixcrlf srcdir="${dist.bin.dir}" includes="README.txt" eol="dos"/>
+		<fixcrlf srcdir="${dist.bin.dir}" eol="dos" includes="README.txt" />
 		<fixcrlf srcdir="${dist.bin.dir}/bin" eol="dos" includes="**/*.bat" />
 		<fixcrlf srcdir="${dist.bin.dir}/bin" eol="unix" includes="**/*.sh" />
 		<chmod dir="${dist.bin.dir}" perm="ugo+rx" includes="**/*.sh" />
-		<!-- <antcall target="appledist"/> -->
-		<zip destfile="${dist.dir}/${base.filename}.zip" basedir="${dist.bin.dir}">
-			<zipfileset dir="${dist.bin.dir}" includes="**/*.sh" filemode="755" />
-			<zipfileset dir="${dist.bin.dir}" includes="Alces.app/Contents/MacOS/JavaApplicationStub" filemode="755" />
+		<zip destfile="${dist.dir}/${base.filename}-bin.zip" basedir="${dist.bin.dir}">
+			<zipfileset dir="bin" excludes="*.sh" />
+			<zipfileset dir="bin" includes="*.sh" filemode="755" />
 		</zip>
-		<echo>Build number: ${build.number}</echo>
+		<antcall target="appledist" />
+		<antcall target="windist" />
 	</target>
-
 	<target name="srcdist" depends="compile" description="Builds a source distribution of
 		        Alces.">
 		<echo>Building Alces source distribution...</echo>
 		<!-- Create dist directories -->
 		<mkdir dir="${dist.src.dir}" />
 		<copy todir="${dist.src.dir}">
+			<fileset dir="." includes="lib/DEPENDENCIES.txt"/>
+		</copy>
+		<copy todir="${dist.src.dir}">
 			<fileset dir=".">
 				<include name="src/**/*" />
-				<include name="src/alces.sh" />
-				<include name="src/alces.bat" />
-				<include name="src/README.txt" />
-				<include name="src/LICENSE.txt" />
 				<include name="build.xml" />
 			</fileset>
 		</copy>
@@ -138,15 +119,14 @@
 		<copy file="src/LICENSE.txt" todir="${dist.src.dir}" />
 		<buildnumber />
 		<replace file="${dist.src.dir}/README.txt">
-			<replacefilter token="@build.number@" value="${build.number}" />
+			<replacefilter token="@build.version@" value="${major.version}.${minor.version}.${build.number}" />
 			<replacefilter token="@build.timestamp@" value="${DSTAMP}" />
 		</replace>
-		<fixcrlf srcdir="${dist.src.dir}" includes="README.txt" eol="dos" />
+		<fixcrlf srcdir="${dist.src.dir}" eol="dos" includes="README.txt" />
 		<fixcrlf srcdir="${dist.src.dir}/src/bin" eol="dos" includes="**/*.bat" />
 		<fixcrlf srcdir="${dist.src.dir}/src/bin" eol="unix" includes="**/*.sh" />
 		<chmod dir="${dist.src.dir}/src" perm="ugo+rx" includes="**/*.sh" />
 		<zip destfile="${dist.dir}/${base.filename}-src.zip" basedir="${dist.src.dir}" />
-		<echo>Build number: ${build.number}</echo>
 	</target>
 	<target name="test" description="Runs JUnit tests." depends="compile">
 		<property name="test.bin.dir" value="${bin.dir}/test" />
@@ -183,41 +163,60 @@
 		</junit>
 		<echo>Tests reports have been written to: ${test.reports.dir}</echo>
 	</target>
-	<!-- For special app bundle on the Mac -->
-	<target name="appledist" if="isMacOs"
-      description="Assembles stand alone Macintosh Bundle. Must build on a Mac (>= 10.2).">
-		<echo>Building Mac OS X application bundle...</echo>
-		<!-- make all the dirs -->
-		<property name="bundle.dir" value="${dist.bin.dir}/Alces.app" />
-		<mkdir dir="${bundle.dir}" />
-		<property name="contents.dir" value="${bundle.dir}/Contents" />
-		<mkdir dir="${contents.dir}" />
-		<property name="MacOS.dir" value="${contents.dir}/MacOS" />
-		<mkdir dir="${MacOS.dir}" />
-		<!-- copy files into place -->
-		<copy file="src/bin/Info.plist" tofile="${contents.dir}/Info.plist"/>
-		<replace file="${contents.dir}/Info.plist">
-			<replacefilter token="@build.number@" value="${build.number}" />
-			<replacefilter token="@build.timestamp@" value="${DSTAMP}" />
-		</replace>
-		<!-- create package identifier -->
-		<echo file="${contents.dir}/PkgInfo" append="false">APPLALCS</echo>
-		<exec executable="ln" spawn="false">
-			<arg value="-s"/>
-			<arg value="/System/Library/Frameworks/JavaVM.framework/Versions/A/Resources/MacOS/JavaApplicationStub"/>
-			<arg value="${MacOS.dir}/JavaApplicationStub" />
-		</exec>
+	<!-- Windows application -->
+	<target name="windist" depends="-init">
+		<property name="win.dist.bin.dir" value="${dist.dir}/${base.filename}-win" />
+		<copy todir="${win.dist.bin.dir}">
+			<fileset dir="${dist.bin.dir}">
+				<exclude name="bin" />
+				<exclude name="bin/**/*" />
+			</fileset>
+		</copy>
+		<copy file="${src.dir}/bin/windows/JDF Editor.exe" todir="${win.dist.bin.dir}" />
+		<zip destfile="${win.dist.bin.dir}.zip">
+			<zipfileset dir="${win.dist.bin.dir}" prefix="${base.filename}-win" />
+		</zip>
 	</target>
-	<target name="dmgappledist" depends="appledist" 
-      description="Creates Disk Image for Apple Dist. Must build on a Mac (>= 10.2).">
+	<!-- This target is only needed if a new EXE file needs to be created -->
+	<target name="windist-compile" depends="bindist">
+		<property name="win.dist.bin.dir" value="${dist.dir}/${base.filename}-win" />
+		<echo>Loading JSmooth Ant tasks. Make sure you have installed http://jsmooth.sourceforge.net in ANT_HOME/lib</echo>
+		<taskdef name="jsmoothgen" classname="net.charabia.jsmoothgen.ant.JSmoothGen" />
+		<copy file="${src.dir}/bin/windows/JDFEditor.jsmooth" todir="${win.dist.bin.dir}" />
+		<jsmoothgen project="${win.dist.bin.dir}/JDFEditor.jsmooth" skeletonroot="${src.dir}/bin/windows/skeletons" />
+		<delete file="${win.dist.bin.dir}/JDFEditor.jsmooth" />
+	</target>
+	<!-- For special app bundle on the Mac -->
+	<target name="appledist" description="Assembles stand alone Macintosh Bundle. Must build on a Mac (>= 10.2).">
+		<echo>Building Mac OS X application bundle...</echo>
+		<echo>Loading JarBundler Ant tasks. Make sure you have installed http://informagen.com/JarBundler/ in ANT_HOME/lib</echo>
+		<taskdef name="jarbundler" classname="net.sourceforge.jarbundler.JarBundler" />
+		<jarbundler dir="${dist.dir}" name="JDF Editor" mainclass="org.cip4.jdfeditor.Editor" bundleid="org.cip4.jdfeditor.Editor" jvmversion="1.4+" shortname="CIP4 JDF Editor" infostring="CIP4 JDF Editor" signature="JDFE" version="${major.version}.${minor.version}.${build.number}" icon="${src.dir}/bin/macosx/icons/JDFEditor.icns" vmoptions="-Xmx256m" stubfile="${src.dir}/bin/macosx/JavaApplicationStub">
+			<jarfileset dir="${lib.dir}">
+				<include name="*.jar" />
+			</jarfileset>
+			<jarfileset dir="${dist.dir}/">
+				<include name="${jar.filename}" />
+			</jarfileset>
+			<javaproperty name="apple.laf.useScreenMenuBar" value="true" />
+			<documenttype name="JDF Job Ticket" extensions="jdf JDF" mimetypes="application/vnd.cip4-jdf+xml" iconFile="${src.dir}/bin/macosx/icons/JDF.icns" role="Editor" />
+			<documenttype name="JMF Message" extensions="jmf JMF" mimetypes="application/vnd.cip4-jmf+xml" iconFile="${src.dir}/bin/macosx/icons/JMF.icns" role="Editor" />
+			<documenttype name="XML Document" extensions="xml XML" mimetypes="text/xml" role="Editor" />
+		</jarbundler>
+		<zip destfile="${dist.dir}/${base.filename}-mac.zip">
+			<zipfileset dir="${dist.dir}/JDF Editor.app" prefix="JDF Editor.app/" />
+			<zipfileset dir="${dist.dir}/JDF Editor.app" includes="Contents/MacOS/JavaApplicationStub" filemode="755" prefix="JDF Editor.app" />
+		</zip>
+	</target>
+	<target name="dmgappledist" depends="appledist" description="Creates Disk Image for Apple Dist. Must build on a Mac (>= 10.2).">
 		<echo>Package appledist</echo>
 		<exec executable="hdiutil" spawn="false">
-			<arg value="create"/>
-			<arg value="-srcfolder"/>
-			<arg value="${bundle.dir}"/>
-			<arg value="-volname"/>
-			<arg value="Alces"/>
-			<arg value="${dist.dir}/bin/Alces.dmg"/>
+			<arg value="create" />
+			<arg value="-srcfolder" />
+			<arg value="${bundle.dir}" />
+			<arg value="-volname" />
+			<arg value="Alces" />
+			<arg value="${dist.dir}/bin/Alces.dmg" />
 		</exec>
 	</target>
 </project>
