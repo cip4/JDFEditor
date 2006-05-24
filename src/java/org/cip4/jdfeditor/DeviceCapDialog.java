@@ -1,0 +1,358 @@
+package org.cip4.jdfeditor;
+/*
+ *
+ * The CIP4 Software License, Version 1.0
+ *
+ *
+ * Copyright (c) 2001-2006 The International Cooperation for the Integration of 
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer. 
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. The end-user documentation included with the redistribution,
+ *    if any, must include the following acknowledgment:  
+ *       "This product includes software developed by the
+ *        The International Cooperation for the Integration of 
+ *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
+ *    Alternately, this acknowledgment may appear in the software itself,
+ *    if and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ *    Processes in  Prepress, Press and Postpress" must
+ *    not be used to endorse or promote products derived from this
+ *    software without prior written permission. For written 
+ *    permission, please contact info@cip4.org.
+ *
+ * 5. Products derived from this software may not be called "CIP4",
+ *    nor may "CIP4" appear in their name, without prior written
+ *    permission of the CIP4 organization
+ *
+ * Usage of this software in commercial products is subject to restrictions. For
+ * details please consult info@cip4.org.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED.  IN NO EVENT SHALL THE INTERNATIONAL COOPERATION FOR
+ * THE INTEGRATION OF PROCESSES IN PREPRESS, PRESS AND POSTPRESS OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of the The International Cooperation for the Integration 
+ * of Processes in Prepress, Press and Postpress and was
+ * originally based on software 
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
+ *  
+ * For more information on The International Cooperation for the 
+ * Integration of Processes in  Prepress, Press and Postpress , please see
+ * <http://www.cip4.org/>.
+ *  
+ * 
+ */
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.io.File;
+import java.util.ResourceBundle;
+import java.util.Vector;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+
+import org.cip4.jdflib.core.ElementName;
+import org.cip4.jdflib.core.JDFDoc;
+import org.cip4.jdflib.core.JDFParser;
+import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.core.VElement;
+import org.cip4.jdflib.core.XMLDoc;
+import org.cip4.jdflib.core.KElement.EnumValidationLevel;
+import org.cip4.jdflib.datatypes.JDFBaseDataTypes.EnumFitsValue;
+import org.cip4.jdflib.jmf.JDFJMF;
+import org.cip4.jdflib.node.JDFNode;
+import org.cip4.jdflib.resource.devicecapability.JDFDeviceCap;
+import org.cip4.jdflib.util.StringUtil;
+import org.cip4.jdflib.util.XMLstrm;
+
+/**
+ * DeviceCapsDialog.java
+ * @author Elena Skobchenko
+ */
+
+public class DeviceCapDialog extends JPanel implements ActionListener
+{
+    /**
+     * Comment for <code>serialVersionUID</code>
+     */
+    private static final long serialVersionUID = -267165456151780040L;
+    
+    private JTextField idPath;
+    private JButton browse; 
+    private File idFile;
+    private ResourceBundle littleBundle;
+    private GridBagLayout outLayout = new GridBagLayout(); 
+    private GridBagConstraints outConstraints = new GridBagConstraints();
+    private VElement executableJDF = null;
+    private XMLDoc bugReport = null;
+    private JDFFrame parFrame;
+    
+    private JComboBox chooseValidLevel;
+    EnumFitsValue testlists = EnumFitsValue.Allowed;
+    private EnumValidationLevel validationLevel = KElement.EnumValidationLevel.RecursiveComplete;
+    
+    public DeviceCapDialog(final JDFFrame parent, final ResourceBundle bundle, final JDFNode docRoot)
+    {
+        super();
+        this.littleBundle = bundle;
+        this.parFrame = parent;
+        final INIReader iniFile=Editor.getIniFile();
+
+        idFile=iniFile.getRecentDevCap();
+            
+        init();
+        
+        final String[] options = { littleBundle.getString("OkKey"), littleBundle.getString("CancelKey") };
+        
+        final int option = JOptionPane.showOptionDialog(parent, this, "Test against DeviceCapabilities file",
+            JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+            
+        if (option == JOptionPane.OK_OPTION)
+        {
+            File tmpFile = new File(idPath.getText());           
+            if(EditorUtils.fileOK(tmpFile))
+            {
+                idFile=tmpFile;
+                final JDFParser parser = new JDFParser();
+                iniFile.setRecentDevCap(idFile);
+                try 
+                {
+                    final JDFDoc devCapDoc = parser.parseFile(idFile.getAbsolutePath());
+                    
+                    JDFJMF jmfRoot = null;
+                    
+                    if (devCapDoc!=null) 
+                    {
+                        jmfRoot = devCapDoc.getJMFRoot();
+
+                        if (jmfRoot==null) 
+                        {
+                            JOptionPane.showMessageDialog(parent, "Chosen file is not a JMF file", 
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                        else if (jmfRoot.getChildByTagName(ElementName.DEVICECAP, null, 0, null, false, true)==null)
+                        {
+                            JOptionPane.showMessageDialog(parent, 
+                                    "File does not contain Device Capability description", 
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                        else 
+                        {
+                            final JDFDeviceCap deviceCap = 
+                                (JDFDeviceCap) jmfRoot.getChildByTagName(ElementName.DEVICECAP, null, 0, null, false, true);
+                	        	
+                            executableJDF = deviceCap.getExecutableJDF(docRoot,testlists,validationLevel);
+                            bugReport = deviceCap.getBadJDFInfo(docRoot,testlists,validationLevel);
+                        }         
+                    }                  
+                }
+                catch (Exception e) 
+                {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(parent, 
+                            "An internal error occured: \n" + e.getClass() + " \n"
+                             + (e.getMessage()!=null ? ("\"" + e.getMessage() + "\"") : ""), 
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                }                 
+                
+                XMLstrm.xmlIndent(2, true);
+            }
+            else 
+            {
+                JOptionPane.showMessageDialog(parent, "File is not accepted", 
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }           
+        }        
+    }
+    
+    /**
+     * Creates the fields and view for the Merge Dialog.
+     */
+    private void init()
+    {
+
+        final JPanel panel = new JPanel();
+
+        outConstraints.fill = GridBagConstraints.BOTH;
+        outConstraints.insets = new Insets(0,0,10,0);
+
+        outLayout.setConstraints(panel, outConstraints);
+        setLayout(outLayout);
+
+        final GridBagLayout inLayout = new GridBagLayout();    	   	
+
+        panel.setLayout(inLayout);
+        
+        final GridBagConstraints constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.insets = new Insets(3,5,3,5);
+        panel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("DCInputKey")));
+        
+        final JLabel dLabel = new JLabel(EditorUtils.displayPathName(idFile, littleBundle.getString("DCInputKey").length()));
+        constraints.gridwidth = GridBagConstraints.REMAINDER;
+        inLayout.setConstraints(dLabel, constraints);
+        panel.add(dLabel);
+       
+        final JLabel idLabel = new JLabel(littleBundle.getString("DCFileKey"));
+        constraints.insets = new Insets(10,5,3,5);
+        inLayout.setConstraints(idLabel, constraints);
+        panel.add(idLabel);
+  
+        final Box horizontalBox = Box.createHorizontalBox();
+        idPath = new JTextField(35);
+        if(idFile!=null)
+            idPath.setText(idFile.getAbsolutePath());
+
+        horizontalBox.add(idPath);
+        horizontalBox.add(Box.createHorizontalStrut(10));
+        
+        browse = new JButton(littleBundle.getString("BrowseKey"));
+        browse.setPreferredSize(new Dimension(85,22));
+        browse.addActionListener(this);
+        horizontalBox.add(browse);
+        
+        constraints.insets = new Insets(0,5,8,5);
+        inLayout.setConstraints(horizontalBox, constraints);
+        panel.add(horizontalBox);
+        
+        add(panel);
+        
+        final JPanel downPanel = new JPanel();    	    	
+        outConstraints.gridwidth = GridBagConstraints.REMAINDER;
+        downPanel.setLayout(outLayout);
+        
+        JPanel testLists = new JPanel();
+        testLists.setLayout(inLayout);
+        
+        testLists.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("DCTestListsKey")));
+        
+//        final Box verticalBox = Box.createVerticalBox();
+        final ButtonGroup group = new ButtonGroup();
+        
+        JRadioButton allowedButton;
+        JRadioButton presentButton;
+        group.add(allowedButton = new JRadioButton("Allowed"));
+        allowedButton.setSelected(true);
+        allowedButton.addItemListener(new ItemListener()
+                {
+                    public void itemStateChanged(ItemEvent e)
+                    {
+                        if (e.getStateChange() == ItemEvent.SELECTED)
+                            testlists = EnumFitsValue.Allowed; 
+                    }
+                });
+//        verticalBox.add(allowedButton);
+        testLists.add(allowedButton);
+        
+        group.add(presentButton = new JRadioButton("Present"));
+        presentButton.addItemListener(new ItemListener()
+            {
+                public void itemStateChanged(ItemEvent e)
+                {
+                    if (e.getStateChange() == ItemEvent.SELECTED)
+                        testlists = EnumFitsValue.Present; 
+                }
+            });
+//        verticalBox.add(presentButton);
+        testLists.add(presentButton);
+       
+//        testLists.add(verticalBox);
+        outLayout.setConstraints(testLists, outConstraints);
+        downPanel.add(testLists);
+      
+        final JPanel validationPanel = new JPanel();
+        validationPanel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("ValidationLevelKey")));
+                
+        final Vector allowedValues = StringUtil.getNamesVector(EnumValidationLevel.class);
+        allowedValues.removeElementAt(0);
+        chooseValidLevel = new JComboBox(allowedValues);
+        chooseValidLevel.setSelectedItem(KElement.EnumValidationLevel.RecursiveComplete.getName());
+        chooseValidLevel.addActionListener(this);
+        validationPanel.add(chooseValidLevel);
+        outLayout.setConstraints(validationPanel, outConstraints);
+        
+        downPanel.add(validationPanel);
+        
+        add(downPanel);
+        setVisible(true);
+         
+    }
+    
+         
+    public void actionPerformed(ActionEvent e)
+    {
+        final Object source = e.getSource();
+        if (source == browse)
+        {
+            final EditorFileChooser files = new EditorFileChooser(idFile,"xml jdf",littleBundle);
+            final int option = files.showOpenDialog(parFrame);
+            
+            if (option == JFileChooser.APPROVE_OPTION)
+            {
+                idPath.setText(files.getSelectedFile().getAbsolutePath());
+            }
+            else if (option == JFileChooser.ERROR_OPTION) 
+            {
+                JOptionPane.showMessageDialog(parFrame, "File is not accepted", 
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        else if (source == chooseValidLevel)
+        {
+            validationLevel = EnumValidationLevel.getEnum((String)chooseValidLevel.getSelectedItem());
+        }
+    }
+    
+    public VElement getExecutable() 
+    {
+        return executableJDF;
+    }
+    
+    public XMLDoc getBugReport() 
+    {
+        return bugReport;
+    }
+    
+}
