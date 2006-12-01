@@ -69,6 +69,11 @@ package org.cip4.jdfeditor;
 *  
 * 
 */
+
+/* comment just added for testing SVN
+ * Stefan Daun, Nov. 30, 2006
+ */
+
 import java.util.Vector;
 
 import javax.swing.tree.TreePath;
