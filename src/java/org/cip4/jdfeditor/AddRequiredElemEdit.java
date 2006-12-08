@@ -78,6 +78,9 @@ import javax.swing.undo.CannotUndoException;
 import org.cip4.jdflib.core.KElement;
 
 /*
+ * Just another SVN test by Stefan Daun
+  */
+/*
  * AddRequiredElemEdit.java
  * @author Elena Skobchenko
  */
