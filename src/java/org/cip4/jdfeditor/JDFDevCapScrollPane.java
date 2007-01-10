@@ -85,13 +85,11 @@ public class JDFDevCapScrollPane extends JScrollPane
 {
 
     private static final long serialVersionUID = 2165866726219404457L;
-    JDFFrame m_frame;
     private JTextArea m_devCapArea;
 
-    public JDFDevCapScrollPane(JDFFrame frame)
+    public JDFDevCapScrollPane()
     {
         super();
-        m_frame=frame;
         m_devCapArea = new JTextArea();
         m_devCapArea.setEditable(true);
         m_devCapArea.setBackground(Color.white);

@@ -1,5 +1,6 @@
 package org.cip4.jdfeditor;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Point;
 import java.util.Vector;
@@ -8,6 +9,7 @@ import javax.swing.JComponent;
 
 import org.cip4.jdflib.core.JDFConstants;
 import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.node.JDFNode;
 
 /*
@@ -22,46 +24,96 @@ public class ProcessPart extends JComponent
      */
     private static final long serialVersionUID = 5703455772001305819L;
 
-    public int width;
-    public int height;
+    public int rawWidth;
+    public int rawHeight;
+    public static final int PARENT=0;
+    public static final int NODE=1;
+    public static final int RESOURCE=2;
+    public static final int RES_EXTERNAL=3;
     
-    private String name;
-    private KElement elem;
-    private KElement link;
-    private FontMetrics fm;
+    
+    public boolean isSelected=false; // if true, this element is selected and is connected by emphasized ResourceLink lines
+    private KElement elem; // the element (node or resource) that is displayed
+    public int style; // the style of this ProcessPart, i.e Node, Parent Resource or Res_External
+    
     private Color gColor;
     private String[] gString;    
     private Vector vInRes = new Vector();
     private Vector vOutRes = new Vector();
-    private Vector vAllRes = new Vector();
     private int xPos;
     private int yPos;
-    private int yResIn;
-    private int yResOut;
-    private boolean sharedInput;
+
+    private boolean isPositioned=false;
+
+    static private Font procFont = null;
+    static private Font resourceFont = null;
+    static private Font parentFont = null;
     
-    public ProcessPart(KElement _elem, String _name)
+    public ProcessPart(KElement _elem, int _style)
     {
-        this.elem = _elem;
-        this.name = _name;
+        elem = _elem;
+        style=_style;
+        isSelected=_style==PARENT;
+        setupFonts();
+        
+        switch (style)
+        {
+            case 0:
+                setFont(parentFont);                
+                break;
+            case 1:
+                setFont(procFont);                
+                break;
+            case 2:
+                setFont(resourceFont);                
+                break;
+            case 3:
+                setFont(resourceFont);                
+                break;
+
+            default:
+                throw new IllegalArgumentException("bad style in constructor, mustt be in range 0-3: "+style);
+        } 
+        setStrings();
+    }
+
+    /**
+     * set up the initial fonts based on inireader
+     */
+    private void setupFonts()
+    {
+        if(procFont==null)
+        {
+            INIReader reader=Editor.getIniFile();
+            final String fontName=reader.getFontName();
+            final int fontSize=reader.getFontSize();
+            procFont = new Font(fontName, Font.PLAIN, fontSize);
+            resourceFont = new Font(fontName, Font.PLAIN, fontSize-1);
+            parentFont = new Font(fontName, Font.BOLD, fontSize+2);
+        }
     }
     
-    public void setGfxParams(FontMetrics _fm, int _xPos, int _yPos)
+    public void setPos(int _xPos, int _yPos)
     {
-        this.xPos = _xPos;
-        this.yPos = _yPos;
-        this.fm = _fm;
-        
+        xPos = _xPos;
+        yPos = _yPos;
+        isPositioned=true;
+    }
+
+    /**
+     * 
+     */
+    private void setStrings()
+    {
         if(elem instanceof JDFNode)
         {
-            height = 75;
+            rawHeight = 75;
             
-            if (name.equals("ParentPart"))
+            if (style==PARENT)
                 gColor = new Color(215, 245, 255);
             else
                 gColor = new Color(180, 230, 250);
             
-
             JDFNode node = (JDFNode) elem;
             if (node.getType().equals(JDFConstants.COMBINED))
             {
@@ -82,22 +134,24 @@ public class ProcessPart extends JComponent
                 gString = tmp;
             }
            
-            width = setPartWidth(gString);
+            rawWidth = setPartWidth(gString);
+            setToolTipText("JDFNode: "+elem.getAttribute("DescriptiveName"));
         }
-        else if (name.equals("ResPart"))
+        else if (style==RES_EXTERNAL)
         {
-            height = 45;
+            rawHeight = 45;
             
             gColor = new Color(200, 250, 200);
             String[] tmp = { elem.getNodeName(),
                 elem.getAttribute("ID") };
             gString = tmp;
             
-            width = setPartWidth(gString);
+            rawWidth = setPartWidth(gString);
+            setToolTipText("JDFResource: "+elem.getAttribute("DescriptiveName"));
         }
-        else //if (JDFElement.isResourceStatic(elem))
+        else 
         {
-            height = 60;
+            rawHeight = 60;
             
             gColor = new Color(200, 250, 200);
             String[] tmp = { elem.getNodeName(),
@@ -105,153 +159,63 @@ public class ProcessPart extends JComponent
                 elem.getAttribute("Status", "", "") };
             gString = tmp;
             
-            width = setPartWidth(gString);
+            rawWidth = setPartWidth(gString);
+            setToolTipText("JDFResource: "+elem.getAttribute("DescriptiveName"));
         }
-        width += 30;
+        rawWidth += 30;
     }
     
     private int setPartWidth(String[] s)
     {
         int w = 0;
-        
+        FontMetrics fm=getFM();
         for (int i = 0; i < s.length; i++)
         {
             w = w < fm.stringWidth(s[i]) ? fm.stringWidth(s[i]) : w;
-        }
-        
+        }        
         return w;
     }
-    
-    public String getName()
-    {
-        return this.name;
-    }
-    
+        
     public KElement getElem()
     {
-        return this.elem;
+        return elem;
     }
-    
-    public KElement getLink()
-    {
-        return this.link;
-    }
-    
-    public void setLink(KElement _link)
-    {
-        this.link = _link;
-    }
-    
-    public Point getInPoint()
-    {
-        final Point p = new Point(xPos + this.width, yPos + this.height / 2);
         
+    public Point getRightPoint()
+    {
+        final Point p = new Point(xPos + this.rawWidth, yPos + this.rawHeight / 2);        
         return p;
     }
     
-    public Point getOutPoint()
+    public Point getLeftPoint()
     {
-        final Point p = new Point(xPos, yPos + this.height / 2);
-        
+        final Point p = new Point(xPos, yPos + this.rawHeight / 2);        
         return p;
     }
-    
-    public int getyResIn()
-    {
-        return this.yResIn;
-    }
-    
-    public void setyResIn(int _yResIn)
-    {
-        this.yResIn = _yResIn;
-    }
-    
-    public int getyResOut()
-    {
-        return this.yResOut;
-    }
-    
-    public void setyResOut(int _yResOut)
-    {
-        this.yResOut = _yResOut;
-    }
-    
-    /*public int getXPosition()
-    {
-        return this.xPosition;
-    }*/
-    
-    public Vector getvAllRes()
-    {
-        /*Vector vAllRes = new Vector();
-        
-        for (int i = 0; i < vInRes.size(); i ++)
-        {
-            vAllRes.add(vInRes.get(i));
-        }
-        for (int i = 0; i < vOutRes.size(); i ++)
-        {
-            vAllRes.add(vOutRes.get(i));
-        }
-        
-        return vAllRes;*/
-        
-        return this.vAllRes;
-    }
-    
-    public void addTovAllRes(ProcessPart pp)
-    {
-        this.vAllRes.add(pp);
-    }
-    
-    public boolean hasRes(ProcessPart pp)
-    {
-        return this.vInRes.contains(pp) || this.vOutRes.contains(pp);
-    }
-    
+                       
     public Vector getvInRes()
     {
-        return this.vInRes;
+        return vInRes;
     }
-    
-    /*public boolean hasInRes(ProcessPart pp)
-    {
-        return this.vInRes.contains(pp);
-    }*/
-    
+        
     public void addTovInRes(ProcessPart pp)
     {
-        this.vInRes.add(pp);
+        vInRes.add(pp);
     }
     
     public Vector getvOutRes()
     {
-        return this.vOutRes;
+        return vOutRes;
     }
-    
-    /*public boolean hasOutRes(ProcessPart pp)
-    {
-        return this.vOutRes.contains(pp);
-    }*/
-    
+        
     public void addTovOutRes(ProcessPart pp)
     {
-        this.vOutRes.add(pp);
+        vOutRes.add(pp);
     }
-    
-    public void setSharedInput(boolean _sharedInput)
-    {
-        this.sharedInput = _sharedInput;
-    }
-    
-    public boolean hasSharedInput()
-    {
-        return this.sharedInput;
-    }
-    
+        
     public Color getgColor()
     {
-        return this.gColor;
+        return gColor;
     }
     
     public String[] getgString()
@@ -261,11 +225,75 @@ public class ProcessPart extends JComponent
     
     public int getxPos()
     {
-        return this.xPos;
+        return xPos;
     }
     
     public int getyPos()
     {
-        return this.yPos;
+        return yPos;
     }
+    public FontMetrics getFM()
+    {
+        return getFontMetrics(getFont());
+    }
+
+    /**
+     * ProcessParts are equal if they contain the same element elem
+     * also compares this.elem to a KElement 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object arg0)
+    {
+        if (super.equals(arg0))
+            return true;
+        if(arg0 instanceof ProcessPart)
+            return elem.equals(((ProcessPart)arg0).elem);
+        else if (arg0 instanceof KElement)
+            return elem.equals(arg0);
+        return false;
+    }
+    
+    public String toString()
+    {
+        String s="[ProcessPart: ";
+        if(elem!=null)
+        {
+            s+=" Name="+elem.getNodeName();
+            String id=elem.getAttribute("ID",null,null);
+            if(id!=null)
+                s+=" ID="+id;
+        }
+        s+="["+super.toString()+ "]";
+        return s;
+    }
+
+    /**
+     * @return
+     */
+    public boolean hasPosition()
+    {
+        return isPositioned;
+    }
+
+    /**
+     * @param b
+     * @return
+     */
+    public VElement getPredecessors(boolean b, Vector parts)
+    {
+        final JDFNode jdfNode=(JDFNode)getElem();
+        VElement v=jdfNode.getPredecessors(b, false);
+        if(parts==null)
+            return v;
+        for(int i=v.size()-1;i>=0;i--)            
+        {
+            final int indexOf = parts.indexOf(new ProcessPart((KElement)v.elementAt(i),0));
+            if(indexOf<0)
+            {
+                v.remove(i);
+            }
+        }
+        return v;
+    }
+    
 }

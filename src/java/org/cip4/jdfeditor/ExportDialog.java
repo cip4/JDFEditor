@@ -37,25 +37,20 @@ public class ExportDialog extends JPanel implements ActionListener
     private File originalFile;
     private File newDCFile;
     private File fileToOpen; 
-    private ResourceBundle littleBundle;
     private GridBagLayout layout;
     private GridBagConstraints constraints;
-    private JDFFrame parFrame;
         
-    public ExportDialog(final JDFFrame parent, 
-                        final ResourceBundle bundle, final JDFNode jdfRoot)
+    public ExportDialog(final JDFNode jdfRoot)
     {
         super();
         this.originalFile = new File(jdfRoot.getOwnerDocument_KElement().getOriginalFileName());
-        this.littleBundle = bundle;
-        this.parFrame = parent;
         generAttrString = Editor.getIniFile().getGenericAtts();      
-
+        JDFFrame frame=Editor.getFrame();
         init();
-        
+        ResourceBundle littleBundle=Editor.getBundle();        
         final String[] options = { littleBundle.getString("OkKey"), littleBundle.getString("CancelKey") };
         
-        final int option = JOptionPane.showOptionDialog(parent, this, littleBundle.getString("ExportToDevCapKey"),
+        final int option = JOptionPane.showOptionDialog(frame, this, littleBundle.getString("ExportToDevCapKey"),
             JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
         if (option == JOptionPane.OK_OPTION)
@@ -70,7 +65,7 @@ public class ExportDialog extends JPanel implements ActionListener
             
             if (newDCFile == null) 
             {
-                JOptionPane.showMessageDialog(parent, littleBundle.getString("ExportFailedKey"),
+                JOptionPane.showMessageDialog(frame, littleBundle.getString("ExportFailedKey"),
                                                 "Error creating "+path, JOptionPane.ERROR_MESSAGE);
             }
             else
@@ -88,7 +83,7 @@ public class ExportDialog extends JPanel implements ActionListener
 //                    boolean success = devCapDoc.write2File(newDCFile.getAbsolutePath(), 2, false);                   
                     if (!success)
                     {
-                        JOptionPane.showMessageDialog(parent, littleBundle.getString("ExportFailedKey"),
+                        JOptionPane.showMessageDialog(frame, littleBundle.getString("ExportFailedKey"),
                                                     "Error", JOptionPane.ERROR_MESSAGE);
                     }
                     else 
@@ -99,7 +94,7 @@ public class ExportDialog extends JPanel implements ActionListener
                 catch (Exception e) 
                 {
                     e.printStackTrace();
-                    JOptionPane.showMessageDialog(parent,
+                    JOptionPane.showMessageDialog(frame,
                             "An internal error occured: \n" + e.getClass() + " \n"
                             + (e.getMessage()!=null ? ("\"" + e.getMessage() + "\"") : ""), 
                             "Error", JOptionPane.ERROR_MESSAGE);
@@ -115,6 +110,7 @@ public class ExportDialog extends JPanel implements ActionListener
      */
     private void init()
     {
+        ResourceBundle littleBundle=Editor.getBundle();        
         layout = new GridBagLayout(); 
         setLayout(layout);
         constraints = new GridBagConstraints();
@@ -169,11 +165,13 @@ public class ExportDialog extends JPanel implements ActionListener
     
     private void setOpenFileDialog()
     {
+        ResourceBundle littleBundle=Editor.getBundle();        
+
         final JLabel label = new JLabel(littleBundle.getString("DCOpenAfterGenerationKey"));
 
         final String[] options = { littleBundle.getString("YesKey"), littleBundle.getString("NoKey") };
         
-        final int option = JOptionPane.showOptionDialog(parFrame, label, littleBundle.getString("DCHappyMessageKey"),
+        final int option = JOptionPane.showOptionDialog(Editor.getFrame(), label, littleBundle.getString("DCHappyMessageKey"),
             JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 
         if (option == JOptionPane.OK_OPTION)
@@ -235,8 +233,8 @@ public class ExportDialog extends JPanel implements ActionListener
     {
         if (e.getSource() == browse)
         {
-            final EditorFileChooser files = new EditorFileChooser(newDCFile,"xml jdf jmf",littleBundle);
-            final int option = files.showOpenDialog(parFrame);
+            final EditorFileChooser files = new EditorFileChooser(newDCFile,"xml jdf jmf");
+            final int option = files.showOpenDialog(Editor.getFrame());
             
             if (option == JFileChooser.APPROVE_OPTION)
             {
@@ -245,8 +243,7 @@ public class ExportDialog extends JPanel implements ActionListener
             }
             else if (option == JFileChooser.ERROR_OPTION) 
             {
-                JOptionPane.showMessageDialog(parFrame, "Export failed", 
-                        "Error", JOptionPane.ERROR_MESSAGE);
+                EditorUtils.errorBox("ExportFailedKey", null);
             }
         }
     }

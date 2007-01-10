@@ -1,4 +1,3 @@
-package org.cip4.jdfeditor;
 /*
 *
 * The CIP4 Software License, Version 1.0
@@ -69,6 +68,8 @@ package org.cip4.jdfeditor;
 *  
 * 
 */
+package org.cip4.jdfeditor;
+
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.node.JDFNode;
 import org.w3c.dom.Attr;

@@ -103,9 +103,9 @@ import org.cip4.jdflib.core.KElement.EnumValidationLevel;
 import org.cip4.jdflib.datatypes.JDFBaseDataTypes.EnumFitsValue;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.node.JDFNode;
+import org.cip4.jdflib.resource.JDFDevice;
 import org.cip4.jdflib.resource.devicecapability.JDFDeviceCap;
 import org.cip4.jdflib.util.StringUtil;
-import org.cip4.jdflib.util.XMLstrm;
 
 /**
  * DeviceCapsDialog.java
@@ -122,28 +122,25 @@ public class DeviceCapDialog extends JPanel implements ActionListener
     private JTextField idPath;
     private JButton browse; 
     private File idFile;
-    private ResourceBundle littleBundle;
     private GridBagLayout outLayout = new GridBagLayout(); 
     private GridBagConstraints outConstraints = new GridBagConstraints();
     private VElement executableJDF = null;
     private XMLDoc bugReport = null;
-    private JDFFrame parFrame;
     
     private JComboBox chooseValidLevel;
     EnumFitsValue testlists = EnumFitsValue.Allowed;
     private EnumValidationLevel validationLevel = KElement.EnumValidationLevel.RecursiveComplete;
     
-    public DeviceCapDialog(final JDFFrame parent, final ResourceBundle bundle, final JDFNode docRoot)
+    public DeviceCapDialog(final JDFNode docRoot)
     {
         super();
-        this.littleBundle = bundle;
-        this.parFrame = parent;
         final INIReader iniFile=Editor.getIniFile();
+        final ResourceBundle littleBundle=Editor.getBundle();
+        JDFFrame parent=Editor.getFrame();
+        
 
         idFile=iniFile.getRecentDevCap();
-            
         init();
-        
         final String[] options = { littleBundle.getString("OkKey"), littleBundle.getString("CancelKey") };
         
         final int option = JOptionPane.showOptionDialog(parent, this, "Test against DeviceCapabilities file",
@@ -160,13 +157,10 @@ public class DeviceCapDialog extends JPanel implements ActionListener
                 try 
                 {
                     final JDFDoc devCapDoc = parser.parseFile(idFile.getAbsolutePath());
-                    
                     JDFJMF jmfRoot = null;
-                    
                     if (devCapDoc!=null) 
                     {
                         jmfRoot = devCapDoc.getJMFRoot();
-
                         if (jmfRoot==null) 
                         {
                             JOptionPane.showMessageDialog(parent, "Chosen file is not a JMF file", 
@@ -180,11 +174,17 @@ public class DeviceCapDialog extends JPanel implements ActionListener
                         }
                         else 
                         {
-                            final JDFDeviceCap deviceCap = 
-                                (JDFDeviceCap) jmfRoot.getChildByTagName(ElementName.DEVICECAP, null, 0, null, false, true);
-                	        	
-                            executableJDF = deviceCap.getExecutableJDF(docRoot,testlists,validationLevel);
-                            bugReport = deviceCap.getBadJDFInfo(docRoot,testlists,validationLevel);
+                            Editor.setCursor(1, null);
+                            final JDFDevice device = 
+                                (JDFDevice) jmfRoot.getXPathElement("Response/DeviceList/DeviceInfo/Device");
+                            VElement vDC=device.getChildElementVector(ElementName.DEVICECAP, null, null, true, -1,false);
+                            for(int i=0;i<vDC.size();i++)
+                            {
+                                JDFDeviceCap deviceCap=(JDFDeviceCap)vDC.elementAt(i);
+                                deviceCap.setIgnoreExtensions(!Editor.getIniFile().getHighlight());                                 
+                            }
+                	        executableJDF = device.getExecutableJDF(docRoot,testlists,validationLevel);
+                            bugReport = device.getBadJDFInfo(docRoot,testlists,validationLevel);
                         }         
                     }                  
                 }
@@ -196,8 +196,6 @@ public class DeviceCapDialog extends JPanel implements ActionListener
                              + (e.getMessage()!=null ? ("\"" + e.getMessage() + "\"") : ""), 
                             "Error", JOptionPane.ERROR_MESSAGE);
                 }                 
-                
-                XMLstrm.xmlIndent(2, true);
             }
             else 
             {
@@ -205,6 +203,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
                         "Error", JOptionPane.ERROR_MESSAGE);
             }           
         }        
+        Editor.setCursor(0, null);
     }
     
     /**
@@ -212,17 +211,14 @@ public class DeviceCapDialog extends JPanel implements ActionListener
      */
     private void init()
     {
-
         final JPanel panel = new JPanel();
-
+        final ResourceBundle littleBundle=Editor.getBundle();
         outConstraints.fill = GridBagConstraints.BOTH;
         outConstraints.insets = new Insets(0,0,10,0);
-
         outLayout.setConstraints(panel, outConstraints);
         setLayout(outLayout);
 
         final GridBagLayout inLayout = new GridBagLayout();    	   	
-
         panel.setLayout(inLayout);
         
         final GridBagConstraints constraints = new GridBagConstraints();
@@ -258,7 +254,6 @@ public class DeviceCapDialog extends JPanel implements ActionListener
         panel.add(horizontalBox);
         
         add(panel);
-        
         final JPanel downPanel = new JPanel();    	    	
         outConstraints.gridwidth = GridBagConstraints.REMAINDER;
         downPanel.setLayout(outLayout);
@@ -317,17 +312,17 @@ public class DeviceCapDialog extends JPanel implements ActionListener
         
         add(downPanel);
         setVisible(true);
-         
     }
     
          
     public void actionPerformed(ActionEvent e)
     {
         final Object source = e.getSource();
+        JDFFrame parent=Editor.getFrame();
         if (source == browse)
         {
-            final EditorFileChooser files = new EditorFileChooser(idFile,"xml jdf",littleBundle);
-            final int option = files.showOpenDialog(parFrame);
+            final EditorFileChooser files = new EditorFileChooser(idFile,"xml jdf");
+            final int option = files.showOpenDialog(parent);
             
             if (option == JFileChooser.APPROVE_OPTION)
             {
@@ -335,7 +330,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
             }
             else if (option == JFileChooser.ERROR_OPTION) 
             {
-                JOptionPane.showMessageDialog(parFrame, "File is not accepted", 
+                JOptionPane.showMessageDialog(parent, "File is not accepted", 
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
         }

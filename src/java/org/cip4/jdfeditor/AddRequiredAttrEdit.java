@@ -1,4 +1,3 @@
-package org.cip4.jdfeditor;
 /*
 *
 * The CIP4 Software License, Version 1.0
@@ -69,10 +68,8 @@ package org.cip4.jdfeditor;
 *  
 * 
 */
+package org.cip4.jdfeditor;
 
-/* comment just added for testing SVN
- * Stefan Daun, Nov. 30, 2006
- */
 
 import java.util.Vector;
 
@@ -93,16 +90,15 @@ public class AddRequiredAttrEdit extends EditorUndoableEdit
     private JDFTreeNode intoNode;
     private Vector addedVector;
     
-    public AddRequiredAttrEdit(final JDFFrame parentFrame, final TreePath treePath,
-    						   final JDFTreeNode intoNod, final Vector addedVect ) 
+    public AddRequiredAttrEdit(final TreePath treePath,final JDFTreeNode intoNod, final Vector addedVect ) 
     {
-         super(parentFrame);
+         super();
          path = treePath;
          canUndo=addedVect.size()>0;
                            
          this.intoNode = intoNod;
          this.addedVector = addedVect;
-         parFrame.updateViews(path);
+         Editor.getFrame().updateViews(path);
     }
 
     public void undo() throws CannotUndoException 
@@ -110,9 +106,9 @@ public class AddRequiredAttrEdit extends EditorUndoableEdit
          for (int i=0; i < addedVector.size(); i++)
          {
          	JDFTreeNode attrNode = (JDFTreeNode) addedVector.elementAt(i);
-            parFrame.getModel().deleteNode(attrNode,null);         	
+            Editor.getModel().deleteNode(attrNode,null);         	
          }
-         parFrame.updateViews(path);
+         Editor.getFrame().updateViews(path);
          super.undo();
     }
 
@@ -121,10 +117,10 @@ public class AddRequiredAttrEdit extends EditorUndoableEdit
     	for (int i=0; i < addedVector.size(); i++)
         {
         	JDFTreeNode attrNode = (JDFTreeNode) addedVector.elementAt(i);
-            attrNode= parFrame.getModel().setAttribute(intoNode,attrNode.getName(),attrNode.getValue(),null,false);
+            attrNode= Editor.getModel().setAttribute(intoNode,attrNode.getName(),attrNode.getValue(),null,false);
             addedVector.setElementAt(attrNode,i);
         }
-    	parFrame.updateViews(path);
+        Editor.getFrame().updateViews(path);
         super.redo();
     }
 

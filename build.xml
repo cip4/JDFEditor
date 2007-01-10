@@ -35,18 +35,19 @@
 	<target name="compile" depends="-init" description="Compiles the JDFEditor
         source code.">
 		<echo>Compiling...</echo>
-		<javac destdir="${bin.dir}" debug="${build.debug}" target="1.4" source="1.4">
+		<javac destdir="${bin.dir}" debug="${build.debug}" target="1.4" source="1.4" >
 			<src path="${java.src.dir}" />
 			<classpath refid="project.class.path" />
 			<include name="**/*.java" />
 		</javac>
+		<copy todir="${bin.dir}">
+			<fileset dir="${java.src.dir}" includes="org/cip4/jdfeditor/icons/*.*"/>
+		</copy>
+		<native2ascii encoding="UTF-8" reverse="false" src="${java.src.dir}/org/cip4/jdfeditor/messages" 
+			includes="*.properties" dest="${bin.dir}/org/cip4/jdfeditor/messages"/>
 	</target>
 	<target name="jar" depends="compile">
 		<jar destfile="${dist.dir}/${jar.filename}" basedir="${bin.dir}">
-			<fileset dir="${java.src.dir}">
-				<include name="org/cip4/jdfeditor/icons/*.*" />
-				<include name="org/cip4/jdfeditor/messages/*.properties" />
-			</fileset>
 			<manifest>
 				<attribute name="Main-Class" value="org.cip4.jdfeditor.Editor" />
 				<attribute name="Bundle-Name" value="JDF Editor ${major.version}.${minor.version}.${build.number}" />
@@ -177,8 +178,7 @@
 			<zipfileset dir="${win.dist.bin.dir}" prefix="${base.filename}-win" />
 		</zip>
 	</target>
-	<!-- This target is only needed if a new EXE file needs to be created -->
-	<target name="windist-compile" depends="bindist">
+	<target name="windist-compile" depends="bindist" description="This target is only need if the EXE file needs to be recompiled.">
 		<property name="win.dist.bin.dir" value="${dist.dir}/${base.filename}-win" />
 		<echo>Loading JSmooth Ant tasks. Make sure you have installed http://jsmooth.sourceforge.net in ANT_HOME/lib</echo>
 		<taskdef name="jsmoothgen" classname="net.charabia.jsmoothgen.ant.JSmoothGen" />

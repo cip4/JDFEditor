@@ -110,26 +110,18 @@ public class CheckJDFScrollPane extends ValidationScrollPane
             return;
         checkJDFRoot =new CheckJDFOutputWrapper(repRoot);
         m_reportTree = new JTree(checkJDFRoot);
-        m_reportTree.setModel(new JDFTreeModel(m_frame,checkJDFRoot,false));
+        m_reportTree.setModel(new JDFTreeModel(checkJDFRoot,false));
         m_reportTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         m_reportTree.setExpandsSelectedPaths(true);
         m_reportTree.setEditable(false);
         ToolTipManager.sharedInstance().registerComponent(m_reportTree);
         
-        DCOutputWrapper bugReportRoot = null;
-        
-        if (bugReport!=null) 
-        {            
-            setCheckJDFOutputTree(checkJDFRoot);            
-        }
-        
-        
-        
-        if (bugReportRoot != null)
-        {
-            m_reportTree.expandPath(new TreePath(bugReportRoot.getPath()));
-        }
-        
+        //DCOutputWrapper bugReportRoot = null;
+
+        setCheckJDFOutputTree(checkJDFRoot);            
+//        m_reportTree.expandPath(new TreePath(bugReportRoot.getPath()));
+        m_reportTree.expandPath(new TreePath(checkJDFRoot.getPath()));
+
         m_SelectionListener = new ValidationSelectionListener();
         m_reportTree.addTreeSelectionListener(m_SelectionListener);
         

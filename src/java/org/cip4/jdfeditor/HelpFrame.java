@@ -1,6 +1,6 @@
 package org.cip4.jdfeditor;
 import java.awt.Color;
-import java.awt.Cursor;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
@@ -34,7 +34,7 @@ public class HelpFrame extends JFrame
      * Comment for <code>serialVersionUID</code>
      */
     private static final long serialVersionUID = -7797849179421833321L;
-    
+
     ResourceBundle littleBundle;
     private JLabel help1;
     private JLabel help2;
@@ -46,21 +46,21 @@ public class HelpFrame extends JFrame
     private JScrollPane rightScroll;
     private JLabel rightLabel;
     private String[] titles = {
-        "Element",
-        "JDF Element",
-        "RefElement",
-        "Element with Error",
-        "Attribute",
-        "Inherited Attribute",
-        "PartIDKey Attribute",
-        "Inherited PartIDKey Attribute",
-        "Attriubte with Error" };
-        
+            "Element",
+            "JDF Element",
+            "RefElement",
+            "Element with Error",
+            "Attribute",
+            "Inherited Attribute",
+            "PartIDKey Attribute",
+            "Inherited PartIDKey Attribute",
+    "Attriubte with Error" };
+
     ImageIcon imgUp  = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "UpButton.gif");
     ImageIcon imgVal = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "RevalidateButton.gif");
-        
+
     private ImageIcon[] icons =
-        {
+    {
             Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ElemIcon.gif"),
             Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "JDFElemIcon.gif"),
             Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefElemIcon.gif"),
@@ -70,15 +70,15 @@ public class HelpFrame extends JFrame
             Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "PartIDKeysAttIconSelected.gif"),
             Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "InhPartIDKeysAttIconSelected.gif"),
             Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ErrorAttIconSelected.gif")
-        };
-        
+    };
+
     String startTags = "<html><font size=2 color=black face=verdana> ";
     String startTagsLarge = "<html><font size=3 color=black face=verdana><b> ";
     String startTagsSmall = "<html><font size=2 color=black face=verdana><b> ";
     String startTagsSmallSel = "<html><font size=2 color=#6EC8F0 face=verdana><b> <u>";
     String endTags = "</b></font></html>";
     String endTag = "</font></html>";
-    
+
     /**
      * Constructor for HelpFrame.
      */
@@ -110,34 +110,34 @@ public class HelpFrame extends JFrame
     private void init()
     {
         final Dimension d = new Dimension(this.getSize());
-        
+
         final JPanel leftPanel = drawLeftPanel();
         leftPanel.setBackground(Color.white);
         final JPanel rightPanel = drawRightPanel();
         rightPanel.setBackground(Color.white);
-        
+
         final JScrollPane leftScroll = new JScrollPane(leftPanel);
         leftScroll.setBackground(Color.white);
         leftScroll.getVerticalScrollBar().setUnitIncrement(20);
         leftScroll.getHorizontalScrollBar().setUnitIncrement(20);
-        
+
         final JLabel leftLabel = new JLabel(startTagsLarge + littleBundle.getString("ContentsKey") + endTags);
         leftLabel.setBackground(Color.white);
         leftLabel.setBorder(BorderFactory.createLineBorder(Color.black));
-        
+
         leftScroll.setColumnHeaderView(leftLabel);
-        
+
         rightScroll = new JScrollPane(rightPanel);
         rightScroll.setBackground(Color.white);
         rightScroll.getVerticalScrollBar().setUnitIncrement(20);
         rightScroll.getHorizontalScrollBar().setUnitIncrement(20);
-        
+
         rightLabel = new JLabel(startTagsLarge + endTags);
         rightLabel.setBackground(Color.white);
         rightLabel.setBorder(BorderFactory.createLineBorder(Color.black));
-        
+
         rightScroll.setColumnHeaderView(rightLabel);
-        
+
         helpPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftScroll, rightScroll);
         helpPane.setDividerLocation(d.width / 3);
         getContentPane().add(helpPane);
@@ -152,34 +152,34 @@ public class HelpFrame extends JFrame
         int y = 10;
         int w =  0;
         final String[] labelStrings = {
-            littleBundle.getString("GettingStartedKey"),
-            littleBundle.getString("ViewKey"),
-            littleBundle.getString("EditingKey"),
-            littleBundle.getString("ValidationKey"),
-            littleBundle.getString("DevelopmentNotesKey")};
-        
+                littleBundle.getString("GettingStartedKey"),
+                littleBundle.getString("ViewKey"),
+                littleBundle.getString("EditKey"),
+                littleBundle.getString("ValidateKey"),
+                littleBundle.getString("DevelopmentNotesKey")};
+
         final JPanel leftPanel = new JPanel(null);
         final Dimension d = new Dimension(this.getSize());
         leftPanel.setBounds(0, 0, d.width / 3, d.height);
         leftPanel.setBackground(Color.white);
-        
+
         for (int i = 0; i < helpLabels.length; i++)
         {
             helpLabels[i] = createDefaultLabel(startTagsSmall + labelStrings[i] + endTags);
             helpLabels[i].setBorder(BorderFactory.createEmptyBorder());
             helpLabels[i].setToolTipText(labelStrings[i]);
             helpLabels[i].addMouseListener(new LabelMouseListener());
-            
+
             final Dimension dim = helpLabels[i].getPreferredSize();
-            
+
             helpLabels[i].setBounds(x, y, dim.width, dim.height);
             leftPanel.add(helpLabels[i]);
-            
+
             y += dim.height + 5;
             w = w < dim.width ? dim.width : w;
         }
         leftPanel.setPreferredSize(new Dimension(w + 2 * x, y));
-        
+
         return leftPanel;
     }
     /**
@@ -189,26 +189,26 @@ public class HelpFrame extends JFrame
     private JPanel drawRightPanel()
     {
         final JPanel rp = new JPanel(null);
-        
+
         final JLabel textLabel = createDefaultLabel(startTags + littleBundle.getString("RightView") + endTags);
-        
+
         final Dimension d = textLabel.getPreferredSize();
-        
+
         textLabel.setBounds(20, 20, d.width, d.height);
         rp.add(textLabel);
         rp.setPreferredSize(new Dimension(d.width + 40, d.height + 40));
-        
+
         return rp;
     }
-    
+
     private JLabel createDefaultLabel(String text)
     {
         final JLabel label = new JLabel(text, SwingConstants.LEFT);
-        
+
         label.setVerticalTextPosition(SwingConstants.TOP);
         label.setBackground(Color.white);
         label.setOpaque(true);
-        
+
         return label;
     }
     /**
@@ -217,17 +217,17 @@ public class HelpFrame extends JFrame
     void helpGettingStarted()
     {
         final JPanel rp = new JPanel(null);
-        
+
         final JLabel startLabel = createDefaultLabel(startTags + littleBundle.getString("GettingStarted") + endTags);
-        
+
         final Dimension d = startLabel.getPreferredSize();
-        
+
         startLabel.setBounds(20, 20, d.width, d.height);
         rp.add(startLabel);
         rp.setBackground(Color.white);
         rp.setPreferredSize(new Dimension(d.width + 40, d.height + 40));
         rightScroll.getViewport().setView(rp);
-        
+
         rightLabel.setText(startTagsLarge + littleBundle.getString("GettingStartedKey") + endTags);
     }
     /**
@@ -238,90 +238,90 @@ public class HelpFrame extends JFrame
         final int x = 20;
         int y = 20;
         int w =  0;
-        
+
         final JPanel rp = new JPanel(null);
-        
+
         final JLabel treeLabel = createDefaultLabel(startTags + littleBundle.getString("TreeView") + endTags);
-        
+
         Dimension d = treeLabel.getPreferredSize();
-        
+
         treeLabel.setBounds(x, y, d.width, d.height);
         rp.add(treeLabel);
         w = w < d.width ? d.width : w;
-        
+
         y += d.height;
 
         for(int i = 0; i < titles.length; i++)
         {
             final JLabel label = drawIconLabel(titles[i], icons[i]);        
             d = label.getPreferredSize();
-        
+
             label.setBounds(50, y, d.width, d.height);
             rp.add(label);
             w = w < d.width ? d.width : w;
-            
+
             y += d.height + 5;
         }
 
         final JLabel errorLabel = createDefaultLabel(startTags + littleBundle.getString("ErrorView") + endTags);
-        
+
         d = errorLabel.getPreferredSize();
-        
+
         errorLabel.setBounds(x, y, d.width, d.height);
         rp.add(errorLabel);
         w = w < d.width ? d.width : w;
-        
+
         y += d.height;
-        
+
         final JLabel inOutLabel = createDefaultLabel(startTags + littleBundle.getString("InOutView") + endTags);
-        
+
         d = inOutLabel.getPreferredSize();
-        
+
         inOutLabel.setBounds(x, y, d.width, d.height);
         rp.add(inOutLabel);
         w = w < d.width ? d.width : w;
-        
+
         y += d.height;
-        
+
         final JLabel procLabel = createDefaultLabel(startTags + littleBundle.getString("ProcessView") + endTags);
-        
+
         d = procLabel.getPreferredSize();
-        
+
         procLabel.setBounds(x, y, d.width, d.height);
         rp.add(procLabel);
         w = w < d.width ? d.width : w;
-        
+
         y += d.height;
-        
+
         final JLabel procIcon = new JLabel(startTagsSmall + littleBundle.getString("GoUpInProcessViewKey") + endTags,
-            imgUp, SwingConstants.LEFT);
+                imgUp, SwingConstants.LEFT);
         procIcon.setHorizontalTextPosition(SwingConstants.LEFT);
         procIcon.setBackground(Color.white);
         procIcon.setOpaque(true);
-        
+
         d = procIcon.getPreferredSize();
-        
+
         procIcon.setBounds(x, y, d.width, d.height);
         rp.add(procIcon);
         w = w < d.width ? d.width : w;
-        
+
         y += d.height;
-        
+
         final JLabel comLabel = createDefaultLabel(startTags + littleBundle.getString("CommentView") + endTags);
-        
+
         d = comLabel.getPreferredSize();
-        
+
         comLabel.setBounds(x, y, d.width, d.height);
         rp.add(comLabel);
         w = w < d.width ? d.width : w;
-        
+
         y += d.height;
-        
+
         rp.setBackground(Color.white);
         rp.setPreferredSize(new Dimension(w + 2 * x, y + 10));
-        
+
         rightScroll.getViewport().setView(rp);
-        
+
         rightLabel.setText(startTagsLarge + littleBundle.getString("ViewKey") + endTags);
     }
     /**
@@ -346,18 +346,18 @@ public class HelpFrame extends JFrame
     void helpEditing()
     {
         final JPanel rp = new JPanel(null);
-        
+
         final JLabel editLabel = createDefaultLabel(startTags + littleBundle.getString("EditView") + endTags);
-        
+
         final Dimension d = editLabel.getPreferredSize();
-        
+
         editLabel.setBounds(20, 20, d.width, d.height);
         rp.add(editLabel);
         rp.setBackground(Color.white);
         rp.setPreferredSize(new Dimension(d.width + 40, d.height + 40));
         rightScroll.getViewport().setView(rp);
-        
-        rightLabel.setText(startTagsLarge + littleBundle.getString("EditingKey") + endTags);
+
+        rightLabel.setText(startTagsLarge + littleBundle.getString("EditKey") + endTags);
     }
     /**
      * Method helpValidation.
@@ -367,38 +367,38 @@ public class HelpFrame extends JFrame
         final int x = 20;
         int y = 20;
         int w =  0;
-        
+
         final JPanel rp = new JPanel(null);
-        
+
         final JLabel validLabel = createDefaultLabel(startTags + littleBundle.getString("ValidationView") + endTags);
-        
+
         Dimension d = validLabel.getPreferredSize();
-        
+
         validLabel.setBounds(x, y, d.width, d.height);
         rp.add(validLabel);
         w = w < d.width ? d.width : w;
-        
+
         y += d.height;
-        
+
         final JLabel validIcon = new JLabel(startTagsSmall + littleBundle.getString("ValidateToolTipKey") + endTags,
-            imgVal, SwingConstants.LEFT);
+                imgVal, SwingConstants.LEFT);
         validIcon.setHorizontalTextPosition(SwingConstants.LEFT);
         validIcon.setBackground(Color.white);
         validIcon.setOpaque(true);
-        
+
         d = validIcon.getPreferredSize();
-        
+
         validIcon.setBounds(x, y, d.width, d.height);
         rp.add(validIcon);
         w = w < d.width ? d.width : w;
-        
+
         y += d.height;
-        
+
         rp.setBackground(Color.white);
         rp.setPreferredSize(new Dimension(w + 2 * x, y + 10));
         rightScroll.getViewport().setView(rp);
-        
-        rightLabel.setText(startTagsLarge + littleBundle.getString("ValidationKey") + endTags);
+
+        rightLabel.setText(startTagsLarge + littleBundle.getString("ValidateKey") + endTags);
     }
     /**
      * Method helpFurtherDevelopment.
@@ -406,121 +406,103 @@ public class HelpFrame extends JFrame
     void helpFurtherDevelopment()
     {
         final JPanel rp = new JPanel(null);
-        
+
         final JLabel devLabel = createDefaultLabel(startTags + littleBundle.getString("FurtherDevView") + endTags);
-        
+
         final Dimension d = devLabel.getPreferredSize();
-        
+
         devLabel.setBounds(20, 20, d.width, d.height);
         rp.add(devLabel);
         rp.setBackground(Color.white);
         rp.setPreferredSize(new Dimension(d.width + 40, d.height + 40));
         rightScroll.getViewport().setView(rp);
-        
+
         rightLabel.setText(startTagsLarge + littleBundle.getString("DevelopmentNotesKey") + endTags);
     }
     /**
-         * @author ThunellE
-         *
-         * To change this generated comment edit the template variable "typecomment":
-         * Window>Preferences>Java>Templates.
-         * To enable and disable the creation of type comments go to
-         * Window>Preferences>Java>Code Generation.
-         */
+     * @author ThunellE
+     *
+     * To change this generated comment edit the template variable "typecomment":
+     * Window>Preferences>Java>Templates.
+     * To enable and disable the creation of type comments go to
+     * Window>Preferences>Java>Code Generation.
+     */
     class LabelMouseListener extends MouseAdapter
     {
         public void mouseClicked(MouseEvent e)
         {
-            final Cursor defaultCursor = Cursor.getDefaultCursor();
-            
             if (e.getSource() == helpLabels[0])
             {
-                helpLabels[0].setCursor(defaultCursor);
                 helpLabels[0].setText(startTagsSmall + littleBundle.getString("GettingStartedKey") + endTags);
                 helpGettingStarted();
             }
             else if (e.getSource() == helpLabels[1])
             {
-                helpLabels[1].setCursor(defaultCursor);
                 helpLabels[1].setText(startTagsSmall + littleBundle.getString("ViewKey") + endTags);
                 helpViews();
             }
             else if (e.getSource() == helpLabels[2])
             {
-                helpLabels[2].setCursor(defaultCursor);
-                helpLabels[2].setText(startTagsSmall + littleBundle.getString("EditingKey") + endTags);
+                helpLabels[2].setText(startTagsSmall + littleBundle.getString("EditKey") + endTags);
                 helpEditing();
             }
             else if (e.getSource() == helpLabels[3])
             {
-                helpLabels[3].setCursor(defaultCursor);
-                helpLabels[3].setText(startTagsSmall + littleBundle.getString("ValidationKey") + endTags);
+                helpLabels[3].setText(startTagsSmall + littleBundle.getString("ValidateKey") + endTags);
                 helpValidation();
             }
             else if (e.getSource() == helpLabels[4])
             {
-                helpLabels[4].setCursor(defaultCursor);
                 helpLabels[4].setText(startTagsSmall + littleBundle.getString("DevelopmentNotesKey") + endTags);
                 helpFurtherDevelopment();
             }
         }
         public void mouseEntered(MouseEvent e)
         {
-            final Cursor handCursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR); 
-            
+            Editor.setCursor(2,(Component)e.getSource());
             if (e.getSource() == helpLabels[0])
             {
-                helpLabels[0].setCursor(handCursor);
                 helpLabels[0].setText(startTagsSmallSel + littleBundle.getString("GettingStartedKey") + endTags);
             }
             else if (e.getSource() == helpLabels[1])
             {
-                helpLabels[1].setCursor(handCursor);
                 helpLabels[1].setText(startTagsSmallSel + littleBundle.getString("ViewKey") + endTags);
             }
             else if (e.getSource() == helpLabels[2])
             {
-                helpLabels[2].setCursor(handCursor);
-                helpLabels[2].setText(startTagsSmallSel + littleBundle.getString("EditingKey") + endTags);
+                helpLabels[2].setText(startTagsSmallSel + littleBundle.getString("EditKey") + endTags);
             }
             else if (e.getSource() == helpLabels[3])
             {
-                helpLabels[3].setCursor(handCursor);
-                helpLabels[3].setText(startTagsSmallSel + littleBundle.getString("ValidationKey") + endTags);
+                helpLabels[3].setText(startTagsSmallSel + littleBundle.getString("ValidateKey") + endTags);
             }
             else if (e.getSource() == helpLabels[4])
             {
-                helpLabels[4].setCursor(handCursor);
                 helpLabels[4].setText(startTagsSmallSel + littleBundle.getString("DevelopmentNotesKey") + endTags);
             }
         }
         public void mouseExited(MouseEvent e)
         {
-            final Cursor defaultCursor = Cursor.getDefaultCursor();
-            
+            Editor.setCursor(0,(Component)e.getSource());
+
             if (e.getSource() == helpLabels[0])
             {
-                helpLabels[0].setCursor(defaultCursor);
                 helpLabels[0].setText(startTagsSmall + littleBundle.getString("GettingStartedKey") + endTags);
             }
             else if (e.getSource() == helpLabels[1])
             {
-                helpLabels[1].setCursor(defaultCursor);
                 helpLabels[1].setText(startTagsSmall + littleBundle.getString("ViewKey") + endTags);
             }
             else if (e.getSource() == helpLabels[2])
             {
-                helpLabels[2].setCursor(defaultCursor);
-                helpLabels[2].setText(startTagsSmall + littleBundle.getString("EditingKey") + endTags);
+                helpLabels[2].setText(startTagsSmall + littleBundle.getString("EditKey") + endTags);
             }
             else if (e.getSource() == helpLabels[3])
             {
-                helpLabels[3].setCursor(defaultCursor);
-                helpLabels[3].setText(startTagsSmall + littleBundle.getString("ValidationKey") + endTags);
+                helpLabels[3].setText(startTagsSmall + littleBundle.getString("ValidateKey") + endTags);
             }
             else if (e.getSource() == helpLabels[4])
             {
-                helpLabels[4].setCursor(defaultCursor);
                 helpLabels[4].setText(startTagsSmall + littleBundle.getString("DevelopmentNotesKey") + endTags);
             }
         }

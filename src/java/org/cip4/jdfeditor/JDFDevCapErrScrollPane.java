@@ -111,7 +111,7 @@ public class JDFDevCapErrScrollPane extends ValidationScrollPane
         m_reportRoot = new DCOutputWrapper(repRoot);
         m_reportTree = new JTree(m_reportRoot);
         ToolTipManager.sharedInstance().registerComponent(m_reportTree);
-        m_reportTree.setModel(new JDFTreeModel(m_frame,m_reportRoot,false));
+        m_reportTree.setModel(new JDFTreeModel(m_reportRoot,false));
 
         m_reportTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         m_reportTree.setExpandsSelectedPaths(true);

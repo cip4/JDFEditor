@@ -225,10 +225,12 @@ public class EditorTabbedPaneB extends JTabbedPane
     {
         m_devCapErrScroll.clearReport();
         m_validErrScroll.clearReport();
+        m_SchemaErrScroll.clearReport();
     }
+    
     public void clearAll()
     {
-       
+        clearViews();
     }
     
 }

@@ -1,4 +1,3 @@
-package org.cip4.jdfeditor;
 /*
  *
  * The CIP4 Software License, Version 1.0
@@ -69,6 +68,7 @@ package org.cip4.jdfeditor;
  *  
  * 
  */
+package org.cip4.jdfeditor;
 
 import java.io.File;
 import java.util.Arrays;
@@ -83,6 +83,7 @@ import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.core.JDFElement.EnumVersion;
 import org.cip4.jdflib.core.KElement.EnumValidationLevel;
+import org.cip4.jdflib.util.StringUtil;
 
 /*
  * INI_Reader.java
@@ -189,7 +190,9 @@ public class INIReader
     private String lookAndFeel = "General/@lookAndFeel";
     private String methodSendToDevice = "General/@methodSendToDevice";
     private String urlSendToDevice = "General/@URLSendToDevice";
+    private String longID = "General/@longID";
     private String fontSize = "General/@fontSize";
+    private String fontName = "General/@fontName";
     private String genericAtts = "General/@genericAtts";
     
     private String[] recentFiles = new String[5];
@@ -202,7 +205,11 @@ public class INIReader
     private final String useSchema = "ValidEdit/@useSchema";
     private final String validVersion = "ValidEdit/@version";
     private final String validLevel = "ValidEdit/@level";
-    
+    private final String removeDefault = "ValidEdit/@removeDefault";
+    private final String displayDefault = "ValidEdit/@displayefault";
+    private final String removeWhite = "ValidEdit/@removeWhite";
+    private final String checkURL = "ValidEdit/@checkURL";
+         
     private final String attribute = "TreeView/@attribute";
     private final String inheritedAttr = "TreeView/@inheritedAttr";
     private XMLDoc xDoc; // The XMLDocument that represents the ini file
@@ -219,7 +226,7 @@ public class INIReader
         try
         {
             JDFParser p=new JDFParser();
-            xDoc = p.parseFile("Editor.ini");
+            xDoc = p.parseFile(getIniPath());
             readINIFile();
         }
         //If the Editor.ini file is not found, create a new default file and read it
@@ -232,17 +239,6 @@ public class INIReader
         setIcons();        
     }
     
-    /**
-     * wrize inifile with the current values augmented by the current menubar state
-     * @param menuBar
-     */
-    public void writeINI(EditorMenuBar menuBar)
-    {
-        this.setAttribute(highlightFN,menuBar.m_highlightFNRadioItem.isSelected() ? "on" : "off");
-        this.setAttribute(attribute,menuBar.m_showAttrRadioItem.isSelected() ? "on" : "off");
-        this.setAttribute(inheritedAttr,menuBar.m_showInhAttrRadioItem.isSelected() ? "on" : "off");
-        writeINIFile();
-    }
     
     public String getLanguage()
     {
@@ -267,9 +263,17 @@ public class INIReader
         String s = getAttribute(fontSize,"10");
         return Integer.parseInt(s);
     }   
+    public String getFontName()
+    {
+        return getAttribute(fontName,null);
+    }   
     public void setFontSize(int fs)
     {
         setAttribute(fontSize,String.valueOf(fs));
+    }
+    public void setFontName(String _fontName)
+    {
+        setAttribute(fontName,_fontName);
     }
     public String getGenericAtts()
     {
@@ -285,7 +289,7 @@ public class INIReader
     }   
     public void setGenericAtts(VString s)
     {
-        setAttribute(genericAtts,s.getString(" ",null,null));
+        setAttribute(genericAtts,StringUtil.setvString(s," ",null,null));
     }
     
     public boolean getAutoVal()
@@ -354,6 +358,46 @@ public class INIReader
         return getAttribute(useSchema,"false").equals("true");
     }
     
+    public void setCheckURL(boolean url)
+    {
+        setAttribute(checkURL,url ? "true" : "false");
+    }
+    
+    public boolean getCheckURL()
+    {
+        return getAttribute(checkURL,"false").equals("true");
+    }
+
+    public void setRemoveWhite(boolean rem)
+    {
+        setAttribute(removeWhite,rem ? "true" : "false");
+    }
+    
+    public boolean getRemoveWhite()
+    {
+        return getAttribute(removeWhite,"true").equals("true");
+    }
+    
+    public void setRemoveDefault(boolean rem)
+    {
+        setAttribute(removeDefault,rem ? "true" : "false");
+    }
+    
+    public void setDisplayDefault(boolean rem)
+    {
+        setAttribute(displayDefault,rem ? "true" : "false");
+    }
+    
+    public boolean getRemoveDefault()
+    {
+        return getAttribute(removeDefault,"true").equals("true");
+    }
+    
+    public boolean getDisplayDefault()
+    {
+        return getAttribute(displayDefault,"true").equals("true");
+    }
+    
     public String[] getIconStrings()
     {
         return this.iconStrings;
@@ -363,20 +407,32 @@ public class INIReader
     {
         return getAttribute(highlightFN,"").equalsIgnoreCase("on") ? true : false;
     }
-    
+    public void setHighlight(boolean b)
+    {
+        setAttribute(highlightFN,b?"on":"off");
+    }
+   
     public boolean getReadOnly()
     {
         return getAttribute(readOnly,"").equalsIgnoreCase("on") ? true : false;
     }
     
-    public boolean showAttr()
+    public boolean getAttr()
     {
-        return getAttribute(attribute,"").equalsIgnoreCase("on") ? true : false;
+        return getAttribute(attribute,"on").equalsIgnoreCase("on") ? true : false;
     }
-    
-    public boolean showInhAttr()
+    public void setAttr(boolean b)
     {
-        return getAttribute(inheritedAttr,"").equalsIgnoreCase("on") ? true : false;
+        setAttribute(attribute,b?"on":"off");
+    }
+   
+    public boolean getInhAttr()
+    {
+        return getAttribute(inheritedAttr,"on").equalsIgnoreCase("on") ? true : false;
+    }
+    public void setInhAttr(boolean b)
+    {
+        setAttribute(inheritedAttr,b?"on":"off");
     }
     
     public String getMethodSendToDevice()
@@ -437,7 +493,7 @@ public class INIReader
     }
     
     
-    private void writeINIFile()
+    public void writeINIFile()
     {
         if(recentFiles!=null)
         {
@@ -449,7 +505,19 @@ public class INIReader
                 }
             }
         }
-        xDoc.write2File("Editor.ini", 2, true);
+        final String iniPath = getIniPath();
+        xDoc.write2File(iniPath, 2, true);
+    }
+
+    private String getIniPath()
+    {
+        //TODO find correct property for application data
+        String path=System.getProperty("user.home");
+        File iniDir=new File(path+File.separator+"CIP4Editor");
+        if(!iniDir.exists())
+            iniDir.mkdir();
+        final String iniPath = iniDir.getPath()+File.separator+"Editor.ini";
+        return iniPath;
     }
     
     private void checkIcon(String iconName, String iconPath)
@@ -804,6 +872,18 @@ public class INIReader
     {
         iconStrings=is;
     }
-    
-    
+
+    /**
+     * @return
+     */
+    public boolean getLongID()
+    {
+        return getAttribute(longID,"true").equalsIgnoreCase("true") ? true : false;
+    }
+    public void setLongID(boolean b)
+    {
+        setAttribute(longID,b?"true":"false");
+    }
+
+
 }

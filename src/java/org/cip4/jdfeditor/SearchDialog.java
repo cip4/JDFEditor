@@ -90,7 +90,7 @@ public class SearchDialog extends JDialog implements ActionListener
         middleBox.add(Box.createVerticalStrut(20));
         
         final Box box2 = Box.createHorizontalBox();
-        final JLabel findLabel = new JLabel(frame.m_littleBundle.getString("FindWhatKey"));
+        final JLabel findLabel = new JLabel(frame.m_littleBundle.getString("FindKey"));
         box2.add(findLabel);
         
         m_searchTextField = new JTextField();
@@ -220,9 +220,10 @@ public class SearchDialog extends JDialog implements ActionListener
     {
         if (inString != null || !inString.equals(JDFConstants.EMPTYSTRING))
         {
-            getContentPane().setCursor(JDFFrame.m_waitCursor);
+            Editor.setCursor(1,null);
             final String searchString = inString.toUpperCase();
-            final JDFTreeNode searchNode = (JDFTreeNode) (m_frame.m_treeArea.getSelectionPath()).getLastPathComponent();
+            final TreePath selectionPath = m_frame.m_treeArea.getSelectionPath();
+            final JDFTreeNode searchNode = selectionPath==null ? null : (JDFTreeNode) selectionPath.getLastPathComponent();
             TreePath path=null;
                     
             if (forwardDirection)
@@ -270,8 +271,8 @@ public class SearchDialog extends JDialog implements ActionListener
             {
                 EditorUtils.errorBox("StringNotFoundKey",searchString);
             }
-            getContentPane().setCursor(JDFFrame.m_readyCursor);
         }
+        Editor.setCursor(0,null);
     }
     
 }

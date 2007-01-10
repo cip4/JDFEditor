@@ -4,10 +4,6 @@ import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
-import org.cip4.jdflib.core.JDFElement;
-import org.cip4.jdflib.core.KElement;
-import org.cip4.jdflib.util.StringUtil;
-
 /*
  * InsertElementAfterEdit.java
  * @author Elena Skobchenko
@@ -16,66 +12,48 @@ import org.cip4.jdflib.util.StringUtil;
 public class PasteItemEdit extends AbstractUndoableEdit 
 {
     private static final long serialVersionUID = -2778264565816334345L;
-    
+
     private TreePath path;
     private TreePath pasteNodePath;
     private JDFTreeNode pasteNode;
-    private KElement pasteElement;
     private JDFTreeNode intoNode;
-    private KElement intoElement;
-    private String attributeName;
-    private String attributeValue;
-    private JDFFrame parFrame;
     private int pos;
     private boolean success = true;
-    
-    public PasteItemEdit(final JDFFrame parentFrame, final TreePath treePath, 
-			    		final JDFTreeNode _intoNode, final KElement _intoElement, 
-			    		final JDFTreeNode _pasteNode) 
+
+    public PasteItemEdit(final TreePath treePath, 
+            final JDFTreeNode _intoNode,  
+            final JDFTreeNode _pasteNode) 
     {
-         parFrame = parentFrame;
-         path = treePath;
-         this.intoNode = _intoNode;
-         this.intoElement = _intoElement;
-         
-         this.pasteNode = _pasteNode;
- 
-         pos = intoNode.getIndex(pasteNode);
-         if (!pasteNode.isElement())
-         {
-             attributeName = StringUtil.token(pasteNode.toString(), 0, "=");
-             attributeValue = StringUtil.token(pasteNode.toString(), 1, "=");
-             if (attributeValue.indexOf("\"") != -1)
-             {
-                 attributeValue = attributeValue.substring(1,attributeValue.length()-1);
-             }
-         }
-         else 
-         {
-             pasteElement = (JDFElement) pasteNode.getElement();
-         }
-         pasteNodePath = new TreePath(pasteNode.getPath());
- 
-         parFrame.updateViews(pasteNodePath);
+        JDFFrame parFrame=Editor.getFrame();
+        path = treePath;
+        intoNode = _intoNode;
+        pasteNode = _pasteNode;
+
+        pos = intoNode.getIndex(pasteNode);
+        pasteNodePath = new TreePath(pasteNode.getPath());
+
+        parFrame.updateViews(pasteNodePath);
     }
 
     public void undo() throws CannotUndoException 
     { 
-   		success = parFrame.getModel().deleteItem(pasteNodePath);
+        JDFFrame parFrame=Editor.getFrame();
+        success = parFrame.getModel().deleteItem(pasteNodePath);
         pasteNodePath = null;
         parFrame.updateViews(path); 
     }
 
     public void redo() throws CannotRedoException 
     {
-        parFrame.getModel().insertInto(pasteNode, intoNode, pos);
+        JDFFrame parFrame=Editor.getFrame();
         if (!pasteNode.isElement())
         {
-            intoElement.setAttribute(attributeName, attributeValue);
+            parFrame.getModel().setAttribute(intoNode, pasteNode.getName(), pasteNode.getValue(), null, false);
         }
         else 
         {
-            intoElement.appendChild(pasteElement);
+            intoNode.getElement().copyElement(pasteNode.getElement(),null);
+            parFrame.getModel().insertInto(pasteNode, intoNode, pos);
         }
         pasteNodePath = new TreePath(pasteNode.getPath());
         parFrame.updateViews(pasteNodePath);
@@ -83,7 +61,7 @@ public class PasteItemEdit extends AbstractUndoableEdit
 
     public boolean canUndo() 
     {
-         return  success;
+        return  success;
     }
 
     public boolean canRedo() 
@@ -93,7 +71,7 @@ public class PasteItemEdit extends AbstractUndoableEdit
 
     public String getPresentationName() 
     {
-         return "Paste";
+        return "Paste";
     }
 
 }

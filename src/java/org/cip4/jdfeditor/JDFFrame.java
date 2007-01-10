@@ -70,13 +70,11 @@ package org.cip4.jdfeditor;
  * 
  */
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
@@ -96,7 +94,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -116,8 +113,6 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.UndoableEditEvent;
@@ -135,12 +130,13 @@ import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.XMLDoc;
+import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
+import org.cip4.jdflib.core.XMLDocUserData.EnumDirtyPolicy;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFAuditPool;
 import org.cip4.jdflib.resource.JDFModified;
 import org.cip4.jdflib.util.StringUtil;
-import org.cip4.jdflib.util.XMLstrm;
 
 /**
  * @author AnderssA ThunellE SvenoniusI Elena Skobchenko
@@ -184,9 +180,6 @@ ClipboardOwner
     Vector m_VjdfDocument=new Vector();
     int m_DocPos=-1; // document position
     
-    // the cursors in the frame
-    static protected Cursor m_readyCursor = Cursor.getDefaultCursor();
-    static protected Cursor m_waitCursor  = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
     // dragndrop support
     private DragSource m_source;
     
@@ -212,7 +205,6 @@ ClipboardOwner
         m_source.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_COPY_OR_MOVE, this);
         final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(0, 0, d.width, d.height - 30);
-        this.setCursor(m_readyCursor);
         
         INIReader iniFile=Editor.getIniFile();
         String language = iniFile.getLanguage();
@@ -225,7 +217,7 @@ ClipboardOwner
         Locale.setDefault(currentLocale);
         
         
-        m_menuBar = new EditorMenuBar(m_littleBundle,this);        
+        m_menuBar = new EditorMenuBar();        
         try
         {
             UIManager.setLookAndFeel(currentLookAndFeel);
@@ -245,12 +237,12 @@ ClipboardOwner
      */
     public void drawWindow()
     {
-        this.setCursor(m_waitCursor);
+        Editor.setCursor(1,null);
         this.setJMenuBar(m_menuBar.drawMenu());
         this.getContentPane().add(drawBoxContent());
         this.setEnableClose(false);
         this.setVisible(true);
-        this.setCursor(m_readyCursor);
+        Editor.setCursor(0,null);
     }
     /**
      * Method drawBoxContent.
@@ -276,7 +268,7 @@ ClipboardOwner
     private JSplitPane drawSplitPane()
     {
         final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        m_topTabs = new EditorTabbedPaneA(this);        
+        m_topTabs = new EditorTabbedPaneA();        
         m_errorTabbedPane = new EditorTabbedPaneB(this);
         
         m_treeArea = new JDFTreeArea(m_littleBundle,this);
@@ -298,27 +290,7 @@ ClipboardOwner
     }
     
     
-    /**
-     * Method createModel.
-     * create the treeModel
-     * @param doc
-     * @return TreeModel
-     */
-    public JDFTreeModel createModel(JDFDoc doc, JDFTreeNode root)
-    {
-        setJDFDoc(doc);
-        
-        setModel(new JDFTreeModel(this, root,false));
-        root.add(new JDFTreeNode(doc.getRoot()));
-        if (getJDFDoc() != null)
-        {
-            getModel().buildModel((JDFTreeNode) root.getFirstChild());
-        }
-        getModel().addTreeModelListener(new MyTreeModelListener());
-        if(Editor.getIniFile().getAutoVal())
-            getModel().validate();
-        return getModel();
-    }
+ 
     
     /**
      * Finds a JDFTreeNode in the JDFTree.
@@ -348,7 +320,9 @@ ClipboardOwner
         File fileToSave=null;
         if(getJDFDoc()!=null)
         {
-            fileToSave=new File(getJDFDoc().getOriginalFileName());
+            final String originalFileName = getJDFDoc().getOriginalFileName();
+            if(originalFileName!=null)
+                fileToSave=new File(originalFileName);
         }
         else
         {
@@ -357,7 +331,7 @@ ClipboardOwner
                 fileToSave=new File(recentFile);
         }
         
-        final EditorFileChooser chooser = new EditorFileChooser(fileToSave,"xml jdf jmf",m_littleBundle);
+        final EditorFileChooser chooser = new EditorFileChooser(fileToSave,"xml jdf jmf mjm");
         final int answer = chooser.showOpenDialog(this);
         
         if (answer == JFileChooser.APPROVE_OPTION)
@@ -368,36 +342,23 @@ ClipboardOwner
     }
     
     
-    /**
-     * Called if a file is opened from the recent files menu.
-     * @param filePathToSave - Path to the file that is to be opened
-     */
-    private void openRecentFile(String filePathToSave)
-    {
-        getContentPane().setCursor(m_waitCursor);
-        File fileToSave = new File(filePathToSave);
-        EditorDocument d=readFile(fileToSave);
-        
-        if (d!=null)
-        {
-            final String s = fileToSave.getAbsolutePath();
-            
-            final INIReader m_iniFile = Editor.getIniFile();
-            if (m_iniFile.nrOfRecentFiles() != 1)
-                m_iniFile.updateOrder(s, true);
-        }
-        getContentPane().setCursor(m_readyCursor);
-    }    
+  
     
     /**
      * Reload the currently opened file.
      */
     public void refresh()
     {
-        if (getJDFDoc() != null)
+        final EditorDocument editorDoc = getEditorDoc();
+        if(editorDoc==null)
+            return;
+        if(editorDoc.getMimePackage()!=null)
+            return;
+        
+        if (editorDoc.getJDFDoc() != null)
         {
             final String originalFileName = getJDFDoc().getOriginalFileName();
-            setJDFDoc(null);
+            setJDFDoc(null,null);
             readFile(new File(originalFileName));
         }
     }
@@ -540,10 +501,17 @@ ClipboardOwner
      */
     void exportToDevCap()
     {
+        final JDFNode root = getJDFDoc().getJDFRoot();
+        if(root==null)
+        {
+            EditorUtils.errorBox("RootNotAJDFKey", getJDFDoc().getRoot().getNodeName());
+            return;
+        }
         try 
         {
-            final ExportDialog exportDialog = 
-                new ExportDialog(this, m_littleBundle, getJDFDoc().getJDFRoot());
+            
+            cleanupSelected(); // remove all defaults etc. so that the generated file remains reasonable
+            final ExportDialog exportDialog = new ExportDialog(root);
             
             File fileToOpen = exportDialog.getFileToOpen(); 
             if (fileToOpen != null) 
@@ -582,8 +550,7 @@ ClipboardOwner
                 }
                 else 
                 {
-                    final DeviceCapDialog testResult = 
-                        new DeviceCapDialog(this, m_littleBundle, (JDFNode) nodeRoot);
+                    final DeviceCapDialog testResult = new DeviceCapDialog((JDFNode) nodeRoot);
                     final XMLDoc bugReport = testResult.getBugReport();
                     final VElement executNodes = testResult.getExecutable();
                     
@@ -608,7 +575,7 @@ ClipboardOwner
         final String[] options = { m_littleBundle.getString("OkKey"), m_littleBundle.getString("CancelKey") };
         
         final INIReader m_iniFile = Editor.getIniFile();
-        PreferenceDialog pd = new PreferenceDialog(m_littleBundle);
+        PreferenceDialog pd = new PreferenceDialog();
         
         final int option = JOptionPane.showOptionDialog(this, pd, m_littleBundle.getString("PreferenceKey"),
                 JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
@@ -616,7 +583,8 @@ ClipboardOwner
         if (option == JOptionPane.OK_OPTION)
         {
             pd.writeToIni();
-            m_iniFile.writeINI(m_menuBar);
+            m_iniFile.writeINIFile();
+            JDFElement.setLongID(m_iniFile.getLongID());
             EditorDocument ed=getEditorDoc();
             if (ed != null &&  ed.getJDFTree()!=null){
                 ed.getJDFTree().repaint();
@@ -654,12 +622,12 @@ ClipboardOwner
     
     /**
      * Method readFile.
-     * @param m_fileToSave
+     * @param fts the file to read
+     * @return true if at least one file was read or selected
      */
-    public EditorDocument readFile(File fts)
+    public boolean readFile(File fts)
     {
-        EditorDocument eDoc=null;
-        JDFDoc jdfDoc=null;
+        EditorDocument eDoc[]=null;
         Runtime.getRuntime().gc(); // clean up before loading
         
         if (fts != null)
@@ -667,38 +635,27 @@ ClipboardOwner
             int docIndex=EditorDocument.indexOfFile(fts,m_VjdfDocument);
             if(docIndex>=0)
             {
-                eDoc=nextFile(docIndex);                
+                nextFile(docIndex);  
+                return true;
             }
             else if(fts.exists())
             {
-                try
+                eDoc=EditorUtils.getEditorDocuments(fts);
+                if(eDoc==null)
                 {
-                    jdfDoc=EditorUtils.parseFile(fts);
-                    if (jdfDoc!=null)
-                    {
-                        m_menuBar.updateRecentFilesMenu(fts.getAbsolutePath());
-                        setJDFDoc(jdfDoc);
-                        eDoc=getEditorDoc();
-                    }
-                    else
-                    {
-                        EditorUtils.errorBox("FileNotOpenKey",": "+fts.getName()+"!"); 
-                    }
-                    // refresh the v iew to the selected document
-                    refreshView(eDoc,null);
+                    EditorUtils.errorBox("FileNotOpenKey",": "+fts.getName()+"!"); 
                 }
-                catch (Exception e)
-                {                    
-                    e.printStackTrace();
-                    EditorUtils.errorBox("FileNotOpenKey",": "+fts.getName()+"!\n"+e.getMessage()); 
+                else
+                {
+                    m_menuBar.updateRecentFilesMenu(fts.getAbsolutePath());
+                    for(int i=0;i<eDoc.length;i++)
+                    {
+                        refreshView(eDoc[i],null);
+                    }
                 }
-            }
-            else
-            {
-                EditorUtils.errorBox("FileNotOpenKey",": "+fts.getName()+"!"); 
             }
         }
-        return eDoc;
+        return eDoc!=null;
     }
 
     /////////////////////////////////////////////////////////////
@@ -708,52 +665,70 @@ ClipboardOwner
         if(eDoc==null)
             return;
         if(path==null)
-            path=eDoc.getSelectionPath();
+            path=eDoc.getLastSelection();
         
-        JDFDoc jdfDoc=eDoc.getJDFDoc();
+        Editor.setCursor(1,null);
         try
         {            
             final INIReader m_iniFile = Editor.getIniFile();
             setEnableOpen(!m_iniFile.getReadOnly());
             
-            this.setCursor(m_waitCursor);
             m_treeArea.drawTreeView(eDoc);
-            m_topTabs.refreshView(jdfDoc);
+            m_topTabs.refreshView(eDoc);
             m_copyNode = null;
-            this.setTitle(getJDFDoc().getOriginalFileName());
+            this.setTitle(getWindowTitle());
             
             m_errorTabbedPane.refreshView(path);
-            eDoc.setSelectionPath(new TreePath(((JDFTreeNode) getRootNode().getFirstChild()).getPath()),false);
+//            eDoc.setSelectionPath(new TreePath(((JDFTreeNode) eDoc.getRootNode().getFirstChild()).getPath()),false);
             if(path!=null){
                 m_treeArea.goToPath(path);
                 updateViews(path);
             }
-            this.setCursor(m_readyCursor);
             this.toFront();
         }
         catch (Exception e)
         {
-            setJDFDoc(null);
+            setJDFDoc(null,null);
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, m_littleBundle.getString("FileNotOpenKey"), 
                     m_littleBundle.getString("ErrorMessKey"),
                     JOptionPane.ERROR_MESSAGE);
-            this.setCursor(m_readyCursor);
+        }
+        finally
+        {
+            Editor.setCursor(0,null);
         }
     }
     
     /**
+     * retrieves the display name for the currently displayed file
+     * @return
+     */
+    private String getWindowTitle()
+    {
+        EditorDocument ediDoc=getEditorDoc();
+        String title="CIP4 JDFEditor";
+        if(ediDoc==null)
+            return title;
+        title+=": "+ediDoc.getSaveFileName();
+        String packageName=ediDoc.getMimePackage();
+        if(packageName!=null)
+            title+=" ("+ediDoc.getOriginalFileName()+")";
+        return title;
+    }
+    /**
      * Method saveFile.
      * Save As-chooser
      */
-    public void saveFile()
+    public void saveAs()
     {
-        final JDFDoc jdfDoc = getJDFDoc();
-        if(jdfDoc==null)
+        final EditorDocument ediDoc = getEditorDoc();
+        if(ediDoc==null)
             return;
-        String fileName=jdfDoc.getOriginalFileName();
+       String fileName=ediDoc.getSaveFileName();
+         
         File fileToSave=new File(fileName);
-        final EditorFileChooser saveChooser = new EditorFileChooser(fileToSave,"xml jmf jdf",m_littleBundle);
+        final EditorFileChooser saveChooser = new EditorFileChooser(fileToSave,"xml jmf jdf mjm");
         final int answer = saveChooser.showSaveDialog(null);
         
         if (answer == JFileChooser.APPROVE_OPTION)
@@ -770,10 +745,8 @@ ClipboardOwner
             }
             if(newAnswer==JOptionPane.YES_OPTION)
             {
-                jdfDoc.write2File(file.getAbsolutePath(), 2, false);
-                jdfDoc.setOriginalFileName(file.getAbsolutePath());
-                jdfDoc.clearDirtyIDs();
-                this.setTitle(file.getName());
+                ediDoc.saveFile(file);
+                this.setTitle(getWindowTitle());
                 m_menuBar.updateRecentFilesMenu(fileToSave.toString());
             }
         }
@@ -823,42 +796,27 @@ ClipboardOwner
     /**
      * Method saveFileQuestion.
      * ask if the user wants to save an unsaved file before closing
+     * @param nMax maximum number of saves
+     * 
      * @return int
      */
     public int saveFileQuestion()
     {
         int save = JOptionPane.YES_OPTION;
-        if (getJDFDoc() != null)
+        final INIReader m_iniFile = Editor.getIniFile();
+        final EditorDocument doc = getEditorDoc();
+        if (doc != null)
         {
-            final INIReader m_iniFile = Editor.getIniFile();
-            if (!m_iniFile.getReadOnly())
+            if (!m_iniFile.getReadOnly()|| !fileIsEdited())
             {
-                String originalFileName = getJDFDoc().getOriginalFileName();
+                String originalFileName = doc.getOriginalFileName();
                 if(originalFileName==null)
                     originalFileName="Untitled";
-                if (fileIsEdited())
-                {
-                    if (originalFileName != null)
-                    {
-                        final String question = m_littleBundle.getString("SaveQuestionKey")
-                        + "\n" + '"' + originalFileName + '"';
-                        save = JOptionPane.showConfirmDialog(this, question, "",
-                                JOptionPane.YES_NO_CANCEL_OPTION);
-                        
-                        if (save == JOptionPane.YES_OPTION)
-                        {
-                            if (originalFileName.startsWith("Untitled"))
-                                saveFile();
-                            
-                            else
-                            {
-                                XMLstrm.xmlIndent(2, true);
-                                getJDFDoc().write2File(null, 2, false);
-                                getJDFDoc().clearDirtyIDs();
-                            }
-                        }
-                    }
-                }
+
+                final String question = m_littleBundle.getString("SaveQuestionKey")
+                + "\n" + '"' + originalFileName + '"';
+                save = JOptionPane.showConfirmDialog(this, question, "",
+                        JOptionPane.YES_NO_CANCEL_OPTION);
             }
         }
         return save;
@@ -875,14 +833,12 @@ ClipboardOwner
         {
             final JDFDoc jdfDoc = new JDFDoc("JDF");
             final JDFNode jdfRoot = jdfDoc.getJDFRoot();
-            jdfRoot.init();
             jdfRoot.setType("Product",true);
-            setJDFDoc(jdfDoc);
-           
+            setJDFDoc(jdfDoc, null);
             
             m_treeArea.drawTreeView(getEditorDoc());
-            setTitle("Untitled.jdf");
             jdfDoc.setOriginalFileName("Untitled.jdf");
+            setTitle(getWindowTitle());
              
         }
         catch (Exception s)
@@ -912,10 +868,10 @@ ClipboardOwner
                 jmfRoot.setAttribute((String)requiredAttributes.elementAt(i), "New Value", null);
             }
             
-            setJDFDoc(jdfDoc);
+            setJDFDoc(jdfDoc, null);
             m_treeArea.drawTreeView(getEditorDoc());
-            setTitle("Untitled.jmf");
             jdfDoc.setOriginalFileName("Untitled.jmf");
+            setTitle(getWindowTitle());
  
         }
         catch (Exception s)
@@ -928,43 +884,75 @@ ClipboardOwner
     /**
      * Close the current file.
      */
-    private void closeFile()
+    public int closeFile(int nMax)
     {
-        int save = 0;
-        if(getJDFDoc()==null)
-            return;
-        if (fileIsEdited())
-            save = saveFileQuestion();
-        
-        if (save != JOptionPane.CANCEL_OPTION)
+        int save=0;
+        int n=0;
+        EditorDocument doc = getEditorDoc();
+        while(doc!=null)
         {
+            if(n++>=nMax)
+                break;
+
             final INIReader m_iniFile=Editor.getIniFile();
-            final String originalFileName = getJDFDoc().getOriginalFileName();
-            if (!originalFileName.startsWith("Untitled"))
+            if (fileIsEdited() && !m_iniFile.getReadOnly() )
             {
-                m_iniFile.writeINI(m_menuBar);
-                m_menuBar.updateRecentFilesMenu(originalFileName);
-            }
-            int iDoc=setJDFDoc(null);
-            if(iDoc>=0){
-                refreshView(getEditorDoc(),null);
+                save = saveFileQuestion();
             }
             else
             {
-                
-                final JTextArea textArea = new JTextArea();
-                textArea.setEditable(false);
-                new DropTarget(textArea, this);
-                
-                if (!m_iniFile.getReadOnly())
-                    setEnableClose(false);
-                
-                m_treeArea.m_treeView.setView(textArea);
-                clearViews();
-                m_topTabs.setSelectedIndex(m_topTabs.m_IO_INDEX);
-                setTitle("CIP4 JDF Editor");
+                save=JOptionPane.NO_OPTION;
+            }
+
+            if (save != JOptionPane.CANCEL_OPTION)
+            {
+                String originalFileName = doc.getOriginalFileName();
+                if (originalFileName!=null && !originalFileName.startsWith("Untitled"))
+                {
+                    m_iniFile.writeINIFile();
+                    m_menuBar.updateRecentFilesMenu(originalFileName);
+                }
+                if (save == JOptionPane.YES_OPTION)
+                {
+                    if (originalFileName.startsWith("Untitled"))
+                    {
+                        saveAs();
+                    }
+                    else
+                    {
+                        doc.saveFile(null);
+                    }
+                }
+                else // no button or clean - just close
+                {
+                    setJDFDoc(null, null);
+                }            
+           }
+            else // cancel button
+            {
+                break;
+            }
+            doc = getEditorDoc();
+            if(doc!=null)
+            {
+                refreshView(doc,null);
+            }
+            else
+            {
+                  final JTextArea textArea = new JTextArea();
+                  textArea.setEditable(false);
+                  new DropTarget(textArea, this);
+  
+                  if (!m_iniFile.getReadOnly())
+                      setEnableClose(false);
+  
+                  m_treeArea.m_treeView.setView(textArea);
+                  clearViews();
+                  m_topTabs.setSelectedIndex(m_topTabs.m_IO_INDEX);
             }
         }
+        setTitle(getWindowTitle());
+        return save;
     }
     /**
      * Asks if the user wants to create a new JDF or JMF file.
@@ -1072,7 +1060,53 @@ ClipboardOwner
                     m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+    /**
+     * fixes the version of a JDF by calling fixVersion for the selected JDF node ore
+     * the closest JDF parent.
+     *
+     */
+    public void cleanupSelected()
+    {
+        JDFDoc doc=getJDFDoc();
+        if(doc==null)
+            return;
+        
+        try 
+        {
+             
+            // find the closest selectd JDF or JMF element and fix it
+            final TreePath path = m_treeArea.getSelectionPath();
+            final KElement element = EditorUtils.getElement(path);
+            if(element!=null)
+            {
+                JDFNode n1=(JDFNode)element.getDeepParent(ElementName.JDF,0);
+                
+                if(n1!=null)
+                {
+                    n1.eraseUnlinkedResources();
+                    n1.eraseDefaultAttributes(true);
+                    n1.eraseEmptyAttributes(true);
+                    n1.eraseEmptyNodes(true);
+                }
+                else
+                {
+                    element.eraseDefaultAttributes(true);
+                    element.eraseEmptyAttributes(true);
+                    element.eraseEmptyNodes(true);
+                    
+                }
+            }
+            refreshView(getEditorDoc(),path);           
+        }
+        catch (Exception e) 
+        {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, 
+                    m_littleBundle.getString("FixVersionErrorKey") + e.getClass() + " \n"
+                    +(e.getMessage()!=null ? ("\"" + e.getMessage() + "\""): ""), 
+                    m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+        }
+    }   
     /**
      * Creates the SearchDialog.
      * @param searchComponent - Where to perform the search?
@@ -1096,31 +1130,41 @@ ClipboardOwner
      */
     public void actionPerformed(ActionEvent e)
     {
+        Editor.setCursor(1,null);
         final INIReader m_iniFile=Editor.getIniFile();
         File fileToSave=null;
         
-        if(getJDFDoc()!=null)
-            fileToSave=new File(getJDFDoc().getOriginalFileName());
+        final EditorDocument doc = getEditorDoc();
+        if(doc!=null)
+        {
+            final String originalFileName = doc.getSaveFileName();
+            if(originalFileName!=null)
+                fileToSave=new File(originalFileName);
+        }
         
         final Object eSrc = e.getSource();
         if (eSrc == m_buttonBar.m_saveButton || eSrc == m_menuBar.m_saveItem)
         {
-            setCursor(m_waitCursor);
-            if (getTitle().equalsIgnoreCase("Untitled.jdf") || getTitle().equalsIgnoreCase("Untitled.jmf"))
+            if(fileToSave!=null)
             {
-                saveFile();
-                m_menuBar.updateRecentFilesMenu(fileToSave.toString());
+                if (getTitle().equalsIgnoreCase("Untitled.jdf") || getTitle().equalsIgnoreCase("Untitled.jmf"))
+                {
+                    saveAs();
+                    m_menuBar.updateRecentFilesMenu(fileToSave.toString());
+                }
+                else
+                {
+                    doc.saveFile(fileToSave);
+                }
             }
             else
             {
-                getJDFDoc().write2File(fileToSave.getAbsolutePath(), 2, false);
-                getJDFDoc().clearDirtyIDs();
+                   EditorUtils.errorBox("FileNotFoundKey", null);
             }
         }
-        else if (eSrc == m_menuBar.m_saveAsItem)
+        else if (eSrc == m_menuBar.m_saveAsItem )
         {
-            saveFile();
-            m_menuBar.updateRecentFilesMenu(fileToSave.toString());
+            saveAs();
         }
         else if (eSrc == m_menuBar.m_exportItem)
         {
@@ -1128,9 +1172,8 @@ ClipboardOwner
         }
         else if (eSrc == m_menuBar.m_quitItem)
         {
-            m_iniFile.writeINI(m_menuBar);
-            
-            if (saveFileQuestion() != JOptionPane.CANCEL_OPTION)
+            m_iniFile.writeINIFile();
+            if (closeFile(9999) != JOptionPane.CANCEL_OPTION)
                 System.exit(0);
         }
         else if (eSrc == m_menuBar.m_aboutItem)
@@ -1167,7 +1210,7 @@ ClipboardOwner
                     Editor.getEditorName()+"\n"
                     + Editor.getEditorBuildDate()
                     + "\nJDF 1.3 compatible version\n" 
-                    + "Schema JDF_1.3.xsd preRelease Candidate\n"
+                    + "Schema JDF_1.3.xsd\n"
                     + "Build version " + Editor.getEditorVersion(),
                     "Version", JOptionPane.INFORMATION_MESSAGE);
         }
@@ -1183,7 +1226,6 @@ ClipboardOwner
         {
             if (fileToSave != null) 
             {
-                setCursor(m_waitCursor);
                 getModel().validate();
             }
         }
@@ -1209,7 +1251,7 @@ ClipboardOwner
                     && !((JDFTreeNode) selectionPath.getLastPathComponent()).hasForeignNS()
                     && ((JDFTreeNode) selectionPath.getLastPathComponent())
                     != (JDFTreeNode) getRootNode().getFirstChild())
-                m_topTabs.goUpOneLevelInProcessView();
+                m_topTabs.m_pArea.goUpOneLevelInProcessView();
         }
         
         else if (eSrc == m_buttonBar.m_printButton)
@@ -1218,53 +1260,19 @@ ClipboardOwner
         }
         else if (eSrc == m_buttonBar.m_zoomInButton)
         {
-            m_topTabs.zoom('+');
+            m_topTabs.m_pArea.zoom('+');
         }
         else if (eSrc == m_buttonBar.m_zoomOutButton)
         {
-            m_topTabs.zoom('-');
+            m_topTabs.m_pArea.zoom('-');
         }
         else if (eSrc == m_buttonBar.m_zoomOrigButton)
         {
-            m_topTabs.zoom('o');
+            m_topTabs.m_pArea.zoom('o');
         }
         else if (eSrc == m_buttonBar.m_zoomBestButton)
         {
-            m_topTabs.zoom('b');
-        }
-        else if (eSrc == m_menuBar.m_closeItem)
-        {
-            closeFile();
-        }
-        // open the most recent file
-        else if (eSrc == m_menuBar.m_subMenuItem[0])
-        {
-            final String newFile = m_menuBar.m_subMenuItem[0].getText();
-            openRecentFile(newFile);
-        }
-        // open number two in recent files menu
-        else if (eSrc == m_menuBar.m_subMenuItem[1])
-        {
-            final String newFile = m_menuBar.m_subMenuItem[1].getText();
-            openRecentFile(newFile);
-        }
-        // open number three in recent files menu
-        else if (eSrc == m_menuBar.m_subMenuItem[2])
-        {
-            final String newFile = m_menuBar.m_subMenuItem[2].getText();
-            openRecentFile(newFile);
-        }
-        // open number four in recent files menu
-        else if (eSrc == m_menuBar.m_subMenuItem[3])
-        {
-            final String newFile = m_menuBar.m_subMenuItem[3].getText();
-            openRecentFile(newFile);
-        }
-        // open the last file in recent files menu
-        else if (eSrc == m_menuBar.m_subMenuItem[4])
-        {
-            final String newFile = m_menuBar.m_subMenuItem[4].getText();
-            openRecentFile(newFile);
+            m_topTabs.m_pArea.zoom('b');
         }
         
         else if (eSrc == m_menuBar.m_spawnItem)
@@ -1299,11 +1307,11 @@ ClipboardOwner
         }
         else if (!m_iniFile.getReadOnly())
         {
-            if (eSrc == m_buttonBar.m_cutButton || eSrc == m_menuBar.m_cutPopupItem || eSrc == m_menuBar.m_cutItem)
+            if (eSrc == m_buttonBar.m_cutButton || eSrc == m_menuBar.m_cutItem)
             {
                 cutSelectedNode();
             }
-            else if (eSrc == m_buttonBar.m_copyButton || eSrc == m_menuBar.m_copyPopupItem || eSrc == m_menuBar.m_copyItem)
+            else if (eSrc == m_buttonBar.m_copyButton || eSrc == m_menuBar.m_copyItem)
             {
                 copySelectedNode();
             }
@@ -1311,89 +1319,64 @@ ClipboardOwner
             {
                 pasteCopiedNode();
             }
-            else if (eSrc == m_menuBar.m_insertElemBeforeItem || eSrc == m_menuBar.m_insertElemBeforePopupItem)
+            else if (eSrc == m_menuBar.m_insertElemBeforeItem)
             {
-                m_treeArea.insertElementBeforeSelectedNode();    
+                m_treeArea.insertElementAtSelectedNode(-1);    
             }
-            else if (eSrc == m_menuBar.m_insertElemAfterItem || eSrc == m_menuBar.m_insertElemAfterPopupItem)
+            else if (eSrc == m_menuBar.m_insertElemAfterItem )
             {
-                insertElementAfterSelectedNode();
+                m_treeArea.insertElementAtSelectedNode(1);
             }
-            else if (eSrc == m_menuBar.m_insertElemIntoItem || eSrc == m_menuBar.m_insertElemIntoPopupItem)
+            else if (eSrc == m_menuBar.m_insertElemIntoItem )
             {
-                insertElementIntoSelectedNode();
+                m_treeArea.insertElementAtSelectedNode(0);
             }
-            else if (eSrc == m_menuBar.m_insertInResItem || eSrc == m_menuBar.m_insertInResPopupItem)
+            else if (eSrc == m_menuBar.m_insertInResItem)
             {
                 m_treeArea.insertResourceWithLink(true, true);
             }
-            else if (eSrc == m_menuBar.m_insertOutResItem || eSrc == m_menuBar.m_insertOutResPopupItem)
+            else if (eSrc == m_menuBar.m_insertOutResItem)
             {
                 m_treeArea.insertResourceWithLink(true, false);
             }
-            else if (eSrc == m_menuBar.m_insertResPopupItem || eSrc == m_menuBar.m_insertResItem)
+            else if (eSrc == m_menuBar.m_insertResItem)
             {
                 m_treeArea.insertResourceWithLink(false, false);
             }
-            else if (eSrc == m_menuBar.m_insertInResLinkItem || eSrc == m_menuBar.m_insertInResLinkPopupItem)
+            else if (eSrc == m_menuBar.m_insertInResLinkItem)
             {
-                m_treeArea.insertResourceLink(true);
+                m_treeArea.insertResourceLink(EnumUsage.Input);
             }
-            else if (eSrc == m_menuBar.m_insertOutResLinkItem || eSrc == m_menuBar.m_insertOutResLinkPopupItem)
+            else if (eSrc == m_menuBar.m_insertOutResLinkItem)
             {
-                m_treeArea.insertResourceLink(false);
+                m_treeArea.insertResourceLink(EnumUsage.Output);
             }
-            else if (eSrc == m_menuBar.m_insertAttrItem || eSrc == m_menuBar.m_insertAttrPopupItem)
+            else if (eSrc == m_menuBar.m_insertAttrItem)
             {
                 m_treeArea.insertAttrItem();
             }
-            else if (eSrc == m_menuBar.m_deleteItem || eSrc == m_menuBar.m_deletePopupItem)
-            {
-                m_treeArea.deleteSelectedNode();
-            }
-            else if (eSrc == m_menuBar.m_renamePopupItem || eSrc == m_menuBar.m_renameItem)
+            else if (eSrc == m_menuBar.m_renameItem)
             {
                 renameSelectedNode();
             }
-            else if (eSrc == m_menuBar.m_modifyAttrValuePopupItem || eSrc == m_menuBar.m_modifyAttrValueItem)
+            else if (eSrc == m_menuBar.m_modifyAttrValueItem)
             {
                 m_treeArea.modifyAttribute();
             }
-            else if (eSrc == m_menuBar.m_requiredAttrItem || eSrc == m_menuBar.m_requiredAttrPopupItem)
+            else if (eSrc == m_menuBar.m_requiredAttrItem)
             {
                 addRequiredAttrsToSelectedNode();
             }
-            else if (eSrc == m_menuBar.m_requiredElemItem || eSrc == m_menuBar.m_requiredElemPopupItem)
+            else if (eSrc == m_menuBar.m_requiredElemItem)
             {
                 addRequiredElemsToSelectedNode();
-            }
-            else if (eSrc == m_menuBar.m_xpandPopupItem)
-            {
-                m_treeArea.xpand(null);
-            }
-            else if (eSrc == m_menuBar.m_collapsePopupItem)
-            {
-                m_treeArea.collapse(null); 
-            }
-            else if (eSrc == m_menuBar.m_copyToClipBoardPopupItem)
-            {
-                copyToClipBoard(m_treeArea.getSelectionPath()); 
             }
             else if (eSrc == m_buttonBar.m_refreshButton)
             {
                 refresh();
             }
         }
-        // select
-        if (m_menuBar.m_Windows!=null)
-        {
-            for(int i=0;i<m_menuBar.m_Windows.length;i++)
-            {
-                if(eSrc==m_menuBar.m_Windows[i])
-                    nextFile(i);
-            }
-        }
-        setCursor(m_readyCursor);
+        Editor.setCursor(0,null);
     }
     
     ///////////////////////////////////////////////////////////////////
@@ -1412,7 +1395,7 @@ ClipboardOwner
         if(pos==m_DocPos)
             return ed; // nop
 
-        
+        m_menuBar.setWindowMenuItemColor(pos);
         m_DocPos=pos;
         ed=(EditorDocument) m_VjdfDocument.elementAt(m_DocPos);
         
@@ -1422,6 +1405,7 @@ ClipboardOwner
     
     public void updateViews(TreePath path)
     {
+        Editor.setCursor(1,null);
         m_treeArea.repaint();
         EditorDocument ed=getEditorDoc();
         if (path != null && ed!=null)
@@ -1429,18 +1413,16 @@ ClipboardOwner
             ed.getJDFTree().scrollPathToVisible(path);
             ed.getJDFTree().setSelectionPath(path);
         }
-        m_topTabs.m_inOutScrollPane.clearInOutView();
-        m_topTabs.m_inOutScrollPane.initInOutView();
-        this.setCursor(JDFFrame.m_readyCursor);
+        Editor.setCursor(0,null);
     }
     
     class CutItemEdit extends DeleteItemEdit
     {
         private static final long serialVersionUID = -2778264565816330000L;
         
-        public CutItemEdit(final JDFFrame parentFrame, final TreePath treePath)
+        public CutItemEdit(final TreePath treePath)
         {
-            super(parentFrame, treePath);
+            super(treePath);
         }
         
         public String getPresentationName() 
@@ -1452,17 +1434,26 @@ ClipboardOwner
     /**
      * renames selected node
      */
-    private void renameSelectedNode()
+    public void renameSelectedNode()
     {
         final TreePath path = m_treeArea.getSelectionPath();
         if (path != null)
         {
-            final String previousNodeName=((JDFTreeNode)path.getLastPathComponent()).getName();
-            final JDFTreeNode newTreeNode = getModel().renameElementsAndAttributes(path);
-            if (newTreeNode != null)
+            final JDFTreeNode lastPathComponent = (JDFTreeNode)path.getLastPathComponent();
+            final String previousNodeName=lastPathComponent.getName();
+            String previousNodeValue=null;
+            String newName=getModel().renameElementsAndAttributes(path);
+            if (newName != null)
             {
+                if(!lastPathComponent.isElement()&&!newName.equals(previousNodeName))
+                {
+                    KElement e=lastPathComponent.getElement();
+                    if(e.hasAttribute(newName))
+                        previousNodeValue=e.getAttribute(newName);
+                }
                 final RenameNodeEdit edit = 
-                    new RenameNodeEdit(this, path, newTreeNode, previousNodeName);
+                    new RenameNodeEdit(path, lastPathComponent, newName,previousNodeValue);
+                edit.redo();
                 undoSupport.postEdit( edit );
             }
             else 
@@ -1484,20 +1475,17 @@ ClipboardOwner
         final TreePath path = m_treeArea.getSelectionPath();
         if (path != null)
         {
-            m_copyNode = new JDFTreeCopyNode((JDFTreeNode) path.getLastPathComponent(),this);
-            
-            final CutItemEdit edit = new CutItemEdit(this, path);
+            m_copyNode = new JDFTreeCopyNode((JDFTreeNode) path.getLastPathComponent(),false);
+
+            final CutItemEdit edit = new CutItemEdit(path);
             undoSupport.postEdit( edit );
-            
-            m_menuBar.m_pasteItem.setEnabled(true);
-            m_buttonBar.m_pasteButton.setEnabled(true);
         }
     }
-    
+
     /**
      * adds required elements to selected Node
      */
-    private void addRequiredElemsToSelectedNode() 
+    public void addRequiredElemsToSelectedNode() 
     {
         final TreePath path = m_treeArea.getSelectionPath();
         if (path != null) 
@@ -1517,7 +1505,7 @@ ClipboardOwner
             if (addedVector.size()>0)
             {
                 final AddRequiredElemEdit edit = 
-                    new AddRequiredElemEdit(this, path, intoNode, addedVector);
+                    new AddRequiredElemEdit(path, intoNode, addedVector);
                 undoSupport.postEdit( edit );
             }
             else
@@ -1531,7 +1519,7 @@ ClipboardOwner
     /**
      * adds required attributes to selected Node
      */
-    private void addRequiredAttrsToSelectedNode() 
+    public void addRequiredAttrsToSelectedNode() 
     {
         final TreePath path = m_treeArea.getSelectionPath();
         if (path != null) 
@@ -1551,7 +1539,7 @@ ClipboardOwner
             if (addedVector.size()>0)
             {
                 final AddRequiredAttrEdit edit = 
-                    new AddRequiredAttrEdit(this, path, intoNode, addedVector);
+                    new AddRequiredAttrEdit( path, intoNode, addedVector);
                 undoSupport.postEdit( edit );
             }
             else
@@ -1571,9 +1559,7 @@ ClipboardOwner
         final TreePath path = m_treeArea.getSelectionPath();
         if (path != null)
         {
-            m_copyNode = new JDFTreeCopyNode((JDFTreeNode) path.getLastPathComponent(),this);
-            m_menuBar.m_pasteItem.setEnabled(true);
-            m_buttonBar.m_pasteButton.setEnabled(true);
+            m_copyNode = new JDFTreeCopyNode((JDFTreeNode) path.getLastPathComponent(),true);
         }
     }
     
@@ -1586,82 +1572,18 @@ ClipboardOwner
         if (path != null && m_copyNode != null)
         {
             JDFTreeNode intoNode = (JDFTreeNode) path.getLastPathComponent();
-            KElement intoElement = intoNode.getElement();
-            
             final JDFTreeNode pasteNode = m_copyNode.pasteNode(path);
             if (pasteNode != null)
             {
-                final PasteItemEdit edit = new PasteItemEdit(this, path, intoNode, intoElement, pasteNode);
+                final PasteItemEdit edit = new PasteItemEdit(path, intoNode, pasteNode);
                 undoSupport.postEdit( edit );
             }
         }
     }
     
-    /**
-     * inserts element into selected node
-     */
-    private void insertElementIntoSelectedNode() 
-    {
-        final TreePath path = m_treeArea.getSelectionPath();
-        if (path != null)
-        {
-            final JDFTreeNode intoNode = (JDFTreeNode) path.getLastPathComponent();            
-            JDFTreeNode newNode = getModel().insertElementInto(intoNode);         
-            if (newNode != null)
-            {
-                final InsertElementEdit edit =
-                    new InsertElementEdit(this, null, newNode,"Insert Into");
-                undoSupport.postEdit( edit );
-            }
-        }
-    }
+ 
     
-    
-    /**
-     * inserts element after selected node
-     */
-    private void insertElementAfterSelectedNode() 
-    {
-        final TreePath path = m_treeArea.getSelectionPath();
-        if (path != null)
-        {
-            final JDFTreeNode afterNode = (JDFTreeNode) path.getLastPathComponent();
-            final JDFTreeNode nextSiblingNode = (JDFTreeNode) afterNode.getNextSibling();
-            
-            final JDFTreeNode newNode = getModel().insertElementAfter(path);
-            if (newNode != null)
-            {
-                final InsertElementEdit edit = new InsertElementEdit(this, nextSiblingNode,  newNode,"Insert Element after");
-                undoSupport.postEdit( edit );
-            }
-            updateViews(new TreePath(newNode.getPath()));
-        }
-    }
-    
-    /**
-     * copies the content of the marked node to the system clip board 
-     * @param p - The TreePath to collapse
-     */
-    private void copyToClipBoard(TreePath p)
-    {
-        final JDFTreeNode node = (JDFTreeNode) p.getLastPathComponent();
-        final Enumeration e = node.postorderEnumeration();
-        
-        while (e.hasMoreElements())
-        {
-            final JDFTreeNode treeNode = (JDFTreeNode) e.nextElement();
-            
-            if(treeNode.getUserObject()!=null && treeNode.isElement())
-            {    
-                final KElement elem = treeNode.getElement();
-                
-                //Copy XML representation of the selected node to clip board
-                final Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
-                final StringSelection contents = new StringSelection(elem.toXML());
-                cb.setContents(contents, null);
-            }    
-        }
-    }
+
     
     /**
      * Creates the m_dialog for Input of XPath.
@@ -1769,11 +1691,11 @@ ClipboardOwner
      */
     boolean fileIsEdited()
     {
-        if (getJDFDoc() != null)
+        final JDFDoc doc = getJDFDoc();
+        if (doc != null)
         {
-            VString v = getJDFDoc().getDirtyIDs();            
-            if (v != null && !v.isEmpty())
-                return true;
+            KElement e=doc.getRoot();
+            return e.isDirty();
         }        
         return false;
     }
@@ -1789,11 +1711,9 @@ ClipboardOwner
             if (m_treeArea.getSelectionPath() != null)
             {
                 final JDFTreeNode node = (JDFTreeNode) m_treeArea.getSelectionPath().getLastPathComponent();
-                KElement elem = null;
-                
                 if (node.isElement())
                 {
-                    elem = node.getElement();
+                    KElement elem = node.getElement();
                     
                     if (elem instanceof JDFNode)
                     {
@@ -1803,34 +1723,41 @@ ClipboardOwner
                     {
                         m_menuBar.setSpawnMergeEnabled(false);
                     }
+                    m_menuBar.m_pasteItem.setEnabled(m_copyNode!=null);
+                    m_buttonBar.m_pasteButton.setEnabled(m_copyNode!=null);
+
                 }
                 else 
                 {
                     m_menuBar.setSpawnMergeEnabled(false);
+                    m_menuBar.m_pasteItem.setEnabled(false);
+                    m_buttonBar.m_pasteButton.setEnabled(false);
                 }
                 
                 final int selIndex = m_topTabs.getSelectedIndex();
-                
-//              m_errorTabbedPane.createList(node);
                 
                 final INIReader m_iniFile=Editor.getIniFile();
                 if (!m_iniFile.getReadOnly())
                 {
                     m_menuBar.setEnabledInMenu(m_treeArea.getSelectionPath());
                 }
-                m_topTabs.setSelectedIndex(selIndex);
-                m_topTabs.showComment();
                 
-                if (selIndex == m_topTabs.m_IO_INDEX || selIndex == m_topTabs.m_COM_INDEX)
+                if (selIndex == m_topTabs.m_IO_INDEX)
                 {
                     if (!m_topTabs.isEnabledAt(m_topTabs.m_COM_INDEX))
                     {
                         m_topTabs.m_inOutScrollPane.clearInOutView();
-                        m_topTabs.m_inOutScrollPane.initInOutView();
+                        m_topTabs.m_inOutScrollPane.initInOutView(null);
                     }
                 }
-                else if (selIndex == m_topTabs.m_PROC_INDEX && elem != null)
-                    m_topTabs.initProcessView();
+                else if(selIndex == m_topTabs.m_COM_INDEX)
+                {
+                    m_topTabs.showComment();                    
+                }
+                else if (selIndex == m_topTabs.m_PROC_INDEX)
+                {
+                    m_topTabs.m_pArea.initProcessView();
+                }
             }
         }
     }
@@ -1860,41 +1787,7 @@ ClipboardOwner
             redoAction.updateRedoState();
         }
     }
-    ////////////////////////////////////////////////////////////////////////////////
-    
-    class MyTreeModelListener implements TreeModelListener
-    {
-        public void treeNodesChanged(TreeModelEvent event)
-        {
-            JDFTreeNode node;
-            node = (JDFTreeNode) (event.getTreePath().getLastPathComponent());
-            
-            try
-            {
-                final int index = event.getChildIndices()[0];
-                node = (JDFTreeNode) (node.getChildAt(index));
-            }
-            catch (NullPointerException e)
-            {
-                //
-            }
-        }
-        public void treeNodesInserted(TreeModelEvent event)
-        {
-            event.getClass();
-            //TODO implement
-        }
-        public void treeNodesRemoved(TreeModelEvent event)
-        {
-            event.getClass();
-            //TODO implement
-        }
-        public void treeStructureChanged(TreeModelEvent event)
-        {
-            event.getClass();
-            //TODO implement
-        }
-    }  
+
     
     class UndoAction extends AbstractAction 
     {
@@ -1908,7 +1801,7 @@ ClipboardOwner
             } 
             catch (CannotUndoException ex) 
             {
-                System.out.println("Unable to undo: " + ex);
+                EditorUtils.errorBox("UnableUndo", ex.getMessage());
                 ex.printStackTrace();
             }
             updateUndoState();
@@ -1968,7 +1861,7 @@ ClipboardOwner
                 m_buttonBar.m_validateButton.setEnabled(false);
             
             final INIReader m_iniFile=Editor.getIniFile();
-            m_iniFile.writeINI(m_menuBar);
+            m_iniFile.writeINIFile();
         }
     }
     
@@ -2081,8 +1974,7 @@ ClipboardOwner
     public JDFTreeNode getRootNode()
     {
         EditorDocument ed = getEditorDoc();
-        JDFTreeModel mod = ed==null ? null : ed.getModel();
-        return mod==null ? null : mod.getRootNode();
+        return ed==null ? null : ed.getRootNode();
     }
     
     /**
@@ -2090,7 +1982,7 @@ ClipboardOwner
      * @param doc
      * @return the index in the list of docs that doc is stored in
      */
-    public int setJDFDoc(JDFDoc doc)
+    public int setJDFDoc(JDFDoc doc, String mimePackage)
     {       
         int i=m_DocPos;
         if(doc!=null){
@@ -2102,8 +1994,11 @@ ClipboardOwner
             }
             else
             {
-                m_VjdfDocument.add(new EditorDocument(doc));
+                m_VjdfDocument.add(new EditorDocument(doc, mimePackage));
                 m_DocPos=m_VjdfDocument.size()-1;
+                // make sur that we have a global dirty policy in force
+                doc.getCreateXMLDocUserData().setDirtyPolicy(EnumDirtyPolicy.Doc);
+
             }
         } // doc==null --> remove this entry
         else if (m_DocPos>=0 && m_DocPos<m_VjdfDocument.size())
@@ -2151,6 +2046,6 @@ ClipboardOwner
         return ed==null ? null : ed.getModel();
     }
 
-    ////////////////////////////////////////////////////////////////
+     ////////////////////////////////////////////////////////////////
     
 }

@@ -23,6 +23,7 @@ import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.resource.JDFResource;
+import org.cip4.jdflib.util.JDFMerge;
 
 /*
  * MergeDialog.java
@@ -80,8 +81,7 @@ public class MergeDialog extends JPanel implements ActionListener
                 boolean successful=true;
                 try
                 {
-                    jdfRoot.mergeJDF(spawnedIDRoot, idFile.toURI().toString(),
-                            JDFNode.EnumCleanUpMerge.None, JDFResource.EnumAmountMerge.None);
+                    new JDFMerge(jdfRoot).mergeJDF(spawnedIDRoot, idFile.toURI().toString(), JDFNode.EnumCleanUpMerge.None, JDFResource.EnumAmountMerge.None);
                 }
                 catch (JDFException ex)
                 {
@@ -217,7 +217,7 @@ public class MergeDialog extends JPanel implements ActionListener
     {
         if (e.getSource() == browse)
         {
-            final EditorFileChooser files = new EditorFileChooser(file,"xml jdf",littleBundle);
+            final EditorFileChooser files = new EditorFileChooser(file,"xml jdf");
             final int option = files.showOpenDialog(parFrame);
             
             if (option == JFileChooser.APPROVE_OPTION)

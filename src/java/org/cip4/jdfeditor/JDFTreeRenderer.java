@@ -76,6 +76,7 @@ import java.awt.Font;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
+import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFComment;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.node.JDFNode;
@@ -103,7 +104,7 @@ public class JDFTreeRenderer extends DefaultTreeCellRenderer
         final INIReader iniFile=Editor.getIniFile();
         
         highlightFN = iniFile.getHighlight();
-        standardFont=new Font("Verdana", Font.PLAIN, iniFile.getFontSize());
+        standardFont=new Font(iniFile.getFontName(), Font.PLAIN, iniFile.getFontSize());
     }
     
     public Component getTreeCellRendererComponent(
@@ -124,7 +125,7 @@ public class JDFTreeRenderer extends DefaultTreeCellRenderer
         if(value instanceof JDFTreeNode)
         {
             treeNode=(JDFTreeNode)value;
-            s=(treeNode).toDisplayString();
+            s=treeNode.toDisplayString();
             toolString=s;
             if (treeNode.isElement()){
                 KElement e=treeNode.getElement();
@@ -133,6 +134,10 @@ public class JDFTreeRenderer extends DefaultTreeCellRenderer
                     JDFComment c = (JDFComment) e;
                     toolString=c.getText();
                 }
+                String descName=e.getAttribute(AttributeName.DESCRIPTIVENAME,null,null);
+                if(descName!=null && toolString!=null)
+                    toolString+="\n"+descName;
+                
             }
             
             JDFTreeModel mod=(JDFTreeModel) jdfTree.getModel();

@@ -1,4 +1,3 @@
-package org.cip4.jdfeditor;
 /*
  *
  * The CIP4 Software License, Version 1.0
@@ -69,6 +68,7 @@ package org.cip4.jdfeditor;
  *  
  * 
  */
+package org.cip4.jdfeditor;
 
 import javax.swing.tree.TreePath;
 import javax.swing.undo.CannotRedoException;
@@ -88,9 +88,9 @@ public class InsertAttrEdit extends EditorUndoableEdit
     private JDFTreeNode attrNode;
     private int pos;
     
-    public InsertAttrEdit(final JDFFrame parentFrame, final TreePath treePath, final JDFTreeNode newAttrNode) 
+    public InsertAttrEdit(final TreePath treePath, final JDFTreeNode newAttrNode) 
     {
-         super(parentFrame);
+         super();
          path = treePath;
          attrNode = newAttrNode;         
          intoNode = (JDFTreeNode) path.getLastPathComponent();
@@ -98,22 +98,22 @@ public class InsertAttrEdit extends EditorUndoableEdit
              intoNode = (JDFTreeNode) path.getParentPath().getLastPathComponent();
 
          pos = intoNode.getIndex(attrNode);
-         parFrame.updateViews(path);
+         Editor.getFrame().updateViews(path);
     }
 
     public void undo() throws CannotUndoException 
     { 
          TreePath attrPath=new TreePath(attrNode.getPath());
-         parFrame.getModel().deleteItem(attrPath);
-         parFrame.updateViews(path);
+         Editor.getModel().deleteItem(attrPath);
+         Editor.getFrame().updateViews(path);
          super.undo();
     }
 
     public void redo() throws CannotRedoException 
     {
-        parFrame.getModel().insertInto(attrNode, intoNode, pos);
+        Editor.getModel().insertInto(attrNode, intoNode, pos);
         intoNode.getElement().setAttributeNode(attrNode.getAttr());
-        parFrame.updateViews(path);
+        Editor.getFrame().updateViews(path);
         super.redo();
     }
 

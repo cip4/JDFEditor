@@ -89,6 +89,7 @@ import javax.swing.JTextField;
 import org.cip4.jdflib.core.JDFConstants;
 import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.node.JDFNode;
+import org.cip4.jdflib.util.JDFSpawn;
 
 /**
  * spawnDialog.java
@@ -158,13 +159,13 @@ public class SpawnDialog extends JPanel implements ActionListener
                 {
                     if (spawnInformative)
                     {
-                    	spawnedPartJDF = selectedJDF.spawnInformative(originalFile.toURI().toString(), newPartFile.toURI().toString(),
-                                null, false, true, true, true);
+                    	final JDFSpawn _spawn=new JDFSpawn(selectedJDF);
+                        spawnedPartJDF = _spawn.spawnInformative(originalFile.toURI().toString(), newPartFile.toURI().toString(), null, false, true, true, true);
                     }
                     else 
                     {
-	                	spawnedPartJDF = selectedJDF.spawn(originalFile.toURI().toString(), newPartFile.toURI().toString(),
-	                        null, null, false, true, true, true);
+	                	final JDFSpawn spawn=new JDFSpawn(selectedJDF);
+                        spawnedPartJDF = spawn.spawn(originalFile.toURI().toString(),newPartFile.toURI().toString(),null,null,false,true,true,true);
                     }
                     spawnedPartJDF.eraseEmptyNodes(true);
                     final XMLDoc outDoc_part1 = spawnedPartJDF.getOwnerDocument_KElement();
@@ -310,7 +311,7 @@ public class SpawnDialog extends JPanel implements ActionListener
                     newPartFile                   : 
                     newRootFile;
             
-            final EditorFileChooser files = new EditorFileChooser(file,"xml jdf",littleBundle);
+            final EditorFileChooser files = new EditorFileChooser(file,"xml jdf");
             final int option = files.showOpenDialog(parFrame);
             
             if (option == JFileChooser.APPROVE_OPTION)

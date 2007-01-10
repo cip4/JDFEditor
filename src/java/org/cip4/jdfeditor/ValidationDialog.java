@@ -180,7 +180,6 @@ public class ValidationDialog extends JPanel implements ActionListener
                 littleBundle.getString("ValidationLevelKey")));
                 
         final Vector allowedValues = StringUtil.getNamesVector(EnumValidationLevel.class);
-        allowedValues.removeElementAt(0);
         chooseValidLevel = new JComboBox(allowedValues);
         chooseValidLevel.setSelectedItem(validationLevel.getName());
         chooseValidLevel.addActionListener(this);
@@ -259,7 +258,7 @@ public class ValidationDialog extends JPanel implements ActionListener
         }
         else if (source == schemaBrowse)
         {
-            final EditorFileChooser files = new EditorFileChooser(schemaFile,"xsd",littleBundle);
+            final EditorFileChooser files = new EditorFileChooser(schemaFile,"xsd");
             final int option = files.showOpenDialog(parFrame);
             
             if (option == JFileChooser.APPROVE_OPTION)

@@ -109,11 +109,10 @@ public class SchemaScrollPane extends ValidationScrollPane
         KElement repRoot= bugReport.getRoot();
         if(!repRoot.getLocalName().equals("SchemaValidationOutput"))
             repRoot.getChildByTagName("SchemaValidationOutput",null,0,null,false,true);
-        if(repRoot==null)
-            return;
+
         m_checkRoot = new SchemaOutputWrapper(repRoot);
         m_reportTree = new JTree(m_checkRoot);
-        m_reportTree.setModel(new JDFTreeModel(m_frame,m_checkRoot,false));
+        m_reportTree.setModel(new JDFTreeModel(m_checkRoot,false));
         m_reportTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         m_reportTree.setExpandsSelectedPaths(true);
         m_reportTree.setEditable(false);
@@ -121,10 +120,7 @@ public class SchemaScrollPane extends ValidationScrollPane
         
         DCOutputWrapper bugReportRoot = null;
         
-        if (bugReport!=null) 
-        {            
-            setSchemaOutputTree(m_checkRoot);            
-        }
+        setSchemaOutputTree(m_checkRoot);            
         if (bugReportRoot != null)
         {
             m_reportTree.expandPath(new TreePath(bugReportRoot.getPath()));

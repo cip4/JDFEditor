@@ -69,20 +69,17 @@ package org.cip4.jdfeditor;
  */
 
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
 
-import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFRefElement;
 import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.node.JDFNode;
-import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.resource.devicecapability.JDFAbstractState;
-import org.cip4.jdflib.resource.devicecapability.JDFAction;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCap;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCaps;
-import org.cip4.jdflib.resource.devicecapability.JDFTest;
 import org.w3c.dom.Attr;
 
 /**
@@ -142,10 +139,10 @@ public class JDFTreeNode extends DefaultMutableTreeNode
         if(!(o instanceof JDFTreeNode))
             return false;
         JDFTreeNode to=(JDFTreeNode)o;
-        if(getUserObject()==null)
+        if(userObject==null)
             return to.getUserObject()==null;
                 
-        return getUserObject().equals(to.getUserObject());            
+        return userObject.equals(to.getUserObject());            
     }
     
     /**
@@ -211,9 +208,9 @@ public class JDFTreeNode extends DefaultMutableTreeNode
         if(element==null)
             return null;
         if(this.isElement())
-            return element.buildXPath();
+            return element.buildXPath(null);
         
-        return element.buildXPath()+"/@"+getName();
+        return element.buildXPath(null)+"/@"+getName();
     }
     
     /**
@@ -308,11 +305,12 @@ public class JDFTreeNode extends DefaultMutableTreeNode
         if(o instanceof Attr)
         {
             Attr a=(Attr) o;
-            s = a.getNodeName()+"=\""+a.getNodeValue()+"\"";        }
+            s = a.getNodeName()+"=\""+a.getNodeValue()+"\"";        
+        }
         else //element
         {
             KElement e=(KElement)o;
-            s=e.getLocalName();
+            s=e.getNodeName();
             if (e instanceof JDFRefElement)
             {
                 final String ref=e.getAttribute("rRef",null,null);
@@ -335,19 +333,6 @@ public class JDFTreeNode extends DefaultMutableTreeNode
                 }
                 s+=") : "+ref;   
             }
-            else if((e instanceof JDFResource) || (e instanceof JDFNode) || (e instanceof JDFAction)|| (e instanceof JDFTest))
-            {
-                final String id=e.getAttribute("ID",null,null);
-                if(id!=null)
-                {
-                    s+=": "+id;
-                }
-                final String descName=e.getAttribute(AttributeName.DESCRIPTIVENAME,null,null);
-                if(descName!=null)
-                {
-                    s+=", "+descName;
-                }
-            }
             else if((e instanceof JDFDevCap) || (e instanceof JDFDevCaps) || (e instanceof JDFAbstractState))
             {
                 final String nam=e.getAttribute("Name",null,null);
@@ -356,7 +341,14 @@ public class JDFTreeNode extends DefaultMutableTreeNode
                     s+=": "+nam;
                 }
             }
-        }        
+            
+            // always add id and descname
+            final String id=e.getAttribute("ID",null,null);
+            if(id!=null)
+            {
+                s+=", "+id;
+            }
+         }        
         return s;
     }
     
@@ -367,7 +359,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
         final KElement element = getElement();
         if(element instanceof JDFNode){
             JDFNode n=(JDFNode)element;
-            return n.buildXPath();
+            return n.buildXPath(null);
         }
         return element.getAttribute("XPath");
     }
@@ -391,6 +383,17 @@ public class JDFTreeNode extends DefaultMutableTreeNode
                 strValue+=postFix;
         }
         return strValue;   
+    }
+
+    /**
+     * get the index of a TreeNode, -1 if null
+     * @see javax.swing.tree.DefaultMutableTreeNode#getIndex(javax.swing.tree.TreeNode)
+     */
+    public int getIndex(TreeNode arg0)
+    {
+        if(arg0==null)
+            return -1;
+        return super.getIndex(arg0);
     }
     
     ///////////////////////////////////////////////////////////////////////

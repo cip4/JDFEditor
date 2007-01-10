@@ -1,4 +1,3 @@
-package org.cip4.jdfeditor;
 /*
  *
  * The CIP4 Software License, Version 1.0
@@ -69,6 +68,7 @@ package org.cip4.jdfeditor;
  *  
  * 
  */
+package org.cip4.jdfeditor;
 
 import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotRedoException;
@@ -83,13 +83,12 @@ public abstract class EditorUndoableEdit extends AbstractUndoableEdit
 {
     private static final long serialVersionUID = -2778264567776334345L;
     
-    protected JDFFrame parFrame;
     protected boolean canUndo = true;
     protected boolean canRedo = false;
     
-    public EditorUndoableEdit(final JDFFrame parentFrame) 
+ 
+    public EditorUndoableEdit() 
     {
-         parFrame = parentFrame;
          canUndo=true;
          canRedo=false;
     }

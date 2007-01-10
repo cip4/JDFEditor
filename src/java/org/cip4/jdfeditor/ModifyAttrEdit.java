@@ -1,4 +1,3 @@
-package org.cip4.jdfeditor;
 /*
  *
  * The CIP4 Software License, Version 1.0
@@ -69,6 +68,8 @@ package org.cip4.jdfeditor;
  *  
  * 
  */
+package org.cip4.jdfeditor;
+
 import javax.swing.tree.TreePath;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
@@ -88,14 +89,13 @@ public class ModifyAttrEdit extends EditorUndoableEdit
     private JDFTreeNode attrNode;
     private String previousValue;
     
-    public ModifyAttrEdit(final JDFFrame parentFrame, final TreePath treePath,
-                               JDFTreeNode _attrNode, String previousVal ) 
+    public ModifyAttrEdit(final TreePath treePath,JDFTreeNode _attrNode, String previousVal ) 
     {
-        super(parentFrame);
+        super();
         path = treePath;
         previousValue=previousVal;       
         attrNode = _attrNode;        
-        parFrame.updateViews(path);
+        Editor.getFrame().updateViews(path);
         canUndo=canRedo=true;
     }
 
@@ -105,7 +105,7 @@ public class ModifyAttrEdit extends EditorUndoableEdit
         String keep=atr.getNodeValue();
         atr.setNodeValue(previousValue);
         previousValue=keep;
-        parFrame.updateViews(path);
+        Editor.getFrame().updateViews(path);
     }
 
     public void redo() throws CannotRedoException 

@@ -1,4 +1,3 @@
-package org.cip4.jdfeditor;
 /*
  *
  * The CIP4 Software License, Version 1.0
@@ -69,6 +68,8 @@ package org.cip4.jdfeditor;
  *  
  * 
  */
+package org.cip4.jdfeditor;
+ 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.io.ByteArrayOutputStream;
@@ -93,8 +94,6 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.JDFConstants;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
@@ -131,7 +130,6 @@ public class SendToDevice extends JPanel
     private JRadioButton rbMIME;
 //  private JButton browse;
     
-    private final static Log log = LogFactory.getLog(SendToDevice.class);
     
     public SendToDevice()
     {
@@ -218,7 +216,6 @@ public class SendToDevice extends JPanel
     public boolean sendJMFJDFmime(URL url){
         
         boolean bSendTrue = false;
-        log.debug("sendJDF as JMF to device: " + url);
         if (url != null){
             try{
                 // create a JMF message
@@ -273,12 +270,10 @@ public class SendToDevice extends JPanel
                 bSendTrue =  send(url, mMessage);
             }
             catch (Exception e){
-                log.fatal(e);
                 EditorUtils.errorBox("ErrorSendDevice",null);
                 return false;
             }
         }
-        log.debug("bSendTrue: " + bSendTrue);
         return bSendTrue;
     }
     /**
@@ -290,12 +285,9 @@ public class SendToDevice extends JPanel
      * @return
      */
     
-    public boolean sendJMFJDF(URL url){
-        
-        boolean bSendTrue = false;
-        
-        log.debug("sendJDF as JMF to device: " + url);
-        
+    public boolean sendJMFJDF(URL url)
+    {
+        boolean bSendTrue = false;        
         if (url != null){
             try{
                 final JDFDoc jmfDoc=new JDFDoc("JMF");
@@ -308,13 +300,12 @@ public class SendToDevice extends JPanel
                 eQsp.setURL(Editor.getEditorDoc().getOriginalFileName());
                 bSendTrue =  send(url, jaj.toXML());
             }
-            catch (Exception e){
-                log.fatal(e);
+            catch (Exception e)
+            {
                 EditorUtils.errorBox("ErrorSendDevice",null);
                 return false;
             }
         }
-        log.debug("bSendTrue: " + bSendTrue);
         return bSendTrue;
     }
     
@@ -337,14 +328,10 @@ public class SendToDevice extends JPanel
             
             // replace the MIME type by the CIP4 MIME type
             sMessage = sMessage.replaceAll(JDFConstants.MIME_TEXTXML,JDFConstants.MIME_JMF);
-            log.debug("message to be sent: " +sMessage);
-            
             // send changed message
             send(url, sMessage);
-            
         }
         catch (Exception e){
-            log.fatal(e);
             EditorUtils.errorBox("ErrorSendDevice",null);
             return false;
         }
@@ -363,7 +350,6 @@ public class SendToDevice extends JPanel
      */
     static boolean send(URL url, String sMessage)
     {
-        log.debug("send MIME message");
         try    {
             HttpURLConnection httpURLconnection = (HttpURLConnection) url.openConnection();
             httpURLconnection.setRequestMethod("POST");
@@ -379,9 +365,7 @@ public class SendToDevice extends JPanel
                         
             out.write(sMessage.getBytes());
             String s=new String(sMessage.getBytes());
-            
-            log.debug(out);
-            
+//TODO fix sending            
             out.flush();
             out.close();
             
@@ -389,7 +373,6 @@ public class SendToDevice extends JPanel
         }
         catch (Exception e){
             EditorUtils.errorBox("ErrorSendDevice",null);
-            log.fatal(e);
             return false;
         }
         return true;

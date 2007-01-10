@@ -106,6 +106,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
     JButton m_zoomOrigButton;
     JButton m_zoomBestButton;
     JButton m_refreshButton;
+    JButton m_closeButton;
     HashSet m_allButtons;
     
     private ResourceBundle m_littleBundle;
@@ -188,7 +189,10 @@ public class EditorButtonBar extends JToolBar implements ActionListener
         m_zoomBestButton = createDefaultButton(imgZoomBest,m_littleBundle.getString("ZoomFitKey"),false,'|');
         
         addSeparator(d);
-        
+        final ImageIcon imgClose = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "CloseButton.gif");
+        m_closeButton = createDefaultButton(imgClose,m_littleBundle.getString("CloseKey"),true,'|');
+        addSeparator(d);
+              
         add(Box.createHorizontalGlue());
         SwingUtilities.updateComponentTreeUI(this);
     }
@@ -253,6 +257,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
     public void setEnableOpen(boolean mode)
     {
         m_newButton.setEnabled(mode);
+        m_closeButton.setEnabled(mode);
         m_saveButton.setEnabled(mode);
         m_cutButton.setEnabled(mode);
         m_copyButton.setEnabled(mode);
@@ -264,7 +269,8 @@ public class EditorButtonBar extends JToolBar implements ActionListener
         
         m_validateButton.setEnabled(true);
         m_printButton.setEnabled(true);
-        m_refreshButton.setEnabled(true);
+        EditorDocument eDoc=Editor.getEditorDoc();
+        m_refreshButton.setEnabled(eDoc==null ? true : eDoc.getMimePackage()==null);
     }
     
 ///////////////////////////////////////////////////////////////
@@ -276,21 +282,20 @@ public class EditorButtonBar extends JToolBar implements ActionListener
     {
         
         final Object eSrc = e.getSource();
+        Editor.setCursor(1, null);
         if (eSrc == m_newButton)
         {
             m_frame.newFile();
         }
         else if (eSrc == m_openButton)
         {
-            setCursor(JDFFrame.m_waitCursor);
-            m_frame.openFile();
+             m_frame.openFile();
         }
         else if (eSrc == m_saveButton)
         {
-            setCursor(JDFFrame.m_waitCursor);
             if (m_frame.getTitle().equalsIgnoreCase("Untitled.jdf") || m_frame.getTitle().equalsIgnoreCase("Untitled.jmf"))
             {
-                m_frame.saveFile();
+                m_frame.saveAs();
             }
             else
             {
@@ -300,8 +305,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
         }
         else if (eSrc == m_validateButton && m_frame.getModel()!=null)
         {
-            setCursor(JDFFrame.m_waitCursor);
-            m_frame.getModel().validate();
+             m_frame.getModel().validate();
         }
         else if (eSrc == m_upOneLevelButton)
         {
@@ -311,7 +315,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
                     && !((JDFTreeNode) selectionPath.getLastPathComponent()).hasForeignNS()
                     && ((JDFTreeNode) selectionPath.getLastPathComponent())
                     != (JDFTreeNode) m_frame.getRootNode().getFirstChild())
-                m_frame.m_topTabs.goUpOneLevelInProcessView();
+                m_frame.m_topTabs.m_pArea.goUpOneLevelInProcessView();
         }
         
         else if (eSrc == m_NextButton)
@@ -328,19 +332,23 @@ public class EditorButtonBar extends JToolBar implements ActionListener
         }
         else if (eSrc == m_zoomInButton)
         {
-            m_frame.m_topTabs.zoom('+');
+            m_frame.m_topTabs.m_pArea.zoom('+');
         }
         else if (eSrc == m_zoomOutButton)
         {
-            m_frame.m_topTabs.zoom('-');
+            m_frame.m_topTabs.m_pArea.zoom('-');
         }
         else if (eSrc == m_zoomOrigButton)
         {
-            m_frame.m_topTabs.zoom('o');
+            m_frame.m_topTabs.m_pArea.zoom('o');
         }
         else if (eSrc == m_zoomBestButton)
         {
-             m_frame.m_topTabs.zoom('b');
+             m_frame.m_topTabs.m_pArea.zoom('b');
+        }
+        else if (eSrc == m_closeButton)
+        {
+            m_frame.closeFile(1);
         }
         else if (!Editor.getIniFile().getReadOnly())
         {
@@ -362,7 +370,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
             }
         }
         // always clean up!
-        setCursor(JDFFrame.m_readyCursor);
+        Editor.setCursor(0, null);
     }
     ///////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////

@@ -74,7 +74,6 @@ import java.util.zip.DataFormatException;
 
 import org.cip4.jdflib.auto.JDFAutoBasicPreflightTest.EnumListType;
 import org.cip4.jdflib.auto.JDFAutoDevCaps.EnumContext;
-import org.cip4.jdflib.auto.JDFAutoDevCaps.EnumLinkUsage;
 import org.cip4.jdflib.auto.JDFAutoDeviceCap.EnumCombinedMethod;
 import org.cip4.jdflib.auto.JDFAutoDeviceInfo.EnumDeviceStatus;
 import org.cip4.jdflib.core.AttributeName;
@@ -149,6 +148,7 @@ public class JDFDeviceCapGenerator
     {
         this.jdfRoot = jdfNode;
         this.genericAttributes = genAttr;
+        
         generateDeviceCapabilities();
     }
     
@@ -250,8 +250,7 @@ public class JDFDeviceCapGenerator
         for (int rl = 0; rl < size; rl++) 
         {
             final JDFResourceLink resLink = (JDFResourceLink) vResLinks.elementAt(rl);
-            final EnumUsage resLinkUsage = resLink.getUsage();
-            final EnumLinkUsage linkUsage = EnumLinkUsage.getEnum(resLinkUsage.getName());
+            final EnumUsage linkUsage = resLink.getUsage();
             final String processUsage=resLink.getProcessUsage();
             
             final JDFResource res = resLink.getTarget();
@@ -290,6 +289,7 @@ public class JDFDeviceCapGenerator
             {
                 devCaps = deviceCap.appendDevCaps();
                 devCaps.setName(resName);
+                devCaps.setDevNS(res.getNamespaceURI());
                 final String id = "DCs_" + resID; // Hier resID must exist, cause DevCaps describes resources in ResPool
                 devCaps.setID(id);
                 devCaps.setContext(EnumContext.Resource); // default
@@ -550,7 +550,9 @@ public class JDFDeviceCapGenerator
             {
                 st = (JDFAbstractState) dc.appendElement("StateBase");
             }
-            st.setName(span.getLocalName());
+            st.setName(span.getNodeName());
+            st.setDevNS(span.getNamespaceURI());
+
             final String sID = "S_" + Integer.toString(stID);
             st.setID(sID);
             stID++;
@@ -582,6 +584,9 @@ public class JDFDeviceCapGenerator
             
             if (!genericAttributes.contains(key))
             {
+                if(key.startsWith("xmlns") || key.equals("xsi:type"))
+                    continue;
+                
                 JDFAbstractState state;
                 final KElement stEl = dc.getChildWithAttribute(null, AttributeName.NAME,null,key, 0, true); 
                 
@@ -800,6 +805,9 @@ public class JDFDeviceCapGenerator
                     
                     
                     state.setName(key);
+                    state.setDevNS(parElem.getNamespaceURIFromPrefix(KElement.xmlnsPrefix(key)));
+
+                    state.setDescriptiveName("ToDo: Edit the various XXXValueList Attributes etc. to reflect the actual capabilities");
                     final String sID = "S_" + Integer.toString(stID);
                     state.setID(sID);
                     stID++;

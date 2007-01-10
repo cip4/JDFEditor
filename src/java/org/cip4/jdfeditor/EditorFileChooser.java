@@ -86,14 +86,15 @@ public class EditorFileChooser extends JFileChooser
 {
     private static final long serialVersionUID = 1835778964946902960L;
     
-    public EditorFileChooser(File arg0,String fileTypes,ResourceBundle littleBundle)
+    public EditorFileChooser(File arg0,String fileTypes)
     {
         super(arg0);
-        init(arg0,fileTypes,littleBundle);
+        init(arg0,fileTypes);
     }
     
-    private void init(File file, String fileTypes,ResourceBundle littleBundle)
+    private void init(File file, String fileTypes)
     {
+        ResourceBundle littleBundle=Editor.getBundle();
         setApproveButtonText(littleBundle.getString("OkKey"));
         setApproveButtonMnemonic('O');
         setDialogTitle(littleBundle.getString("BrowseKey"));

@@ -1,4 +1,3 @@
-package org.cip4.jdfeditor;
 /*
 *
 * The CIP4 Software License, Version 1.0
@@ -69,6 +68,9 @@ package org.cip4.jdfeditor;
 *  
 * 
 */
+package org.cip4.jdfeditor;
+
+
 import java.util.Vector;
 
 import javax.swing.tree.TreePath;
@@ -77,9 +79,6 @@ import javax.swing.undo.CannotUndoException;
 
 import org.cip4.jdflib.core.KElement;
 
-/*
- * Just another SVN test by Stefan Daun
-  */
 /*
  * AddRequiredElemEdit.java
  * @author Elena Skobchenko
@@ -93,16 +92,15 @@ public class AddRequiredElemEdit extends EditorUndoableEdit
     private JDFTreeNode intoNode;
     private Vector addedVector;
     
-    public AddRequiredElemEdit(final JDFFrame parentFrame, final TreePath treePath,
-    						   final JDFTreeNode _intoNode, final Vector _addedVector ) 
+    public AddRequiredElemEdit(final TreePath treePath,final JDFTreeNode _intoNode, final Vector _addedVector ) 
     {
-         super(parentFrame);
+         super();
          path = treePath;
                            
          this.intoNode = _intoNode;
          this.addedVector = _addedVector;
          canUndo=_addedVector.size()>0;                 
-         parFrame.updateViews(path);
+         Editor.getFrame().updateViews(path);
     }
 
     public void undo() throws CannotUndoException 
@@ -111,9 +109,9 @@ public class AddRequiredElemEdit extends EditorUndoableEdit
          {
          	JDFTreeNode elemNode = (JDFTreeNode) addedVector.elementAt(i);
          	TreePath elemPath = new TreePath(elemNode.getPath());
-         	parFrame.getModel().deleteItem(elemPath);
+         	Editor.getModel().deleteItem(elemPath);
          }
-         parFrame.updateViews(path);
+         Editor.getFrame().updateViews(path);
          super.undo();
     }
 
@@ -124,10 +122,10 @@ public class AddRequiredElemEdit extends EditorUndoableEdit
         {
         	JDFTreeNode elemNode = (JDFTreeNode) addedVector.elementAt(i);
         	KElement element = elemNode.getElement();
-        	parFrame.getModel().insertInto(elemNode, intoNode, -1);
+        	Editor.getModel().insertInto(elemNode, intoNode, -1);
         	intoElement.appendChild(element);
         }
-    	parFrame.updateViews(path);
+        Editor.getFrame().updateViews(path);
         super.redo();
     }
 

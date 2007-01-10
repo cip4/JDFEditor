@@ -71,8 +71,8 @@ package org.cip4.jdfeditor;
  */
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -122,13 +122,8 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     final private ImageIcon spaFlag = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "SpanishFlag.gif");
     final private ImageIcon japFlag = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "JapanFlag.gif");
 
-    JPanel gen;
-    JPanel lang;
-    JPanel lnf;
-    JPanel dir;
-    JPanel icon;
-    JPanel send;
-
+    protected JPanel[] panels;
+ 
     public boolean useSchema =false;
     private JCheckBox boxSchema = null;
     public File schemaFile=null;
@@ -138,9 +133,16 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     private JButton defaultIconButton;
     private JButton changeIconButton;
     private JButton applyLnFButton;
-    private JCheckBox readOnly;
-    private JCheckBox valOpen;
+    private JCheckBox boxReadOnly;
+    private JCheckBox boxRemDefault;
+    private JCheckBox boxDispDefault;
+    private JCheckBox boxLongID;
+    private JCheckBox boxRemWhite;
+    private JCheckBox boxCheckURL;
+    
+    private JCheckBox boxValOpen;
     private JComboBox boxFontSize;
+    private JComboBox boxFontName;
     private int fontSize;
     private JRadioButton swe;
     private JRadioButton eng;
@@ -153,26 +155,25 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     private String currLang;
     private String currIcon;
     private String currLNF;
+    public String fontName;
     private String currMethodSendToDevice;
+    private boolean currRemoveDefault;
+    private boolean currDispDefault;
+    private boolean currRemoveWhite;
     private boolean currValidate;
+    private boolean checkURL;
     private boolean currReadOnly;
-    protected Cursor readyCursor;
-    protected Cursor waitCursor;
-    private final int GEN_INDEX = 0;
-    private final int LANG_INDEX = 1;
-    private final int LNF_INDEX = 2;
-    private final int DIR_INDEX = 3;
-    private final int ICON_INDEX = 4;
-    private final int SEND_INDEX = 5;
+    private boolean longID;
+
     private final UIManager.LookAndFeelInfo aLnF[] = UIManager.getInstalledLookAndFeels();
     private ResourceBundle littleBundle;
     private String[] iconStrings;
 
         
-    public PreferenceDialog(ResourceBundle bundle)
+    public PreferenceDialog()
     {
         super();
-        this.littleBundle = bundle;
+        this.littleBundle = Editor.getBundle();
         init();
     }
     
@@ -184,6 +185,10 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     public boolean getAutoVal()
     {
         return this.currValidate;
+    }
+    public boolean getCheckURL()
+    {
+        return this.checkURL;
     }
     
     public String getLNF()
@@ -225,7 +230,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         final JDFFrame f = Editor.getFrame();
         final INIReader iniFile=Editor.getIniFile();
         iniFile.setLookAndFeel(currLNF);
-        iniFile.writeINI(f.m_menuBar);
+        iniFile.writeINIFile();
         f.applyLookAndFeel(this);
     }
     private void applyFontSize()
@@ -233,20 +238,29 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         String s=(String)boxFontSize.getSelectedItem();
         fontSize=Integer.parseInt(s);
     }
+    private void applyFontName()
+    {
+        fontName=(String)boxFontName.getSelectedItem();
+        if(fontName.equals("...Default"))
+            fontName=null;
+    }
     
     private void init()
     {
         final INIReader iniFile=Editor.getIniFile();
-        this.readyCursor = Cursor.getDefaultCursor();
-        this.waitCursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR);
         this.currLang = iniFile.getLanguage();
         this.currLNF = iniFile.getLookAndFeel();
         this.iconStrings = iniFile.getIconStrings();
         this.currValidate = iniFile.getAutoVal();
         this.currReadOnly = iniFile.getReadOnly();
         this.currMethodSendToDevice = iniFile.getMethodSendToDevice();
+        longID = iniFile.getLongID();
         useSchema=iniFile.getUseSchema(); 
         schemaFile=iniFile.getSchemaURL();
+        currRemoveDefault=iniFile.getRemoveDefault();
+        currRemoveWhite=iniFile.getRemoveWhite();
+        currDispDefault=iniFile.getDisplayDefault();
+        checkURL=iniFile.getCheckURL();
 
         
         this.setPreferredSize(new Dimension(390, 380));
@@ -257,37 +271,42 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     
     private void drawPane()
     {
-        this.setCursor(waitCursor);
+        Editor.setCursor(0,null);
                 
-        gen = createGeneralPref();
-        this.addTab(littleBundle.getString("GeneralKey"), null, gen, littleBundle.getString("GeneralKey"));
-        this.setComponentAt(GEN_INDEX, gen);
-        this.setSelectedIndex(GEN_INDEX);
+        panels=new JPanel[7];
+        int n=0;
         
-        lang = createLanguagePref();
-        this.addTab(littleBundle.getString("LanguageKey"), null, lang, littleBundle.getString("LanguageKey"));
-        this.setComponentAt(LANG_INDEX, lang);
+        JPanel gen = createGeneralPref();
+        prepareTab(n++, gen,"GeneralKey");
+        this.setSelectedIndex(0);
         
+        JPanel lang = createLanguagePref();
+        prepareTab(n++, lang,"LanguageKey");
 
-        lnf = createLnFPref();
-        this.addTab(littleBundle.getString("LookAndFeelKey"), null, lnf, littleBundle.getString("LookAndFeelKey"));
-        this.setComponentAt(LNF_INDEX, lnf);
-        
+        JPanel lnf = createLnFPref();
+        prepareTab(n++, lnf,"LookAndFeelKey");
 
-        dir = createDirPref();
-        this.addTab(littleBundle.getString("DirectoriesKey"), null, dir, littleBundle.getString("DirectoriesKey"));
-        this.setComponentAt(DIR_INDEX, dir);
-        
-        icon = createIconPref();
-        this.addTab(littleBundle.getString("IconsKey"), null, icon, littleBundle.getString("IconsKey"));
-        this.setComponentAt(ICON_INDEX, icon);
-        
-        //20040905 MRE added
-        send = createSendToDevicePref();
-        this.addTab(littleBundle.getString("SendToDeviceKey"), null, send, littleBundle.getString("SendToDeviceKey"));
-        this.setComponentAt(SEND_INDEX, send);
-        
-        this.setCursor(readyCursor);
+        JPanel dir = createDirPref();
+        prepareTab(n++, dir,"DirectoriesKey");
+
+        JPanel icon = createIconPref();
+        prepareTab(n++, icon,"IconsKey");
+
+        JPanel send = createSendToDevicePref();
+        prepareTab(n++, send,"SendToDeviceKey");
+ 
+        JPanel font = createFontPref();
+        prepareTab(n++, font,"FontOptionsKey");
+
+        Editor.setCursor(0,null);
+    }
+
+    private void prepareTab(int n, JPanel gen, String resKey)
+    {
+        final String resString = littleBundle.getString(resKey);
+        this.addTab(resString, null, gen, resString);
+        this.setComponentAt(n, gen);
+        panels[n]=gen;
     }
     
     JPanel createGeneralPref()
@@ -303,21 +322,56 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         genPanel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("GeneralOptionsKey")));
         
         int y = 30;
-        readOnly = new JCheckBox(littleBundle.getString("OpenReadOnlyKey"), currReadOnly);
-        Dimension d = readOnly.getPreferredSize();
-        readOnly.setBounds(10, y, d.width, d.height);
-        readOnly.addActionListener(this);
-        genPanel.add(readOnly);        
+        boxReadOnly = new JCheckBox(littleBundle.getString("OpenReadOnlyKey"), currReadOnly);
+        Dimension d = boxReadOnly.getPreferredSize();
+        boxReadOnly.setBounds(10, y, d.width, d.height);
+        boxReadOnly.addActionListener(this);
+        genPanel.add(boxReadOnly);        
         
-        y += d.height + 10;
-        valOpen = new JCheckBox(littleBundle.getString("OpenAutoValKey"), currValidate);
-        d = valOpen.getPreferredSize();
-        valOpen.setBounds(10, y, d.width, d.height);
-        valOpen.addActionListener(this);
-        genPanel.add(valOpen);
+        y += d.height + 3;
+        boxValOpen = new JCheckBox(littleBundle.getString("OpenAutoValKey"), currValidate);
+        d = boxValOpen.getPreferredSize();
+        boxValOpen.setBounds(10, y, d.width, d.height);
+        boxValOpen.addActionListener(this);
+        genPanel.add(boxValOpen);
 
+        y += d.height + 3;
+        boxDispDefault = new JCheckBox(littleBundle.getString("DisplayDefaultsKey"), currDispDefault);
+        d = boxDispDefault.getPreferredSize();
+        boxDispDefault.setBounds(10, y, d.width, d.height);
+        boxDispDefault.addActionListener(this);
+        genPanel.add(boxDispDefault);
+
+        y += d.height + 3;
+        boxRemDefault = new JCheckBox(littleBundle.getString("SaveRemoveDefaultsKey"), currRemoveDefault);
+        d = boxRemDefault.getPreferredSize();
+        boxRemDefault.setBounds(10, y, d.width, d.height);
+        boxRemDefault.addActionListener(this);
+        genPanel.add(boxRemDefault);
+
+        y += d.height + 3;
+        boxRemWhite = new JCheckBox(littleBundle.getString("SaveRemoveWhiteKey"), currRemoveWhite);
+        d = boxRemWhite.getPreferredSize();
+        boxRemWhite.setBounds(10, y, d.width, d.height);
+        boxRemWhite.addActionListener(this);
+        genPanel.add(boxRemWhite);
+        
+        y += d.height + 3;
+        boxCheckURL = new JCheckBox(littleBundle.getString("CheckURLKey"), checkURL);
+        d = boxCheckURL.getPreferredSize();
+        boxCheckURL.setBounds(10, y, d.width, d.height);
+        boxCheckURL.addActionListener(this);
+        genPanel.add(boxCheckURL);
+        
+        y += d.height + 3;
+        boxLongID = new JCheckBox(littleBundle.getString("LongIDKey"), longID);
+        d = boxLongID.getPreferredSize();
+        boxLongID.setBounds(10, y, d.width, d.height);
+        boxLongID.addActionListener(this);
+        genPanel.add(boxLongID);
+        
        
-        y += d.height + 10;
+        y += d.height + 3;
         boxSchema = new JCheckBox(littleBundle.getString("UseSchemaKey"), useSchema);
         boxSchema.addActionListener(this);
         d = boxSchema.getPreferredSize();
@@ -329,7 +383,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
             schemaPath.setText(schemaFile.getAbsolutePath());
 
         d = schemaPath.getPreferredSize();
-        y += d.height + 10;
+        y += d.height + 9;
         schemaPath.setBounds(10, y, d.width, d.height);
         genPanel.add(schemaPath);
         
@@ -337,26 +391,43 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         schemaBrowse.setPreferredSize(new Dimension(85,22));
         schemaBrowse.addActionListener(this);
         d = schemaBrowse.getPreferredSize();
-        y += d.height + 10;
+        y += d.height + 9;
         schemaBrowse.setBounds(10, y, d.width, d.height);
         genPanel.add(schemaBrowse);
         setVisible(true);
-  
-                
+
+        main.add(genPanel, BorderLayout.CENTER);
+        
+        return main;
+    }
+ 
+    JPanel createFontPref()
+    {
+        final JPanel main = new JPanel(new BorderLayout());
+        
+        main.add(Box.createVerticalStrut(5), BorderLayout.SOUTH);
+        main.add(Box.createHorizontalStrut(5), BorderLayout.EAST);
+        main.add(Box.createHorizontalStrut(5), BorderLayout.WEST);
+        main.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
+        
+        final JPanel genPanel = new JPanel(null);
+        genPanel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("FontOptionsKey")));
+        
+        int y = 30;
+                  
         Vector sizes=new Vector();
         sizes.add("10");
         sizes.add("12");
         sizes.add("14");
         
-        y += d.height + 10;
         JLabel fl=new JLabel();
         fl.setText(littleBundle.getString("FontSizeKey"));
-        d=fl.getPreferredSize();
+        Dimension d=fl.getPreferredSize();
         fl.setBounds(10,y,d.width,d.height);
         genPanel.add(fl);
         
         fontSize=Editor.getIniFile().getFontSize();
-        y += d.height + 10;
+        y += d.height + 9;
         boxFontSize = new JComboBox(sizes);
         boxFontSize.setSelectedItem(String.valueOf(fontSize));
         d = boxFontSize.getPreferredSize();
@@ -364,11 +435,34 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         boxFontSize.addActionListener(this);
         genPanel.add(boxFontSize);
         
+        y += d.height + 9;
+        JLabel fnl=new JLabel();
+        fnl.setText(littleBundle.getString("FontNameKey"));
+        d=fnl.getPreferredSize();
+        fnl.setBounds(10,y,d.width,d.height);
+        genPanel.add(fnl);
+        
+        fontName=Editor.getIniFile().getFontName();
+        y += d.height + 9;
+        String[] allFontNames_ = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+        String[] allFontNames=new String[allFontNames_.length+1];
+        allFontNames[0]="...Default";
+        for(int i=0;i<allFontNames_.length;i++)
+            allFontNames[i+1]=allFontNames_[i];
+        
+        boxFontName = new JComboBox(allFontNames);
+        
+        if(fontName!=null)
+            boxFontName.setSelectedItem(fontName);
+        d = boxFontName.getPreferredSize();
+        boxFontName.setBounds(10, y, d.width, d.height);
+        boxFontName.addActionListener(this);
+        genPanel.add(boxFontName);
+        
         main.add(genPanel, BorderLayout.CENTER);
         
         return main;
     }
-    
     /**
      * draw the flags etc. for the language preferences
      * @return
@@ -681,7 +775,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
             {
                 iconStrings[i] = iconName + "=default";
                 iniFile.setIconStrings(iconStrings);
-                iniFile.writeINI(Editor.getFrame().m_menuBar);
+                iniFile.writeINIFile();
                 iniFile.setIcons();
                 setPic(iconName);
                 break;
@@ -782,7 +876,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
                     {
                         iconStrings[i] = s + "=" + path;
                         iniFile.setIconStrings(iconStrings);
-                        iniFile.writeINI(Editor.getFrame().m_menuBar);
+                        iniFile.writeINIFile();
                         iniFile.setIcons();
                         setPic(s);
                         break;
@@ -869,41 +963,11 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         public void mouseClicked(MouseEvent e)
         {
             e.getID(); // fool compiler;
-            if (getSelectedIndex() == GEN_INDEX)
+            final int selectedIndex = getSelectedIndex();
+            if(selectedIndex>=0 && selectedIndex<panels.length)
             {
-                setCursor(waitCursor);
-                setComponentAt(GEN_INDEX, gen);
+                setComponentAt(selectedIndex, panels[selectedIndex]);
             }
-            
-            else if(getSelectedIndex() == LANG_INDEX)
-            {
-                setCursor(waitCursor);
-                setComponentAt(LANG_INDEX, lang);
-            }
-            
-            else if(getSelectedIndex() == LNF_INDEX)
-            {
-                setCursor(waitCursor);
-                setComponentAt(LNF_INDEX, lnf);
-            }
-            
-            else if(getSelectedIndex() == DIR_INDEX)
-            {
-                setCursor(waitCursor);
-                setComponentAt(DIR_INDEX, dir);
-            }
-            
-            else if(getSelectedIndex() == ICON_INDEX)
-            {
-                setCursor(waitCursor);
-                setComponentAt(ICON_INDEX, icon);
-            }
-            else if(getSelectedIndex() == SEND_INDEX)
-            {
-                setCursor(waitCursor);
-                setComponentAt(SEND_INDEX, send);
-            }
-            setCursor(readyCursor);
         }
     }
 
@@ -924,11 +988,29 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         else if (source == boxFontSize)
             applyFontSize();
         
-        else if (source == readOnly)
-            currReadOnly = readOnly.isSelected();
+        else if (source == boxFontName)
+            applyFontName();
         
-        else if (source == valOpen)
-            currValidate = valOpen.isSelected();
+        else if (source == boxReadOnly)
+            currReadOnly = boxReadOnly.isSelected();
+        
+        else if (source == boxValOpen)
+            currValidate = boxValOpen.isSelected();
+
+        else if (source == boxCheckURL)
+            checkURL = boxCheckURL.isSelected();
+        
+        else if (source == boxDispDefault)
+            currDispDefault = boxDispDefault.isSelected();
+
+        else if (source == boxRemDefault)
+            currRemoveDefault = boxRemDefault.isSelected();
+        
+        else if (source == boxRemWhite)
+            currRemoveWhite = boxRemWhite.isSelected();
+        
+        else if (source == boxLongID)
+            longID = boxLongID.isSelected();
         
         else if (source == boxSchema)
         {
@@ -936,7 +1018,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         }
         else if (source == schemaBrowse)
         {
-            final EditorFileChooser files = new EditorFileChooser(schemaFile,"xsd",littleBundle);
+            final EditorFileChooser files = new EditorFileChooser(schemaFile,"xsd");
             final int option = files.showOpenDialog(this);
             
             if (option == JFileChooser.APPROVE_OPTION)
@@ -983,6 +1065,11 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         iniFile.setIconStrings(getIconStrings());
         iniFile.setMethodSendToDevice(getMethodSendToDevice());
         iniFile.setLookAndFeel(getLNF());
-        
+        iniFile.setFontName(fontName);
+        iniFile.setRemoveDefault(currRemoveDefault);
+        iniFile.setDisplayDefault(currDispDefault);
+        iniFile.setRemoveWhite(currRemoveWhite);
+        iniFile.setCheckURL(checkURL);
+        iniFile.setLongID(longID);        
     }
 }

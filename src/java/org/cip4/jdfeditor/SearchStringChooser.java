@@ -48,7 +48,7 @@ public class SearchStringChooser extends JPanel implements ActionListener
      */
     public void init()
     {
-        final JLabel label = new JLabel(littleBundle.getString("FindWhatKey"));
+        final JLabel label = new JLabel(littleBundle.getString("FindKey"));
         add(label);
         
         textField = new JTextField();
