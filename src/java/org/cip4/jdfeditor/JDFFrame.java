@@ -1245,13 +1245,7 @@ ClipboardOwner
         }
         else if (eSrc == m_buttonBar.m_upOneLevelButton)
         {
-            final TreePath selectionPath = m_treeArea.getSelectionPath();
-            if (selectionPath != null
-                    && ((JDFTreeNode) selectionPath.getLastPathComponent()).isElement()
-                    && !((JDFTreeNode) selectionPath.getLastPathComponent()).hasForeignNS()
-                    && ((JDFTreeNode) selectionPath.getLastPathComponent())
-                    != (JDFTreeNode) getRootNode().getFirstChild())
-                m_topTabs.m_pArea.goUpOneLevelInProcessView();
+            m_topTabs.m_pArea.goUpOneLevelInProcessView();
         }
         
         else if (eSrc == m_buttonBar.m_printButton)

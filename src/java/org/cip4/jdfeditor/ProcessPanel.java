@@ -85,7 +85,10 @@ public class ProcessPanel extends JPanel
     public void paintComponent(Graphics g)
     {        
         super.paintComponent(g);
-        double zoom=Editor.getEditorDoc().getZoom();
+        final EditorDocument editorDoc = Editor.getEditorDoc();
+        if(editorDoc==null)
+            return;
+        double zoom=editorDoc.getZoom();
         ((Graphics2D) g).scale(zoom, zoom);
         
         paintParent(g);
@@ -139,21 +142,11 @@ public class ProcessPanel extends JPanel
         final int partSize = vParts.size();
         for(int selTop=0;selTop<2;selTop++)
         {
-             for (int i = 0; i < partSize; i++)
+            g2.setColor(selTop==0 ? Color.black : Color.red);
+
+            for (int i = 0; i < partSize; i++)
             {
                 final ProcessPart part = (ProcessPart) vParts.get(i);
-                if(part.isSelected && selTop==1)
-                {
-                    g2.setColor(Color.red);
-                }
-                else if(!part.isSelected && selTop==0)
-                {
-                    g2.setColor(Color.black);
-                }
-                else
-                {
-                    continue; // nop in this round will be painted or was painted in previous
-                }
                 for(int k=0;k<2;k++)
                 {
                     final Vector v=k==0 ? part.getvInRes() :  part.getvOutRes();
@@ -167,17 +160,16 @@ public class ProcessPanel extends JPanel
                         for(int j=0;j<size;j++)
                         {
                             ProcessPart inPart=(ProcessPart)v.elementAt(j);
-                            if(!part.isSelected)
+                            if(part.isSelected || inPart.isSelected )
                             {
-                                if(inPart.isSelected )
-                                {
-                                    g2.setColor(Color.red);
-                                }
-                                else 
-                                {
-                                    g2.setColor(Color.black);
-                                }   
+                                if(selTop==0)
+                                    continue;
                             }
+                            else 
+                            {
+                                if(selTop==1)
+                                    continue;
+                            }   
                             final Point p2= k==0 ? inPart.getRightPoint() : inPart.getLeftPoint();
                             paintArrowLine(g2, k==0 ? p2 : p1, k==0 ? p1 : p2);
                         }
@@ -337,6 +329,8 @@ public class ProcessPanel extends JPanel
     public void zoom(char c)
     {
         final EditorDocument editorDoc = Editor.getEditorDoc();
+        if(editorDoc==null)
+            return;
         double zoom=editorDoc.getZoom();
         Dimension d=calcSize();
         if (c == '+')
@@ -376,11 +370,10 @@ public class ProcessPanel extends JPanel
      */
     public void goUpOneLevelInProcessView()
     {
+        if(parentPart==null)
+            return;
 
-        KElement kElement = ((JDFTreeNode) Editor.getFrame().m_treeArea.getSelectionPath()
-                .getLastPathComponent()).getElement();
-
-        kElement=JDFElement.getParentJDF(kElement);
+        KElement kElement=JDFElement.getParentJDF(parentPart.getElem());
         drawNewRoot(kElement);
     }
 
@@ -417,10 +410,6 @@ public class ProcessPanel extends JPanel
         }
         
         m_frame.m_buttonBar.m_upOneLevelButton.setEnabled(!element.equals(((JDFTreeNode) m_frame.getRootNode().getFirstChild()).getElement()));   
-        m_frame.m_buttonBar.m_zoomInButton.setEnabled(true);
-        m_frame.m_buttonBar.m_zoomOutButton.setEnabled(true);
-        m_frame.m_buttonBar.m_zoomOrigButton.setEnabled(false);
-        m_frame.m_buttonBar.m_zoomBestButton.setEnabled(true);
 
     }
     /**
@@ -629,7 +618,6 @@ public class ProcessPanel extends JPanel
             for(int ic=0;ic<vChain.size();ic++)
             {
                 final ProcessPart node = (ProcessPart) vChain.get(ic);
-                y=pLasty;
 
                 int wRes = drawInResParts(node);
                 final int yParent = 10;

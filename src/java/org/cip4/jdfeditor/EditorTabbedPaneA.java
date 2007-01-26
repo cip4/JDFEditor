@@ -286,11 +286,7 @@ public class EditorTabbedPaneA extends JTabbedPane
         final int selectedIndex = getSelectedIndex();
         final boolean bProcSel = selectedIndex == m_PROC_INDEX;
         JDFFrame m_frame=Editor.getFrame();
-        m_frame.m_buttonBar.m_upOneLevelButton.setEnabled(bProcSel);
-        m_frame.m_buttonBar.m_zoomInButton.setEnabled(bProcSel);
-        m_frame.m_buttonBar.m_zoomOutButton.setEnabled(bProcSel);
-        m_frame.m_buttonBar.m_zoomOrigButton.setEnabled(bProcSel);
-        m_frame.m_buttonBar.m_zoomBestButton.setEnabled(bProcSel);
+        m_frame.m_buttonBar.setEnableZoom(1.1);
         if (bProcSel)
         {
             m_pArea.initProcessView();

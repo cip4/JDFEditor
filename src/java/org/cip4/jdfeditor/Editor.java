@@ -187,6 +187,8 @@ public class Editor
         JDFAudit.setStaticAgentName(getEditorName());
         JDFAudit.setStaticAgentVersion(getEditorVersion());
         JDFElement.setLongID(m_iniFile.getLongID());
+        JDFElement.setFixVersionIDFix(true);
+        
         try
         {
             my_Frame.drawWindow();

@@ -83,7 +83,6 @@ import javax.swing.JButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.tree.TreePath;
 
 public class EditorButtonBar extends JToolBar implements ActionListener
 {
@@ -232,9 +231,22 @@ public class EditorButtonBar extends JToolBar implements ActionListener
      */
     public void setEnableZoom(double zoom)
     {
-        m_zoomOutButton.setEnabled(zoom > 0.2);
-        m_zoomInButton.setEnabled(zoom<2.5);       
-        m_zoomOrigButton.setEnabled(zoom!=1.0);
+        if(Editor.getEditorDoc()==null)
+        {
+            m_zoomOutButton.setEnabled(false);
+            m_zoomInButton.setEnabled(false);       
+            m_zoomOrigButton.setEnabled(false);
+            m_zoomBestButton.setEnabled(false);
+            m_upOneLevelButton.setEnabled(false);
+
+        }
+        else
+        {
+            m_zoomOutButton.setEnabled(zoom > 0.2);
+            m_zoomInButton.setEnabled(zoom<2.5);       
+            m_zoomOrigButton.setEnabled(zoom!=1.0);
+            m_zoomBestButton.setEnabled(true);
+        }
     }
     
     public void setEnableClose(boolean mode)
@@ -309,13 +321,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
         }
         else if (eSrc == m_upOneLevelButton)
         {
-            final TreePath selectionPath = m_frame.m_treeArea.getSelectionPath();
-            if (selectionPath != null
-                    && ((JDFTreeNode) selectionPath.getLastPathComponent()).isElement()
-                    && !((JDFTreeNode) selectionPath.getLastPathComponent()).hasForeignNS()
-                    && ((JDFTreeNode) selectionPath.getLastPathComponent())
-                    != (JDFTreeNode) m_frame.getRootNode().getFirstChild())
-                m_frame.m_topTabs.m_pArea.goUpOneLevelInProcessView();
+             m_frame.m_topTabs.m_pArea.goUpOneLevelInProcessView();
         }
         
         else if (eSrc == m_NextButton)

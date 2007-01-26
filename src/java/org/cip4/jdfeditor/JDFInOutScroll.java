@@ -264,17 +264,16 @@ public class JDFInOutScroll extends JScrollPane
                 for (int j = 0; j < areaArray.length; j++)
                 {
                     areaPanel = areaArray[j];
-                    int nr = 0;
                     int count = areaPanel.getComponentCount() - 1;
 
-                    if (j == 1)
+                    for (int i = 0; i < count; i++)
                     {
-                        nr = 1;
-                        count = 2;
-                    }
-                    for (int i = nr; i < count; i++)
-                    {
-                        JTree tmpTree = (JTree) areaPanel.getComponent(i);
+                        
+                        final Component component2 = areaPanel.getComponent(i);
+                        if(!(component2 instanceof JTree))
+                                continue;
+                        
+                        JTree tmpTree = (JTree) component2;
 
                         if (finishedFirstSearch)
                         {
@@ -357,17 +356,17 @@ public class JDFInOutScroll extends JScrollPane
                 for (int j = areaArray.length - 1; j >= 0; j--)
                 {
                     areaPanel = areaArray[j];
-                    int nr = areaPanel.getComponentCount() - 2;
+                    int nr = areaPanel.getComponentCount() -1;
                     int count = 0;
 
-                    if (j == 1)
-                    {
-                        nr = 1;
-                        count = 1;
-                    }
-                    for (int i = nr; i >= count; i--)
+                     for (int i = nr; i >= count; i--)
                     {                        
-                        JTree tmpTree = (JTree) areaPanel.getComponent(i);
+                         final Component component2 = areaPanel.getComponent(i);
+                         if(!(component2 instanceof JTree))
+                                 continue;
+                         
+                         JTree tmpTree = (JTree) component2;
+
                         if (finishedFirstSearch)
                         {
                             m_frame.m_searchTree = tmpTree;
