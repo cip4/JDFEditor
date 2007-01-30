@@ -1,8 +1,0 @@
-DEPENDENCIES
-
-JDFLib-J 2.1.3.38, JDFLibJ-2.1.3.38.jar
-Java Mail 1.3.2, mail-1.3.2.jar, activation-1.0.2.jar
-Commons Lang 2.1, commons-lang-2.1.jar
-Commons Logging 1.0.4, commons-logging-1.0.4.jar
-Log4j 1.2.8, log4j-1.2.8.jar
-Xerces 2.7.1, xercesImpl-2.7.1.jar, xml-apis-2.0.2.jar
