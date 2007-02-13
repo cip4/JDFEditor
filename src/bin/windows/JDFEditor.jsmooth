@@ -9,10 +9,10 @@
 <arguments></arguments>
 <classPath>lib\activation-1.0.2.jar</classPath>
 <classPath>lib\commons-lang-2.1.jar</classPath>
+<classPath>lib\commons-io-1.1.jar</classPath>
 <classPath>lib\commons-logging-1.0.4.jar</classPath>
-<classPath>lib\JDFLibJ.jar</classPath>
+<classPath>lib\JDFLibJ-2.1.3.jar</classPath>
 <classPath>lib\log4j-1.2.8.jar</classPath>
-<classPath>lib\mail-1.3.2.jar</classPath>
 <classPath>lib\mailapi.jar</classPath>
 <classPath>lib\xercesImpl-2.7.1.jar</classPath>
 <classPath>lib\xml-apis-2.0.2.jar</classPath>
