@@ -116,7 +116,7 @@ public class DCOutputRenderer extends JDFTreeRenderer
         }
         else if (n.endsWith("Report"))
         {
-            if(elem.hasChildElement("ExecutableNodes",null))
+            if(elem.hasChildElement("ExecutableNodes",null)||"true".equals(elem.getAttribute("IsValid")))
             {
                 if (sel)
                     setIcon(iniFile.elemIconS);

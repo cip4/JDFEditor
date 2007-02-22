@@ -541,23 +541,13 @@ ClipboardOwner
             final KElement nodeRoot = getJDFDoc().getRoot();
             if (nodeRoot !=null )
             {
-                final String nodeName = nodeRoot.getLocalName();
-                if (ElementName.JMF.equals(nodeName))
-                { 
-                    JOptionPane.showMessageDialog(this, 
-                            "Testing of JMF against Device Capabilities is not implemented yet", 
-                            "Error", JOptionPane.INFORMATION_MESSAGE);
-                }
-                else 
-                {
-                    final DeviceCapDialog testResult = new DeviceCapDialog((JDFNode) nodeRoot);
-                    final XMLDoc bugReport = testResult.getBugReport();
-                    final VElement executNodes = testResult.getExecutable();
-                    
-                    m_errorTabbedPane.m_devCapErrScroll.drawDevCapOutputTree(bugReport, executNodes);
-                    
-                    m_errorTabbedPane.setSelectedIndex(m_errorTabbedPane.m_DC_ERRORS_INDEX);
-                }
+                final DeviceCapDialog testResult = new DeviceCapDialog(nodeRoot);
+                final XMLDoc bugReport = testResult.getBugReport();
+                final VElement executNodes = testResult.getExecutable();
+
+                m_errorTabbedPane.m_devCapErrScroll.drawDevCapOutputTree(bugReport, executNodes);
+
+                m_errorTabbedPane.setSelectedIndex(m_errorTabbedPane.m_DC_ERRORS_INDEX);
             }
         }
         catch (Exception e) 

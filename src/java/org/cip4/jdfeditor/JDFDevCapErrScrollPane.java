@@ -125,6 +125,10 @@ public class JDFDevCapErrScrollPane extends ValidationScrollPane
             
             bugReportRoot = new DCOutputWrapper(bugRoot);
             m_reportRoot.add(bugReportRoot);
+            if("true".equals(bugRoot.getAttribute("IsValid",null,null)))
+            {
+                repRoot.setAttribute("IsValid", true,null);
+            }
             
             setDevCapOutputTree(bugReportRoot);            
         }

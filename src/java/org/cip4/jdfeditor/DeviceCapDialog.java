@@ -93,6 +93,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFParser;
@@ -102,6 +103,7 @@ import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.core.KElement.EnumValidationLevel;
 import org.cip4.jdflib.datatypes.JDFBaseDataTypes.EnumFitsValue;
 import org.cip4.jdflib.jmf.JDFJMF;
+import org.cip4.jdflib.jmf.JDFResponse;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.resource.JDFDevice;
 import org.cip4.jdflib.resource.devicecapability.JDFDeviceCap;
@@ -131,7 +133,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
     EnumFitsValue testlists = EnumFitsValue.Allowed;
     private EnumValidationLevel validationLevel = KElement.EnumValidationLevel.RecursiveComplete;
     
-    public DeviceCapDialog(final JDFNode docRoot)
+    public DeviceCapDialog(final KElement docRoot)
     {
         super();
         final INIReader iniFile=Editor.getIniFile();
@@ -166,7 +168,8 @@ public class DeviceCapDialog extends JPanel implements ActionListener
                             JOptionPane.showMessageDialog(parent, "Chosen file is not a JMF file", 
                                     "Error", JOptionPane.ERROR_MESSAGE);
                         }
-                        else if (jmfRoot.getChildByTagName(ElementName.DEVICECAP, null, 0, null, false, true)==null)
+                        else if (jmfRoot.getChildByTagName(ElementName.DEVICECAP, null, 0, null, false, true)==null
+                                && jmfRoot.getChildByTagName(ElementName.MESSAGESERVICE, null, 0, null, false, true)==null)
                         {
                             JOptionPane.showMessageDialog(parent, 
                                     "File does not contain Device Capability description", 
@@ -175,16 +178,47 @@ public class DeviceCapDialog extends JPanel implements ActionListener
                         else 
                         {
                             Editor.setCursor(1, null);
-                            final JDFDevice device = 
-                                (JDFDevice) jmfRoot.getXPathElement("Response/DeviceList/DeviceInfo/Device");
-                            VElement vDC=device.getChildElementVector(ElementName.DEVICECAP, null, null, true, -1,false);
-                            for(int i=0;i<vDC.size();i++)
+                            if(docRoot instanceof JDFNode)
                             {
-                                JDFDeviceCap deviceCap=(JDFDeviceCap)vDC.elementAt(i);
-                                deviceCap.setIgnoreExtensions(!Editor.getIniFile().getHighlight());                                 
+                                final JDFDevice device = 
+                                    (JDFDevice) jmfRoot.getXPathElement("Response/DeviceList/DeviceInfo/Device");
+                                if(device==null)
+                                {
+                                    JOptionPane.showMessageDialog(parent, 
+                                            "File does not contain JDF Node Device Capability description", 
+                                            "Error", JOptionPane.ERROR_MESSAGE);
+                                }
+                                else
+                                {
+                                    VElement vDC=device.getChildElementVector(ElementName.DEVICECAP, null, null, true, -1,false);
+                                    for(int i=0;i<vDC.size();i++)
+                                    {
+                                        JDFDeviceCap deviceCap=(JDFDeviceCap)vDC.elementAt(i);
+                                        deviceCap.setIgnoreExtensions(!Editor.getIniFile().getHighlight());                                 
+                                    }
+                                    executableJDF = device.getExecutableJDF((JDFNode)docRoot,testlists,validationLevel);
+                                    bugReport = device.getBadJDFInfo((JDFNode)docRoot,testlists,validationLevel);
+
+                                }
                             }
-                	        executableJDF = device.getExecutableJDF(docRoot,testlists,validationLevel);
-                            bugReport = device.getBadJDFInfo(docRoot,testlists,validationLevel);
+                            else if(docRoot instanceof JDFJMF)
+                            {
+                                KElement ms=jmfRoot.getChildWithAttribute(ElementName.MESSAGESERVICE, AttributeName.TYPE, null, null, 0, false);
+                                if(ms==null)
+                                {
+                                    JOptionPane.showMessageDialog(parent, 
+                                            "File does not contain JMF Device Capability description", 
+                                            "Error", JOptionPane.ERROR_MESSAGE);
+                                }
+                                else
+                                {
+                                    final JDFResponse respKnownMessages = 
+                                        (JDFResponse) ms.getParentNode_KElement();
+
+                                    executableJDF = null;
+                                    bugReport = JDFDeviceCap.getJMFInfo((JDFJMF)docRoot, respKnownMessages, testlists, validationLevel, !Editor.getIniFile().getHighlight());
+                                }
+                            }
                         }         
                     }                  
                 }
