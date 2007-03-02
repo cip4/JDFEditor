@@ -20,7 +20,6 @@ public class InsertResourceAndLinkEdit extends AbstractUndoableEdit
     private static final long serialVersionUID = -2778264565816334345L;
     
     private JDFTreeNode node;
-    private JDFNode jdfNode;
     private JDFTreeNode resNode;
     private JDFTreeNode resLinkNode;
     private JDFTreeNode resPoolNode;
@@ -35,13 +34,12 @@ public class InsertResourceAndLinkEdit extends AbstractUndoableEdit
     private boolean resLinkSuccess = true;
     
     public InsertResourceAndLinkEdit(final JDFFrame parent, 
-                                     final JDFNode _jdfNode, final JDFTreeNode _node, 
+                                     final JDFTreeNode _node, 
                                      boolean _hasResourcePool, boolean _hasResourceLinkPool, 
                                      final JDFTreeNode _resNode,	 final JDFTreeNode _resLinkNode) 
     {
         parFrame = parent;
         this.node = _node;
-        this.jdfNode = _jdfNode;
         this.resNode = _resNode;
         this.resLinkNode = _resLinkNode;
         this.hasResourcePool = _hasResourcePool;
@@ -89,9 +87,10 @@ public class InsertResourceAndLinkEdit extends AbstractUndoableEdit
     {
         final JDFTreeModel model = parFrame.getModel();
         JDFResource res = (JDFResource) resNode.getElement();
-        JDFResourcePool resPool = (JDFResourcePool) res.getParentNode_KElement();
+        JDFResourcePool resPool = (JDFResourcePool) resPoolNode.getElement();
         if (!hasResourcePool)
         {
+            JDFNode jdfNode=(JDFNode)node.getElement();
             model.insertInto(resPoolNode, node, -1);
             jdfNode.appendChild(resPool);
         }
@@ -100,9 +99,10 @@ public class InsertResourceAndLinkEdit extends AbstractUndoableEdit
         if (resLinkNode != null)
         {
             JDFResourceLink resLink = (JDFResourceLink) resLinkNode.getElement();
-            JDFResourceLinkPool resLinkPool = (JDFResourceLinkPool) resLink.getParentNode_KElement();
+            JDFResourceLinkPool resLinkPool = (JDFResourceLinkPool) resLinkPoolNode.getElement();
             if (!hasResourceLinkPool)
             {
+                JDFNode jdfNode=(JDFNode)node.getElement();
                 model.insertInto(resLinkPoolNode, node, -1);
                 jdfNode.appendChild(resLinkPool);
             }

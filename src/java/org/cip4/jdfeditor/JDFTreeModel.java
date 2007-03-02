@@ -655,7 +655,7 @@ public class JDFTreeModel extends DefaultTreeModel
         
         if (newResource != null)
         {
-            final JDFResourcePool rPoolElm = parentNode.getResourcePool();
+            final JDFResourcePool rPoolElm = parentNode.getCreateResourcePool();
             String xpath = rPoolElm.buildXPath(null);
             JDFTreeNode rPool = null;
             boolean bFound = false;
@@ -715,7 +715,7 @@ public class JDFTreeModel extends DefaultTreeModel
      * @returns created newLinkNode. null if operation was not completed successful
      */
     public JDFTreeNode insertNewResourceLinkNode(final JDFNode parentNode, final JDFTreeNode node,
-           final JDFResourceLink resLink)
+           boolean hasLinkPool, final JDFResourceLink resLink)
     {
         JDFTreeNode newLinkNode = null;
         final JDFResourceLinkPool rLinkPoolElm = parentNode.getResourceLinkPool();
@@ -725,6 +725,12 @@ public class JDFTreeModel extends DefaultTreeModel
         if (rLinkPoolElm==null)
         {
             rLinkPool = appendNode(ElementName.RESOURCELINKPOOL, node);
+            bFound = true;
+        }
+        else if (!hasLinkPool) // the link pool was created by a low level call - must create a treenode for the link pool
+        {
+            rLinkPool = new JDFTreeNode(rLinkPoolElm);
+            insertInto(rLinkPool, node, -1);
             bFound = true;
         }
         else

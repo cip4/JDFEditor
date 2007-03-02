@@ -645,7 +645,7 @@ public class JDFTreeArea extends JTextArea
                     JDFResourceLink resLink = jdfNode.linkResource(resource,usage,null);
                     if (resLink != null)
                     {
-                        final JDFTreeNode resLinkNode = Editor.getModel().insertNewResourceLinkNode(jdfNode, node, resLink);
+                        final JDFTreeNode resLinkNode = Editor.getModel().insertNewResourceLinkNode(jdfNode, node, hasResourceLinkPool, resLink);
                         if (resLinkNode != null)
                         {
                             final InsertResourceLinkEdit edit = 
@@ -710,13 +710,13 @@ public class JDFTreeArea extends JTextArea
                         if (v.size()>0)
                         {
                             final JDFResourceLink resLink = (JDFResourceLink) v.get(v.size()-1);
-                            resLinkNode = Editor.getModel().insertNewResourceLinkNode(jdfNode, node, resLink);
+                            resLinkNode = Editor.getModel().insertNewResourceLinkNode(jdfNode, node, hasResourceLinkPool, resLink);
                         }
                     }
                     if (resNode != null) // resLinkNode may be == null in case when withLink == false
                     {
                         final InsertResourceAndLinkEdit edit = 
-                            new InsertResourceAndLinkEdit(m_frame, jdfNode, node,  hasResourcePool, hasResourceLinkPool, resNode, resLinkNode);
+                            new InsertResourceAndLinkEdit(m_frame, node,  hasResourcePool, hasResourceLinkPool, resNode, resLinkNode);
                         m_frame.undoSupport.postEdit( edit );
                     }
                     else 

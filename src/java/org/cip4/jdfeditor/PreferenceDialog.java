@@ -1057,7 +1057,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     {
         final INIReader iniFile=Editor.getIniFile();
         iniFile.setUseSchema(useSchema);
-        iniFile.setSchemaURL(schemaFile);
+        iniFile.setSchemaURL(getSchemaURL());
         iniFile.setFontSize(getFontSize());
         iniFile.setLanguage(getLanguage());
         iniFile.setReadOnly(getReadOnly());
@@ -1071,5 +1071,20 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         iniFile.setRemoveWhite(currRemoveWhite);
         iniFile.setCheckURL(checkURL);
         iniFile.setLongID(longID);        
+    }
+
+    /**
+     * @return the newly set schema file, if it is readable
+     */
+    private File getSchemaURL()
+    {
+       String s=schemaPath.getText();
+       if(s!=null && s.length()!=0)
+       {
+           File f=new File(s);
+           if(f.canRead())
+               schemaFile=f;
+       }
+       return schemaFile;
     }
 }
