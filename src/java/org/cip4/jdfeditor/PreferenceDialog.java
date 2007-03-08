@@ -136,6 +136,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     private JCheckBox boxReadOnly;
     private JCheckBox boxRemDefault;
     private JCheckBox boxDispDefault;
+    private JCheckBox boxEnableExtension;
     private JCheckBox boxLongID;
     private JCheckBox boxRemWhite;
     private JCheckBox boxCheckURL;
@@ -164,6 +165,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     private boolean checkURL;
     private boolean currReadOnly;
     private boolean longID;
+    private boolean enableExtensions;
 
     private final UIManager.LookAndFeelInfo aLnF[] = UIManager.getInstalledLookAndFeels();
     private ResourceBundle littleBundle;
@@ -261,7 +263,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         currRemoveWhite=iniFile.getRemoveWhite();
         currDispDefault=iniFile.getDisplayDefault();
         checkURL=iniFile.getCheckURL();
-
+        enableExtensions=iniFile.getEnableExtensions();
         
         this.setPreferredSize(new Dimension(390, 380));
         this.addMouseListener(new TabListener());
@@ -273,7 +275,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     {
         Editor.setCursor(0,null);
                 
-        panels=new JPanel[7];
+        panels=new JPanel[8];
         int n=0;
         
         JPanel gen = createGeneralPref();
@@ -297,6 +299,9 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
  
         JPanel font = createFontPref();
         prepareTab(n++, font,"FontOptionsKey");
+
+        JPanel ext = createExtPref();
+        prepareTab(n++, ext,"ExtOptionsKey");
 
         Editor.setCursor(0,null);
     }
@@ -578,6 +583,30 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         return main;
     }
     
+    JPanel createExtPref()
+    {
+        final JPanel main = new JPanel(new BorderLayout());
+        
+        main.add(Box.createVerticalStrut(5), BorderLayout.SOUTH);
+        main.add(Box.createHorizontalStrut(5), BorderLayout.EAST);
+        main.add(Box.createHorizontalStrut(5), BorderLayout.WEST);
+        main.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
+        
+        final JPanel panel = new JPanel(null);
+        panel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("ExtOptionsKey")));
+        
+        int y = 30;
+        boxEnableExtension = new JCheckBox(littleBundle.getString("EnableExtensionKey"), enableExtensions);
+        Dimension d = boxEnableExtension.getPreferredSize();
+        boxEnableExtension.setBounds(10, y, d.width, d.height);
+        boxEnableExtension.addActionListener(this);
+        panel.add(boxEnableExtension);        
+
+        
+        main.add(panel, BorderLayout.CENTER);       
+        return main;
+    }
+
     private Box createRadioLang(JRadioButton jrb, ImageIcon flag, String language, int y)
     {
         String langStr = "";
@@ -1012,6 +1041,9 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         else if (source == boxLongID)
             longID = boxLongID.isSelected();
         
+        else if (source == boxEnableExtension)
+            enableExtensions = boxEnableExtension.isSelected();
+        
         else if (source == boxSchema)
         {
             useSchema = boxSchema.isSelected();
@@ -1071,6 +1103,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         iniFile.setRemoveWhite(currRemoveWhite);
         iniFile.setCheckURL(checkURL);
         iniFile.setLongID(longID);        
+        iniFile.setEnableExtensions(enableExtensions);        
     }
 
     /**

@@ -194,6 +194,8 @@ public class INIReader
     private String fontSize = "General/@fontSize";
     private String fontName = "General/@fontName";
     private String genericAtts = "General/@genericAtts";
+
+    private String enableExtensions = "Extension/@enableExtensions";
     
     private String[] recentFiles = new String[5];
     private final String recentDevCap ="RecentFiles/@recentDevCap";
@@ -403,6 +405,11 @@ public class INIReader
         return this.iconStrings;
     }
     
+    public boolean getEnableExtensions()
+    {
+        return getAttribute(enableExtensions,"false").equalsIgnoreCase("true") ? true : false;
+    }
+    
     public boolean getHighlight()
     {
         return getAttribute(highlightFN,"").equalsIgnoreCase("on") ? true : false;
@@ -410,6 +417,10 @@ public class INIReader
     public void setHighlight(boolean b)
     {
         setAttribute(highlightFN,b?"on":"off");
+    }
+    public void setEnableExtensions(boolean b)
+    {
+        setAttribute(enableExtensions,b?"true":"false");
     }
    
     public boolean getReadOnly()
