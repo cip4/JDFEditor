@@ -82,6 +82,7 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
+import org.cip4.jdfeditor.extensions.XJDF20;
 import org.cip4.jdflib.CheckJDF;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.ElementName;
@@ -94,10 +95,12 @@ import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.datatypes.JDFAttributeMap;
+import org.cip4.jdflib.datatypes.VJDFAttributeMap;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourceLinkPool;
 import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.jdflib.resource.JDFResource;
+import org.cip4.jdflib.util.StringUtil;
 import org.w3c.dom.Attr;
 
 
@@ -306,14 +309,12 @@ public class JDFTreeModel extends DefaultTreeModel
      */
     public KElement getParentElement(TreePath path)
     {
-        JDFTreeNode node = (JDFTreeNode) path.getLastPathComponent();
-        JDFTreeNode parentNode;
+        JDFTreeNode parentNode = (JDFTreeNode) path.getLastPathComponent();
         
-        if (!((JDFTreeNode) ((JDFTreeNode)root).getFirstChild()).equals(node))
+        if (!((JDFTreeNode) ((JDFTreeNode)root).getFirstChild()).equals(parentNode))
+        {
             parentNode = (JDFTreeNode) path.getParentPath().getLastPathComponent();
-        else
-            parentNode = node;
-        
+        }
         return parentNode.getElement();
     }
     
@@ -1036,6 +1037,25 @@ public class JDFTreeModel extends DefaultTreeModel
             }                 
         }
         return ns;
+    }
+
+    /**
+     * @param selectionPath
+     */
+    public void saveAsXJDF(TreePath selectionPath)
+    {
+        JDFTreeNode node = (JDFTreeNode) selectionPath.getLastPathComponent();
+        if(node==null)
+            return;
+        KElement e=node.getElement();
+        KElement xJDF=XJDF20.makeNewJDF((JDFNode)e, (VJDFAttributeMap)null);
+        XMLDoc d=xJDF.getOwnerDocument_KElement();
+        EditorDocument eDoc=Editor.getEditorDoc();
+        String fn=eDoc.getOriginalFileName();
+        String fnNew=StringUtil.newExtension(fn, XJDF20.getExtension());
+        d.write2File(fnNew, 2, false);
+        Editor.getFrame().readFile(new File(fnNew));
+        
     }
     
 }

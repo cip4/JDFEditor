@@ -125,6 +125,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
     private JMenuItem m_pastePopupItem;
     private JMenuItem m_deletePopupItem;
     private JMenuItem m_targetItem;
+    private JMenuItem m_saveXJDF=null;
 
     /**
      * Creates the popupmenu after a right mouse click on node in the Tree View.   
@@ -136,9 +137,10 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
         super();
         
         final JDFTreeNode node = (JDFTreeNode) path.getLastPathComponent();
-        KElement elem = (node.isElement()) ? node.getElement() : null;
-        ResourceBundle m_littleBundle=Editor.getBundle();
-
+        final KElement elem = (node.isElement()) ? node.getElement() : null;
+        final ResourceBundle m_littleBundle=Editor.getBundle();
+        final INIReader ini=Editor.getIniFile();
+        
         final JMenu insertPopupMenu = new JMenu(m_littleBundle.getString("InsertElKey"));
         insertPopupMenu.setEnabled(elem != null);
 
@@ -239,6 +241,18 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
         m_requiredElemPopupItem.addActionListener(this);
         add(m_requiredElemPopupItem);
         add(new JSeparator());
+
+        // TODO add spawn
+        if(elem instanceof JDFNode)
+        {
+            if(ini.getEnableExtensions())
+            {
+                m_saveXJDF=new JMenuItem(m_littleBundle.getString("SaveXJFDKey"));
+                m_saveXJDF.addActionListener(this);
+                add(m_saveXJDF);
+            }
+            add(new JSeparator());
+        }
 
         m_xpandPopupItem = new JMenuItem(m_littleBundle.getString("ExpandKey"));
         m_xpandPopupItem.addActionListener(this);
@@ -427,6 +441,10 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
         else if (eSrc == m_targetItem)
         {
             ta.getPathTarget();
+        }
+        else if(eSrc == m_saveXJDF)
+        {
+            Editor.getModel().saveAsXJDF(ta.getSelectionPath());
         }
         Editor.setCursor(0,null);
 
