@@ -948,21 +948,30 @@ public class JDFTreeModel extends DefaultTreeModel
         }
     }
     
-    
-    public boolean isValid(JDFTreeNode treeNode)
+    /**
+     * return the rrorotype associated with a given tree node
+     * @param treeNode
+     * @return
+     */
+    public String getErrorType(JDFTreeNode treeNode)
     {
         if(validationResult==null)
-            return true;
+            return null;
         
         if(treeNode instanceof DCOutputWrapper)
-            return true;
+            return null;
         
         String xPath=treeNode.getXPath();
         JDFAttributeMap map=new JDFAttributeMap("XPath",xPath);
         map.put("ErrorType",null);
         KElement e=validationResult.getRoot().getChildByTagName(null,null,0,map,false,true);
         
-        return e==null;        
+        return e==null ? null : e.getAttribute("ErrorType");        
+    }
+    
+    public boolean isValid(JDFTreeNode treeNode)
+    {
+        return getErrorType(treeNode)==null;   
     }
     
     /**

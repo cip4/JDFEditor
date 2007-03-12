@@ -108,9 +108,9 @@ public class Editor
         ImageIcon imIc=null;
         if(url!=null)
         {
-            imIc=new ImageIcon(url);
+            imIc=new ImageIcon(url);            
         }
-        else
+        if(imIc==null || imIc.getIconHeight()<=0)
         {
             imIc=new ImageIcon("."+resString);            
         }

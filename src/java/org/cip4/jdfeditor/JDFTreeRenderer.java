@@ -79,6 +79,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFComment;
 import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.node.JDFNode;
 
 /**
@@ -94,6 +95,8 @@ public class JDFTreeRenderer extends DefaultTreeCellRenderer
     protected Color colorSel;
     protected boolean highlightFN;
     protected Font standardFont=null;
+    private static VString warnMsgs=new VString("UnlinkedResource",null);
+
 
     public JDFTreeRenderer()
     {
@@ -176,12 +179,14 @@ public class JDFTreeRenderer extends DefaultTreeCellRenderer
         return this;
     }
     
-    protected void setNodeIcon(JTree jdfTree,boolean sel, JDFTreeNode treeNode){
+    protected void setNodeIcon(JTree jdfTree,boolean sel, JDFTreeNode treeNode)
+    {
         KElement elem = treeNode.getElement();
-        
+         
         JDFTreeModel mod=(JDFTreeModel) jdfTree.getModel();
         final INIReader iniFile=Editor.getIniFile();
-        if (mod.isValid(treeNode))
+        String erType=mod.getErrorType(treeNode);
+        if (erType==null)
         {
             if (treeNode.isElement())
             {
@@ -270,7 +275,24 @@ public class JDFTreeRenderer extends DefaultTreeCellRenderer
                 }
             }
         }
-        else
+        else if(warnMsgs.contains(erType))
+        {
+            if (treeNode.isElement())
+            {
+                if (sel)
+                    setIcon(iniFile.warnElemIconS);
+                else
+                    setIcon(iniFile.warnElemIcon);
+            }
+            else
+            {
+                if (sel)
+                    setIcon(iniFile.warnAttIconS);
+                else
+                    setIcon(iniFile.warnAttIcon);
+            }
+        }
+        else // not valid
         {
             if (treeNode.isElement())
             {
