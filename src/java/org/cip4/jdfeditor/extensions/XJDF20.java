@@ -56,7 +56,7 @@ public class XJDF20
         KElement newRoot=newDoc.getRoot();
         setRootAttributes(node, newRoot);
         setProduct(node,rootIn);
-        setResources(newRoot, node,null);
+        setResources(newRoot, node,null,rootIn);
         setElements(node, newRoot);
         newRoot.eraseEmptyNodes(true);
         return newRoot;
@@ -193,7 +193,7 @@ public class XJDF20
                 }
             }
         }
-        setResources(product,rootIn, prodLinks);
+        setResources(product,rootIn, prodLinks,null);
         VElement vDropItems=product.getChildrenByTagName(ElementName.DROPITEMINTENT, null, null, false, true, 0);
         for(int i=0;i<vDropItems.size();i++)
         {
@@ -213,15 +213,15 @@ public class XJDF20
 
     /**
      * @param product
-     * @param rootIn
+     * @param nodeIn
      * @return
      */
-    private static void setResources(KElement newRoot, JDFNode rootIn, VElement resLinks)
+    private static void setResources(KElement newRoot, JDFNode nodeIn, VElement resLinks, JDFNode rootIn)
     {
-        VElement vResLinks=resLinks==null ? rootIn.getResourceLinks(null) : resLinks;
+        VElement vResLinks=resLinks==null ? nodeIn.getResourceLinks(null) : resLinks;
         if(vResLinks==null)
             return;
-        boolean bProduct=EnumType.Product.equals(rootIn.getEnumType());
+        boolean bProduct=EnumType.Product.equals(nodeIn.getEnumType());
 
         for(int i=0;i<vResLinks.size();i++)
         {
@@ -230,7 +230,7 @@ public class XJDF20
             if(bProduct&&linkTarget instanceof JDFComponent)
                 continue;
 
-            setResource(newRoot, rl, linkTarget);
+            setResource(newRoot, rl, linkTarget,rootIn);
         }
         return;
     }
@@ -238,20 +238,21 @@ public class XJDF20
     /**
      * @param newRoot
      * @param rl
-     * @param linkRoot
+     * @param linkTarget
      */
-    private static void setResource(KElement newRoot, JDFResourceLink rl, final JDFResource linkRoot)
+    private static void setResource(KElement newRoot, JDFResourceLink rl, final JDFResource linkTarget, JDFNode rootIn)
     {
-        String className=getClassName(linkRoot);
+        String className=getClassName(linkTarget);
         if(className==null)
             return;
+        
         KElement resourceSet=newRoot.appendElement(className+"Set");
 
-        setLinkAttributes(resourceSet, rl, linkRoot);
+        setLinkAttributes(resourceSet, rl, linkTarget, rootIn);
 
         VElement vRes=rl.getTargetVector(0);
         int dot=0;
-        String resID=linkRoot.getID();
+        String resID=linkTarget.getID();
         for(int j=0;j<vRes.size();j++)
         {
             JDFResource r=(JDFResource)vRes.elementAt(j);
@@ -301,10 +302,13 @@ public class XJDF20
         newResLeaf.removeAttribute(AttributeName.SPAWNIDS);
         newResLeaf.removeAttribute(AttributeName.SPAWNSTATUS);
         newResLeaf.removeAttribute(AttributeName.PARTUSAGE);
+        newResLeaf.removeAttribute(AttributeName.LOCKED);
 
         //TODO complete list
         newLeaf.moveAttribute(AttributeName.DESCRIPTIVENAME, newResLeaf, null, null, null);
         newLeaf.moveAttribute(AttributeName.AGENTNAME, newResLeaf, null, null, null);
+        newLeaf.moveAttribute(AttributeName.AGENTVERSION, newResLeaf, null, null, null);
+        newLeaf.moveAttribute(AttributeName.STATUS, newResLeaf, null, null, null);
         newLeaf.moveAttribute(AttributeName.AGENTVERSION, newResLeaf, null, null, null);
     }
 
@@ -330,7 +334,7 @@ public class XJDF20
      * @param newRoot
      * @param rl
      */
-    private static void setLinkAttributes(KElement resourceSet, KElement rl, JDFResource linkRoot)
+    private static void setLinkAttributes(KElement resourceSet, KElement rl, JDFResource linkRoot, JDFNode rootIn)
     {
         resourceSet.setAttribute("Name",linkRoot.getNodeName());
         resourceSet.copyAttribute("ID", linkRoot, null, null, null);
@@ -340,15 +344,20 @@ public class XJDF20
         if(rl instanceof JDFResourceLink)
         {
             JDFResourceLink resLink=(JDFResourceLink)rl;
-            VElement vCreators=linkRoot.getCreator(EnumUsage.Input.equals(resLink.getUsage()));
-            final int size = vCreators==null ? 0 : vCreators.size();
-            for( int i=0;i<size;i++)
+
+            JDFResource resInRoot=rootIn==null ? linkRoot: (JDFResource)rootIn.getChildWithAttribute(null, "ID", null, resLink.getrRef(), 0, false);
+            if(resInRoot!=null)
             {
-                JDFNode depNode=(JDFNode) vCreators.elementAt(i);
-                KElement dependent=resourceSet.appendElement("Dependent");
-                dependent.setAttribute(AttributeName.JOBID, depNode.getJobID(true));
-                dependent.copyAttribute(AttributeName.JMFURL, depNode, null, null, null);
-                dependent.copyAttribute(AttributeName.JOBPARTID, depNode, null, null, null);
+                VElement vCreators=resInRoot.getCreator(EnumUsage.Input.equals(resLink.getUsage()));
+                final int size = vCreators==null ? 0 : vCreators.size();
+                for( int i=0;i<size;i++)
+                {
+                    JDFNode depNode=(JDFNode) vCreators.elementAt(i);
+                    KElement dependent=resourceSet.appendElement("Dependent");
+                    dependent.setAttribute(AttributeName.JOBID, depNode.getJobID(true));
+                    dependent.copyAttribute(AttributeName.JMFURL, depNode, null, null, null);
+                    dependent.copyAttribute(AttributeName.JOBPARTID, depNode, null, null, null);
+                }
             }
         }
     }
@@ -359,7 +368,7 @@ public class XJDF20
      */
     private static void setRootAttributes(JDFNode node, KElement newRoot)
     {
-        newRoot.appendXMLComment("Very preliminary experimental prototype trial version: using: "+JDFAudit.getStaticAgentName()+" "+JDFAudit.getStaticAgentVersion());
+        //newRoot.appendXMLComment("Very preliminary experimental prototype trial version: using: "+JDFAudit.getStaticAgentName()+" "+JDFAudit.getStaticAgentVersion());
         newRoot.setAttributes(node);
     }
 
