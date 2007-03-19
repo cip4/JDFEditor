@@ -20,6 +20,7 @@ import org.cip4.jdflib.core.JDFNodeInfo;
 import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
+import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.JDFElement.EnumVersion;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.datatypes.JDFAttributeMap;
@@ -44,7 +45,10 @@ public class XJDF20
 {
 
 
+    private static boolean bInit=false;
     private static String rootName = "XJDF";
+    private static final String m_spawnInfo = "SpawnInfo";
+    private static VString resAttribs;
 
     /**
      * @param node
@@ -52,6 +56,7 @@ public class XJDF20
      */
     public static KElement makeNewJDF(JDFNode node, JDFNode rootIn)
     {
+        init();
         JDFDoc newDoc=new JDFDoc(rootName);
         KElement newRoot=newDoc.getRoot();
         setRootAttributes(node, newRoot);
@@ -60,6 +65,22 @@ public class XJDF20
         setElements(node, newRoot);
         newRoot.eraseEmptyNodes(true);
         return newRoot;
+    }
+    /**
+     * 
+     */
+    private static void init()
+    {
+        if(bInit)
+            return;
+        bInit=true;
+        JDFResourcePool dummyResPool=(JDFResourcePool) new JDFDoc("ResourcePool").getRoot();
+        JDFResource intRes = dummyResPool.appendResource("intent", EnumResourceClass.Intent, null);
+        JDFResource physRes = dummyResPool.appendResource("physical", EnumResourceClass.Consumable, null);
+        JDFResource paramRes = dummyResPool.appendResource("param", EnumResourceClass.Parameter, null);
+        resAttribs = paramRes.knownAttributes();
+        resAttribs.appendUnique(physRes.knownAttributes());
+        resAttribs.appendUnique(intRes.knownAttributes());
     }
     /**
      * @param node
@@ -263,8 +284,8 @@ public class XJDF20
                 //TODO this is just a quick hack - generating true id, idref pairs would be better
                 leaf.inlineRefElements(null, null, false);
                 KElement newLeaf=resourceSet.appendElement(className);
-                setLeafAttributes(leaf, rl, newLeaf);
                 newLeaf.setAttribute("ID", resID+"."+StringUtil.formatInteger(dot++));
+                setLeafAttributes(leaf, rl, newLeaf);
             }
         }
     }
@@ -296,6 +317,7 @@ public class XJDF20
         }
 
         KElement newResLeaf=newLeaf.copyElement(leaf, null);
+        newResLeaf.removeAttributes(leaf.getPartIDKeys());
         newResLeaf.removeAttribute(AttributeName.ID);
         newResLeaf.removeAttribute(AttributeName.CLASS);
         newResLeaf.removeAttribute(AttributeName.SPAWNID);
@@ -305,11 +327,19 @@ public class XJDF20
         newResLeaf.removeAttribute(AttributeName.LOCKED);
 
         //TODO complete list
-        newLeaf.moveAttribute(AttributeName.DESCRIPTIVENAME, newResLeaf, null, null, null);
-        newLeaf.moveAttribute(AttributeName.AGENTNAME, newResLeaf, null, null, null);
-        newLeaf.moveAttribute(AttributeName.AGENTVERSION, newResLeaf, null, null, null);
-        newLeaf.moveAttribute(AttributeName.STATUS, newResLeaf, null, null, null);
-        newLeaf.moveAttribute(AttributeName.AGENTVERSION, newResLeaf, null, null, null);
+        for(int i=0;i<resAttribs.size();i++)
+        {
+            newLeaf.moveAttribute(resAttribs.stringAt(i), newResLeaf, null, null, null);
+        }        
+        // retain spawn informatiom
+        KElement spawnInfo=newLeaf.getDocRoot().getElement(m_spawnInfo, null, 0);
+        if(spawnInfo!=null && leaf.hasAttribute(AttributeName.SPAWNIDS))
+        {
+            KElement spawnID=spawnInfo.appendElement("SpawnID");
+            spawnID.copyAttribute(AttributeName.SPAWNIDS, leaf, null, null, null);
+            spawnID.copyAttribute(AttributeName.SPAWNSTATUS, leaf, null, null, null);
+            spawnID.moveAttribute(AttributeName.RESOURCEID,newLeaf,AttributeName.ID,null,null);
+        }
     }
 
     /**
@@ -368,8 +398,23 @@ public class XJDF20
      */
     private static void setRootAttributes(JDFNode node, KElement newRoot)
     {
-        //newRoot.appendXMLComment("Very preliminary experimental prototype trial version: using: "+JDFAudit.getStaticAgentName()+" "+JDFAudit.getStaticAgentVersion());
+        newRoot.appendXMLComment("Very preliminary experimental prototype trial version: using: "+JDFAudit.getStaticAgentName()+" "+JDFAudit.getStaticAgentVersion());
         newRoot.setAttributes(node);
+        if(newRoot.hasAttribute(AttributeName.SPAWNID))
+        {
+            KElement spawnInfo=newRoot.appendElement(m_spawnInfo,"www.cip4.org/SpawnInfo");
+            spawnInfo.moveAttribute(AttributeName.SPAWNID, newRoot, null, null, null);
+            final JDFAncestorPool ancestorPool = node.getAncestorPool();
+            if(ancestorPool!=null)
+            {
+                VJDFAttributeMap vParts=ancestorPool.getPartMapVector();
+                int size = vParts==null ? 0 : vParts.size();
+                for(int i=0;i<size;i++)
+                {
+                    spawnInfo.appendElement(ElementName.PART).setAttributes(vParts.elementAt(i));
+                }
+            }
+        }
     }
 
     /**
@@ -380,6 +425,4 @@ public class XJDF20
     {
         return rootName.toLowerCase();
     }
-
-
 }
