@@ -9,13 +9,20 @@
 
 package org.cip4.jdfeditor.extensions;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipOutputStream;
 
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFAudit;
 import org.cip4.jdflib.core.JDFCustomerInfo;
 import org.cip4.jdflib.core.JDFDoc;
+import org.cip4.jdflib.core.JDFException;
 import org.cip4.jdflib.core.JDFNodeInfo;
 import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.KElement;
@@ -46,7 +53,7 @@ public class XJDF20
 
 
     private static boolean bInit=false;
-    private static String rootName = "XJDF";
+    public static String rootName = "XJDF";
     private static final String m_spawnInfo = "SpawnInfo";
     private static VString resAttribs;
 
@@ -320,25 +327,36 @@ public class XJDF20
         newResLeaf.removeAttributes(leaf.getPartIDKeys());
         newResLeaf.removeAttribute(AttributeName.ID);
         newResLeaf.removeAttribute(AttributeName.CLASS);
-        newResLeaf.removeAttribute(AttributeName.SPAWNID);
-        newResLeaf.removeAttribute(AttributeName.SPAWNIDS);
-        newResLeaf.removeAttribute(AttributeName.SPAWNSTATUS);
         newResLeaf.removeAttribute(AttributeName.PARTUSAGE);
         newResLeaf.removeAttribute(AttributeName.LOCKED);
 
-        //TODO complete list
         for(int i=0;i<resAttribs.size();i++)
         {
-            newLeaf.moveAttribute(resAttribs.stringAt(i), newResLeaf, null, null, null);
-        }        
-        // retain spawn informatiom
-        KElement spawnInfo=newLeaf.getDocRoot().getElement(m_spawnInfo, null, 0);
-        if(spawnInfo!=null && leaf.hasAttribute(AttributeName.SPAWNIDS))
+            if(newResLeaf.hasAttribute(resAttribs.stringAt(i)))
+                newLeaf.moveAttribute(resAttribs.stringAt(i), newResLeaf, null, null, null);
+        } 
+
+        VElement allNewKids=newResLeaf.getChildrenByTagName(null, null, null, false, true, 0);
+        for(int j=0;j<allNewKids.size();j++)
         {
+            KElement kj=allNewKids.item(j);
+            if(kj instanceof JDFResource)
+            {
+                for(int i=0;i<resAttribs.size();i++)
+                {
+                    kj.removeAttribute(resAttribs.stringAt(i));
+                } 
+            }
+        }
+
+        // retain spawn informatiom
+        if(leaf.hasAttribute(AttributeName.SPAWNIDS))
+        {
+            KElement spawnInfo=newLeaf.getDocRoot().getCreateElement(m_spawnInfo, null, 0);
             KElement spawnID=spawnInfo.appendElement("SpawnID");
-            spawnID.copyAttribute(AttributeName.SPAWNIDS, leaf, null, null, null);
-            spawnID.copyAttribute(AttributeName.SPAWNSTATUS, leaf, null, null, null);
-            spawnID.moveAttribute(AttributeName.RESOURCEID,newLeaf,AttributeName.ID,null,null);
+            spawnID.moveAttribute(AttributeName.SPAWNIDS, newLeaf, null, null, null);
+            spawnID.moveAttribute(AttributeName.SPAWNSTATUS, newLeaf, null, null, null);
+            spawnID.copyAttribute(AttributeName.RESOURCEID,newLeaf,AttributeName.ID,null,null);
         }
     }
 
@@ -398,7 +416,7 @@ public class XJDF20
      */
     private static void setRootAttributes(JDFNode node, KElement newRoot)
     {
-        newRoot.appendXMLComment("Very preliminary experimental prototype trial version: using: "+JDFAudit.getStaticAgentName()+" "+JDFAudit.getStaticAgentVersion());
+        newRoot.appendXMLComment("Very preliminary experimental prototype trial version: using: "+JDFAudit.getStaticAgentName()+" "+JDFAudit.getStaticAgentVersion(), null);
         newRoot.setAttributes(node);
         if(newRoot.hasAttribute(AttributeName.SPAWNID))
         {
@@ -424,5 +442,60 @@ public class XJDF20
     public static String getExtension()
     {
         return rootName.toLowerCase();
+    }
+    
+    public static void saveZip(String fileName, JDFNode rootNode, boolean replace)
+    {
+        File file=new File(fileName);
+        if(file.canRead())
+        {
+            if(replace)
+            {
+                file.delete();
+            }
+            else
+                throw new JDFException("output file exists: "+file.getPath());
+        }
+        //file.createNewFile(fileName);
+
+        try
+        {
+            VElement v=rootNode.getvJDFNode(null, null, false);
+            FileOutputStream fos = new FileOutputStream(fileName);
+            ZipOutputStream zos = new ZipOutputStream(fos);
+            for(int i=0;i<v.size();i++)
+            {
+                JDFNode n=(JDFNode) v.elementAt(i);
+                String nam=n.getJobPartID(false);
+                if(nam=="")
+                    nam="Node"+i;
+                try
+                {
+                    nam+="."+rootName;
+                    ZipEntry ze= new ZipEntry(nam);
+                    zos.putNextEntry(ze);
+                    KElement newRoot=makeNewJDF(n, n.getRoot());
+                    newRoot.getOwnerDocument_KElement().write2Stream(zos, 2, true);
+                    zos.closeEntry();
+
+                }
+                catch (ZipException x)
+                {
+                    // TODO Auto-generated catch block
+                    x.printStackTrace();
+                }
+                catch (IOException x)
+                {
+                    // TODO Auto-generated catch block
+                    x.printStackTrace();
+                }
+            }
+            zos.close();
+        }
+        catch (IOException x)
+        {
+            // TODO Auto-generated catch block
+            x.printStackTrace();
+        }
     }
 }

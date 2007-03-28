@@ -634,6 +634,7 @@ ClipboardOwner
                 if(eDoc==null)
                 {
                     EditorUtils.errorBox("FileNotOpenKey",": "+fts.getName()+"!"); 
+                    Editor.setCursor(0, Editor.getFrame());
                 }
                 else
                 {

@@ -86,7 +86,9 @@ import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 import javax.swing.tree.TreePath;
 
+import org.cip4.jdfeditor.extensions.XJDF20;
 import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourceLinkPool;
@@ -126,6 +128,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
     private JMenuItem m_deletePopupItem;
     private JMenuItem m_targetItem;
     private JMenuItem m_saveXJDF=null;
+    private JMenuItem m_saveXJDFCaps=null;
 
     /**
      * Creates the popupmenu after a right mouse click on node in the Tree View.   
@@ -252,6 +255,12 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
                 add(m_saveXJDF);
             }
             add(new JSeparator());
+        }
+        else if(elem!=null && elem.getNodeName().equals(XJDF20.rootName))
+        {
+            m_saveXJDFCaps=new JMenuItem(m_littleBundle.getString("ExportToDevCapKey"));
+            m_saveXJDFCaps.addActionListener(this);
+            add(m_saveXJDFCaps);
         }
 
         m_xpandPopupItem = new JMenuItem(m_littleBundle.getString("ExpandKey"));
@@ -445,6 +454,10 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
         else if(eSrc == m_saveXJDF)
         {
             Editor.getModel().saveAsXJDF(ta.getSelectionPath());
+        }
+        else if(eSrc == m_saveXJDFCaps)
+        {
+            Editor.getModel().saveAsXJDFCaps(ta.getSelectionPath());
         }
         Editor.setCursor(0,null);
 

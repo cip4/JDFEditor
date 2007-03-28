@@ -564,8 +564,12 @@ public class JDFDeviceCapGenerator
         }
     }    
     
-    
-    private void setStatesForAttributes(final KElement parElem, final JDFDevCap dc) 
+    /**
+     * 
+     * @param parElem the root element whose attributes arfe converted
+     * @param dc the root devcap element
+     */
+    public void setStatesForAttributes(final KElement parElem, final KElement dc) 
     {
         // TODO Complete list
         // TODO set appropriate ListType, MinOccurs, MaxOccurs for lists
@@ -582,7 +586,7 @@ public class JDFDeviceCapGenerator
                 eAttrType=EnumAttributeType.string;
             }
             
-            if (!genericAttributes.contains(key))
+            if (genericAttributes==null || !genericAttributes.contains(key))
             {
                 if(key.startsWith("xmlns") || key.equals("xsi:type"))
                     continue;
@@ -707,6 +711,7 @@ public class JDFDeviceCapGenerator
                             eAttrType.equals(EnumAttributeType.NameRangeList)||
                             eAttrType.equals(EnumAttributeType.NMTOKEN) || 
                             eAttrType.equals(EnumAttributeType.NMTOKENS)||
+                            eAttrType.equals(EnumAttributeType.ID) || 
                             eAttrType.equals(EnumAttributeType.IDREF) || 
                             eAttrType.equals(EnumAttributeType.IDREFS)|| 
                             eAttrType.equals(EnumAttributeType.language)|| 

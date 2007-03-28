@@ -100,6 +100,11 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 
+import org.cip4.jdflib.core.VString;
+import org.cip4.jdflib.util.StringUtil;
+
+import com.sun.corba.se.spi.legacy.connection.GetEndPointInfoAgainException;
+
 /*
  * PreferenceDialog.java
  * @author SvenoniusI
@@ -166,6 +171,9 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     private boolean currReadOnly;
     private boolean longID;
     private boolean enableExtensions;
+
+    private JTextField fieldGenericStrings;
+    private String genericStrings;
 
     private final UIManager.LookAndFeelInfo aLnF[] = UIManager.getInstalledLookAndFeels();
     private ResourceBundle littleBundle;
@@ -264,6 +272,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         currDispDefault=iniFile.getDisplayDefault();
         checkURL=iniFile.getCheckURL();
         enableExtensions=iniFile.getEnableExtensions();
+        genericStrings=iniFile.getGenericAtts();
         
         this.setPreferredSize(new Dimension(390, 380));
         this.addMouseListener(new TabListener());
@@ -275,7 +284,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     {
         Editor.setCursor(0,null);
                 
-        panels=new JPanel[8];
+        panels=new JPanel[9];
         int n=0;
         
         JPanel gen = createGeneralPref();
@@ -302,6 +311,9 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
         JPanel ext = createExtPref();
         prepareTab(n++, ext,"ExtOptionsKey");
+
+        JPanel valid = createValidatePref();
+        prepareTab(n++, valid,"ValidateKey");
 
         Editor.setCursor(0,null);
     }
@@ -583,7 +595,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         return main;
     }
     
-    JPanel createExtPref()
+    private JPanel createExtPref()
     {
         final JPanel main = new JPanel(new BorderLayout());
         
@@ -601,6 +613,40 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         boxEnableExtension.setBounds(10, y, d.width, d.height);
         boxEnableExtension.addActionListener(this);
         panel.add(boxEnableExtension);        
+
+        
+        main.add(panel, BorderLayout.CENTER);       
+        return main;
+    }
+
+    private JPanel createValidatePref()
+    {
+        final JPanel main = new JPanel(new BorderLayout());
+        
+        main.add(Box.createVerticalStrut(5), BorderLayout.SOUTH);
+        main.add(Box.createHorizontalStrut(5), BorderLayout.EAST);
+        main.add(Box.createHorizontalStrut(5), BorderLayout.WEST);
+        main.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
+        
+        final JPanel panel = new JPanel(null);
+        panel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("ValidateKey")));
+        
+        int y = 30;
+        JLabel label=new JLabel(littleBundle.getString("DevCapGenericAttrKey"));
+        Dimension d = label.getPreferredSize();
+        label.setBounds(10,y,d.width,d.height);
+        panel.add(label);        
+        y+=15;
+
+        fieldGenericStrings = new JTextField(genericStrings);
+        fieldGenericStrings.setAutoscrolls(true);
+        fieldGenericStrings.setEditable(true);
+//TODO multiline...
+        
+        d = fieldGenericStrings.getPreferredSize();
+        fieldGenericStrings.setBounds(10, y, d.width, d.height);
+        fieldGenericStrings.addActionListener(this);
+        panel.add(fieldGenericStrings);        
 
         
         main.add(panel, BorderLayout.CENTER);       
@@ -1064,7 +1110,11 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
-            else if (source.getClass().equals(JComboBox.class))
+        else if(source==fieldGenericStrings)
+        {
+            genericStrings=fieldGenericStrings.getText();
+        }
+        else if (source.getClass().equals(JComboBox.class))
         {
             final JComboBox jcb = (JComboBox) source;
             currIcon = (String) jcb.getSelectedItem();
@@ -1103,7 +1153,11 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         iniFile.setRemoveWhite(currRemoveWhite);
         iniFile.setCheckURL(checkURL);
         iniFile.setLongID(longID);        
-        iniFile.setEnableExtensions(enableExtensions);        
+        iniFile.setEnableExtensions(enableExtensions);    
+        genericStrings =fieldGenericStrings.getText();
+        final VString genericAttributes = new VString(genericStrings,null);
+        genericAttributes.unify();
+        iniFile.setGenericAtts(genericAttributes);
     }
 
     /**

@@ -409,12 +409,12 @@ public class EditorUtils
      * @return
      * @throws Exception
      */
-    public static JDFDoc parseInStream(InputStream inStream) throws Exception
+    public static JDFDoc parseInStream(InputStream inStream, boolean useSchemaDefault) throws Exception
     {
         final JDFParser p = new JDFParser();
         File schemaloc=null;
         final INIReader iniFile=Editor.getIniFile();
-        if(iniFile!=null && iniFile.getUseSchema())
+        if(iniFile!=null && useSchemaDefault && iniFile.getUseSchema())
         {
             schemaloc=iniFile.getSchemaURL();
             if(schemaloc!=null)
@@ -424,10 +424,6 @@ public class EditorUtils
         if(jdfDoc!=null)
         {
             jdfDoc.clearDirtyIDs();
-        }
-        else if(p.lastExcept!=null) // rethrow the exception tha caused the abort for future display
-        {
-            throw p.lastExcept;
         }
 
         return jdfDoc;
@@ -474,16 +470,24 @@ public class EditorUtils
             else
             {
                 ediDocs=new EditorDocument[1];
-                final FileInputStream fileStream=new FileInputStream(fts);
-                final EditorDocument edidoc=parseStream(fts, null, fileStream);
-
+                FileInputStream fileStream=new FileInputStream(fts);
+                EditorDocument edidoc=parseStream(fts, null, fileStream, true);
+                if(edidoc==null)
+                {
+                    fileStream.close();
+                    fileStream=new FileInputStream(fts);
+                    edidoc=parseStream(fts, null, fileStream, false);
+                }
                 if(edidoc!=null)
                 {
                     edidoc.getJDFDoc().setOriginalFileName(fts.getPath());
                     ediDocs[0]=edidoc;
                 }
                 else
+                {
+                    EditorUtils.errorBox("FileNotOpenKey",": "+fts.getName()); 
                     ediDocs=null;
+                }
             }             
     }
     catch (IOException x)
@@ -529,7 +533,13 @@ public class EditorUtils
             if(MimeUtil.isJDFMimeType(bp.getContentType()))
             {
                 InputStream is=bp.getInputStream();
-                final EditorDocument edidoc=parseStream(fts, packageName, is);
+                EditorDocument edidoc=parseStream(fts, packageName, is, true);
+                if(edidoc==null)
+                {
+                    is.close();
+                    is=bp.getInputStream();
+                    edidoc=parseStream(fts, packageName, is, false);
+                }
                 if(edidoc!=null)
                 {
                     String fileName = bp.getFileName();
@@ -547,23 +557,27 @@ public class EditorUtils
     }
     
     
-    private static EditorDocument parseStream(File fts, String packageName, InputStream is)
+    private static EditorDocument parseStream(File fts, String packageName, InputStream is, boolean bUseSchemaDefault)
     {
         try
         {
-            JDFDoc jdfDoc=EditorUtils.parseInStream(is);
+            JDFDoc jdfDoc=EditorUtils.parseInStream(is,bUseSchemaDefault);
             if (jdfDoc!=null)
             {
                 final JDFFrame frame = Editor.getFrame();
                 frame.setJDFDoc(jdfDoc,packageName);
                 return frame.getEditorDoc();
             }
-            // refresh the v iew to the selected document
+            // refresh the view to the selected document
         }
         catch (Exception e)
-        {                    
-            e.printStackTrace();
-            EditorUtils.errorBox("FileNotOpenKey",": "+fts.getName()+"!\n"+e.getMessage()); 
+        {      
+            if(!bUseSchemaDefault)// failed 2nd round
+            {
+                e.printStackTrace();
+                EditorUtils.errorBox("FileNotOpenKey",": "+fts.getName()+"!\n"+e.getMessage()); 
+            }
+            // nop
         }
         return null;
     }
