@@ -101,9 +101,6 @@ import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 
 import org.cip4.jdflib.core.VString;
-import org.cip4.jdflib.util.StringUtil;
-
-import com.sun.corba.se.spi.legacy.connection.GetEndPointInfoAgainException;
 
 /*
  * PreferenceDialog.java
