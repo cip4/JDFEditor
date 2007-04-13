@@ -7,10 +7,14 @@ import java.util.Vector;
 
 import javax.swing.JComponent;
 
+import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFConstants;
+import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.node.JDFNode;
+import org.cip4.jdflib.resource.JDFResource;
+import org.cip4.jdflib.resource.JDFResource.EnumResStatus;
 
 /*
  * FooProcessPart.java
@@ -19,6 +23,13 @@ import org.cip4.jdflib.node.JDFNode;
 
 public class ProcessPart extends JComponent
 {
+    private static Color nodeColorExec = new Color(180, 230, 250);
+    private static Color nodeColorNonExec = new Color(250, 230, 180);
+    private static Color defColor = new Color(250, 230, 180);
+    private static Color resColorAvailable = new Color(180, 200, 250);
+    private static Color resColorUnAvailable = new Color(250, 200, 180);
+    private static Color resColorDraft = new Color(250, 250, 180);
+
     /**
      * Comment for <code>serialVersionUID</code>
      */
@@ -105,16 +116,22 @@ public class ProcessPart extends JComponent
      */
     private void setStrings()
     {
+        gColor=null;
         if(elem instanceof JDFNode)
         {
-            rawHeight = 75;
-            
-            if (style==PARENT)
-                gColor = new Color(215, 245, 255);
-            else
-                gColor = new Color(180, 230, 250);
-            
             JDFNode node = (JDFNode) elem;
+           rawHeight = 75;
+            if (style==PARENT && node.hasChildElement(ElementName.JDF, null))
+            {
+                gColor = new Color(215, 245, 255);
+            }
+            if(gColor==null)
+            {
+                if(node.isExecutable(null, true))
+                    gColor = nodeColorExec;
+                else
+                    gColor = nodeColorNonExec;
+            }
             if (node.getType().equals(JDFConstants.COMBINED))
             {
                 String[] tmp = { elem.getNodeName() + " " + elem.getAttribute("Type"),
@@ -126,7 +143,8 @@ public class ProcessPart extends JComponent
             }
             else 
             {
-                String[] tmp = { elem.getNodeName() + " " + elem.getAttribute("Type"),
+                String[] tmp = { 
+                        elem.getNodeName() + " " + elem.getAttribute("Type"),
                         elem.getAttribute("ID"),
                         elem.getAttribute("Status"),
                         elem.getAttribute("DescriptiveName")
@@ -139,11 +157,13 @@ public class ProcessPart extends JComponent
         }
         else if (style==RES_EXTERNAL)
         {
-            rawHeight = 45;
+            rawHeight = 55;
             
-            gColor = new Color(200, 250, 200);
-            String[] tmp = { elem.getNodeName(),
-                elem.getAttribute("ID") };
+            String[] tmp = { 
+                    elem.getNodeName(),
+                    elem.getAttribute("ID"),
+                    elem.getAttribute("Status")
+            };
             gString = tmp;
             
             rawWidth = setPartWidth(gString);
@@ -153,7 +173,6 @@ public class ProcessPart extends JComponent
         {
             rawHeight = 60;
             
-            gColor = new Color(200, 250, 200);
             String[] tmp = { elem.getNodeName(),
                 elem.getAttribute("ID"),
                 elem.getAttribute("Status", "", "") };
@@ -163,6 +182,24 @@ public class ProcessPart extends JComponent
             setToolTipText("JDFResource: "+elem.getAttribute("DescriptiveName"));
         }
         rawWidth += 30;
+        if(gColor==null)
+        {
+            if(elem instanceof JDFResource)
+            {
+                JDFResource r=(JDFResource)elem;
+                int v=r.getResStatus(false).getValue();
+                if(v<EnumResStatus.Draft.getValue())
+                    gColor= resColorUnAvailable;
+                else if(v>=EnumResStatus.Available.getValue())
+                    gColor= resColorAvailable;
+                else
+                    gColor= resColorDraft;
+            }
+            else
+            {
+                gColor=defColor;
+            }
+        }
     }
     
     private int setPartWidth(String[] s)

@@ -407,10 +407,8 @@ public class ProcessPanel extends JPanel
             zoom('b');
             JDFTreeNode node = new JDFTreeNode(element);
             m_frame.m_treeArea.findNode(node);
-        }
-        
+        }        
         m_frame.m_buttonBar.m_upOneLevelButton.setEnabled(!element.equals(((JDFTreeNode) m_frame.getRootNode().getFirstChild()).getElement()));   
-
     }
     /**
      * Initiate the Process View.
