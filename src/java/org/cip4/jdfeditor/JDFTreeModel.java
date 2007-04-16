@@ -220,6 +220,7 @@ public class JDFTreeModel extends DefaultTreeModel
         checkJDF.bWarnDanglingURL=iniFile.getCheckURL();
         if(iniFile.getUseSchema())
         {
+            
             final File f=iniFile.getSchemaURL();
             if(EditorUtils.fileOK(f))
             {

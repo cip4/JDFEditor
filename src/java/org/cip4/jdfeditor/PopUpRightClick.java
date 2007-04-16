@@ -70,6 +70,7 @@
  */
 package org.cip4.jdfeditor;
 
+import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -137,6 +138,8 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
     public PopUpRightClick(TreePath path)
     {
         super();
+        final JSeparator separator = new JSeparator();
+
         
         final JDFTreeNode node = (JDFTreeNode) path.getLastPathComponent();
         final KElement elem = (node.isElement()) ? node.getElement() : null;
@@ -146,6 +149,11 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
         final JMenu insertPopupMenu = new JMenu(m_littleBundle.getString("InsertElKey"));
         insertPopupMenu.setEnabled(elem != null);
 
+        JMenuItem xpath=new JMenuItem(node.getXPath());
+        xpath.setBackground(Color.YELLOW);
+        add(xpath);
+        add(separator);
+        
         m_insertElemBeforePopupItem = new JMenuItem(m_littleBundle.getString("BeforeKey"));
         m_insertElemBeforePopupItem.addActionListener(this);
         insertPopupMenu.add(m_insertElemBeforePopupItem);
@@ -172,7 +180,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
         m_insertOutResPopupItem.addActionListener(this);
         resMenu.add(m_insertOutResPopupItem);
 
-        resMenu.add(new JSeparator());
+        resMenu.add(separator);
 
         m_insertResPopupItem = new JMenuItem(m_littleBundle.getString("ResourceKey"));
         m_insertResPopupItem.addActionListener(this);
@@ -197,7 +205,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
         m_insertAttrPopupItem = new JMenuItem(m_littleBundle.getString("InsertAttKey"));
         m_insertAttrPopupItem.addActionListener(this);
         add(m_insertAttrPopupItem);
-        add(new JSeparator());
+        add(separator);
 
         m_cutPopupItem = new JMenuItem(m_littleBundle.getString("CutKey"));
 //      m_cutPopupItem.setAccelerator(KeyStroke.getKeyStroke('X', menuKeyMask));
@@ -219,7 +227,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
         m_deletePopupItem.addActionListener(this);
         add(m_deletePopupItem);
 
-        add(new JSeparator());
+        add(separator);
 
         m_renamePopupItem = new JMenuItem(m_littleBundle.getString("RenameKey"));
         m_renamePopupItem.addActionListener(this);
@@ -233,7 +241,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
         m_targetItem.addActionListener(this);
         add(m_targetItem);
         
-        add(new JSeparator());
+        add(separator);
 
         m_requiredAttrPopupItem = new JMenuItem(m_littleBundle.getString("AddRequiredAttKey"));
         m_requiredAttrPopupItem.addActionListener(this);
@@ -242,7 +250,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
         m_requiredElemPopupItem = new JMenuItem(m_littleBundle.getString("AddRequiredElKey"));
         m_requiredElemPopupItem.addActionListener(this);
         add(m_requiredElemPopupItem);
-        add(new JSeparator());
+        add(separator);
 
         // TODO add spawn
         if(elem instanceof JDFNode)
@@ -253,7 +261,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
                 m_saveXJDF.addActionListener(this);
                 add(m_saveXJDF);
             }
-            add(new JSeparator());
+            add(separator);
         }
         else if(elem!=null && elem.getNodeName().equals(XJDF20.rootName))
         {
