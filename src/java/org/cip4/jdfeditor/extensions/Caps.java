@@ -12,6 +12,8 @@ package org.cip4.jdfeditor.extensions;
 import java.util.HashSet;
 
 import org.cip4.jdfeditor.JDFDeviceCapGenerator;
+import org.cip4.jdflib.core.AttributeName;
+import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
@@ -20,6 +22,7 @@ import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.datatypes.JDFAttributeMap;
 import org.cip4.jdflib.datatypes.JDFBaseDataTypes.EnumFitsValue;
 import org.cip4.jdflib.resource.devicecapability.JDFAbstractState;
+import org.cip4.jdflib.resource.devicecapability.JDFDevCap;
 
 
 /**
@@ -29,6 +32,7 @@ import org.cip4.jdflib.resource.devicecapability.JDFAbstractState;
  */
 public class Caps
 {
+    // experimental simple capabilities file
     public static KElement createCaps(KElement xjdf, VString genericAtts)
     {
         XMLDoc d=new JDFDoc("Cap");
@@ -36,34 +40,58 @@ public class Caps
         // grab all elements
         VElement vXJDFElements=xjdf.getChildrenByTagName(null, null, null, false, true, 0);
         vXJDFElements.add(xjdf);
+        JDFDevCap dcGeneric=(JDFDevCap) rootCap.appendElement(ElementName.DEVCAP);
+        JDFDevCap dcDummy=(JDFDevCap) rootCap.appendElement(ElementName.DEVCAP);
+        dcGeneric.setAttribute(AttributeName.XPATH, "//*"); /// todo what is xpath for any
 
         JDFDeviceCapGenerator dcgen=new JDFDeviceCapGenerator(null,null);
-        JDFDoc dummy=new JDFDoc("DevCaps");
-        KElement dummyRoot=dummy.getRoot();
         HashSet setDoneXPaths=new HashSet();
         for(int i=0;i<vXJDFElements.size();i++)
         {
             KElement e=vXJDFElements.item(i);
-            String elmXPath=e.buildXPath(null,false);
-            KElement dc=dummyRoot.appendElement("DevCap");
-            // generate states as if this was a resource element
-            dcgen.setStatesForAttributes(e, dc);
-            VElement vStates=dc.getChildElementVector(null, null, new JDFAttributeMap("Name",""), true, 0, false);
+            
+            String elmXPathFull=e.buildXPath(null,0);
+            String elmXPath=elmXPathFull.substring(0, elmXPathFull.lastIndexOf("/"));
+            JDFAttributeMap map=new JDFAttributeMap(AttributeName.XPATH, elmXPath);
+            map.put("Name",e.getNodeName());
+            JDFDevCap dc;
+            if(setDoneXPaths.contains(elmXPathFull))
+            {
+                dc=(JDFDevCap) rootCap.getChildByTagName(null, null, 0, map, true, true);
+            }
+            else
+            {
+                dc=(JDFDevCap) rootCap.appendElement("DevCap");
+                dc.setMinOccurs(0);
+                dc.setMaxOccurs(Integer.MAX_VALUE);
+                dc.setAttributes(map);
+                setDoneXPaths.add(elmXPathFull);
+            }
+            // generate states 
+            dcgen.setStatesForAttributes(e, dcDummy);
+            VElement vStates=dcDummy.getChildElementVector(null, null, new JDFAttributeMap("Name",""), true, 0, false);
             for(int j=0;j<vStates.size();j++)
             {
-                KElement state = vStates.item(j);
+                JDFAbstractState state = (JDFAbstractState) vStates.item(j);
                 final String name = state.getAttribute("Name");
-                final String xpath = genericAtts.contains(name) ? "@"+name :elmXPath+"/@"+name;
-                if(!setDoneXPaths.contains(xpath))
+                final boolean isGeneric = genericAtts.contains(name);
+                final String fullpath = isGeneric ? "@"+name :elmXPathFull+"/@"+name;
+                KElement newRoot=isGeneric ? dcGeneric : dc;
+                if(!setDoneXPaths.contains(fullpath))
                 {
-                    state=rootCap.moveElement(state, null);
-                    state.setAttribute("XPath", xpath);
-                    setDoneXPaths.add(xpath);
+                    state=(JDFAbstractState) newRoot.moveElement(state, null);
+                    state.setAttribute("XPath", "@"+name);
+                    setDoneXPaths.add(fullpath);
+                }
+                else
+                {
+                    state.deleteNode();
+                    state=(JDFAbstractState) newRoot.getChildWithAttribute(null, "XPath", null, "@"+name, 0, true);
+                    state.addValue(e.getAttribute(name),EnumFitsValue.Present);
                 }
             }
-            dc.deleteNode();
-        }
-        
+        }        
+        dcDummy.deleteNode();
         return rootCap;
     }
     
@@ -76,7 +104,12 @@ public class Caps
         VElement vXJDFElements=xjdfRoot.getChildrenByTagName(null, null, null, false, true, 0);
         vXJDFElements.add(xjdfRoot);
         KElement capRoot=capFile.getRoot();
-        VElement states =capRoot.getChildElementVector(null, null, new JDFAttributeMap("Name",""),true ,0,false);
+        VElement devcaps =capRoot.getChildElementVector(null, null, new JDFAttributeMap("Name",""),true ,0,false);
+        VElement states=new VElement();
+        for (int i = 0; i < devcaps.size(); i++)
+        {
+            states.addAll(devcaps.item(i).getChildElementVector(null, null, new JDFAttributeMap("Name",""),true ,0,false));
+        }
         for (int i = 0; i < vXJDFElements.size(); i++)
         {
             KElement e = vXJDFElements.item(i);
@@ -87,6 +120,8 @@ public class Caps
                 boolean bFound=false;
                 for(int k=0;k<states.size();k++)
                 {
+                    if(! (states.item(k) instanceof JDFAbstractState))
+                            continue; // its a devcap - move on
                     JDFAbstractState state=(JDFAbstractState) states.item(k);
                     if(attribute.equals(state.getAttribute("Name")))
                     {
@@ -101,7 +136,7 @@ public class Caps
                     }
                 }
                 if(!bFound)
-                    vBadPaths.add(e.buildXPath(null, true)+"/"+attribute);
+                    vBadPaths.add(e.buildXPath(null, 1)+"/"+attribute);
             }
             
         }

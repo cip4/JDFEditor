@@ -92,6 +92,7 @@ import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourceLinkPool;
+import org.cip4.jdflib.resource.devicecapability.JDFDeviceCap;
 
 /**
  * Class to implement all the menu bar and menu related stuff
@@ -128,6 +129,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
     private JMenuItem m_deletePopupItem;
     private JMenuItem m_targetItem;
     private JMenuItem m_saveXJDF=null;
+    private JMenuItem m_nodeFromCaps=null;
     private JMenuItem m_saveXJDFCaps=null;
 
     /**
@@ -261,6 +263,13 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
                 m_saveXJDF.addActionListener(this);
                 add(m_saveXJDF);
             }
+            add(separator);
+        }
+        else if(elem instanceof JDFDeviceCap)
+        {
+            m_nodeFromCaps=new JMenuItem(m_littleBundle.getString("NodeFromCapsKey"));
+            m_nodeFromCaps.addActionListener(this);
+            add(m_nodeFromCaps);
             add(separator);
         }
         else if(elem!=null && elem.getNodeName().equals(XJDF20.rootName))
@@ -465,6 +474,10 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
         else if(eSrc == m_saveXJDFCaps)
         {
             Editor.getModel().saveAsXJDFCaps(ta.getSelectionPath());
+        }
+        else if(eSrc == m_nodeFromCaps)
+        {
+            Editor.getModel().createNodeFromCaps(ta.getSelectionPath());
         }
         Editor.setCursor(0,null);
 

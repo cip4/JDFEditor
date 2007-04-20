@@ -90,6 +90,7 @@ import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFConstants;
 import org.cip4.jdflib.core.JDFDoc;
+import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFException;
 import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.KElement;
@@ -102,7 +103,9 @@ import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourceLinkPool;
 import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.jdflib.resource.JDFResource;
+import org.cip4.jdflib.resource.devicecapability.JDFDeviceCap;
 import org.cip4.jdflib.util.StringUtil;
+import org.cip4.jdflib.util.UrlUtil;
 import org.w3c.dom.Attr;
 
 
@@ -221,8 +224,11 @@ public class JDFTreeModel extends DefaultTreeModel
         if(iniFile.getUseSchema())
         {
             
-            final File f=iniFile.getSchemaURL();
-            if(EditorUtils.fileOK(f))
+            File f=theDoc.getSchemaLocationFile(JDFElement.getSchemaURL());
+            if(!UrlUtil.isFileOK(f)) // snafu, try the internal default 
+                f=iniFile.getSchemaURL();
+            
+            if(UrlUtil.isFileOK(f))
             {
                 checkJDF.setJDFSchemaLocation(f);
 
@@ -669,7 +675,7 @@ public class JDFTreeModel extends DefaultTreeModel
         if (newResource != null)
         {
             final JDFResourcePool rPoolElm = parentNode.getCreateResourcePool();
-            String xpath = rPoolElm.buildXPath(null);
+            String xpath = rPoolElm.buildXPath(null,1);
             JDFTreeNode rPool = null;
             boolean bFound = false;
 
@@ -748,7 +754,7 @@ public class JDFTreeModel extends DefaultTreeModel
         }
         else
         {
-            String xpath = rLinkPoolElm.buildXPath(null);
+            String xpath = rLinkPoolElm.buildXPath(null,1);
             final Enumeration e = node.breadthFirstEnumeration();
             Object currNode;
 
@@ -1062,6 +1068,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
     /**
      * @param selectionPath
+     * @experimental
      */
     public void saveAsXJDF(TreePath selectionPath)
     {
@@ -1084,11 +1091,11 @@ public class JDFTreeModel extends DefaultTreeModel
             d.write2File(fnNew, 2, false);
             Editor.getFrame().readFile(new File(fnNew));
         }
-
     }
 
     /**
      * @param selectionPath
+     * @experimental
      */
     public void saveAsXJDFCaps(TreePath selectionPath)
     {
@@ -1106,5 +1113,23 @@ public class JDFTreeModel extends DefaultTreeModel
         Editor.getFrame().readFile(new File(fnNew));
     }
 
+    /**
+     * @param selectionPath
+     */
+    public void createNodeFromCaps(TreePath selectionPath)
+    {
+        JDFTreeNode node = (JDFTreeNode) selectionPath.getLastPathComponent();
+        if(node==null)
+            return;
+        JDFDeviceCap dc=(JDFDeviceCap) node.getElement();
+        EditorDocument eDoc=Editor.getEditorDoc();
+        String fn=eDoc.getOriginalFileName();
 
+        JDFDoc d=new JDFDoc("JDF");
+        JDFNode n=d.getJDFRoot();         
+        dc.setDefaultsFromCaps(n,true);
+        String fnNew=StringUtil.newExtension(fn, ".generated.JDF");
+        d.write2File(fnNew, 2, false);
+        Editor.getFrame().readFile(new File(fnNew));        
+    }
 }

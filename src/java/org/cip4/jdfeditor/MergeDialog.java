@@ -24,6 +24,7 @@ import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.util.JDFMerge;
+import org.cip4.jdflib.util.UrlUtil;
 
 /*
  * MergeDialog.java
@@ -71,7 +72,7 @@ public class MergeDialog extends JPanel implements ActionListener
         {
             File tmpFile = new File(idPath.getText());
             
-            if(EditorUtils.fileOK(tmpFile))
+            if(UrlUtil.isFileOK(tmpFile))
             {
                 idFile=tmpFile;
                 final JDFParser parser = new JDFParser();

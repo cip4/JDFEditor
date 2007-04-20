@@ -108,6 +108,7 @@ import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.resource.JDFDevice;
 import org.cip4.jdflib.resource.devicecapability.JDFDeviceCap;
 import org.cip4.jdflib.util.StringUtil;
+import org.cip4.jdflib.util.UrlUtil;
 
 /**
  * DeviceCapsDialog.java
@@ -151,7 +152,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
         if (option == JOptionPane.OK_OPTION)
         {
             File tmpFile = new File(idPath.getText());           
-            if(EditorUtils.fileOK(tmpFile))
+            if(UrlUtil.isFileOK(tmpFile))
             {
                 idFile=tmpFile;
                 final JDFParser parser = new JDFParser();

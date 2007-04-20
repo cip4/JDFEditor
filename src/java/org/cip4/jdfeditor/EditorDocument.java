@@ -467,7 +467,7 @@ public class EditorDocument
             e.eraseEmptyNodes(true);
         String extension=UrlUtil.extension(file.getAbsolutePath().toLowerCase());
         
-        if(!"mjm".equals(extension))
+        if(!UrlUtil.isMIME(file))
         {                
             m_jdfDoc.write2File(file.getAbsolutePath(), 2, false);
             m_jdfDoc.setOriginalFileName(file.getAbsolutePath());

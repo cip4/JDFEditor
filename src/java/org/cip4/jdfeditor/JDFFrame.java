@@ -331,7 +331,7 @@ ClipboardOwner
                 fileToSave=new File(recentFile);
         }
         
-        final EditorFileChooser chooser = new EditorFileChooser(fileToSave,"xml jdf jmf mjm");
+        final EditorFileChooser chooser = new EditorFileChooser(fileToSave,"xml jdf jmf mjm mjd");
         final int answer = chooser.showOpenDialog(this);
         
         if (answer == JFileChooser.APPROVE_OPTION)
@@ -719,7 +719,7 @@ ClipboardOwner
        String fileName=ediDoc.getSaveFileName();
          
         File fileToSave=new File(fileName);
-        final EditorFileChooser saveChooser = new EditorFileChooser(fileToSave,"xml jmf jdf mjm");
+        final EditorFileChooser saveChooser = new EditorFileChooser(fileToSave,"xml jmf jdf mjm mjd");
         final int answer = saveChooser.showSaveDialog(null);
         
         if (answer == JFileChooser.APPROVE_OPTION)

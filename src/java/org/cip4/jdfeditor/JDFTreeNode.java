@@ -208,9 +208,9 @@ public class JDFTreeNode extends DefaultMutableTreeNode
         if(element==null)
             return null;
         if(this.isElement())
-            return element.buildXPath(null,true);
+            return element.buildXPath(null,2);
         
-        return element.buildXPath(null,true)+"/@"+getName();
+        return element.buildXPath(null,2)+"/@"+getName();
     }
     
     /**
@@ -359,7 +359,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
         final KElement element = getElement();
         if(element instanceof JDFNode){
             JDFNode n=(JDFNode)element;
-            return n.buildXPath(null,true);
+            return n.buildXPath(null,1);
         }
         return element.getAttribute("XPath");
     }

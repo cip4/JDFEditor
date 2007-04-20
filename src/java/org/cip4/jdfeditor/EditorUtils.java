@@ -3,7 +3,7 @@ package org.cip4.jdfeditor;
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2006 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2007 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -82,6 +82,7 @@ import javax.mail.Multipart;
 import javax.swing.JOptionPane;
 import javax.swing.tree.TreePath;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
@@ -95,6 +96,7 @@ import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.util.JDFDate;
 import org.cip4.jdflib.util.MimeUtil;
+import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
 
 /**
@@ -132,7 +134,7 @@ public class EditorUtils
         }
         return elem.isValid(KElement.EnumValidationLevel.Complete);
     }
-    
+
     /**
      * Method setValueForNewAttribute.
      * set a value to the new attribute if nothing is declared the value
@@ -164,19 +166,19 @@ public class EditorUtils
 
         if (attName.equals("Type"))
             return "Product";
-        
+
         if (attName.equals("TimeStamp"))
             return new JDFDate().getDateTimeISO();
-            
+
         if (attName.equals("ComponentType"))
             return "PartialProduct";
-        
+
         if (attName.equals("PreviewType"))
             return "Separation";
-        
+
         return "New Value";
     }
-    
+
     /**
      * gets all resources from this node and from all its ancestors.
      * @return - vector of all resources allowed to be linked from the level of jdfNode
@@ -196,20 +198,20 @@ public class EditorUtils
             nodeTmp = nodeTmp.getParentJDF(); 
         } 
         VElement vResLinks=jdfNode.getResourceLinks(null, null, null);
-        
+
         final VString vValidLinks = jdfNode.linkNames();
         if(vValidLinks==null)
             return null;
         vValidLinks.unify();
         final VString vValidInfo = jdfNode.linkInfo();
         int iAny=vValidLinks.index("*");
-        
+
         for (int i = resourcesInTree.size()-1; i >= 0; i--)
         {
             final JDFResource res = (JDFResource) resourcesInTree.item(i);
             String resName = res.getNodeName();
             int vRLSize=vResLinks==null ? 0 : vResLinks.size();
-                
+
             String id=res.getID();
             if(id!=null)
             {
@@ -225,7 +227,7 @@ public class EditorUtils
             int n=vValidLinks.index(resName);
             if(n<0)
                 n=iAny;
-            
+
             if (n<0)
             {
                 resourcesInTree.remove(res);
@@ -238,14 +240,14 @@ public class EditorUtils
                     resourcesInTree.remove(res);
                 }
             }
-             
+
         }
         return resourcesInTree.size()==0 ? null : resourcesInTree;
     }
-    
-    
-////////////////////////////////////////////////////////////////////////////   
-    
+
+
+
+
     /**
      * Method getAttributeOptions
      * @param w
@@ -255,7 +257,7 @@ public class EditorUtils
     {
         final VString validElementsVector = parentElement.knownElements();
         final VString uniqueElementsVector  = parentElement.uniqueElements();        
-        
+
         final VString existingElementsVector = parentElement.getElementNameVector(); 
         for (int i = 0; i < existingElementsVector.size(); i++)
         {
@@ -277,7 +279,7 @@ public class EditorUtils
         validValues[size] = "Other..";
         return validValues;
     }
-////////////////////////////////////////////////////////////////////////////   
+
     /**
      * Method chooseElementName.
      * gets the valid element to insert into parentElement
@@ -289,7 +291,7 @@ public class EditorUtils
         final String validValues[] = EditorUtils.getElementOptions(parentElement);
         String selectedElementName = (String) JOptionPane.showInputDialog(Editor.getFrame(), "Choose an element to insert",
                 "Insert new element", JOptionPane.PLAIN_MESSAGE, null, validValues, validValues[0]);
-        
+
         if (selectedElementName != null && selectedElementName.equals("Other.."))
         {
             selectedElementName = JOptionPane.showInputDialog(Editor.getFrame(), "Choose element name", "");
@@ -305,7 +307,7 @@ public class EditorUtils
     public static String[] getAttributeOptions(final KElement element)
     {
         final VString validAttributesVector = element.knownAttributes();
-        
+
         Vector existingAttributes = element.getAttributeVector();
         if (element instanceof JDFResource)
         {
@@ -330,11 +332,11 @@ public class EditorUtils
         possibleValues[size] = "zzzzzzz";
         Arrays.sort(possibleValues);
         possibleValues[size] = "Other..";
-        
+
         return possibleValues;
     }
 
-    
+
 
     /**
      * Method getElement.
@@ -353,28 +355,15 @@ public class EditorUtils
         {
             node = (JDFTreeNode) path.getLastPathComponent();
         }
-        
+
         if(!node.isElement())  // one level is always ok, since attributes live in elements
         {
             node =(JDFTreeNode) node.getParent();
         }
-        
+
         return node.getElement();
     }
 
-    /**
-     * checks whether there is a remote chance that the file is useful for reading
-     * @param f - File to check
-     * @return true if the file is ok
-     */
-    public static boolean fileOK(File f)
-    {
-        if (f != null && !f.isDirectory() && f.canRead())
-        {
-            return true;
-        }
-        return false;
-    }
     /**
      * Creates the String which is to be displayed...
      * @param file the File object to display
@@ -385,24 +374,24 @@ public class EditorUtils
     {
         if(file==null)
             return "";
-        
+
         final String s = '"' + file.getAbsolutePath() + '"';
-        
+
         if (s.length() <= 1.5 * length)
             return s;
 
         final int i = s.indexOf('\\');
         final int j = s.lastIndexOf('\\');
-        
+
         if (i == j)
             return s.substring(0, length - 4) + "..." + '"';
-        
+
         final String start = s.substring(0, i + 1);
         final String end = s.substring(j, s.length());
-        
+
         return start + "..." + end;
     }
-    
+
     /**
      * parse an input stream
      * @param file
@@ -428,7 +417,7 @@ public class EditorUtils
 
         return jdfDoc;
     }
- 
+
     //////////////////////////////////////////////////////////////////////////////
     /**
      * creates the standard error box
@@ -441,7 +430,7 @@ public class EditorUtils
             addedString="";
         else
             addedString=" "+addedString;
-        
+
         final ResourceBundle littleBundle = frame.m_littleBundle;
         JOptionPane.showMessageDialog( frame, 
                 littleBundle.getString(errorKey)+addedString, 
@@ -449,59 +438,66 @@ public class EditorUtils
                 JOptionPane.ERROR_MESSAGE);
     }
     //////////////////////////////////////////////////////////////////////////////
-    
+
     /**
      * @param fts the file to get inputstreams from
      * @return InputStream[] the array of inputstreams
      */
     public static EditorDocument[] getEditorDocuments(File fts)
     {
-       if(fts==null)
-           return null;
-       
+        if(fts==null)
+            return null;
+
         EditorDocument ediDocs[]=null;
-        try
+        for(int i=0;i<2;i++) // try the correct mime / non mime parser first
         {
-            String packageName = fts.getCanonicalPath();
-            if(packageName.toLowerCase().endsWith(".mjm"))
+            try
             {
-                ediDocs = unpackMIME(fts, packageName);
+                // if i>0, the initial parse failed and we will try the other type
+                if(UrlUtil.isMIME(fts)^i==0)
+                {
+                    String packageName = fts.getCanonicalPath();
+                    ediDocs = unpackMIME(fts, packageName);
+                }
+                else // standard xml parse
+                {
+                    ediDocs=new EditorDocument[1];
+                    FileInputStream fileStream=new FileInputStream(fts);
+                    EditorDocument edidoc=parseStream(fts, null, fileStream, true);
+                    if(edidoc==null)
+                    {
+                        fileStream.close();
+                        fileStream=new FileInputStream(fts);
+                        edidoc=parseStream(fts, null, fileStream, false);
+                    }
+                    if(edidoc!=null)
+                    {
+                        edidoc.getJDFDoc().setOriginalFileName(fts.getPath());
+                        ediDocs[0]=edidoc;
+                    }
+                    else
+                    {
+                        EditorUtils.errorBox("FileNotOpenKey",": "+fts.getName()); 
+                        ediDocs=null;
+                    }
+                }             
             }
-            else
+            catch (IOException x)
             {
-                ediDocs=new EditorDocument[1];
-                FileInputStream fileStream=new FileInputStream(fts);
-                EditorDocument edidoc=parseStream(fts, null, fileStream, true);
-                if(edidoc==null)
-                {
-                    fileStream.close();
-                    fileStream=new FileInputStream(fts);
-                    edidoc=parseStream(fts, null, fileStream, false);
-                }
-                if(edidoc!=null)
-                {
-                    edidoc.getJDFDoc().setOriginalFileName(fts.getPath());
-                    ediDocs[0]=edidoc;
-                }
-                else
-                {
-                    EditorUtils.errorBox("FileNotOpenKey",": "+fts.getName()); 
-                    ediDocs=null;
-                }
-            }             
-    }
-    catch (IOException x)
-    {
-            return null;
-        }
-        catch (MessagingException x)
-        {
-            return null;
+                if(i>0)
+                    return null;
+            }
+            catch (MessagingException x)
+            {
+                if(i>0)
+                    return null;
+            }
+            if(ediDocs!=null)
+                break;
         }
         return ediDocs;       
-    }
-    
 
+    }
     /**
      * unpack the mime packeage specified in fts
      */
@@ -509,6 +505,18 @@ public class EditorUtils
     {
         EditorDocument[] ediDocs;
         FileInputStream fileStream=new FileInputStream(fts);
+        
+        // in case of spurious email header lines, skipem
+        byte b[]=new byte[1000];            
+        fileStream.read(b);
+        String s=new String(b);
+        int posMime = s.indexOf("MIME-Version:");
+        fileStream.close();
+        fileStream=new FileInputStream(fts);
+        if(posMime>0)
+        {
+            fileStream.skip(posMime);
+        }
         Multipart mp=MimeUtil.getMultiPart(fileStream);
         if(mp==null)
             return null;
@@ -523,9 +531,9 @@ public class EditorUtils
         }
         if(n==0)
             return null;
-            
+
         ediDocs=new EditorDocument[n];
-        
+
         n=0;
         for(int i=0;i<count;i++)
         {
@@ -545,6 +553,8 @@ public class EditorUtils
                     String fileName = bp.getFileName();
                     if(fileName==null)
                         fileName=packageName+"_"+i+".jdf";
+                    fileName= StringUtil.unEscape(fileName, "%", 16, 2);
+                    fileName=StringUtil.getUTF8String(fileName.getBytes());
                     final JDFDoc jdfDoc = edidoc.getJDFDoc();
                     jdfDoc.setOriginalFileName(fileName);
                     jdfDoc.setBodyPart(bp);
@@ -555,8 +565,8 @@ public class EditorUtils
         }
         return ediDocs;
     }
-    
-    
+
+
     private static EditorDocument parseStream(File fts, String packageName, InputStream is, boolean bUseSchemaDefault)
     {
         try

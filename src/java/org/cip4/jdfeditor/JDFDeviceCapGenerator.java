@@ -76,6 +76,7 @@ import org.cip4.jdflib.auto.JDFAutoBasicPreflightTest.EnumListType;
 import org.cip4.jdflib.auto.JDFAutoDevCaps.EnumContext;
 import org.cip4.jdflib.auto.JDFAutoDeviceCap.EnumCombinedMethod;
 import org.cip4.jdflib.auto.JDFAutoDeviceInfo.EnumDeviceStatus;
+import org.cip4.jdflib.auto.JDFAutoValue.EnumValueUsage;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFConstants;
@@ -608,7 +609,7 @@ public class JDFDeviceCapGenerator
                         {
                             stateValue = (JDFValue) state.appendElement(ElementName.VALUE);
                             stateValue.setAllowedValue(value);
-                            stateValue.setValueUsage(JDFValue.EnumValueUsage.Present);
+                            stateValue.setValueUsage(EnumValueUsage.Present);
                         }
                     }
                     else 
@@ -745,21 +746,21 @@ public class JDFDeviceCapGenerator
                         stst.setAllowedRegExp("*");
                         final JDFValue stringStateValue = (JDFValue) state.appendElement(ElementName.VALUE);
                         stringStateValue.setAllowedValue(value);
-                        stringStateValue.setValueUsage(JDFValue.EnumValueUsage.Present);
+                        stringStateValue.setValueUsage(EnumValueUsage.Present);
                     }
                     else if (eAttrType.equals(EnumAttributeType.matrix))         // Matrix
                     {
                         state = (JDFAbstractState) dc.appendElement(ElementName.MATRIXSTATE);
                         final JDFValue stringStateValue = (JDFValue) state.appendElement(ElementName.VALUE);
                         stringStateValue.setAllowedValue(value);
-                        stringStateValue.setValueUsage(JDFValue.EnumValueUsage.Present);
+                        stringStateValue.setValueUsage(EnumValueUsage.Present);
                     }
                     else if (eAttrType.equals(EnumAttributeType.PDFPath))        // PDFPath
                     {
                         state = (JDFAbstractState) dc.appendElement(ElementName.PDFPATHSTATE);
                         final JDFValue stringStateValue = (JDFValue) state.appendElement(ElementName.VALUE);
                         stringStateValue.setAllowedValue(value);
-                        stringStateValue.setValueUsage(JDFValue.EnumValueUsage.Present);
+                        stringStateValue.setValueUsage(EnumValueUsage.Present);
                     }
                     else if (eAttrType.equals(EnumAttributeType.CMYKColor))        // PDFPath
                     {
