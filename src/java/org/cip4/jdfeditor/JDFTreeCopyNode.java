@@ -29,7 +29,7 @@ public class JDFTreeCopyNode
      * @param newChild
      * @param newNode
      */
-    public void getChildrenForCopiedNode(JDFTreeNode newNode)
+    private void getChildrenForCopiedNode(JDFTreeNode newNode)
     {
         KElement newChild=newNode.getElement();
         final int pos = newNode.getChildCount();

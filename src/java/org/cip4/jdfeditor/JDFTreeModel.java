@@ -1127,7 +1127,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
         JDFDoc d=new JDFDoc("JDF");
         JDFNode n=d.getJDFRoot();         
-        dc.setDefaultsFromCaps(n,true);
+        dc.setDefaultsFromCaps(n,true,Editor.getIniFile().getGenerateFull());
         String fnNew=StringUtil.newExtension(fn, ".generated.JDF");
         d.write2File(fnNew, 2, false);
         Editor.getFrame().readFile(new File(fnNew));        

@@ -666,7 +666,7 @@ ClipboardOwner
             
             m_treeArea.drawTreeView(eDoc);
             m_topTabs.refreshView(eDoc);
-            m_copyNode = null;
+//            m_copyNode = null;
             this.setTitle(getWindowTitle());
             
             m_errorTabbedPane.refreshView(path);

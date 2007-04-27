@@ -142,6 +142,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     private JCheckBox boxLongID;
     private JCheckBox boxRemWhite;
     private JCheckBox boxCheckURL;
+    private JCheckBox boxGenerateFull;
     
     private JCheckBox boxValOpen;
     private JComboBox boxFontSize;
@@ -168,6 +169,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     private boolean currReadOnly;
     private boolean longID;
     private boolean enableExtensions;
+    private boolean generateFull;
 
     private JTextField fieldGenericStrings;
     private String genericStrings;
@@ -270,7 +272,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         checkURL=iniFile.getCheckURL();
         enableExtensions=iniFile.getEnableExtensions();
         genericStrings=iniFile.getGenericAtts();
-        
+        generateFull=iniFile.getGenerateFull();
         this.setPreferredSize(new Dimension(390, 380));
         this.addMouseListener(new TabListener());
         drawPane();
@@ -644,8 +646,14 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         fieldGenericStrings.setBounds(10, y, d.width, d.height);
         fieldGenericStrings.addActionListener(this);
         panel.add(fieldGenericStrings);        
+        y+=30;
 
-        
+        boxGenerateFull = new JCheckBox(littleBundle.getString("GenerateFullKey"), generateFull);
+        d = boxGenerateFull.getPreferredSize();
+        boxGenerateFull.setBounds(10, y, d.width, d.height);
+        boxGenerateFull.addActionListener(this);
+        panel.add(boxGenerateFull);        
+       
         main.add(panel, BorderLayout.CENTER);       
         return main;
     }
@@ -1087,6 +1095,9 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         else if (source == boxEnableExtension)
             enableExtensions = boxEnableExtension.isSelected();
         
+        else if (source == boxGenerateFull)
+            generateFull = boxGenerateFull.isSelected();
+        
         else if (source == boxSchema)
         {
             useSchema = boxSchema.isSelected();
@@ -1151,6 +1162,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         iniFile.setCheckURL(checkURL);
         iniFile.setLongID(longID);        
         iniFile.setEnableExtensions(enableExtensions);    
+        iniFile.setGenerateFull(generateFull);    
         genericStrings =fieldGenericStrings.getText();
         final VString genericAttributes = new VString(genericStrings,null);
         genericAttributes.unify();

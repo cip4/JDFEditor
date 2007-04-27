@@ -213,7 +213,6 @@ public class INIReader
     private String longID = "General/@longID";
     private String fontSize = "General/@fontSize";
     private String fontName = "General/@fontName";
-    private String genericAtts = "General/@genericAtts";
 
     private String enableExtensions = "Extension/@enableExtensions";
     
@@ -234,6 +233,10 @@ public class INIReader
          
     private final String attribute = "TreeView/@attribute";
     private final String inheritedAttr = "TreeView/@inheritedAttr";
+    
+    private final String generateFull = "Validate/@GenerateFull";
+    private String genericAtts = "Validate/@genericAtts";
+    
     private XMLDoc xDoc; // The XMLDocument that represents the ini file
     
     public INIReader()
@@ -914,6 +917,18 @@ public class INIReader
     public void setLongID(boolean b)
     {
         setAttribute(longID,b?"true":"false");
+    }
+
+    /**
+     * @return
+     */
+    public boolean getGenerateFull()
+    {
+        return getAttribute(generateFull,"true").equalsIgnoreCase("true") ? true : false;
+    }
+    public void setGenerateFull(boolean b)
+    {
+        setAttribute(generateFull,b?"true":"false");
     }
 
 
