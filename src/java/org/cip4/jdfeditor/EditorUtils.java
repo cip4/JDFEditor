@@ -454,7 +454,7 @@ public class EditorUtils
             try
             {
                 // if i>0, the initial parse failed and we will try the other type
-                if(UrlUtil.isMIME(fts)^i==0)
+                if(UrlUtil.isMIME(fts)^i==1)
                 {
                     String packageName = fts.getCanonicalPath();
                     ediDocs = unpackMIME(fts, packageName);
