@@ -465,7 +465,7 @@ public class EditorDocument
             e.eraseDefaultAttributes(true);
         if(ini.getRemoveWhite())
             e.eraseEmptyNodes(true);
-        String extension=UrlUtil.extension(file.getAbsolutePath().toLowerCase());
+//        String extension=UrlUtil.extension(file.getAbsolutePath().toLowerCase());
         
         if(!UrlUtil.isMIME(file))
         {                

@@ -82,7 +82,6 @@ import javax.mail.Multipart;
 import javax.swing.JOptionPane;
 import javax.swing.tree.TreePath;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;

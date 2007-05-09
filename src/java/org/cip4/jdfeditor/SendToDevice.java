@@ -364,7 +364,7 @@ public class SendToDevice extends JPanel
             final OutputStream out    = httpURLconnection.getOutputStream();
                         
             out.write(sMessage.getBytes());
-            String s=new String(sMessage.getBytes());
+//            String s=new String(sMessage.getBytes());
 //TODO fix sending            
             out.flush();
             out.close();

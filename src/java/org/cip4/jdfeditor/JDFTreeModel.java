@@ -1109,7 +1109,7 @@ public class JDFTreeModel extends DefaultTreeModel
         XMLDoc d=caps.getOwnerDocument_KElement();
         String fnNew=StringUtil.newExtension(fn, "cap");
         d.write2File(fnNew, 2, false);
-        VString badCaps=Caps.getBadAttributes(d, e);
+//        VString badCaps=Caps.getBadAttributes(d, e);
         Editor.getFrame().readFile(new File(fnNew));
     }
 
