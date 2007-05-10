@@ -1,6 +1,6 @@
 DEPENDENCIES
 
-JDFLib-J 2.1.3.xx, JDFLibJ-2.1.3.jar
+JDFLib-J 2.1.3.38, JDFLibJ-2.1.3.38.jar
 Java Mail 1.3.2, mail-1.3.2.jar, activation-1.0.2.jar
 Commons Lang 2.1, commons-lang-2.1.jar
 Commons Logging 1.0.4, commons-logging-1.0.4.jar
