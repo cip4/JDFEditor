@@ -462,7 +462,7 @@ public class ProcessPanel extends JPanel
                 final JDFResource r=link.getLinkRoot();
                 if(r!=null) // simply ignore unlinked resourcelinks
                 {
-                    final ProcessPart inputPart = addPart(new ProcessPart(r, ProcessPart.RES_EXTERNAL));
+                    final ProcessPart inputPart = addPart(new ProcessPart(r, ProcessPart.RES_EXTERNAL,link));
                     rootPart.addTovInRes(inputPart);
                     inputPart.setPos(x, y);
                     y += inputPart.rawHeight + esY;
@@ -482,7 +482,7 @@ public class ProcessPanel extends JPanel
         private void drawLeafNode(JDFNode rootJDF)
         {
             y = 20;
-            final ProcessPart procPart = addPart(new ProcessPart(rootJDF, ProcessPart.NODE));
+            final ProcessPart procPart = addPart(new ProcessPart(rootJDF, ProcessPart.NODE,null));
             procPart.setPos(x, y);
             x += procPart.rawWidth + esX;
        }
@@ -536,7 +536,7 @@ public class ProcessPanel extends JPanel
     
                 if(r!=null)
                 {
-                    ProcessPart outputPart = new ProcessPart(r, ProcessPart.RES_EXTERNAL);
+                    ProcessPart outputPart = new ProcessPart(r, ProcessPart.RES_EXTERNAL,outputLink);
     
                     if (!hasPart(outputPart))
                     {
@@ -574,7 +574,7 @@ public class ProcessPanel extends JPanel
         vJDFNodes.add(rootJDF);
         vJDFNodes.addAll(rootJDF.getChildElementVector("JDF", null, null, false, -1,false));
         final Vector _vParts = new Vector();
-        parentPart = addPart(new ProcessPart(rootJDF, ProcessPart.PARENT));
+        parentPart = addPart(new ProcessPart(rootJDF, ProcessPart.PARENT,null));
 
         drawInputLinks(parentPart);
         drawSubResLinks(vJDFNodes, _vParts);
@@ -701,7 +701,7 @@ public class ProcessPanel extends JPanel
         for (int i = 1; i < vJDFNodes.size(); i++)
         {
             final JDFNode nodeElem = (JDFNode) vJDFNodes.get(i);
-            final ProcessPart nodePart = addPart(new ProcessPart(nodeElem, ProcessPart.NODE));
+            final ProcessPart nodePart = addPart(new ProcessPart(nodeElem, ProcessPart.NODE,null));
 
             if (nodeElem.hasChildElement("ResourceLinkPool", null))
             {
@@ -778,7 +778,7 @@ public class ProcessPanel extends JPanel
         if (resource != null)
         {                      
             resource=resource.getResourceRoot();
-            ProcessPart res = addPart(new ProcessPart(resource, ProcessPart.RESOURCE));
+            ProcessPart res = addPart(new ProcessPart(resource, ProcessPart.RESOURCE,rL));
             final EnumUsage usage = rL.getUsage();
             if (EnumUsage.Input.equals(usage))
             {

@@ -1132,4 +1132,19 @@ public class JDFTreeModel extends DefaultTreeModel
         d.write2File(fnNew, 2, false);
         Editor.getFrame().readFile(new File(fnNew));        
     }
+
+    /**
+     * @param selectionPath
+     */
+    public void normalize(TreePath selectionPath)
+    {
+        JDFTreeNode node = (JDFTreeNode) selectionPath.getLastPathComponent();
+        if(node==null)
+            return;
+        KElement e=node.getElement();
+        if(e!=null)
+            e.sortChildren();
+        Editor.getFrame().refreshView(null, selectionPath);
+        
+    }
 }

@@ -651,8 +651,10 @@ ClipboardOwner
 
     /////////////////////////////////////////////////////////////
     
-    private void refreshView(EditorDocument eDoc, TreePath path)
+    public void refreshView(EditorDocument eDoc, TreePath path)
     {
+        if(eDoc==null)
+            eDoc=getEditorDoc();
         if(eDoc==null)
             return;
         if(path==null)
@@ -666,11 +668,9 @@ ClipboardOwner
             
             m_treeArea.drawTreeView(eDoc);
             m_topTabs.refreshView(eDoc);
-//            m_copyNode = null;
             this.setTitle(getWindowTitle());
             
             m_errorTabbedPane.refreshView(path);
-//            eDoc.setSelectionPath(new TreePath(((JDFTreeNode) eDoc.getRootNode().getFirstChild()).getPath()),false);
             if(path!=null){
                 m_treeArea.goToPath(path);
                 updateViews(path);

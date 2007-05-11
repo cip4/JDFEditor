@@ -130,6 +130,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
     private JMenuItem m_targetItem;
     private JMenuItem m_saveXJDF=null;
     private JMenuItem m_nodeFromCaps=null;
+    private JMenuItem m_normalize=null;
     private JMenuItem m_saveXJDFCaps=null;
 
     /**
@@ -209,49 +210,25 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
         add(m_insertAttrPopupItem);
         add(separator);
 
-        m_cutPopupItem = new JMenuItem(m_littleBundle.getString("CutKey"));
+        m_cutPopupItem = addMenuItem(m_littleBundle,"CutKey");
 //      m_cutPopupItem.setAccelerator(KeyStroke.getKeyStroke('X', menuKeyMask));
-        m_cutPopupItem.addActionListener(this);
-        add(m_cutPopupItem);
 
-        m_copyPopupItem = new JMenuItem(m_littleBundle.getString("CopyKey"));
+        m_copyPopupItem = addMenuItem(m_littleBundle,"CopyKey");
 //      m_copyPopupItem.setAccelerator(KeyStroke.getKeyStroke('C', menuKeyMask));
-        m_copyPopupItem.addActionListener(this);
-        add(m_copyPopupItem);
 
-        m_pastePopupItem = new JMenuItem(m_littleBundle.getString("PasteKey"));
+        m_pastePopupItem = addMenuItem(m_littleBundle,"PasteKey");
 //      m_pastePopupItem.setAccelerator(KeyStroke.getKeyStroke('P', menuKeyMask));
-        m_pastePopupItem.addActionListener(this);
-        add(m_pastePopupItem);
-
-        m_deletePopupItem = new JMenuItem(m_littleBundle.getString("DeleteKey"));
-        m_deletePopupItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
-        m_deletePopupItem.addActionListener(this);
-        add(m_deletePopupItem);
-
+        m_deletePopupItem = addMenuItem(m_littleBundle,"DeleteKey");
+ 
         add(separator);
 
-        m_renamePopupItem = new JMenuItem(m_littleBundle.getString("RenameKey"));
-        m_renamePopupItem.addActionListener(this);
-        add(m_renamePopupItem);
-
-        m_modifyAttrValuePopupItem = new JMenuItem(m_littleBundle.getString("ModifyAttValueKey"));
-        m_modifyAttrValuePopupItem.addActionListener(this);
-        add(m_modifyAttrValuePopupItem);
-
-        m_targetItem = new JMenuItem(m_littleBundle.getString("GotoTargetKey"));
-        m_targetItem.addActionListener(this);
-        add(m_targetItem);
-        
+        m_renamePopupItem = addMenuItem(m_littleBundle,"RenameKey");
+        m_modifyAttrValuePopupItem = addMenuItem(m_littleBundle,"ModifyAttValueKey");
+        m_targetItem = addMenuItem(m_littleBundle,"GotoTargetKey");
         add(separator);
 
-        m_requiredAttrPopupItem = new JMenuItem(m_littleBundle.getString("AddRequiredAttKey"));
-        m_requiredAttrPopupItem.addActionListener(this);
-        add(m_requiredAttrPopupItem);
-
-        m_requiredElemPopupItem = new JMenuItem(m_littleBundle.getString("AddRequiredElKey"));
-        m_requiredElemPopupItem.addActionListener(this);
-        add(m_requiredElemPopupItem);
+        m_requiredAttrPopupItem = addMenuItem(m_littleBundle,"AddRequiredAttKey");
+        m_requiredElemPopupItem = addMenuItem(m_littleBundle,"AddRequiredElKey");
         add(separator);
 
         // TODO add spawn
@@ -259,40 +236,35 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
         {
             if(ini.getEnableExtensions())
             {
-                m_saveXJDF=new JMenuItem(m_littleBundle.getString("SaveXJFDKey"));
-                m_saveXJDF.addActionListener(this);
-                add(m_saveXJDF);
+                m_saveXJDF=addMenuItem(m_littleBundle,"SaveXJFDKey");
             }
+            m_normalize=addMenuItem(m_littleBundle,"NormalizeKey");
             add(separator);
         }
         else if(elem instanceof JDFDeviceCap)
         {
-            m_nodeFromCaps=new JMenuItem(m_littleBundle.getString("NodeFromCapsKey"));
-            m_nodeFromCaps.addActionListener(this);
-            add(m_nodeFromCaps);
+            m_nodeFromCaps=addMenuItem(m_littleBundle,"NodeFromCapsKey");
             add(separator);
         }
         else if(elem!=null && elem.getNodeName().equals(XJDF20.rootName))
         {
-            m_saveXJDFCaps=new JMenuItem(m_littleBundle.getString("ExportToDevCapKey"));
-            m_saveXJDFCaps.addActionListener(this);
-            add(m_saveXJDFCaps);
+            m_saveXJDFCaps=addMenuItem(m_littleBundle,"ExportToDevCapKey");
         }
 
-        m_xpandPopupItem = new JMenuItem(m_littleBundle.getString("ExpandKey"));
-        m_xpandPopupItem.addActionListener(this);
-        add(m_xpandPopupItem);
-
-        m_collapsePopupItem = new JMenuItem(m_littleBundle.getString("CollapseKey"));
-        m_collapsePopupItem.addActionListener(this);
-        add(m_collapsePopupItem);
+        m_xpandPopupItem = addMenuItem(m_littleBundle,"ExpandKey");
+        m_collapsePopupItem = addMenuItem(m_littleBundle,"CollapseKey");
 
         //20040913 MRE
-        m_copyToClipBoardPopupItem = new JMenuItem(m_littleBundle.getString("CopyNode"));
-        m_copyToClipBoardPopupItem.addActionListener(this);
-        add(m_copyToClipBoardPopupItem);
-
+        m_copyToClipBoardPopupItem = addMenuItem(m_littleBundle,"CopyNode");
         setEnabledInMouseMenu(node, elem);
+    }
+
+    private JMenuItem addMenuItem(final ResourceBundle m_littleBundle, final String key)
+    {
+        JMenuItem item=new JMenuItem(m_littleBundle.getString(key));
+        item.addActionListener(this);
+        add(item);
+        return item;
     }
 
     /**
@@ -478,6 +450,10 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
         else if(eSrc == m_nodeFromCaps)
         {
             Editor.getModel().createNodeFromCaps(ta.getSelectionPath());
+        }
+        else if(eSrc == m_normalize)
+        {
+            Editor.getModel().normalize(ta.getSelectionPath());
         }
         Editor.setCursor(0,null);
 

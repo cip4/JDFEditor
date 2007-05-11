@@ -9,6 +9,7 @@ import javax.swing.JComponent;
 
 import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFConstants;
+import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.node.JDFNode;
@@ -59,7 +60,7 @@ public class ProcessPart extends JComponent
     static private Font resourceFont = null;
     static private Font parentFont = null;
     
-    public ProcessPart(KElement _elem, int _style)
+    public ProcessPart(KElement _elem, int _style, JDFResourceLink rl)
     {
         elem = _elem;
         style=_style;
@@ -84,7 +85,7 @@ public class ProcessPart extends JComponent
             default:
                 throw new IllegalArgumentException("bad style in constructor, mustt be in range 0-3: "+style);
         } 
-        setStrings();
+        setStrings(rl);
     }
 
     /**
@@ -113,7 +114,7 @@ public class ProcessPart extends JComponent
     /**
      * 
      */
-    private void setStrings()
+    private void setStrings(JDFResourceLink rl)
     {
         gColor=null;
         if(elem instanceof JDFNode)
@@ -186,10 +187,30 @@ public class ProcessPart extends JComponent
             if(elem instanceof JDFResource)
             {
                 JDFResource r=(JDFResource)elem;
-                int v=r.getResStatus(false).getValue();
-                if(v<EnumResStatus.Draft.getValue())
+                int colMax=-1;
+                if(rl!=null)
+                {
+                    VElement v=rl.getTargetVector(-1);
+                    if(v!=null)
+                    {
+                        for(int i=0;i<v.size();i++)
+                        {
+                            JDFResource rPart=(JDFResource) v.elementAt(i);
+                            int col=rPart.getResStatus(false).getValue();
+                            if(col>colMax)
+                                colMax=col;
+
+                        }
+                    }
+                    gString[2] = EnumResStatus.getEnum(colMax).getName();
+                }
+                else
+                {
+                    colMax=r.getResStatus(false).getValue();
+                }
+                if(colMax<EnumResStatus.Draft.getValue())
                     gColor= resColorUnAvailable;
-                else if(v>=EnumResStatus.Available.getValue())
+                else if(colMax>=EnumResStatus.Available.getValue())
                     gColor= resColorAvailable;
                 else
                     gColor= resColorDraft;
@@ -323,7 +344,7 @@ public class ProcessPart extends JComponent
             return v;
         for(int i=v.size()-1;i>=0;i--)            
         {
-            final int indexOf = parts.indexOf(new ProcessPart((KElement)v.elementAt(i),0));
+            final int indexOf = parts.indexOf(new ProcessPart((KElement)v.elementAt(i),0,null));
             if(indexOf<0)
             {
                 v.remove(i);
