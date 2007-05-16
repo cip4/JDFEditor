@@ -213,6 +213,7 @@ public class INIReader
     private String longID = "General/@longID";
     private String fontSize = "General/@fontSize";
     private String fontName = "General/@fontName";
+    private String normalizeOpen = "General/@NormalizeOpen";
 
     private String enableExtensions = "Extension/@enableExtensions";
     
@@ -931,5 +932,19 @@ public class INIReader
         setAttribute(generateFull,b?"true":"false");
     }
 
+    /**
+     * @return
+     */
+    public boolean getNormalizeOpen()
+    {
+        return getAttribute(normalizeOpen,"true").equalsIgnoreCase("true") ? true : false;
+    }
 
+    /**
+     * @param normalizeOpen2
+     */
+    public void setNormalizeOpen(boolean bNormalizeOpen)
+    {
+        setAttribute(normalizeOpen,bNormalizeOpen?"true":"false");        
+    }
 }

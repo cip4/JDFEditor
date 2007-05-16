@@ -136,6 +136,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     private JButton changeIconButton;
     private JButton applyLnFButton;
     private JCheckBox boxReadOnly;
+    private JCheckBox boxNormalizeOpen;
     private JCheckBox boxRemDefault;
     private JCheckBox boxDispDefault;
     private JCheckBox boxEnableExtension;
@@ -167,6 +168,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     private boolean currValidate;
     private boolean checkURL;
     private boolean currReadOnly;
+    private boolean normalizeOpen;
     private boolean longID;
     private boolean enableExtensions;
     private boolean generateFull;
@@ -273,6 +275,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         enableExtensions=iniFile.getEnableExtensions();
         genericStrings=iniFile.getGenericAtts();
         generateFull=iniFile.getGenerateFull();
+        normalizeOpen=iniFile.getNormalizeOpen();
         this.setPreferredSize(new Dimension(390, 380));
         this.addMouseListener(new TabListener());
         drawPane();
@@ -343,6 +346,13 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         boxReadOnly.setBounds(10, y, d.width, d.height);
         boxReadOnly.addActionListener(this);
         genPanel.add(boxReadOnly);        
+        
+        y += d.height + 3;
+        boxNormalizeOpen = new JCheckBox(littleBundle.getString("NormalizeOpenKey"), normalizeOpen);
+        d = boxNormalizeOpen.getPreferredSize();
+        boxNormalizeOpen.setBounds(10, y, d.width, d.height);
+        boxNormalizeOpen.addActionListener(this);
+        genPanel.add(boxNormalizeOpen);        
         
         y += d.height + 3;
         boxValOpen = new JCheckBox(littleBundle.getString("OpenAutoValKey"), currValidate);
@@ -1074,6 +1084,9 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         else if (source == boxReadOnly)
             currReadOnly = boxReadOnly.isSelected();
         
+        else if (source == boxNormalizeOpen)
+            normalizeOpen = boxNormalizeOpen.isSelected();
+        
         else if (source == boxValOpen)
             currValidate = boxValOpen.isSelected();
 
@@ -1163,6 +1176,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         iniFile.setLongID(longID);        
         iniFile.setEnableExtensions(enableExtensions);    
         iniFile.setGenerateFull(generateFull);    
+        iniFile.setNormalizeOpen(normalizeOpen);    
         genericStrings =fieldGenericStrings.getText();
         final VString genericAttributes = new VString(genericStrings,null);
         genericAttributes.unify();

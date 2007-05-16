@@ -412,6 +412,8 @@ public class EditorUtils
         if(jdfDoc!=null)
         {
             jdfDoc.clearDirtyIDs();
+            if(iniFile!=null && iniFile.getNormalizeOpen())
+                jdfDoc.getRoot().sortChildren();
         }
 
         return jdfDoc;
