@@ -85,6 +85,7 @@ import org.cip4.jdflib.util.StringUtil;
 public class EditorFileChooser extends JFileChooser
 {
     private static final long serialVersionUID = 1835778964946902960L;
+    public final static String allFiles="xml jdf jmf mim mjm mjd";
     
     public EditorFileChooser(File arg0,String fileTypes)
     {
