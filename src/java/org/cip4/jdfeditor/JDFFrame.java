@@ -4,7 +4,7 @@ package org.cip4.jdfeditor;
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2006 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2007 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -157,7 +157,6 @@ ClipboardOwner
     private static final long serialVersionUID = 626128726824503039L;    
     
     // TODO remove messy globals   
-//    boolean m_callFromSearch = false;
     
     public JDFTreeArea m_treeArea; 
     
@@ -331,7 +330,7 @@ ClipboardOwner
                 fileToSave=new File(recentFile);
         }
         
-        final EditorFileChooser chooser = new EditorFileChooser(fileToSave,"xml jdf jmf mjm mjd");
+        final EditorFileChooser chooser = new EditorFileChooser(fileToSave,EditorFileChooser.allFiles);
         final int answer = chooser.showOpenDialog(this);
         
         if (answer == JFileChooser.APPROVE_OPTION)
@@ -719,7 +718,7 @@ ClipboardOwner
        String fileName=ediDoc.getSaveFileName();
          
         File fileToSave=new File(fileName);
-        final EditorFileChooser saveChooser = new EditorFileChooser(fileToSave,"xml jmf jdf mjm mjd");
+        final EditorFileChooser saveChooser = new EditorFileChooser(fileToSave,EditorFileChooser.allFiles);
         final int answer = saveChooser.showSaveDialog(null);
         
         if (answer == JFileChooser.APPROVE_OPTION)
