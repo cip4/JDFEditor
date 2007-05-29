@@ -1082,8 +1082,7 @@ ClipboardOwner
                 {
                     element.eraseDefaultAttributes(true);
                     element.eraseEmptyAttributes(true);
-                    element.eraseEmptyNodes(true);
-                    
+                    element.eraseEmptyNodes(true);                    
                 }
             }
             refreshView(getEditorDoc(),path);           
