@@ -105,6 +105,7 @@ public class ModifyAttrEdit extends EditorUndoableEdit
         String keep=atr.getNodeValue();
         atr.setNodeValue(previousValue);
         previousValue=keep;
+//        attrNode.setUserObject(atr);
         Editor.getFrame().updateViews(path);
     }
 

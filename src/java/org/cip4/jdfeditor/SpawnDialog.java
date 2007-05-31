@@ -202,7 +202,7 @@ public class SpawnDialog extends JPanel implements ActionListener
         constraints.insets = new Insets(3,5,3,5);
         setBorder(BorderFactory.createTitledBorder(littleBundle.getString("SpawnedOutputKey")));
         
-        final JLabel mergeLabel = new JLabel(createPathName(littleBundle.getString("SpawnedOutputKey").length()));
+        final JLabel mergeLabel = new JLabel(EditorUtils.displayPathName(originalFile, littleBundle.getString("SpawnedOutputKey").length()));
         constraints.gridwidth = GridBagConstraints.REMAINDER;
         layout.setConstraints(mergeLabel, constraints);
         add(mergeLabel);
@@ -278,31 +278,6 @@ public class SpawnDialog extends JPanel implements ActionListener
         
         return path + name + addOn + extension;
     }
-    /**
-     * Creates the String which is to be displayed...
-     * @param length - The length of the title...
-     * @return The file name, may be a little bit altered.
-     */
-    private String createPathName(int length)
-    {
-        String s = '"' + originalFile.getAbsolutePath() + '"';
-        
-        if (s.length() <= 1.5 * length)
-            return s;
-
-        int i = s.indexOf('\\');
-        int j = s.lastIndexOf('\\');
-        
-        if (i == j)
-            return s.substring(0, length - 4) + "..." + '"';
-        
-        String start = s.substring(0, i + 1);
-        String end = s.substring(j, s.length());
-        
-        return start + "..." + end;
-    }
-        
-      
     public void actionPerformed(ActionEvent e)
     {
         if (e.getSource() == browse1 || e.getSource() == browse2)

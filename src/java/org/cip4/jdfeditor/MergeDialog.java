@@ -146,7 +146,7 @@ public class MergeDialog extends JPanel implements ActionListener
         constraints.insets = new Insets(3,5,3,5);
         setBorder(BorderFactory.createTitledBorder(littleBundle.getString("SpawnedInputKey")));
         
-        final JLabel mergeLabel = new JLabel(createPathName(littleBundle.getString("SpawnedInputKey").length()));
+        final JLabel mergeLabel = new JLabel(EditorUtils.displayPathName(file, littleBundle.getString("SpawnedInputKey").length()));
         constraints.gridwidth = GridBagConstraints.REMAINDER;
         layout.setConstraints(mergeLabel, constraints);
         add(mergeLabel);
@@ -183,31 +183,6 @@ public class MergeDialog extends JPanel implements ActionListener
         return file;
     }
     
-    /**
-     * Creates the String which is to be displayed...
-     * @param length - The length of the title...
-     * @return The file name, may be a little bit altered.
-     */
-    private String createPathName(int length)
-    {
-        final String s = '"' + file.getAbsolutePath() + '"';
-        
-        if (s.length() <= 1.5 * length)
-            return s;
-        
-        final int i = s.indexOf('\\');
-        final int j = s.lastIndexOf('\\');
-        
-        if (i == j)
-            return s.substring(0, length - 4) + "..." + '"';
-        
-        final String start = s.substring(0, i + 1);
-        final String end = s.substring(j, s.length());
-        
-        return start + "..." + end;
-    }
-    
-     
     /**
      * actionPerformed method for realization of "Browse" button 
      * method opens new Dialog window "Browse" and 

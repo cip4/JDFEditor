@@ -348,7 +348,8 @@ public class JDFTreeNode extends DefaultMutableTreeNode
             {
                 s+=", "+id;
             }
-         }        
+         }     
+        
         return s;
     }
     
@@ -368,13 +369,8 @@ public class JDFTreeNode extends DefaultMutableTreeNode
     
     protected String getDCString(String attName, String prefix, String postFix)
     {
-        String strValue;
-        
-        if (!getElement().hasAttribute(attName))
-        {
-            strValue = "";
-        }
-        else
+        String strValue="";        
+        if (getElement().hasAttribute(attName))
         {
             if(prefix==null)
                 prefix= " "+attName+"=";
