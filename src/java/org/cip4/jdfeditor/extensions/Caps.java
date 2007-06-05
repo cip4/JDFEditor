@@ -22,7 +22,11 @@ import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.datatypes.JDFAttributeMap;
 import org.cip4.jdflib.datatypes.JDFBaseDataTypes.EnumFitsValue;
 import org.cip4.jdflib.resource.devicecapability.JDFAbstractState;
+import org.cip4.jdflib.resource.devicecapability.JDFAction;
+import org.cip4.jdflib.resource.devicecapability.JDFActionPool;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCap;
+import org.cip4.jdflib.resource.devicecapability.JDFTest;
+import org.cip4.jdflib.resource.devicecapability.JDFTestPool;
 
 
 /**
@@ -37,6 +41,12 @@ public class Caps
     {
         XMLDoc d=new JDFDoc("Cap");
         KElement rootCap=d.getRoot();
+        JDFActionPool ap=(JDFActionPool) rootCap.appendElement("ActionPool");
+        JDFTestPool tp=(JDFTestPool) rootCap.appendElement("TestPool");
+        JDFAction a=ap.appendAction();
+        JDFTest t=tp.appendTest();
+        a.setTest(t);
+            
         // grab all elements
         VElement vXJDFElements=xjdf.getChildrenByTagName(null, null, null, false, true, 0);
         vXJDFElements.add(xjdf);
@@ -94,6 +104,8 @@ public class Caps
         dcDummy.deleteNode();
         return rootCap;
     }
+    
+    /////////////////////////////////////////////////////////////////////////////////////////
     
     public static VString getBadAttributes(XMLDoc capFile, KElement xjdfRoot)
     {
