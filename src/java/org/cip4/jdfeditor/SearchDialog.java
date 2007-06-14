@@ -12,6 +12,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -23,6 +24,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.tree.TreePath;
 
 import org.cip4.jdflib.core.JDFConstants;
+import org.cip4.jdflib.core.VString;
 
 /**
  * @author ThunellE
@@ -64,15 +66,15 @@ public class SearchDialog extends JDialog implements ActionListener
      */
     private static final long serialVersionUID = -5193131794786297752L;
     
-    String searchComponent;
-    JButton m_findNextButton;
-    JButton m_cancelButton;    
-    JTextField m_searchTextField;
+    private String searchComponent;
+    private JButton m_findNextButton;
+    private JButton m_cancelButton;    
+    private JTextField m_searchTextField;
     private JRadioButton m_forwardRadioButton;
     private JRadioButton m_backwardRadioButton;
     private Vector m_vGlobalSearch = new Vector();
     private JDFFrame m_frame;
-    
+//   private static VString recentSearches=new VString();
     /**
      * Constructor for SearchDialog.
      */
@@ -94,6 +96,9 @@ public class SearchDialog extends JDialog implements ActionListener
         box2.add(findLabel);
         
         m_searchTextField = new JTextField();
+//        if(recentSearches.size()>0)
+//            m_searchTextField.setSelectedIndex(0);
+        
         final MyDocumentListener searchTextFieldListener = new MyDocumentListener();
         m_searchTextField.getDocument().addDocumentListener(searchTextFieldListener);
         m_searchTextField.setPreferredSize(new Dimension(60, 20));
@@ -218,7 +223,7 @@ public class SearchDialog extends JDialog implements ActionListener
      */
     private void findStringInTree(String inString, boolean forwardDirection)
     {
-        if (inString != null || !inString.equals(JDFConstants.EMPTYSTRING))
+        if (inString != null && !inString.equals(JDFConstants.EMPTYSTRING))
         {
             Editor.setCursor(1,null);
             final String searchString = inString.toUpperCase();

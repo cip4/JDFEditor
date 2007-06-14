@@ -71,6 +71,8 @@ public class XJDF20
         setResources(newRoot, node,null,rootIn);
         setElements(node, newRoot);
         newRoot.eraseEmptyNodes(true);
+        newRoot.removeAttribute(AttributeName.ACTIVATION);           
+
         return newRoot;
     }
     /**
@@ -138,6 +140,11 @@ public class XJDF20
                 continue;
             if(e instanceof JDFNode)
                 continue;
+            if(e.getLocalName().equals("ProductList"))
+            {
+                newRoot.moveElement(e, null);
+                continue;
+            }
             newRoot.copyElement(e, null);
         }
     }

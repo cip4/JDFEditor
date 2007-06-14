@@ -167,7 +167,7 @@ public class ProcessPart extends JComponent
             gString = tmp;
             
             rawWidth = setPartWidth(gString);
-            setToolTipText("JDFResource: "+elem.getAttribute("DescriptiveName"));
+            setToolTipText(elem.getNodeName()+": "+elem.getAttribute("DescriptiveName"));
         }
         else 
         {
@@ -175,11 +175,11 @@ public class ProcessPart extends JComponent
             
             String[] tmp = { elem.getNodeName(),
                 elem.getAttribute("ID"),
-                elem.getAttribute("Status", "", "") };
+                elem.getAttribute("Status", null, "") };
             gString = tmp;
             
             rawWidth = setPartWidth(gString);
-            setToolTipText("JDFResource: "+elem.getAttribute("DescriptiveName"));
+            setToolTipText(elem.getNodeName()+": "+elem.getAttribute("DescriptiveName"));
         }
         rawWidth += 30;
         if(gColor==null)
@@ -191,18 +191,17 @@ public class ProcessPart extends JComponent
                 if(rl!=null)
                 {
                     VElement v=rl.getTargetVector(-1);
-                    if(v!=null)
+                    final int size = v==null ? 0 : v.size();
+                    for(int i=0;i<size;i++)
                     {
-                        for(int i=0;i<v.size();i++)
-                        {
-                            JDFResource rPart=(JDFResource) v.elementAt(i);
-                            int col=rPart.getResStatus(false).getValue();
-                            if(col>colMax)
-                                colMax=col;
+                        JDFResource rPart=(JDFResource) v.elementAt(i);
+                        int col=rPart.getResStatus(false).getValue();
+                        if(col>colMax)
+                            colMax=col;
 
-                        }
                     }
-                    gString[2] = EnumResStatus.getEnum(colMax).getName();
+                    final EnumResStatus enumStatus = EnumResStatus.getEnum(colMax);
+                    gString[2] = enumStatus==null ? "unknown" : enumStatus.getName();
                 }
                 else
                 {
