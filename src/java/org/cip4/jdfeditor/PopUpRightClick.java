@@ -76,7 +76,6 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.Enumeration;
 import java.util.ResourceBundle;
 
@@ -84,7 +83,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
-import javax.swing.KeyStroke;
 import javax.swing.tree.TreePath;
 
 import org.cip4.jdfeditor.extensions.XJDF20;
