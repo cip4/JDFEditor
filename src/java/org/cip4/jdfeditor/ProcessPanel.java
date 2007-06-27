@@ -399,6 +399,8 @@ public class ProcessPanel extends JPanel
      */
     protected void drawNewRoot(final KElement element)
     {
+        if(element==null)
+            return;
         JDFFrame m_frame=Editor.getFrame();
         if (element instanceof JDFNode)
         {
@@ -408,7 +410,8 @@ public class ProcessPanel extends JPanel
             JDFTreeNode node = new JDFTreeNode(element);
             m_frame.m_treeArea.findNode(node);
         }        
-        m_frame.m_buttonBar.m_upOneLevelButton.setEnabled(!element.equals(((JDFTreeNode) m_frame.getRootNode().getFirstChild()).getElement()));   
+        final JDFTreeNode rootNode = m_frame.getRootNode();
+        m_frame.m_buttonBar.m_upOneLevelButton.setEnabled(!element.equals(rootNode==null ? null : ((JDFTreeNode) rootNode.getFirstChild()).getElement()));   
     }
     /**
      * Initiate the Process View.
@@ -807,8 +810,7 @@ public class ProcessPanel extends JPanel
      */
     private void rescale(int _width, Vector vTmp)
     {
-        int size;
-        size = vTmp.size();
+        final int size = vTmp.size();
         for (int i = 0; i < size; i++)
         {
             final ProcessPart inputPart =(ProcessPart)vTmp.get(i);
