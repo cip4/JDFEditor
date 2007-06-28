@@ -257,7 +257,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
         m_editMenu.add(m_findItem);
 
         m_findXPathItem = new JMenuItem(littleBundle.getString("FindXPathKey"));
-        m_findXPathItem.addActionListener(frame);
+        m_findXPathItem.addActionListener(this);
         m_editMenu.add(m_findXPathItem);
 
         return m_editMenu;
@@ -1023,6 +1023,11 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
         {
             Editor.getFrame().cleanupSelected();
         }
+        else if (eSrc == m_findXPathItem)
+        {
+            Editor.getFrame().m_treeArea.findXPathElem();
+        }    
+
 
 
         for(int i=0;i<m_subMenuItem.length;i++)

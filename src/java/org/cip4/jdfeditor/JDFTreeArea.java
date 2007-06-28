@@ -101,6 +101,7 @@ import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFConstants;
 import org.cip4.jdflib.core.JDFElement;
+import org.cip4.jdflib.core.JDFException;
 import org.cip4.jdflib.core.JDFRefElement;
 import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.KElement;
@@ -131,6 +132,7 @@ public class JDFTreeArea extends JTextArea
     private JDFTreeRenderer m_renderer;
     public JDFFrame m_frame;
     private ResourceBundle m_littleBundle;
+    private static String lastPath="/JDF";
 
 
     public JDFTreeArea(ResourceBundle bundle, JDFFrame frame)
@@ -459,7 +461,7 @@ public class JDFTreeArea extends JTextArea
             while (e.hasMoreElements())
             {
                 final JDFTreeNode node = (JDFTreeNode) e.nextElement();                
-                if (path.equals(node.getXPath()))
+                if (node.matchesPath(path))
                 {
                     goToPath(new TreePath(node.getPath()));
                     return;
@@ -607,6 +609,66 @@ public class JDFTreeArea extends JTextArea
         }
     }
     ////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Creates the m_dialog for Input of XPath.
+     * Selects in the TreeView the node with defined XPath.  
+     * If XPath does not exist - displays Error message
+     */
+    synchronized public void findXPathElem() 
+    {
+        EditorDocument ed=Editor.getEditorDoc();
+        if(ed==null)
+            return;
+
+        lastPath = JOptionPane.showInputDialog(this, "Input XPath", lastPath);
+        if (lastPath == null || lastPath.equals(JDFConstants.EMPTYSTRING))
+        {
+            JOptionPane.showMessageDialog(this, "XPath was not chosen", "Error", JOptionPane.ERROR_MESSAGE);
+            lastPath="/JDF";
+        }
+        else 
+        {
+            final KElement r = ((JDFTreeNode) ed.getRootNode().getFirstChild()).getElement();
+            final int atPos = lastPath.indexOf(JDFConstants.AET);
+            String message=null;
+            if (atPos > 0) // attribute
+            {
+                try 
+                {
+                    String attr = r.getXPathAttribute(lastPath,null);
+                    if(attr==null)
+                        message = "No attribute with XPath found: " + lastPath;
+                }
+                catch (JDFException exc)
+                {
+                    message = exc.getMessage();
+                }
+
+             }
+            else  // element
+            {
+                try 
+                {
+                    KElement el = r.getXPathElement(lastPath);
+                    if(el==null)
+                        message = "No element with XPath found: " + lastPath;
+                }
+                catch (JDFException exc)
+                {
+                    message = exc.getMessage();
+                }  
+            }
+            if (message!=null)
+            {
+                ed.getJDFTree().clearSelection();
+                JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            else 
+            {
+                findInNode(lastPath);
+            }
+        }
+    }
 
     public TreePath getSelectionPath()
     {

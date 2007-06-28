@@ -1207,10 +1207,6 @@ ClipboardOwner
         {
             findIt();
         }
-        else if (eSrc == m_menuBar.m_findXPathItem)
-        {
-            findXPathElem();
-        }    
         else if (eSrc == m_buttonBar.m_validateButton)
         {
             if (fileToSave != null) 
@@ -1564,82 +1560,7 @@ ClipboardOwner
         }
     }
     
- 
-    
-
-    
-    /**
-     * Creates the m_dialog for Input of XPath.
-     * Selects in the TreeView the node with defined XPath.  
-     * If XPath does not exist - displays Error message
-     */
-    private void findXPathElem() 
-    {
-        if (m_treeArea != null)
-        {
-            final String xPath = JOptionPane.showInputDialog(this, "Input XPath", "/JDF");
-            if (xPath == null || xPath.equals(JDFConstants.EMPTYSTRING))
-            {
-                JOptionPane.showMessageDialog(this, "XPath was not chosen", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-            else 
-            {
-                final KElement r = ((JDFTreeNode) getRootNode().getFirstChild()).getElement();
-                
-                final int atPos = xPath.indexOf(JDFConstants.AET);
-                boolean bFound = true;
-                
-                String message = JDFConstants.EMPTYSTRING;
-                
-                if (atPos > 0)
-                {
-                    String attr = JDFConstants.EMPTYSTRING;
-                    try 
-                    {
-                        attr = r.getXPathAttribute(xPath,JDFConstants.EMPTYSTRING);
-                    }
-                    catch (JDFException exc)
-                    {
-                        message = exc.getMessage();
-                    }
-                    
-                    if (attr.equals(JDFConstants.EMPTYSTRING))
-                        bFound = false;
-                }
-                else 
-                {
-                    KElement el = null;
-                    try 
-                    {
-                        el = r.getXPathElement(xPath);
-                    }
-                    catch (JDFException exc)
-                    {
-                        message = exc.getMessage();
-                    } 
-                    if (el == null)
-                        bFound = false;
-                    
-                }
-                if (!bFound || !message.equals(JDFConstants.EMPTYSTRING))
-                {
-                    EditorDocument ed=getEditorDoc();
-                    ed.getJDFTree().clearSelection();
-                    if (message.equals(JDFConstants.EMPTYSTRING))
-                    {
-                        message = "No element with such XPath found:\n\n" + xPath + '\n';
-                    }
-                    JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
-                }
-                else 
-                {
-                    m_treeArea.findInNode(xPath);
-                }
-            }
-        }
-    }
-    
-    
+     
     /**
      * Determine where the search is to be done
      */

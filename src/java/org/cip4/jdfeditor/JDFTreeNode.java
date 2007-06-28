@@ -80,6 +80,7 @@ import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.resource.devicecapability.JDFAbstractState;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCap;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCaps;
+import org.cip4.jdflib.util.StringUtil;
 import org.w3c.dom.Attr;
 
 /**
@@ -390,6 +391,28 @@ public class JDFTreeNode extends DefaultMutableTreeNode
         if(arg0==null)
             return -1;
         return super.getIndex(arg0);
+    }
+
+    /**
+     * @param path
+     * @return
+     */
+    public boolean matchesPath(String path)
+    {
+        if(path==null)
+            return false;
+        
+        String attribute=StringUtil.token(path, 1, "@");
+        final boolean element = isElement();
+        if(element&&attribute!=null)
+            return false;
+        if(!element)
+        {
+            if(attribute==null || !attribute.equals(getName()))
+                   return false;
+            return getElement().matchesPath(StringUtil.token(path, 0, "@"), true);
+        }
+        return getElement().matchesPath(path, true);     
     }
     
     ///////////////////////////////////////////////////////////////////////
