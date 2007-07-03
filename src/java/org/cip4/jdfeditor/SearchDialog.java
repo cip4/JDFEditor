@@ -12,7 +12,6 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -24,7 +23,6 @@ import javax.swing.event.DocumentListener;
 import javax.swing.tree.TreePath;
 
 import org.cip4.jdflib.core.JDFConstants;
-import org.cip4.jdflib.core.VString;
 
 /**
  * @author ThunellE
