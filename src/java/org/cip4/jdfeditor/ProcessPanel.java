@@ -711,7 +711,8 @@ public class ProcessPanel extends JPanel
                 final JDFResourceLinkPool resLinkPool =  nodeElem.getResourceLinkPool();
                 final VElement links = resLinkPool.getInOutLinks(null, true, null, null);
 
-                for (int j = 0; j < links.size(); j++)
+                final int size = links==null ? 0 : links.size();
+                for (int j = 0; j < size; j++)
                 {
                     prepareResLink(nodePart, (JDFResourceLink)links.elementAt(j));
                 }
