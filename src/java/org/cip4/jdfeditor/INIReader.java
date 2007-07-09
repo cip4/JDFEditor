@@ -91,6 +91,8 @@ import org.cip4.jdflib.util.StringUtil;
  * 
  * History
  * 20040906 MRE methods for send to device added
+ * 
+ * File includes path for display icons in the JDFEditor.
  */
 
 public class INIReader

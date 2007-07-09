@@ -98,6 +98,9 @@ import org.cip4.jdflib.pool.JDFResourcePool;
  * Class to implement all the menu bar and menu related stuff
  * moved here from JDFFrame
  * @author prosirai
+ * 
+ * Code for the menu on the top of the JDFEditor as well as the pop up menus. You can modify the hot key settings here for every menu
+ * choice.
  *
  */
 public class EditorMenuBar extends JMenuBar implements ActionListener
@@ -217,19 +220,34 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
         m_cutItem = new JMenuItem(littleBundle.getString("CutKey"));
         m_cutItem.addActionListener(frame);
-        m_cutItem.setAccelerator(KeyStroke.getKeyStroke('X', menuKeyMask));
+        /*
+         * The following does not work correctly. I don't understand why.
+         * m_cutItem.setAccelerator(KeyStroke.getKeyStroke('X', menuKeyMask));
+         */
+        m_cutItem.setAccelerator(KeyStroke.getKeyStroke('X', 
+                java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
         m_cutItem.setEnabled(false);
         m_editMenu.add(m_cutItem);
 
         m_copyItem = new JMenuItem(littleBundle.getString("CopyKey"));
         m_copyItem.addActionListener(frame);
-        m_copyItem.setAccelerator(KeyStroke.getKeyStroke('C', menuKeyMask));
+        /*
+         * The following does not work correctly. I don't understand why.
+         * m_copyItem.setAccelerator(KeyStroke.getKeyStroke('C', menuKeyMask));
+         */
+        m_copyItem.setAccelerator(KeyStroke.getKeyStroke('C', 
+                java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
         m_copyItem.setEnabled(false);
         m_editMenu.add(m_copyItem);
 
         m_pasteItem = new JMenuItem(littleBundle.getString("PasteKey"));
         m_pasteItem.addActionListener(frame);
-        m_pasteItem.setAccelerator(KeyStroke.getKeyStroke('V', menuKeyMask));
+        /*
+         * The following does not work correctly. I don't understand why.
+         * m_pasteItem.setAccelerator(KeyStroke.getKeyStroke('V', menuKeyMask));
+         */
+        m_pasteItem.setAccelerator(KeyStroke.getKeyStroke('V', 
+                java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
         m_pasteItem.setEnabled(false);
         m_editMenu.add(m_pasteItem);
 
@@ -256,6 +274,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
         m_findItem.setAccelerator(KeyStroke.getKeyStroke('F', menuKeyMask));
         m_editMenu.add(m_findItem);
 
+        //Follow this with F3 Key b/c Rainer fixed. Look at old version vs newer version.
         m_findXPathItem = new JMenuItem(littleBundle.getString("FindXPathKey"));
         m_findXPathItem.addActionListener(this);
         m_editMenu.add(m_findXPathItem);
@@ -290,6 +309,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
         m_closeItem = new JMenuItem(m_littleBundle.getString("CloseKey"));
         m_closeItem.addActionListener(this);
+        m_closeItem.setAccelerator(KeyStroke.getKeyStroke('W', menuKeyMask));
         m_fileMenu.add(m_closeItem);
 
         m_closeAllItem = new JMenuItem(m_littleBundle.getString("CloseAllKey"));
@@ -340,6 +360,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
         JDFFrame m_frame=Editor.getFrame();
         ResourceBundle m_littleBundle=Editor.getBundle();
         final Menu_MouseListener menuListener = new Menu_MouseListener();
+        final int menuKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
         m_helpMenu = new JMenu(m_littleBundle.getString("HelpKey"));
         m_helpMenu.setBorderPainted(false);
@@ -347,6 +368,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
         m_helpItem = new JMenuItem(m_littleBundle.getString("HelpKey"));
         m_helpItem.addActionListener(m_frame);
+        m_helpItem.setAccelerator(KeyStroke.getKeyStroke('H', menuKeyMask));
         m_helpMenu.add(m_helpItem);
 
         m_helpMenu.add(new JSeparator());
@@ -377,7 +399,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
         m_nextItem = new JMenuItem(m_littleBundle.getString("NextKey"));
         m_nextItem.addActionListener(this);
-        m_nextItem.setAccelerator(KeyStroke.getKeyStroke('X', menuKeyMask));
+        m_nextItem.setAccelerator(KeyStroke.getKeyStroke('T', menuKeyMask));
         m_windowMenu.add(m_nextItem);
 
         return m_windowMenu;

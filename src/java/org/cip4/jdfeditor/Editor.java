@@ -100,6 +100,17 @@ public class Editor
     protected static JDFFrame my_Frame;
     private static INIReader m_iniFile;
 
+    /*
+     * This package is found under JDFEditor in the src/java section. It contains all of the icons associated with the JDFEditor.
+     * For your icons to appear, remember to refresh the package.
+     * 
+     * To change the icons in the Menu bar, go to EditorButton.java.
+     * To change the icons in the tree mode, error icons, go to INIReader.java.
+     * 
+     * If you would like to change the appearance of how the menu items appear, go to JDFEditor_(Language want, i.e. en)_.properties
+     * located under org.cip4.jdfeditor.messages package.
+     */
+   
     public static final String ICONS_PATH = "/org/cip4/jdfeditor/icons/";
 
     public static ImageIcon getImageIcon(Class myClass, String resString)

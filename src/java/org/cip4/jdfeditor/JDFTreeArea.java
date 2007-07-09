@@ -122,6 +122,7 @@ import org.cip4.jdflib.resource.devicecapability.JDFDevCaps;
  * @author prosirai
  * This is a new dump for some of the JDFFrame classes that relate to the actual tree view
  * TODO move some of the routines here into the model where they belong and reduce the dependencies with JDFFrame
+ * 
  */
 public class JDFTreeArea extends JTextArea
 { 

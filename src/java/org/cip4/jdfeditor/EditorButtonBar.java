@@ -126,27 +126,32 @@ public class EditorButtonBar extends JToolBar implements ActionListener
     
     /**
      * Method drawButtonBar.
+     * Editor.java contains ICONS_PATH. This package can be found under JDFEditor/src/Java/org.cip4.jdfeditor.icons
+     * You can add icons to this packagae by putting your .gif files into the following folder. This folder comes from whereever you
+     * downloaded yoru code from SubVersion. My place (BIskey) is the reference point. You can make it whatever you like. 
+     *  C:\Subversion_Root\My_Root\JDFEditor\src\java\org\cip4\jdfeditor\icons
+     *  After adding the icons to this folder, you need to come here and refresh the package w/in your Java editing software.
      */
     public void drawButtonBar()
     {
-        final ImageIcon imgNew = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "NewButton.gif");
-        final ImageIcon imgOpen = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "OpenButton.gif");
-        final ImageIcon imgSave = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "SaveButton.gif");
-        final ImageIcon imgCut = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "CutButton.gif");
-        final ImageIcon imgCopy = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "CopyButton.gif");
-        final ImageIcon imgPaste = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "PasteButton.gif");
-        final ImageIcon imgUndo = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "UndoButton.gif");
-        final ImageIcon imgRedo = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "RedoButton.gif");
-        final ImageIcon imgReval = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "RevalidateButton.gif");
-        final ImageIcon imgUp = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "UpButton.gif");
-        final ImageIcon imgLast = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "LastButton.gif");
-        final ImageIcon imgNext = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "NextButton.gif");
-        final ImageIcon imgPrint = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "PrintButton.gif");
+        final ImageIcon imgNew = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "NewFile.GIF");
+        final ImageIcon imgOpen = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "OpenFile.GIF");
+        final ImageIcon imgSave = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "SaveFile.GIF");
+        final ImageIcon imgCut = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "CutInfo.GIF");
+        final ImageIcon imgCopy = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "CopyInfo.GIF");
+        final ImageIcon imgPaste = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "PasteInfo.GIF");
+        final ImageIcon imgUndo = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "UndoAction.GIF");
+        final ImageIcon imgRedo = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "RedoAction.GIF");
+        final ImageIcon imgReval = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ValidateFile.GIF");
+        final ImageIcon imgUp = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "UpOne.GIF");
+        final ImageIcon imgLast = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "LastSelect.GIF");
+        final ImageIcon imgNext = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "NextSelect.GIF");
+        final ImageIcon imgPrint = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "PrintFile.GIF");
         final ImageIcon imgZoomIn = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ZoomInButton.gif");
         final ImageIcon imgZoomOut = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ZoomOutButton.gif");
         final ImageIcon imgZoomOrig = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ZoomOrigButton.gif");
         final ImageIcon imgZoomBest = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ZoomBestButton.gif");
-        final ImageIcon imgRefresh = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "RefreshButton.gif");
+        final ImageIcon imgRefresh = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "RefreshFile.GIF");
         
         final Dimension d = new Dimension(10, 30);
         setFloatable(false);
@@ -188,7 +193,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
         m_zoomBestButton = createDefaultButton(imgZoomBest,m_littleBundle.getString("ZoomFitKey"),false,'|');
         
         addSeparator(d);
-        final ImageIcon imgClose = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "CloseButton.gif");
+        final ImageIcon imgClose = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "CloseFile.GIF");
         m_closeButton = createDefaultButton(imgClose,m_littleBundle.getString("CloseKey"),true,'|');
         addSeparator(d);
               
