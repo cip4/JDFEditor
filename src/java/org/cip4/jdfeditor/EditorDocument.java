@@ -519,6 +519,8 @@ public class EditorDocument
         
     }
 
+//////////////////////////////////////////////////////////
+
     /**
      * @return the topTab
      */
@@ -526,13 +528,20 @@ public class EditorDocument
     {
         return topTab;
     }
-
+//////////////////////////////////////////////////////////
     /**
      * @param topTab the topTab to set
      */
-    public void setTopTab(int topTab)
+    public void setTopTab(int _topTab)
     {
-        this.topTab = topTab;
+        this.topTab = _topTab;
     }
    
+//////////////////////////////////////////////////////////
+    public boolean isDirty()
+    {
+        return m_jdfDoc==null ? false : m_jdfDoc.isDirty(null);
+    }
+//////////////////////////////////////////////////////////
+
 }

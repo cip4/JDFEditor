@@ -701,21 +701,19 @@ public class ProcessPanel extends JPanel
      */
     private void drawSubResLinks(final VElement vJDFNodes, final Vector _vParts)
     {
-        for (int i = 1; i < vJDFNodes.size(); i++)
+        final int sizeJDF = vJDFNodes==null ? 0 : vJDFNodes.size();
+        for (int i = 1; i < sizeJDF; i++)
         {
             final JDFNode nodeElem = (JDFNode) vJDFNodes.get(i);
             final ProcessPart nodePart = addPart(new ProcessPart(nodeElem, ProcessPart.NODE,null));
 
-            if (nodeElem.hasChildElement("ResourceLinkPool", null))
-            {
-                final JDFResourceLinkPool resLinkPool =  nodeElem.getResourceLinkPool();
-                final VElement links = resLinkPool.getInOutLinks(null, true, null, null);
+            final JDFResourceLinkPool resLinkPool =  nodeElem.getResourceLinkPool();
+            final VElement links = resLinkPool==null ? null : resLinkPool.getInOutLinks(null, true, null, null);
 
-                final int size = links==null ? 0 : links.size();
-                for (int j = 0; j < size; j++)
-                {
-                    prepareResLink(nodePart, (JDFResourceLink)links.elementAt(j));
-                }
+            final int size = links==null ? 0 : links.size();
+            for (int j = 0; j < size; j++)
+            {
+                prepareResLink(nodePart, (JDFResourceLink)links.elementAt(j));
             }
             _vParts.add(nodePart);
         }

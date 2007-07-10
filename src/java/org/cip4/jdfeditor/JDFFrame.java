@@ -639,6 +639,9 @@ ClipboardOwner
                     for(int i=0;i<eDoc.length;i++)
                     {
                         refreshView(eDoc[i],null);
+                        final JDFDoc doc = eDoc[i].getJDFDoc();
+                        if(doc!=null)
+                            doc.clearDirtyIDs();
                     }
                 }
             }
@@ -795,7 +798,7 @@ ClipboardOwner
         final EditorDocument doc = getEditorDoc();
         if (doc != null)
         {
-            if (!m_iniFile.getReadOnly()|| !fileIsEdited())
+            if (!m_iniFile.getReadOnly()|| !isDirty())
             {
                 String originalFileName = doc.getOriginalFileName();
                 if(originalFileName==null)
@@ -883,7 +886,7 @@ ClipboardOwner
                 break;
 
             final INIReader m_iniFile=Editor.getIniFile();
-            if (fileIsEdited() && !m_iniFile.getReadOnly() )
+            if (isDirty() && !m_iniFile.getReadOnly() )
             {
                 save = saveFileQuestion();
             }
@@ -1591,7 +1594,7 @@ ClipboardOwner
      * returns true if the currently selected document has been modified
      * @return
      */
-    boolean fileIsEdited()
+    boolean isDirty()
     {
         final JDFDoc doc = getJDFDoc();
         if (doc != null)
