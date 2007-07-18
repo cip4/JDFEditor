@@ -10,6 +10,6 @@
 	<classpathentry kind="lib" path="lib/mailapi.jar"/>
 	<classpathentry kind="lib" path="lib/xercesImpl-2.7.1.jar"/>
 	<classpathentry kind="lib" path="lib/xml-apis-2.0.2.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JDFLib-J"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JDFLibJ"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
