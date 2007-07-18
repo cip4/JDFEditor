@@ -582,29 +582,7 @@ ClipboardOwner
     //20040712 MRE
     private void sendToDevice()
     {
-        if(getJDFDoc()==null)
-            return;
-        
-        //get the URL to send to and call the CommunicationController
-        boolean bSendTrue = false;
-        final String[] options = { m_littleBundle.getString("OkKey"), m_littleBundle.getString("CancelKey") };
-        final SendToDevice cc = new SendToDevice();
-        
-        final int option = JOptionPane.showOptionDialog(this, cc, m_littleBundle.getString("JDFSendToDevice"),
-                JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
-        
-        if (option == JOptionPane.OK_OPTION)
-        {
-            //the send method depends on the settings in the Editor.ini file
-            if(cc.getActiveRadioButton().equals(m_littleBundle.getString("sendMethodJMF")))
-                bSendTrue = cc.sendJMFJDF(cc.getURL());            
-            else
-                bSendTrue = cc.sendJMFJDFmime(cc.getURL()); 
-        }
-        
-        //show success in a popup window
-        final String sLabel = (bSendTrue) ?m_littleBundle.getString("JDFSent") : m_littleBundle.getString("JDFNotSent"); 
-        JOptionPane.showMessageDialog(this, sLabel);
+        SendToDevice.trySend();
     }
     
     /**
