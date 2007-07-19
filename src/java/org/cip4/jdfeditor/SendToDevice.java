@@ -93,7 +93,6 @@ import javax.swing.SwingConstants;
 
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.jmf.JDFCommand;
-import org.cip4.jdflib.jmf.JDFQueueSubmissionParams;
 import org.cip4.jdflib.jmf.JDFMessage.EnumType;
 import org.cip4.jdflib.util.MimeUtil;
 
@@ -229,7 +228,7 @@ public class SendToDevice extends JPanel implements ActionListener
 
         JDFDoc jmfDoc=new JDFDoc("JMF");
         JDFCommand command=jmfDoc.getJMFRoot().appendCommand(EnumType.SubmitQueueEntry);
-        JDFQueueSubmissionParams eQsp = command.appendQueueSubmissionParams();
+        command.appendQueueSubmissionParams();
 
         if(bMime)
         {
