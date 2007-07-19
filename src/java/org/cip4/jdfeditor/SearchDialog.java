@@ -194,7 +194,7 @@ public class SearchDialog extends JDialog implements ActionListener
         {
             if (!forwardDirection)
             {
-                if (m_vGlobalSearch.size() == 0 || m_frame.isDirty())
+                if (m_vGlobalSearch.size() == 0 || m_frame.fileIsEdited())
                 {
                     m_vGlobalSearch.clear();
                     final Enumeration enumer = ((JDFTreeNode) m_frame.getRootNode().getFirstChild()).preorderEnumeration();

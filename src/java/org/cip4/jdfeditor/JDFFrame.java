@@ -582,7 +582,29 @@ ClipboardOwner
     //20040712 MRE
     private void sendToDevice()
     {
-        SendToDevice.trySend();
+        if(getJDFDoc()==null)
+            return;
+        
+        //get the URL to send to and call the CommunicationController
+        boolean bSendTrue = false;
+        final String[] options = { m_littleBundle.getString("OkKey"), m_littleBundle.getString("CancelKey") };
+        final SendToDevice cc = new SendToDevice();
+        
+        final int option = JOptionPane.showOptionDialog(this, cc, m_littleBundle.getString("JDFSendToDevice"),
+                JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+        
+        if (option == JOptionPane.OK_OPTION)
+        {
+            //the send method depends on the settings in the Editor.ini file
+            if(cc.getActiveRadioButton().equals(m_littleBundle.getString("sendMethodJMF")))
+                bSendTrue = cc.sendJMFJDF(cc.getURL());            
+            else
+                bSendTrue = cc.sendJMFJDFmime(cc.getURL()); 
+        }
+        
+        //show success in a popup window
+        final String sLabel = (bSendTrue) ?m_littleBundle.getString("JDFSent") : m_littleBundle.getString("JDFNotSent"); 
+        JOptionPane.showMessageDialog(this, sLabel);
     }
     
     /**
@@ -617,9 +639,6 @@ ClipboardOwner
                     for(int i=0;i<eDoc.length;i++)
                     {
                         refreshView(eDoc[i],null);
-                        final JDFDoc doc = eDoc[i].getJDFDoc();
-                        if(doc!=null)
-                            doc.clearDirtyIDs();
                     }
                 }
             }
@@ -776,7 +795,7 @@ ClipboardOwner
         final EditorDocument doc = getEditorDoc();
         if (doc != null)
         {
-            if (!m_iniFile.getReadOnly()|| !isDirty())
+            if (!m_iniFile.getReadOnly()|| !fileIsEdited())
             {
                 String originalFileName = doc.getOriginalFileName();
                 if(originalFileName==null)
@@ -864,7 +883,7 @@ ClipboardOwner
                 break;
 
             final INIReader m_iniFile=Editor.getIniFile();
-            if (isDirty() && !m_iniFile.getReadOnly() )
+            if (fileIsEdited() && !m_iniFile.getReadOnly() )
             {
                 save = saveFileQuestion();
             }
@@ -1179,7 +1198,7 @@ ClipboardOwner
                     + Editor.getEditorBuildDate()
                     + "\nJDF 1.3 compatible version\n" 
                     + "Schema JDF_1.3.xsd\n"
-                    + "Build version " + Editor.getEditorVersion(),
+                    + Editor.getEditorVersion(),
                     "Version", JOptionPane.INFORMATION_MESSAGE);
         }
         else if (eSrc == m_menuBar.m_findItem)
@@ -1572,7 +1591,7 @@ ClipboardOwner
      * returns true if the currently selected document has been modified
      * @return
      */
-    boolean isDirty()
+    boolean fileIsEdited()
     {
         final JDFDoc doc = getJDFDoc();
         if (doc != null)

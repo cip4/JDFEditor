@@ -619,8 +619,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
         m_validateMenu.add(new JSeparator());
 
-        m_highlightFNRadioItem = new JRadioButtonMenuItem(
-                m_littleBundle.getString("ValidationFSKey"), m_iniFile.getHighlight());
+        m_highlightFNRadioItem = new JRadioButtonMenuItem(m_littleBundle.getString("ValidationFSKey"), m_iniFile.getHighlight());
         m_highlightFNRadioItem.addActionListener(this);
         m_validateMenu.add(m_highlightFNRadioItem);
 

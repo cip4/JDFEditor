@@ -196,6 +196,7 @@ public class Editor
         my_Frame = new JDFFrame();
         setCursor(0, null);
         JDFAudit.setStaticAgentName(getEditorName());
+        //Where goes to get AgentVersion
         JDFAudit.setStaticAgentVersion(getEditorVersion());
         JDFElement.setLongID(m_iniFile.getLongID());
         JDFElement.setFixVersionIDFix(true);
@@ -293,7 +294,7 @@ public class Editor
      */
     public static String getEditorBuildDate()
     {
-        return "Estimated Build Date - 20 May 2007";
+        return "Estimated Build Date - 18 July 2007";
     }
 
     /**
@@ -302,7 +303,7 @@ public class Editor
      */
     public static String getEditorVersion()
     {
-        return "Build version " + JDFAudit.software();
+        return "Build Version " + JDFAudit.software();
     }
 
     /**
