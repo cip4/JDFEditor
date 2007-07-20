@@ -85,6 +85,7 @@ import javax.swing.WindowConstants;
 
 import org.cip4.jdflib.core.JDFAudit;
 import org.cip4.jdflib.core.JDFElement;
+import org.cip4.jdflib.util.JDFDate;
 
 /**
  * @author AnderssA ThunellE
@@ -293,7 +294,9 @@ public class Editor
      */
     public static String getEditorBuildDate()
     {
-        return "Estimated Build Date - 18 July 2007";
+    	//created function in JDFDate.java to return the exact date the last build was made.
+    	return "Build Date - " + new JDFDate().getDateTimeISOBD();
+        //return "Estimated Build Date - 18 July 2007";
     }
 
     /**
