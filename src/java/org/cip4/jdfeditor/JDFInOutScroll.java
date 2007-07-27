@@ -603,7 +603,8 @@ public class JDFInOutScroll extends JScrollPane
                             if(rlp!=null)
                             {
                                 final VElement resourceLinks = rlp.getPoolChildren(null, null, null);
-                                for (int j = 0; j < resourceLinks.size(); j++)
+                                final int size = resourceLinks==null ? 0 : resourceLinks.size();
+                                for (int j = 0; j < size; j++)
                                 {
                                     final JDFResourceLink link = (JDFResourceLink) resourceLinks.elementAt(j);
                                     if (link.getLinkRoot() ==r )
@@ -613,7 +614,6 @@ public class JDFInOutScroll extends JScrollPane
                         }
                     }
                     drawInOutView(kElement, lTitle, mTitle, rTitle);
-
                 }
                 else
                 {

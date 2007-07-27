@@ -459,8 +459,10 @@ public class JDFTreeArea extends JTextArea
                 return;
             }
             final Enumeration e = theRoot.depthFirstEnumeration();
+            int i=0;
             while (e.hasMoreElements())
             {
+                i++;
                 final JDFTreeNode node = (JDFTreeNode) e.nextElement();                
                 if (node.matchesPath(path))
                 {
@@ -632,7 +634,8 @@ public class JDFTreeArea extends JTextArea
             final KElement r = ((JDFTreeNode) ed.getRootNode().getFirstChild()).getElement();
             final int atPos = lastPath.indexOf(JDFConstants.AET);
             String message=null;
-            if (atPos > 0) // attribute
+            String findPath=lastPath;
+            if (atPos > 0 && lastPath.charAt(atPos-1)!='[') // attribute and not element search qualifier e.g.  e[@a="b"]
             {
                 try 
                 {
@@ -653,6 +656,8 @@ public class JDFTreeArea extends JTextArea
                     KElement el = r.getXPathElement(lastPath);
                     if(el==null)
                         message = "No element with XPath found: " + lastPath;
+                    else
+                        findPath=el.buildXPath(null, 1);
                 }
                 catch (JDFException exc)
                 {

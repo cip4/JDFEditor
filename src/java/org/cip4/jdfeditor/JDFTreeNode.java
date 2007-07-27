@@ -402,7 +402,13 @@ public class JDFTreeNode extends DefaultMutableTreeNode
         if(path==null)
             return false;
         
-        String attribute=StringUtil.token(path, 1, "@");
+        int lastAt=path.lastIndexOf("@");
+        int lastAt2=path.lastIndexOf("[@");
+        if(lastAt2+1==lastAt)
+            lastAt=-1;
+        
+        String attribute=lastAt>0 ? StringUtil.token(path, -1, "@") : null;
+        String elementString=lastAt>0?path.substring(0, lastAt):path;
         final boolean element = isElement();
         if(element&&attribute!=null)
             return false;
@@ -410,7 +416,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
         {
             if(attribute==null || !attribute.equals(getName()))
                    return false;
-            return getElement().matchesPath(StringUtil.token(path, 0, "@"), true);
+            return getElement().matchesPath(elementString, true);
         }
         return getElement().matchesPath(path, true);     
     }
