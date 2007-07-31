@@ -126,6 +126,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
     public JDFTreeNode()
     {
         super();
+        isInherited=false;
     }
     
     /**
@@ -165,6 +166,28 @@ public class JDFTreeNode extends DefaultMutableTreeNode
         return nParent.getElement();
     }
     
+    /**
+     * return the text string related to this node. 
+     * In case of attribute or element nodes, it is null 
+     * @return the related element
+     */
+    public String getText()
+    {
+        Object o=this.getUserObject();
+        if(o instanceof String)
+            return (String)o;
+        
+        return null;
+    }
+    /**
+     * set the text string related to this node. 
+     * In case of attribute or text nodes, it is null 
+     * @return the related element
+     */
+    public void setText(String text)
+    {
+        setUserObject(text);
+    }
     /**
      * return the Attr related to this node. 
      * In case of attribute or text nodes, it is null 
@@ -267,6 +290,8 @@ public class JDFTreeNode extends DefaultMutableTreeNode
             return getElement().getNodeName();
         if(userObject==null)
             return "";
+        if(userObject instanceof String)
+            return JDFTreeModel.TEXT;
         return ((Attr)userObject).getNodeName();
     }
     
@@ -278,6 +303,8 @@ public class JDFTreeNode extends DefaultMutableTreeNode
             return "";
         if(userObject==null)
             return "";
+        if(userObject instanceof String)
+            return (String)userObject;
         return ((Attr)userObject).getNodeValue();
     }
     
@@ -307,6 +334,11 @@ public class JDFTreeNode extends DefaultMutableTreeNode
         {
             Attr a=(Attr) o;
             s = a.getNodeName()+"=\""+a.getNodeValue()+"\"";        
+        }
+        else if(o instanceof String)
+        {
+            s=(String) o;
+            s = "#text=\""+s+"\"";        
         }
         else //element
         {

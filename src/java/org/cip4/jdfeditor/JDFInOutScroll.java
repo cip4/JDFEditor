@@ -91,6 +91,7 @@ import javax.swing.ToolTipManager;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFConstants;
 import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.KElement;
@@ -152,7 +153,7 @@ public class JDFInOutScroll extends JScrollPane
      * @param mStr The Middle Title
      * @param rStr The Right Title
      */
-    void drawInOutView(KElement element, String lStr, String mStr, String rStr)
+    private void drawInOutView(KElement element, String lStr, String mStr, String rStr)
     {
         final Dimension d = getSize();
         final int w = d.width / 3;
@@ -209,7 +210,7 @@ public class JDFInOutScroll extends JScrollPane
      * the In & Output View
      * @param isJDFElem - Is the  element a JDF element? 
      */
-    void addResourceTree(KElement elem, boolean isJDFElem)
+    private void addResourceTree(KElement elem, boolean isJDFElem)
     {
         final Dimension d = getSize();
         final int w = d.width / 3;
@@ -245,7 +246,7 @@ public class JDFInOutScroll extends JScrollPane
      * @param inString         - The String to search for
      * @param forwardDirection - Search forward or backward?
      */
-    void findStringInNeighbourTree(String inString, boolean forwardDirection)
+    public void findStringInNeighbourTree(String inString, boolean forwardDirection)
     {
         Editor.setCursor(1,null);
         final JDFFrame m_frame=Editor.getFrame();
@@ -491,7 +492,11 @@ public class JDFInOutScroll extends JScrollPane
         }
         return searchTree;
     }
-    void clearInOutView()
+    /**
+     * clear the input ouput view
+     *
+     */
+    public void clearInOutView()
     {
         m_inOutAreaLeft.removeAll();
         m_inOutAreaRight.removeAll();
@@ -503,7 +508,7 @@ public class JDFInOutScroll extends JScrollPane
     /**
      * Creates the In & Output View.
      */
-    void initInOutView(EditorDocument eDoc)
+    public void initInOutView(EditorDocument eDoc)
     {
         if (eDoc==null)
             eDoc=Editor.getEditorDoc();
@@ -552,7 +557,7 @@ public class JDFInOutScroll extends JScrollPane
                     isJDFNode = true;
                     JDFNode n=(JDFNode) kElement;
 
-                    if (kElement.hasChildElement("ResourceLinkPool", ""))
+                    if (kElement.hasChildElement(ElementName.RESOURCELINKPOOL, null))
                     {
                         final JDFResourceLinkPool resourceLinkPool = n.getResourceLinkPool();
                         if (resourceLinkPool!=null && resourceLinkPool.hasChildNodes())
@@ -594,7 +599,7 @@ public class JDFInOutScroll extends JScrollPane
                     for (int i = 0; i < vProcs.size(); i++)
                     {
                         final JDFNode jdfNode = (JDFNode) vProcs.elementAt(i);
-                        if (jdfNode.hasChildElement("ResourceLinkPool", null))
+                        if (jdfNode.hasChildElement(ElementName.RESOURCELINKPOOL, null))
                         {
                             rTitle = m_littleBundle.getString("JDFConsumerKey");
                             lTitle = m_littleBundle.getString("JDFProducerKey");
@@ -628,14 +633,12 @@ public class JDFInOutScroll extends JScrollPane
 
     /**
      * Creates the Trees from the Nodes in the In & Output View
-     * @param resource - The element you want to create a Tree from
+     * @param rootElement - The element you want to create a Tree from
      * @return The JTree 
      */
-    private JTree getInOutNodes(KElement resource)
+    private JTree getInOutNodes(KElement rootElement)
     {
-        JDFTreeNode mRoot = null;
-
-        mRoot = new JDFTreeNode(resource);
+        JDFTreeNode mRoot = new JDFTreeNode(rootElement);
         final JTree resTree = new JTree(mRoot);
         final JDFTreeModel treeModel = new JDFTreeModel(mRoot, true);
         treeModel.addNodeAttributes(mRoot);

@@ -89,6 +89,7 @@ import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.VString;
+import org.cip4.jdflib.core.AttributeInfo.EnumAttributeType;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourcePool;
@@ -174,6 +175,32 @@ public class EditorUtils
 
         if (attName.equals("PreviewType"))
             return "Separation";
+        
+        EnumAttributeType attyp=e.getAtrType(attName);
+        if(attyp!=null)
+        {
+            if(EnumAttributeType.boolean_.equals(attyp))
+                return "true";
+            if(EnumAttributeType.CMYKColor.equals(attyp))
+                return "1 0 0 0";
+            if(EnumAttributeType.dateTime.equals(attyp) || EnumAttributeType.DateTimeRange.equals(attyp)|| EnumAttributeType.DateTimeRangeList.equals(attyp))
+                return new JDFDate().getDateTimeISO();
+            if(EnumAttributeType.double_.equals(attyp))
+                return "0.0";
+            if(EnumAttributeType.duration.equals(attyp)|| EnumAttributeType.DurationRange.equals(attyp)|| EnumAttributeType.DurationRangeList.equals(attyp))
+                return "PT1H";
+            //TODO evaluate durations
+//            if(EnumAttributeType.enumeration.equals(attyp) || EnumAttributeType.enumerations.equals(attyp))
+//                return "";
+            if(EnumAttributeType.integer.equals(attyp)||EnumAttributeType.IntegerRange.equals(attyp)||EnumAttributeType.IntegerRangeList.equals(attyp)||EnumAttributeType.IntegerList.equals(attyp))
+                return "0";
+            if(EnumAttributeType.JDFJMFVersion.equals(attyp))
+                return "1.3";
+            if(EnumAttributeType.matrix.equals(attyp))
+                return "1 0 0 1 0 0";            
+            if(EnumAttributeType.XYPair.equals(attyp)||EnumAttributeType.XYPairRange.equals(attyp)||EnumAttributeType.XYPairRangeList.equals(attyp))
+                return "0 0";            
+        }
 
         return "New Value";
     }

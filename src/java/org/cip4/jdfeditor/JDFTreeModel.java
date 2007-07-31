@@ -104,6 +104,7 @@ import org.cip4.jdflib.pool.JDFResourceLinkPool;
 import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.resource.devicecapability.JDFDeviceCap;
+import org.cip4.jdflib.util.ContainerUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
 import org.w3c.dom.Attr;
@@ -189,6 +190,10 @@ import org.w3c.dom.Attr;
 public class JDFTreeModel extends DefaultTreeModel
 {
 
+    /**
+     * 
+     */
+    public static final String TEXT = "#text"; // string for element content text labels
     private XMLDoc validationResult; // the checkJDF XML output result
     /**
      * 
@@ -374,8 +379,10 @@ public class JDFTreeModel extends DefaultTreeModel
     {        
         if (parentNode==null || !parentNode.isElement())
         {
-            throw new JDFException("insertAttribute: not an element");
+            throw new JDFException("setAttribute: not an element");
         }
+        if(TEXT.equals(attName))
+            return setText(parentNode,attValue);
         JDFTreeNode nOld=parentNode.getNodeWithName(attName);
 
         final KElement e=parentNode.getElement();
@@ -386,6 +393,8 @@ public class JDFTreeModel extends DefaultTreeModel
             if(oldattr.getOwnerElement()==e) // this is not an inherited tree node
             {
                 setNodeValue(oldattr,attValue);
+                nOld.setUserObject(oldattr);
+
             }
             else // this is an inherited node; must create a new attribute in the DOM tree and link it
             {
@@ -425,6 +434,35 @@ public class JDFTreeModel extends DefaultTreeModel
         nOld = new JDFTreeNode(attr,bInherit);
         nOld.setAllowsChildren(false);
         insertInto(nOld, parentNode, index);
+        return nOld;
+    }
+
+    /**
+ * @param parentNode
+ * @param attValue
+ * @return
+ */
+    private JDFTreeNode setText(JDFTreeNode parentNode, String attValue)
+    {
+        JDFTreeNode nOld=parentNode.getNodeWithName(TEXT);
+        // we have an existing node, simply rename tha value and ciao!
+        if(nOld!=null)
+        {
+            final String s=nOld.getText();
+            if(!ContainerUtil.equals(s, attValue))
+            {
+                nOld.setText(attValue);
+            }
+        }
+        else
+        {
+            // create the new tree node
+            nOld = new JDFTreeNode();
+            nOld.setAllowsChildren(false);
+            nOld.setText(attValue);
+            int index=parentNode.getInsertIndexForName(TEXT,true); 
+            insertInto(nOld, parentNode, index);
+        }
         return nOld;
     }
 
@@ -607,6 +645,15 @@ public class JDFTreeModel extends DefaultTreeModel
                     String attVal=elem.getAttribute(attName);
                     setAttribute(node,attName,attVal,null,true);
                 }
+            }
+        }
+        String text=elem.getText();
+        if(text!=null)
+        {
+            text=text.trim();
+            if(text.length()>0)
+            {
+                setAttribute(node,TEXT,text,null,false);
             }
         }
     }
