@@ -129,6 +129,8 @@ public class DeviceCapDialog extends JPanel implements ActionListener
     private GridBagConstraints outConstraints = new GridBagConstraints();
     private VElement executableJDF = null;
     private XMLDoc bugReport = null;
+    private boolean ignoreDefaults;
+    private boolean ignoreExtensions;
     
     private JComboBox chooseValidLevel;
     EnumFitsValue testlists = EnumFitsValue.Allowed;
@@ -143,6 +145,9 @@ public class DeviceCapDialog extends JPanel implements ActionListener
         
 
         idFile=iniFile.getRecentDevCap();
+        ignoreDefaults=iniFile.getIgnoreDefault();
+        ignoreExtensions=!Editor.getIniFile().getHighlight();
+        
         init();
         final String[] options = { littleBundle.getString("OkKey"), littleBundle.getString("CancelKey") };
         
@@ -195,7 +200,8 @@ public class DeviceCapDialog extends JPanel implements ActionListener
                                     for(int i=0;i<vDC.size();i++)
                                     {
                                         JDFDeviceCap deviceCap=(JDFDeviceCap)vDC.elementAt(i);
-                                        deviceCap.setIgnoreExtensions(!Editor.getIniFile().getHighlight());                                 
+                                        deviceCap.setIgnoreExtensions(ignoreExtensions);   
+                                        deviceCap.setIgnoreDefaults(ignoreDefaults);
                                     }
                                     executableJDF = device.getExecutableJDF((JDFNode)docRoot,testlists,validationLevel);
                                     bugReport = device.getBadJDFInfo((JDFNode)docRoot,testlists,validationLevel);

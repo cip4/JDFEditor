@@ -141,7 +141,7 @@ public class EditorUtils
      * will be "New Value"
      * @param att
      */
-    static public String  setValueForNewAttribute(KElement e,String attName)
+    static public String  getValueForNewAttribute(KElement e,String attName)
     {
         //TODO move this to JDFElement and let JDFLib predefine reasonable attributes 
         if (attName.equals("ID"))

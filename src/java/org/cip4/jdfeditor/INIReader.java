@@ -231,7 +231,8 @@ public class INIReader
     private final String validVersion = "ValidEdit/@version";
     private final String validLevel = "ValidEdit/@level";
     private final String removeDefault = "ValidEdit/@removeDefault";
-    private final String displayDefault = "ValidEdit/@displayefault";
+    private final String displayDefault = "ValidEdit/@displayDefault";
+    private final String ignoreDefault = "ValidEdit/@ignoreDefault";
     private final String removeWhite = "ValidEdit/@removeWhite";
     private final String checkURL = "ValidEdit/@checkURL";
          
@@ -412,19 +413,29 @@ public class INIReader
         setAttribute(removeDefault,rem ? "true" : "false");
     }
     
-    public void setDisplayDefault(boolean rem)
-    {
-        setAttribute(displayDefault,rem ? "true" : "false");
-    }
-    
     public boolean getRemoveDefault()
     {
         return getAttribute(removeDefault,"true").equals("true");
     }
-    
+
+    public void setDisplayDefault(boolean rem)
+    {
+        setAttribute(displayDefault,rem ? "true" : "false");
+    }
+        
     public boolean getDisplayDefault()
     {
         return getAttribute(displayDefault,"true").equals("true");
+    }
+    
+    public void setIgnoreDefault(boolean rem)
+    {
+        setAttribute(ignoreDefault,rem ? "true" : "false");
+    }
+        
+    public boolean getIgnoreDefault()
+    {
+        return getAttribute(ignoreDefault,"true").equals("true");
     }
     
     public String[] getIconStrings()

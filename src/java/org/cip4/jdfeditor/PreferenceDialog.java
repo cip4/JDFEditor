@@ -144,6 +144,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     private JCheckBox boxRemWhite;
     private JCheckBox boxCheckURL;
     private JCheckBox boxGenerateFull;
+    private JCheckBox boxIgnoreDefaults;
     
     private JCheckBox boxValOpen;
     private JComboBox boxFontSize;
@@ -172,6 +173,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     private boolean longID;
     private boolean enableExtensions;
     private boolean generateFull;
+    private boolean ignoreDefaults;
 
     private JTextField fieldGenericStrings;
     private String genericStrings;
@@ -276,6 +278,8 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         genericStrings=iniFile.getGenericAtts();
         generateFull=iniFile.getGenerateFull();
         normalizeOpen=iniFile.getNormalizeOpen();
+        ignoreDefaults=iniFile.getIgnoreDefault();
+        
         this.setPreferredSize(new Dimension(390, 380));
         this.addMouseListener(new TabListener());
         drawPane();
@@ -381,13 +385,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         boxRemWhite.setBounds(10, y, d.width, d.height);
         boxRemWhite.addActionListener(this);
         genPanel.add(boxRemWhite);
-        
-        y += d.height + 3;
-        boxCheckURL = new JCheckBox(littleBundle.getString("CheckURLKey"), checkURL);
-        d = boxCheckURL.getPreferredSize();
-        boxCheckURL.setBounds(10, y, d.width, d.height);
-        boxCheckURL.addActionListener(this);
-        genPanel.add(boxCheckURL);
         
         y += d.height + 3;
         boxLongID = new JCheckBox(littleBundle.getString("LongIDKey"), longID);
@@ -663,7 +660,22 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         boxGenerateFull.setBounds(10, y, d.width, d.height);
         boxGenerateFull.addActionListener(this);
         panel.add(boxGenerateFull);        
-       
+ 
+        y += d.height + 3;
+        boxCheckURL = new JCheckBox(littleBundle.getString("CheckURLKey"), checkURL);
+        d = boxCheckURL.getPreferredSize();
+        boxCheckURL.setBounds(10, y, d.width, d.height);
+        boxCheckURL.addActionListener(this);
+        panel.add(boxCheckURL);
+        
+        y += d.height + 3;
+        boxIgnoreDefaults = new JCheckBox(littleBundle.getString("IgnoreDefaultsKey"), ignoreDefaults);
+        d = boxIgnoreDefaults.getPreferredSize();
+        boxIgnoreDefaults.setBounds(10, y, d.width, d.height);
+        boxIgnoreDefaults.addActionListener(this);
+        panel.add(boxIgnoreDefaults);
+        
+
         main.add(panel, BorderLayout.CENTER);       
         return main;
     }
@@ -1108,6 +1120,9 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         else if (source == boxEnableExtension)
             enableExtensions = boxEnableExtension.isSelected();
         
+        else if (source == boxIgnoreDefaults)
+            ignoreDefaults = boxIgnoreDefaults.isSelected();
+        
         else if (source == boxGenerateFull)
             generateFull = boxGenerateFull.isSelected();
         
@@ -1177,6 +1192,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         iniFile.setEnableExtensions(enableExtensions);    
         iniFile.setGenerateFull(generateFull);    
         iniFile.setNormalizeOpen(normalizeOpen);    
+        iniFile.setIgnoreDefault(ignoreDefaults);    
         genericStrings =fieldGenericStrings.getText();
         final VString genericAttributes = new VString(genericStrings,null);
         genericAttributes.unify();
@@ -1196,5 +1212,21 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
                schemaFile=f;
        }
        return schemaFile;
+    }
+
+    /**
+     * @return the ignoreDefaults
+     */
+    public boolean getIgnoreDefaults()
+    {
+        return ignoreDefaults;
+    }
+
+    /**
+     * @param ignoreDefaults the ignoreDefaults to set
+     */
+    public void setIgnoreDefaults(boolean _ignoreDefaults)
+    {
+        this.ignoreDefaults = _ignoreDefaults;
     }
 }

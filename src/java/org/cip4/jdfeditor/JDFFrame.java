@@ -830,11 +830,13 @@ ClipboardOwner
             final JDFDoc jdfDoc = new JDFDoc("JMF");
             final JDFJMF jmfRoot = jdfDoc.getJMFRoot();
             jmfRoot.init();
-            final Vector requiredAttributes = jmfRoot.getMissingAttributes(9999999);
+            final VString requiredAttributes = jmfRoot.getMissingAttributes(9999999);
             
             for (int i = 0; i < requiredAttributes.size(); i++)
             {
-                jmfRoot.setAttribute((String)requiredAttributes.elementAt(i), "New Value", null);
+                final String s=EditorUtils.getValueForNewAttribute(jmfRoot, requiredAttributes.stringAt(i));
+                if(!jmfRoot.hasAttribute(requiredAttributes.stringAt(i)))
+                    jmfRoot.setAttribute(requiredAttributes.stringAt(i), s);
             }
             
             setJDFDoc(jdfDoc, null);
