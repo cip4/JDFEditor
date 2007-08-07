@@ -559,9 +559,7 @@ ClipboardOwner
     
     private void showPreferences()
     {
-        final String[] options = { m_littleBundle.getString("OkKey"), m_littleBundle.getString("CancelKey") };
-        
-        final INIReader m_iniFile = Editor.getIniFile();
+        final String[] options = { m_littleBundle.getString("OkKey"), m_littleBundle.getString("CancelKey") };        
         PreferenceDialog pd = new PreferenceDialog();
         
         final int option = JOptionPane.showOptionDialog(this, pd, m_littleBundle.getString("PreferenceKey"),
@@ -570,8 +568,6 @@ ClipboardOwner
         if (option == JOptionPane.OK_OPTION)
         {
             pd.writeToIni();
-            m_iniFile.writeINIFile();
-            JDFElement.setLongID(m_iniFile.getLongID());
             EditorDocument ed=getEditorDoc();
             if (ed != null &&  ed.getJDFTree()!=null){
                 ed.getJDFTree().repaint();

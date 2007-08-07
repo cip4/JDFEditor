@@ -222,6 +222,7 @@ public class JDFTreeModel extends DefaultTreeModel
         checkJDF.setPrint(false);
         checkJDF.bQuiet=true;
         checkJDF.level=iniFile.getValidationLevel();
+        checkJDF.setWarning(iniFile.getWarnCheck());
         XMLDoc schemaValidationResult=null;
 
         checkJDF.setIgnorePrivate(!iniFile.getHighlight());

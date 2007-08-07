@@ -100,6 +100,7 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 
+import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.VString;
 
 /*
@@ -143,6 +144,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     private JCheckBox boxLongID;
     private JCheckBox boxRemWhite;
     private JCheckBox boxCheckURL;
+    private JCheckBox boxCheckWarn;
     private JCheckBox boxGenerateFull;
     private JCheckBox boxIgnoreDefaults;
     
@@ -174,6 +176,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     private boolean enableExtensions;
     private boolean generateFull;
     private boolean ignoreDefaults;
+    private boolean bCheckWarn;
 
     private JTextField fieldGenericStrings;
     private String genericStrings;
@@ -279,6 +282,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         generateFull=iniFile.getGenerateFull();
         normalizeOpen=iniFile.getNormalizeOpen();
         ignoreDefaults=iniFile.getIgnoreDefault();
+        bCheckWarn=iniFile.getWarnCheck();
         
         this.setPreferredSize(new Dimension(390, 380));
         this.addMouseListener(new TabListener());
@@ -667,7 +671,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         boxCheckURL.setBounds(10, y, d.width, d.height);
         boxCheckURL.addActionListener(this);
         panel.add(boxCheckURL);
-        
+
         y += d.height + 3;
         boxIgnoreDefaults = new JCheckBox(littleBundle.getString("IgnoreDefaultsKey"), ignoreDefaults);
         d = boxIgnoreDefaults.getPreferredSize();
@@ -675,6 +679,13 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         boxIgnoreDefaults.addActionListener(this);
         panel.add(boxIgnoreDefaults);
         
+        y += d.height + 3;
+        boxCheckWarn = new JCheckBox(littleBundle.getString("CheckWarningKey"), bCheckWarn);
+        d = boxIgnoreDefaults.getPreferredSize();
+        boxCheckWarn.setBounds(10, y, d.width, d.height);
+        boxCheckWarn.addActionListener(this);
+        panel.add(boxCheckWarn);
+         
 
         main.add(panel, BorderLayout.CENTER);       
         return main;
@@ -1096,6 +1107,9 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         else if (source == boxReadOnly)
             currReadOnly = boxReadOnly.isSelected();
         
+        else if (source == boxCheckWarn)
+            bCheckWarn = boxCheckWarn.isSelected();
+        
         else if (source == boxNormalizeOpen)
             normalizeOpen = boxNormalizeOpen.isSelected();
         
@@ -1192,11 +1206,16 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         iniFile.setEnableExtensions(enableExtensions);    
         iniFile.setGenerateFull(generateFull);    
         iniFile.setNormalizeOpen(normalizeOpen);    
-        iniFile.setIgnoreDefault(ignoreDefaults);    
+        iniFile.setIgnoreDefault(ignoreDefaults);   
+        iniFile.setWarnCheck(bCheckWarn);
         genericStrings =fieldGenericStrings.getText();
         final VString genericAttributes = new VString(genericStrings,null);
         genericAttributes.unify();
         iniFile.setGenericAtts(genericAttributes);
+        iniFile.writeINIFile();
+        //TODO add checkbox
+        JDFElement.setLongID(iniFile.getLongID());
+
     }
 
     /**

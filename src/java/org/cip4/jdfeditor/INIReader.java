@@ -241,6 +241,7 @@ public class INIReader
     
     private final String generateFull = "Validate/@GenerateFull";
     private String genericAtts = "Validate/@genericAtts";
+    private String warnCheck = "ValidEdit/@warnCheck";
     
     private XMLDoc xDoc; // The XMLDocument that represents the ini file
     
@@ -961,4 +962,21 @@ public class INIReader
     {
         setAttribute(normalizeOpen,bNormalizeOpen?"true":"false");        
     }
+
+      /**
+     * @return
+     */
+    public boolean getWarnCheck()
+    {
+        return getAttribute(warnCheck,"true").equalsIgnoreCase("true") ? true : false;
+    }
+
+    /**
+     * @param normalizeOpen2
+     */
+    public void setWarnCheck(boolean bNormalizeOpen)
+    {
+        setAttribute(warnCheck,bNormalizeOpen?"true":"false");        
+    }
+
 }
