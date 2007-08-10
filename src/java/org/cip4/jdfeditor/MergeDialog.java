@@ -92,7 +92,7 @@ public class MergeDialog extends JPanel implements ActionListener
                 if (successful)
                 {
                     jdfRoot.eraseEmptyNodes(true);
-                    successful = originalDoc.write2File(null, 0, true);
+                    successful = originalDoc.write2File((String)null, 0, true);
                     
                     if (successful)
                     {

@@ -319,7 +319,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
             }
             else
             {
-                m_frame.getJDFDoc().write2File(null, 2, false);
+                m_frame.getJDFDoc().write2File((String)null, 2, false);
                 m_frame.getJDFDoc().clearDirtyIDs();
             }
         }
