@@ -501,7 +501,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
         for (int i = 0; i < requiredAttributes.size(); i++)
         {
-            final String attValue=EditorUtils.getValueForNewAttribute(kElement,requiredAttributes.stringAt(i));
+            final String attValue=JDFElement.getValueForNewAttribute(kElement,requiredAttributes.stringAt(i));
             final JDFTreeNode attrNode = setAttribute(newNode, requiredAttributes.stringAt(i), attValue, null, false);
             addedAttributeNodesVector.add(attrNode);
         }
@@ -1086,7 +1086,7 @@ public class JDFTreeModel extends DefaultTreeModel
         {
             String ns = getNSURI(element, selectedValue);
 
-            newAttrNode =setAttribute(node,selectedValue,EditorUtils.getValueForNewAttribute(element,selectedValue),ns,false);
+            newAttrNode =setAttribute(node,selectedValue,JDFElement.getValueForNewAttribute(element,selectedValue),ns,false);
         }
 
         return newAttrNode;

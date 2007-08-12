@@ -220,10 +220,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
         m_cutItem = new JMenuItem(littleBundle.getString("CutKey"));
         m_cutItem.addActionListener(frame);
-        /*
-         * The following does not work correctly. I don't understand why.
-         * m_cutItem.setAccelerator(KeyStroke.getKeyStroke('X', menuKeyMask));
-         */
         m_cutItem.setAccelerator(KeyStroke.getKeyStroke('X', 
                 java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
         m_cutItem.setEnabled(false);
@@ -231,10 +227,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
         m_copyItem = new JMenuItem(littleBundle.getString("CopyKey"));
         m_copyItem.addActionListener(frame);
-        /*
-         * The following does not work correctly. I don't understand why.
-         * m_copyItem.setAccelerator(KeyStroke.getKeyStroke('C', menuKeyMask));
-         */
         m_copyItem.setAccelerator(KeyStroke.getKeyStroke('C', 
                 java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
         m_copyItem.setEnabled(false);
@@ -242,10 +234,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
         m_pasteItem = new JMenuItem(littleBundle.getString("PasteKey"));
         m_pasteItem.addActionListener(frame);
-        /*
-         * The following does not work correctly. I don't understand why.
-         * m_pasteItem.setAccelerator(KeyStroke.getKeyStroke('V', menuKeyMask));
-         */
         m_pasteItem.setAccelerator(KeyStroke.getKeyStroke('V', 
                 java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
         m_pasteItem.setEnabled(false);
@@ -274,7 +262,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
         m_findItem.setAccelerator(KeyStroke.getKeyStroke('F', menuKeyMask));
         m_editMenu.add(m_findItem);
 
-        //Follow this with F3 Key b/c Rainer fixed. Look at old version vs newer version.
         m_findXPathItem = new JMenuItem(littleBundle.getString("FindXPathKey"));
         m_findXPathItem.addActionListener(this);
         m_editMenu.add(m_findXPathItem);

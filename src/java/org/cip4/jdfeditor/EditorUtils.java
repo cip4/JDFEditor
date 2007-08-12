@@ -89,12 +89,12 @@ import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.VString;
-import org.cip4.jdflib.core.AttributeInfo.EnumAttributeType;
+//import org.cip4.jdflib.core.AttributeInfo.EnumAttributeType;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.jdflib.resource.JDFResource;
-import org.cip4.jdflib.util.JDFDate;
+//import org.cip4.jdflib.util.JDFDate;
 import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
@@ -141,6 +141,9 @@ public class EditorUtils
      * will be "New Value"
      * @param att
      */
+    
+    /*
+     * 07-08-09: BMI moved to JDFElement.java
     static public String  getValueForNewAttribute(KElement e,String attName)
     {
         //TODO move this to JDFElement and let JDFLib predefine reasonable attributes 
@@ -204,6 +207,7 @@ public class EditorUtils
 
         return "New Value";
     }
+    */
 
     /**
      * gets all resources from this node and from all its ancestors.

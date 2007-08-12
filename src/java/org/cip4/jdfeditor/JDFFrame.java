@@ -830,7 +830,7 @@ ClipboardOwner
             
             for (int i = 0; i < requiredAttributes.size(); i++)
             {
-                final String s=EditorUtils.getValueForNewAttribute(jmfRoot, requiredAttributes.stringAt(i));
+                final String s=JDFElement.getValueForNewAttribute(jmfRoot, requiredAttributes.stringAt(i));
                 if(!jmfRoot.hasAttribute(requiredAttributes.stringAt(i)))
                     jmfRoot.setAttribute(requiredAttributes.stringAt(i), s);
             }
