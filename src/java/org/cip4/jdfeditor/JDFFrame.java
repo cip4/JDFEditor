@@ -1912,19 +1912,19 @@ ClipboardOwner
      */
     public JDFDoc getJDFDoc()
     {
-        EditorDocument ed =getEditorDoc();
+        EditorDocument ed = getEditorDoc();
         return ed==null ? null : ed.getJDFDoc();
     }
 
     public void setModel(JDFTreeModel m_model)
     {
-        EditorDocument ed =getEditorDoc();
+        EditorDocument ed = getEditorDoc();
         ed.setModel(m_model);
     }
 
     public JDFTreeModel getModel()
     {
-        EditorDocument ed =getEditorDoc();
+        EditorDocument ed = getEditorDoc();
         return ed==null ? null : ed.getModel();
     }
 
