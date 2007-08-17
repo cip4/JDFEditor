@@ -77,6 +77,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
@@ -1195,4 +1196,25 @@ public class JDFTreeModel extends DefaultTreeModel
         Editor.getFrame().refreshView(null, selectionPath);
         
     }
+    
+    //	BMI 07-08-17 Moved from JDFFrame.java
+    /**
+     * Finds a JDFTreeNode in the JDFTree.
+     * @param row     - The row in the JTree
+     * @param jTree - The JTree
+     * @return The JDFTreeNode.
+     */
+    public JDFTreeNode getTreeNode(int row, JTree jTree)
+    {
+        JDFTreeNode node;
+        final TreePath path = jTree.getPathForRow(row);
+        
+        if (path != null)
+            node = (JDFTreeNode) path.getLastPathComponent();
+        else
+            node = getRootNode();
+        
+        return node;
+    }
+
 }

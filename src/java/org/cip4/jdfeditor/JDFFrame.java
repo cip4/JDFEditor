@@ -288,13 +288,14 @@ ClipboardOwner
     
     
  
-    
+
     /**
      * Finds a JDFTreeNode in the JDFTree.
      * @param row     - The row in the JTree
      * @param jTree - The JTree
      * @return The JDFTreeNode.
      */
+    /*
     public JDFTreeNode getTreeNode(int row, JTree jTree)
     {
         JDFTreeNode node;
@@ -307,7 +308,7 @@ ClipboardOwner
         
         return node;
     }
-    
+    */
     
     /**
      * Choose which file to open.
