@@ -1195,13 +1195,18 @@ public class JDFTreeModel extends DefaultTreeModel
         Editor.getFrame().refreshView(null, selectionPath);
         
     }
-    
-    //	BMI 07-08-17 Moved from JDFFrame.java
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Methods moved from JDFFrame.java
+     */
+
     /**
      * Finds a JDFTreeNode in the JDFTree.
      * @param row     - The row in the JTree
      * @param jTree - The JTree
      * @return The JDFTreeNode.
+     * Moved 07-08-17
      */
     public JDFTreeNode getTreeNode(int row, JTree jTree)
     {
@@ -1215,7 +1220,8 @@ public class JDFTreeModel extends DefaultTreeModel
         
         return node;
     }
-/////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 }
