@@ -195,7 +195,8 @@ public class ProcessPart extends JComponent
                     for(int i=0;i<size;i++)
                     {
                         JDFResource rPart=(JDFResource) v.elementAt(i);
-                        int col=rPart.getResStatus(false).getValue();
+                        final EnumResStatus resStatus = rPart.getResStatus(false);
+                        int col=resStatus==null ? 0:resStatus.getValue();
                         if(col>colMax)
                             colMax=col;
 
