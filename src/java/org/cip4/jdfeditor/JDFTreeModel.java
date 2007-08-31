@@ -70,6 +70,7 @@
  */
 package org.cip4.jdfeditor;
 
+import java.awt.Component;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Enumeration;
@@ -77,6 +78,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
@@ -94,6 +96,7 @@ import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFException;
 import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
@@ -1222,7 +1225,26 @@ public class JDFTreeModel extends DefaultTreeModel
         return node;
     }
     
-    
+    /**
+     * BMI Moved 07-08-31
+     * Reload the currently opened file.
+     * @return 
+     */
+    public static void refresh()
+    {
+        final EditorDocument editorDoc = Editor.getEditorDoc();
+        if(editorDoc==null)
+            return;
+        if(editorDoc.getMimePackage()!=null)
+            return;
+        
+        if (editorDoc.getJDFDoc() != null)
+        {
+            final String originalFileName = Editor.getJDFDoc().getOriginalFileName();
+            Editor.getSetJDFDoc();
+            Editor.getReadFile();
+        }
+    }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 }

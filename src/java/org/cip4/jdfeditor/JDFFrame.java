@@ -286,30 +286,6 @@ ClipboardOwner
         return splitPane;
     }
     
-    
- 
-
-    /**
-     * Finds a JDFTreeNode in the JDFTree.
-     * @param row     - The row in the JTree
-     * @param jTree - The JTree
-     * @return The JDFTreeNode.
-     */
-    /*
-    public JDFTreeNode getTreeNode(int row, JTree jTree)
-    {
-        JDFTreeNode node;
-        final TreePath path = jTree.getPathForRow(row);
-        
-        if (path != null)
-            node = (JDFTreeNode) path.getLastPathComponent();
-        else
-            node = getRootNode();
-        
-        return node;
-    }
-    */
-    
     /**
      * Choose which file to open.
      */
@@ -336,28 +312,6 @@ ClipboardOwner
         {
             fileToSave = chooser.getSelectedFile();           
             readFile(fileToSave);
-        }
-    }
-    
-    
-  
-    
-    /**
-     * Reload the currently opened file.
-     */
-    public void refresh()
-    {
-        final EditorDocument editorDoc = getEditorDoc();
-        if(editorDoc==null)
-            return;
-        if(editorDoc.getMimePackage()!=null)
-            return;
-        
-        if (editorDoc.getJDFDoc() != null)
-        {
-            final String originalFileName = getJDFDoc().getOriginalFileName();
-            setJDFDoc(null,null);
-            readFile(new File(originalFileName));
         }
     }
 
@@ -480,7 +434,7 @@ ClipboardOwner
             File f = mergeResult.getFileToSave(); 
             if (f != null)
             {
-                refresh();
+                JDFTreeModel.refresh();
                 clearViews();
             }   
         }
@@ -1330,7 +1284,7 @@ ClipboardOwner
             }
             else if (eSrc == m_buttonBar.m_refreshButton)
             {
-                refresh();
+                JDFTreeModel.refresh();
             }
         }
         Editor.setCursor(0,null);

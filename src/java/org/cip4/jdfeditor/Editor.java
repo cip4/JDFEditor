@@ -84,6 +84,7 @@ import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 
 import org.cip4.jdflib.core.JDFAudit;
+import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
 
 /**
@@ -319,4 +320,44 @@ public class Editor
     }
     ///////////////////////////////////////////////////////////////
 
+    /**
+     * get the JDFDoc of the currently displayed JDF
+     * @return the JDFDoc that is currently being displayed
+     * BMI Created 07-08-31
+     */
+    public static JDFDoc getJDFDoc()
+    {
+        return my_Frame.getJDFDoc();
+    }
+
+    /**
+     * Method getTreeArea.
+     * @return ResourceBundle the static resource bundle
+     * BMI Created 07-08-31
+     */
+    public static JDFTreeArea getTreeArea()
+    {
+        return my_Frame.m_treeArea;
+    }    
+    
+    /**
+     * Method getSetJDFDoc.
+     * @return ResourceBundle the static resource bundle
+     * BMI Created 07-08-31
+     */
+    public static int getSetJDFDoc()
+    {
+        return my_Frame.setJDFDoc(null,null);
+    }   
+        /**
+         * Method getReadFile.
+         * @param fts the file to read
+	     * @return true if at least one file was read or selected
+	     * BMI Created 07-08-31
+         */
+        public static boolean getReadFile()
+        {
+            return my_Frame.readFile(null);
+        } 
+    ///////////////////////////////////////////////////////////////
 }

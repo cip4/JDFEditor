@@ -380,7 +380,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
             }
             else if (eSrc == m_refreshButton)
             {
-                m_frame.refresh();
+                JDFTreeModel.refresh();
             }
         }
         // always clean up!
