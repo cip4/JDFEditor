@@ -294,10 +294,7 @@ public class Editor
      */
     public static String getEditorBuildDate()
     {
-    	//created function in JDFDate.java to return the exact date the last build was made.
-        // would be nice - unfortunately this is the current time, NOT the build date
-    	//return "Build Date - " + new JDFDate().getDateTimeISOBD();
-        return "Estimated Build Date - 03 August 2007";
+        return "Estimated Build Date - 03 September 2007";
     }
 
     /**
