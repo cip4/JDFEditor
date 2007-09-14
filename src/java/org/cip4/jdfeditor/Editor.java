@@ -82,6 +82,7 @@ import java.util.ResourceBundle;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
+import javax.swing.tree.TreePath;
 
 import org.cip4.jdflib.core.JDFAudit;
 import org.cip4.jdflib.core.JDFDoc;
@@ -312,8 +313,14 @@ public class Editor
      */
     public static JDFTreeModel getModel()
     {
-        EditorDocument ed =getEditorDoc();
+        EditorDocument ed = getEditorDoc();
         return ed==null ? null : ed.getModel();
+    }
+    
+    public static void getsetModel(JDFTreeModel m_model)
+    {
+        EditorDocument ed = getEditorDoc();
+        ed.setModel(m_model);
     }
     ///////////////////////////////////////////////////////////////
 
@@ -346,15 +353,18 @@ public class Editor
     {
         return my_Frame.setJDFDoc(null,null);
     }   
-        /**
-         * Method getReadFile.
-         * @param fts the file to read
-	     * @return true if at least one file was read or selected
-	     * BMI Created 07-08-31
-         */
-        public static boolean getReadFile()
-        {
-            return my_Frame.readFile(null);
-        } 
+    
+    /**
+     * Method getReadFile.
+     * @param fts the file to read
+     * @return true if at least one file was read or selected
+     * BMI Created 07-08-31
+     */
+    public static boolean getReadFile()
+    {
+        return my_Frame.readFile(null);
+    } 
+
+    
     ///////////////////////////////////////////////////////////////
 }

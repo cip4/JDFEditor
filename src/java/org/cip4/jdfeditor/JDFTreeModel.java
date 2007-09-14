@@ -77,6 +77,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
@@ -1237,11 +1238,12 @@ public class JDFTreeModel extends DefaultTreeModel
         
         if (editorDoc.getJDFDoc() != null)
         {
-            final String originalFileName = Editor.getJDFDoc().getOriginalFileName();
+            //final String originalFileName = Editor.getJDFDoc().getOriginalFileName();
             Editor.getSetJDFDoc();
             Editor.getReadFile();
         }
     }
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 }
