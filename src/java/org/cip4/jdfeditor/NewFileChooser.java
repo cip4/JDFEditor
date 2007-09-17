@@ -48,6 +48,7 @@ public class NewFileChooser extends JPanel implements ActionListener
      */
     private void init()
     {
+    	//BMI: Add option for Golden Ticket Option
         final ResourceBundle littleBundle = Editor.getBundle();
         final JLabel label = new JLabel(littleBundle.getString("ChooseNewFileKey"));
         add(label);
