@@ -883,7 +883,7 @@ ClipboardOwner
     {
         final String[] options = { m_littleBundle.getString("OkKey"), m_littleBundle.getString("CancelKey") };
         
-        final NewFileChooser newFileChooser = new NewFileChooser(m_littleBundle);
+        final NewFileChooser newFileChooser = new NewFileChooser();
         
         final int option = JOptionPane.showOptionDialog(this, newFileChooser, 
                 m_littleBundle.getString("ChooseNewFileKey"),
