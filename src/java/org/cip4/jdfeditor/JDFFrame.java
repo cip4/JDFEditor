@@ -878,6 +878,7 @@ ClipboardOwner
     }
     /**
      * Asks if the user wants to create a new JDF or JMF file.
+     * BMI: Also where can select Golden Ticket
      */
     public void newFile()
     {
@@ -889,6 +890,12 @@ ClipboardOwner
                 m_littleBundle.getString("ChooseNewFileKey"),
                 JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, 
                 null, options, options[0]);
+        /*
+         * BMI Comments to add golden ticket option.
+         * Follow this procedure.
+         * TODO: BMI Add option for Golden Ticket
+         * Add another dialog box here to select the golden ticket you want to select. Then open it and allow for editing.
+         */
         
         if (option == JOptionPane.OK_OPTION)
         {            
