@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipOutputStream;
@@ -24,6 +25,8 @@ import org.cip4.jdflib.core.JDFCustomerInfo;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFException;
 import org.cip4.jdflib.core.JDFNodeInfo;
+import org.cip4.jdflib.core.JDFPartAmount;
+import org.cip4.jdflib.core.JDFRefElement;
 import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
@@ -264,7 +267,7 @@ public class XJDF20
             final JDFResource linkTarget = rl.getLinkRoot();
             if(bProduct&&linkTarget instanceof JDFComponent)
                 continue;
-
+            linkTarget.expand(false);
             setResource(newRoot, rl, linkTarget,rootIn);
         }
         return;
@@ -295,9 +298,23 @@ public class XJDF20
             for(int k=0;k<vLeaves.size();k++)
             {
                 JDFResource leaf=(JDFResource)vLeaves.elementAt(k);
+                KElement newLeaf=resourceSet.appendElement(className);
                 //TODO this is just a quick hack - generating true id, idref pairs would be better
                 leaf.inlineRefElements(null, null, false);
-                KElement newLeaf=resourceSet.appendElement(className);
+//                VElement vRefs=leaf.getRefElements();
+//                int refSize = vRefs==null ? 0 : vRefs.size();
+//                for(int kk=0;kk<refSize;kk++)
+//                {
+//                    JDFRefElement ref=(JDFRefElement) vRefs.elementAt(kk);
+//                    JDFResource refRes=ref.getTarget();
+//                    if(!refRes.hasAttribute_KElement("ID", null, false))
+//                    {
+//                        String newID=refRes.getID()+"."+StringUtil.formatInteger(dot++);
+//                        refRes.setAttribute("xjdf:partID", newID, "xjdf");
+//                        leaf.appendAttribute(ref.getLocalName(), newID, null, " ", false);
+//                    }
+//                    
+//                }
                 newLeaf.setAttribute("ID", resID+"."+StringUtil.formatInteger(dot++));
                 setLeafAttributes(leaf, rl, newLeaf);
             }
@@ -313,17 +330,7 @@ public class XJDF20
         JDFAttributeMap partMap=leaf.getPartMap();
         //                   JDFAttributeMap attMap=leaf.getAttributeMap();
         //                   attMap.remove("ID");
-        JDFAmountPool ap=rl.getAmountPool();
-        if(ap!=null)
-        {
-            VElement vPartAmounts=ap.getMatchingPartAmountVector(partMap); 
-            if(vPartAmounts!=null)
-            {
-                KElement amountPool=newLeaf.appendElement("AmountPool");
-                for(int i=0;i<vPartAmounts.size();i++)
-                    amountPool.copyElement(vPartAmounts.item(i), null);
-            }
-        }
+        setAmountPool(rl, newLeaf, partMap);
         if(partMap!=null &&partMap.size()>0)    
         {
             newLeaf.appendElement("Part").setAttributes(partMap);
@@ -364,6 +371,48 @@ public class XJDF20
             spawnID.moveAttribute(AttributeName.SPAWNIDS, newLeaf, null, null, null);
             spawnID.moveAttribute(AttributeName.SPAWNSTATUS, newLeaf, null, null, null);
             spawnID.copyAttribute(AttributeName.RESOURCEID,newLeaf,AttributeName.ID,null,null);
+        }
+    }
+    private static void setAmountPool(JDFResourceLink rl, KElement newLeaf, JDFAttributeMap partMap)
+    {
+        JDFAmountPool ap=rl.getAmountPool();
+        if(ap!=null)
+        {
+            VElement vPartAmounts=ap.getMatchingPartAmountVector(partMap); 
+            if(vPartAmounts!=null)
+            {
+                for(int i=0;i<vPartAmounts.size();i++)
+                {
+                    JDFPartAmount pa= (JDFPartAmount) vPartAmounts.item(i);
+                    JDFAttributeMap map=pa.getPartMap();
+                    map.removeKeys(partMap.keySet());
+                    if(map.isEmpty()) // no further subdevision - simply blast into leaf
+                    {
+                        newLeaf.setAttributes(pa);
+                    }
+                    else if(map.size()==1 && map.containsKey(AttributeName.CONDITION))
+                    {
+                        JDFAttributeMap attMap=pa.getAttributeMap();
+                        Iterator it=attMap.getKeyIterator();
+                        String condition=map.get(AttributeName.CONDITION);
+                        while(it.hasNext())
+                        {
+                            String key=(String) it.next();
+//                            if(key.indexOf(AttributeName.AMOUNT)>0)
+//                            {
+                                newLeaf.setAttribute(key+condition, attMap.get(key));
+//                            }
+                        }
+                    }
+                    else // retain ap
+                    {
+                        KElement amountPool=newLeaf.getCreateElement("AmountPool");
+                        pa=(JDFPartAmount) amountPool.copyElement(pa, null);
+                        pa.setPartMap(map);
+                    }
+                    // TODO special handling for condition
+                }
+            }
         }
     }
 
