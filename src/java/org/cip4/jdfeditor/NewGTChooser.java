@@ -11,7 +11,7 @@ import javax.swing.JRadioButton;
 
 /**
  * @author BIskey ThunellE AnderssonA
- * Choose format of new file
+ * Choose format of new Golden Ticket file
  * To change this generated comment edit the template variable "typecomment":
  * Window>Preferences>Java>Templates.
  * To enable and disable the creation of type comments go to
@@ -39,7 +39,7 @@ public class NewGTChooser extends JPanel implements ActionListener
     public NewGTChooser()
     {
         super();
-        //This is going to change to the number of GT's available + 1 (for heading). There are 4 tickets right now.
+        //This is going to change to the number of GT's available + 1 (for heading). There are 1 ticket(s) right now.
         setLayout(new GridLayout(2,1)); 
         this.fileType = "Base";
         init();
