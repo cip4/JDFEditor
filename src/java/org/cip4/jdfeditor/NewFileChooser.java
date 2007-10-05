@@ -27,6 +27,7 @@ public class NewFileChooser extends JPanel implements ActionListener
     private String fileType;
     private JRadioButton radioJDFButton;
     private JRadioButton radioJMFButton;
+    private JRadioButton radioGTButton;
     private ButtonGroup fileTypeGroup;
 
     /**
@@ -36,7 +37,7 @@ public class NewFileChooser extends JPanel implements ActionListener
     public NewFileChooser()
     {
         super();
-        setLayout(new GridLayout(3,1));
+        setLayout(new GridLayout(4,1));
         this.fileType = "JDF";
         init();
         setVisible(true);
@@ -50,6 +51,9 @@ public class NewFileChooser extends JPanel implements ActionListener
     {
     	//BMI: Add option for Golden Ticket Option
         final ResourceBundle littleBundle = Editor.getBundle();
+        /*
+         * Need to add this getString "Golden Ticket" b/c it states right now Do you want to create a new JDF or JMF file?
+         */
         final JLabel label = new JLabel(littleBundle.getString("ChooseNewFileKey"));
         add(label);
         
@@ -67,6 +71,12 @@ public class NewFileChooser extends JPanel implements ActionListener
         radioJMFButton.addActionListener(this);
         add(radioJMFButton);
         fileTypeGroup.add(radioJMFButton);
+        
+        radioGTButton = new JRadioButton(littleBundle.getString("NewGoldenTicket"));
+        radioGTButton.setActionCommand(littleBundle.getString("NewGoldenTicket"));
+        radioGTButton.addActionListener(this);
+        add(radioGTButton);
+        fileTypeGroup.add(radioGTButton);
     }
     
     
@@ -80,9 +90,13 @@ public class NewFileChooser extends JPanel implements ActionListener
         {
             this.fileType = "JDF";
         }
-        else
+        else if (src==radioJMFButton)
         {
             this.fileType = "JMF";
+        }
+        else
+        {
+        	this.fileType = "GoldenTicket";
         }
     }
 

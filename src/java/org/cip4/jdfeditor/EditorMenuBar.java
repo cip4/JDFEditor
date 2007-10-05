@@ -966,7 +966,9 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
         }
     }
 ///////////////////////////////////////////////////////////////////// 
-
+/*
+ * WHERE the process begins when you select File->New from the JDFEditor menu.
+ */
     public void actionPerformed(ActionEvent e)
     {
         Editor.setCursor(1,null);
@@ -1003,6 +1005,9 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
         {
             frame.nextFile(-1);
         }
+        /*
+         * Action that is performed when select File->New
+         */
         else if (eSrc == m_newItem )
         {
             frame.newFile();

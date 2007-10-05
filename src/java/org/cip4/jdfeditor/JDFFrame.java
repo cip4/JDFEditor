@@ -128,8 +128,13 @@ import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.XMLDoc;
+import org.cip4.jdflib.core.JDFElement.EnumVersion;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.core.XMLDocUserData.EnumDirtyPolicy;
+import org.cip4.jdflib.datatypes.VJDFAttributeMap;
+import org.cip4.jdflib.goldenticket.BaseGoldenTicket;
+import org.cip4.jdflib.goldenticket.JMFGoldenTicket;
+import org.cip4.jdflib.goldenticket.MISCPGoldenTicket;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFAuditPool;
@@ -291,11 +296,11 @@ ClipboardOwner
      */
     void openFile()
     {
-        File fileToSave=null;
+        File fileToSave=null; //Do this for GT
         if(getJDFDoc()!=null)
         {
             final String originalFileName = getJDFDoc().getOriginalFileName();
-            if(originalFileName!=null)
+            if(originalFileName!=null)	//Do this if statement for GT
                 fileToSave=new File(originalFileName);
         }
         else
@@ -310,8 +315,8 @@ ClipboardOwner
         
         if (answer == JFileChooser.APPROVE_OPTION)
         {
-            fileToSave = chooser.getSelectedFile();           
-            readFile(fileToSave);
+            fileToSave = chooser.getSelectedFile();	//Do this GT
+            readFile(fileToSave);	//Do this as well for GT
         }
     }
 
@@ -804,6 +809,105 @@ ClipboardOwner
         }
     }
     /**
+     * Method newGoldenTicket.
+     * creates a new JDF file from an existing Golden Ticket
+     * Is there a way to select from the file (like selecting a picture in the eidtor?
+     */
+    private void newGoldenTicket()
+    {
+		final String[] GToptions = { m_littleBundle.getString("OkKey"), m_littleBundle.getString("CancelKey") };  
+        final NewGTChooser newGTChooser = new NewGTChooser();
+        
+        final int option = JOptionPane.showOptionDialog(this, newGTChooser, 
+                m_littleBundle.getString("ChooseNewGT"),
+                JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, 
+                null, GToptions, GToptions[0]);
+        
+        /*
+         * Find which GT to load and load it.
+         */
+     
+        if (option == JOptionPane.OK_OPTION)
+        {
+        	
+/*            if ((newGTChooser.getSelection()).equals("Base"))
+            {
+            	//This works fine (it loads the file)
+            	BaseGoldenTicket JDFBase = new BaseGoldenTicket(2, null);
+            	JDFBase.assign(null);
+            	final JDFDoc jdfBaseDoc = new JDFDoc("JDF");
+                final JDFNode jdfBaseRoot = JDFBase.getNode();
+                jdfBaseRoot.setType("Product",true);
+                setJDFDoc(jdfBaseDoc, null);
+                
+                m_treeArea.drawTreeView(getEditorDoc());
+                jdfBaseDoc.setOriginalFileName("BaseGoldenTicket.jdf");
+                setTitle(getWindowTitle());
+
+            }
+            else if ((newGTChooser.getSelection()).equals("JMF"))
+            {
+            	System.out.println("I am in JMF Ticket.");
+	
+	            JMFGoldenTicket JDFjmfTicket = new JMFGoldenTicket(2, null);
+	        	JDFjmfTicket.assign(null);
+	            final JDFDoc jdfDoc = new JDFDoc("JMF");
+	            //How do I set this node when the return is JDFNode?
+	            final JDFJMF jmfRoot = JDFjmfTicket.getNode();
+	            jmfRoot.init();
+	            final VString requiredAttributes = jmfRoot.getMissingAttributes(9999999);
+	            
+	            for (int i = 0; i < requiredAttributes.size(); i++)
+	            {
+	                final String s=JDFElement.getValueForNewAttribute(jmfRoot, requiredAttributes.stringAt(i));
+	                if(!jmfRoot.hasAttribute(requiredAttributes.stringAt(i)))
+	                    jmfRoot.setAttribute(requiredAttributes.stringAt(i), s);
+	            }
+	            
+	            setJDFDoc(jdfDoc, null);
+	            m_treeArea.drawTreeView(getEditorDoc());
+	            jdfDoc.setOriginalFileName("Untitled.jmf");
+	            setTitle(getWindowTitle());
+	            
+            	final JDFDoc jdfDoc = new JDFDoc("JMF");
+	            final JDFJMF jmfRoot = jdfDoc.getJMFRoot();
+            }
+
+            else if ((newGTChooser.getSelection()).equals("MIS"))
+            	System.out.println("I am in MIS Ticket.");
+
+            else
+*/                        	
+            	if ((newGTChooser.getSelection()).equals("MISCP"))
+            	{
+            		System.out.println("I am in MISCP Ticket.");
+            		clearViews();
+            		try
+                    {
+            			VJDFAttributeMap vPartMap1 = new VJDFAttributeMap();
+						MISCPGoldenTicket jdfmiscp = new MISCPGoldenTicket(1, null, 1, 2, true, vPartMap1);
+            			jdfmiscp.assign(null);
+            			
+                    	final JDFDoc jdfmiscpDoc = new JDFDoc("JDF");
+                        final JDFNode jdfcproot = jdfmiscp.getNode();
+                        jdfcproot.setType("Product",true);
+                        setJDFDoc(jdfmiscpDoc, null);
+                        
+                        m_treeArea.drawTreeView(getEditorDoc());
+                        jdfmiscpDoc.setOriginalFileName("MISCPICSGoldenTicket.jdf");
+                        setTitle(getWindowTitle());
+                         
+                    }
+                    catch (Exception s)
+                    {
+                        s.printStackTrace();
+                        JOptionPane.showMessageDialog(this, m_littleBundle.getString("FileNotOpenKey"),
+                                m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+                    }
+            	}
+        }
+    }
+    /**
      * Close the current file.
      */
     public int closeFile(int nMax)
@@ -879,6 +983,8 @@ ClipboardOwner
     /**
      * Asks if the user wants to create a new JDF or JMF file.
      * BMI: Also where can select Golden Ticket
+     * 
+     * Coming from EditorMenuBar, second stop in the chain. called from frame.NewFile()
      */
     public void newFile()
     {
@@ -900,9 +1006,14 @@ ClipboardOwner
         if (option == JOptionPane.OK_OPTION)
         {            
             if ((newFileChooser.getSelection()).equals("JDF"))
-                newJDF();
-            else
+            	newJDF();
+            
+            else if((newFileChooser.getSelection()).equals("JMF"))
                 newJMF();
+            
+            else 
+            	//System.out.println("GOLDEN TICKET SELECTED CORRECTLY!! Moving to NewGoldenTicket Method.");
+            	newGoldenTicket();
             
             final INIReader m_iniFile=Editor.getIniFile();
             setEnableOpen(!m_iniFile.getReadOnly());
