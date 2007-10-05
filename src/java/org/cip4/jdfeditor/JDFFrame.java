@@ -128,12 +128,9 @@ import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.XMLDoc;
-import org.cip4.jdflib.core.JDFElement.EnumVersion;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.core.XMLDocUserData.EnumDirtyPolicy;
 import org.cip4.jdflib.datatypes.VJDFAttributeMap;
-import org.cip4.jdflib.goldenticket.BaseGoldenTicket;
-import org.cip4.jdflib.goldenticket.JMFGoldenTicket;
 import org.cip4.jdflib.goldenticket.MISCPGoldenTicket;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.node.JDFNode;
@@ -880,19 +877,22 @@ ClipboardOwner
 */                        	
             	if ((newGTChooser.getSelection()).equals("MISCP"))
             	{
-            		System.out.println("I am in MISCP Ticket.");
-            		clearViews();
+            		//System.out.println("I am in MISCP Ticket.");
+            		//clearViews();
             		try
                     {
+            			//Get the MISCP golden ticket information.
             			VJDFAttributeMap vPartMap1 = new VJDFAttributeMap();
 						MISCPGoldenTicket jdfmiscp = new MISCPGoldenTicket(1, null, 1, 2, true, vPartMap1);
             			jdfmiscp.assign(null);
             			
+            			//assigns the newly created JDF node to jdfcproot
                     	final JDFDoc jdfmiscpDoc = new JDFDoc("JDF");
                         final JDFNode jdfcproot = jdfmiscp.getNode();
                         jdfcproot.setType("Product",true);
                         setJDFDoc(jdfmiscpDoc, null);
                         
+                        //display the result.
                         m_treeArea.drawTreeView(getEditorDoc());
                         jdfmiscpDoc.setOriginalFileName("MISCPICSGoldenTicket.jdf");
                         setTitle(getWindowTitle());
