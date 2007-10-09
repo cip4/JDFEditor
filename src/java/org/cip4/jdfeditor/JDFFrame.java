@@ -825,56 +825,7 @@ ClipboardOwner
          */
      
         if (option == JOptionPane.OK_OPTION)
-        {
-        	
-/*            if ((newGTChooser.getSelection()).equals("Base"))
-            {
-            	//This works fine (it loads the file)
-            	BaseGoldenTicket JDFBase = new BaseGoldenTicket(2, null);
-            	JDFBase.assign(null);
-            	final JDFDoc jdfBaseDoc = new JDFDoc("JDF");
-                final JDFNode jdfBaseRoot = JDFBase.getNode();
-                jdfBaseRoot.setType("Product",true);
-                setJDFDoc(jdfBaseDoc, null);
-                
-                m_treeArea.drawTreeView(getEditorDoc());
-                jdfBaseDoc.setOriginalFileName("BaseGoldenTicket.jdf");
-                setTitle(getWindowTitle());
-
-            }
-            else if ((newGTChooser.getSelection()).equals("JMF"))
-            {
-            	System.out.println("I am in JMF Ticket.");
-	
-	            JMFGoldenTicket JDFjmfTicket = new JMFGoldenTicket(2, null);
-	        	JDFjmfTicket.assign(null);
-	            final JDFDoc jdfDoc = new JDFDoc("JMF");
-	            //How do I set this node when the return is JDFNode?
-	            final JDFJMF jmfRoot = JDFjmfTicket.getNode();
-	            jmfRoot.init();
-	            final VString requiredAttributes = jmfRoot.getMissingAttributes(9999999);
-	            
-	            for (int i = 0; i < requiredAttributes.size(); i++)
-	            {
-	                final String s=JDFElement.getValueForNewAttribute(jmfRoot, requiredAttributes.stringAt(i));
-	                if(!jmfRoot.hasAttribute(requiredAttributes.stringAt(i)))
-	                    jmfRoot.setAttribute(requiredAttributes.stringAt(i), s);
-	            }
-	            
-	            setJDFDoc(jdfDoc, null);
-	            m_treeArea.drawTreeView(getEditorDoc());
-	            jdfDoc.setOriginalFileName("Untitled.jmf");
-	            setTitle(getWindowTitle());
-	            
-            	final JDFDoc jdfDoc = new JDFDoc("JMF");
-	            final JDFJMF jmfRoot = jdfDoc.getJMFRoot();
-            }
-
-            else if ((newGTChooser.getSelection()).equals("MIS"))
-            	System.out.println("I am in MIS Ticket.");
-
-            else
-*/                        	
+        {             	
             	if ((newGTChooser.getSelection()).equals("MISCP"))
             	{
             		//System.out.println("I am in MISCP Ticket.");
@@ -887,9 +838,8 @@ ClipboardOwner
             			jdfmiscp.assign(null);
             			
             			//assigns the newly created JDF node to jdfcproot
-                    	final JDFDoc jdfmiscpDoc = new JDFDoc("JDF");
                         final JDFNode jdfcproot = jdfmiscp.getNode();
-                        jdfcproot.setType("Product",true);
+                        final JDFDoc jdfmiscpDoc = jdfcproot.getOwnerDocument_JDFElement();
                         setJDFDoc(jdfmiscpDoc, null);
                         
                         //display the result.
