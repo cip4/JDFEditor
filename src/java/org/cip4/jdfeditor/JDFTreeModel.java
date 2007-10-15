@@ -77,7 +77,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
