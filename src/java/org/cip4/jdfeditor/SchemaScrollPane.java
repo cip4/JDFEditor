@@ -73,7 +73,6 @@ import java.util.Vector;
 
 import javax.swing.JTree;
 import javax.swing.ToolTipManager;
-import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import org.cip4.jdflib.core.KElement;
@@ -118,13 +117,13 @@ public class SchemaScrollPane extends ValidationScrollPane
         m_reportTree.setEditable(false);
         ToolTipManager.sharedInstance().registerComponent(m_reportTree);
         
-        DCOutputWrapper bugReportRoot = null;
+//        DCOutputWrapper bugReportRoot = null;
         
         setSchemaOutputTree(m_checkRoot);            
-        if (bugReportRoot != null)
-        {
-            m_reportTree.expandPath(new TreePath(bugReportRoot.getPath()));
-        }
+//        if (bugReportRoot != null)
+//        {
+//            m_reportTree.expandPath(new TreePath(bugReportRoot.getPath()));
+//        }
         
         m_SelectionListener = new ValidationSelectionListener();
         m_reportTree.addTreeSelectionListener(m_SelectionListener);

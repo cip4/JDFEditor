@@ -140,7 +140,7 @@ public class JDFDevCapErrScrollPane extends ValidationScrollPane
             
             for (int i=0; i < execNodes.size(); i++)
             {
-                KElement execNode = (KElement) execNodes.elementAt(i);
+                KElement execNode = execNodes.elementAt(i);
                 m_execRoot.add(new DCOutputWrapper(execNode));
             }            
         }

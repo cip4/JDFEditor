@@ -44,13 +44,13 @@ public class ProcessPart extends JComponent
     
     
     public boolean isSelected=false; // if true, this element is selected and is connected by emphasized ResourceLink lines
-    private KElement elem; // the element (node or resource) that is displayed
+    private final KElement elem; // the element (node or resource) that is displayed
     public int style; // the style of this ProcessPart, i.e Node, Parent Resource or Res_External
     
     private Color gColor;
     private String[] gString;    
-    private Vector vInRes = new Vector();
-    private Vector vOutRes = new Vector();
+    private final Vector vInRes = new Vector();
+    private final Vector vOutRes = new Vector();
     private int xPos;
     private int yPos;
 
@@ -299,7 +299,8 @@ public class ProcessPart extends JComponent
      * also compares this.elem to a KElement 
      * @see java.lang.Object#equals(java.lang.Object)
      */
-    public boolean equals(Object arg0)
+    @Override
+	public boolean equals(Object arg0)
     {
         if (super.equals(arg0))
             return true;
@@ -310,7 +311,8 @@ public class ProcessPart extends JComponent
         return false;
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         String s="[ProcessPart: ";
         if(elem!=null)
@@ -344,7 +346,7 @@ public class ProcessPart extends JComponent
             return v;
         for(int i=v.size()-1;i>=0;i--)            
         {
-            final int indexOf = parts.indexOf(new ProcessPart((KElement)v.elementAt(i),0,null));
+            final int indexOf = parts.indexOf(new ProcessPart(v.elementAt(i),0,null));
             if(indexOf<0)
             {
                 v.remove(i);

@@ -135,10 +135,10 @@ import org.cip4.jdflib.util.JDFDuration;
  */
 public class JDFDeviceCapGenerator
 {
-    private JDFNode jdfRoot;
+    private final JDFNode jdfRoot;
     private int dcID = 1000;
     private int stID = 3000;
-    private VString genericAttributes;
+    private final VString genericAttributes;
     private JDFDeviceCap deviceCap;
     private JDFDevCapPool devCapPool;
     private JDFActionPool actionPool;
@@ -359,7 +359,7 @@ public class JDFDeviceCapGenerator
             final VElement vRes = resPool.getPoolChildren(null,  null, null);// resolve the target
             for (int r = 0; r < vRes.size(); r++) 
             {
-                setDevCapForChildElements((JDFResource) vRes.elementAt(r),true);
+                setDevCapForChildElements(vRes.elementAt(r),true);
             }
         }
     }

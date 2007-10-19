@@ -128,11 +128,11 @@ public class JDFTreeArea extends JTextArea
 { 
     TreeSelectionListener m_treeSelectionListener;
     private static final long serialVersionUID = 2036935468347224324L;
-    private JScrollPane m_treeScroll;
+    private final JScrollPane m_treeScroll;
     public JViewport m_treeView;
     private JDFTreeRenderer m_renderer;
     public JDFFrame m_frame;
-    private ResourceBundle m_littleBundle;
+    private final ResourceBundle m_littleBundle;
     private static String lastPath="/JDF";
 
 
@@ -287,7 +287,8 @@ public class JDFTreeArea extends JTextArea
 
     class PopupListener extends MouseAdapter
     {
-        public void mousePressed(MouseEvent e)
+        @Override
+		public void mousePressed(MouseEvent e)
         {
             EditorDocument ed=m_frame.getEditorDoc();
             if(ed==null)
@@ -325,7 +326,8 @@ public class JDFTreeArea extends JTextArea
             }
         }
 
-        public void mouseClicked(MouseEvent event)
+        @Override
+		public void mouseClicked(MouseEvent event)
         {          
             EditorDocument ed=m_frame.getEditorDoc();
             if(ed==null)
@@ -634,7 +636,7 @@ public class JDFTreeArea extends JTextArea
             final KElement r = ((JDFTreeNode) ed.getRootNode().getFirstChild()).getElement();
             final int atPos = lastPath.indexOf(JDFConstants.AET);
             String message=null;
-            String findPath=lastPath;
+//            String findPath=lastPath;
             if (atPos > 0 && lastPath.charAt(atPos-1)!='[') // attribute and not element search qualifier e.g.  e[@a="b"]
             {
                 try 
@@ -657,7 +659,8 @@ public class JDFTreeArea extends JTextArea
                     if(el==null)
                         message = "No element with XPath found: " + lastPath;
                     else
-                        findPath=el.buildXPath(null, 1);
+//                        findPath=
+                        	el.buildXPath(null, 1);
                 }
                 catch (JDFException exc)
                 {
