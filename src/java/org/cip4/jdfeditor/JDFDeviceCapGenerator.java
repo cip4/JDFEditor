@@ -578,7 +578,7 @@ public class JDFDeviceCapGenerator
         final VString vAttrMapKeys = attrmap.getKeys();
         for (int at=0; at < vAttrMapKeys.size(); at++)
         {
-            final String key = (String) vAttrMapKeys.elementAt(at);
+            final String key = vAttrMapKeys.elementAt(at);
             final String value = attrmap.get(key);
             
             EnumAttributeType eAttrType = parElem.getAtrType(key);
