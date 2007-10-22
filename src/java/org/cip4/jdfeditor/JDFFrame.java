@@ -176,7 +176,7 @@ ClipboardOwner
     
     
     // q&d hack for multi doc support
-    Vector m_VjdfDocument=new Vector();
+    Vector m_VjdfDocument = new Vector();
     int m_DocPos=-1; // document position
     
     // dragndrop support
@@ -807,8 +807,7 @@ ClipboardOwner
     }
     /**
      * Method newGoldenTicket.
-     * creates a new JDF file from an existing Golden Ticket
-     * Is there a way to select from the file (like selecting a picture in the eidtor?
+     * creates a new JDF file from an existing Golden Ticket.java file.
      */
     private void newGoldenTicket()
     {
@@ -826,10 +825,9 @@ ClipboardOwner
      
         if (option == JOptionPane.OK_OPTION)
         {             	
+        	//For new golden tickets, just add another if statement and edit NewGTChooser.java
             	if ((newGTChooser.getSelection()).equals("MISCP"))
             	{
-            		//System.out.println("I am in MISCP Ticket.");
-            		//clearViews();
             		try
                     {
             			//Get the MISCP golden ticket information.
@@ -946,12 +944,6 @@ ClipboardOwner
                 m_littleBundle.getString("ChooseNewFileKey"),
                 JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, 
                 null, options, options[0]);
-        /*
-         * BMI Comments to add golden ticket option.
-         * Follow this procedure.
-         * TODO: BMI Add option for Golden Ticket
-         * Add another dialog box here to select the golden ticket you want to select. Then open it and allow for editing.
-         */
         
         if (option == JOptionPane.OK_OPTION)
         {            
@@ -962,7 +954,6 @@ ClipboardOwner
                 newJMF();
             
             else 
-            	//System.out.println("GOLDEN TICKET SELECTED CORRECTLY!! Moving to NewGoldenTicket Method.");
             	newGoldenTicket();
             
             final INIReader m_iniFile=Editor.getIniFile();
