@@ -8,6 +8,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
@@ -155,7 +157,7 @@ public class HelpFrame extends JFrame
                 littleBundle.getString("GettingStartedKey"),
                 littleBundle.getString("ViewKey"),
                 littleBundle.getString("EditKey"),
-                littleBundle.getString("ValidateKey"),
+                littleBundle.getString("ValidateCertKey"),
                 littleBundle.getString("DevelopmentNotesKey")};
 
         final JPanel leftPanel = new JPanel(null);
@@ -360,7 +362,7 @@ public class HelpFrame extends JFrame
         rightLabel.setText(startTagsLarge + littleBundle.getString("EditKey") + endTags);
     }
     /**
-     * Method helpValidation.
+     * Method helpValidation. Also where you talk about certification.
      */
     void helpValidation()
     {
@@ -398,7 +400,20 @@ public class HelpFrame extends JFrame
         rp.setPreferredSize(new Dimension(w + 2 * x, y + 10));
         rightScroll.getViewport().setView(rp);
 
-        rightLabel.setText(startTagsLarge + littleBundle.getString("ValidateKey") + endTags);
+        
+        //Certification help
+
+        final JLabel certLabel = createDefaultLabel(startTags + littleBundle.getString("CertificationView") + endTags);
+        
+        Dimension c = certLabel.getPreferredSize();
+
+        certLabel.setBounds(x, y, c.width, c.height);
+        rp.add(certLabel);
+        w = w < c.width ? c.width : w;
+
+        y += c.height;
+
+        rightLabel.setText(startTagsLarge + littleBundle.getString("ValidateCertKey") + endTags);
     }
     /**
      * Method helpFurtherDevelopment.
@@ -448,7 +463,8 @@ public class HelpFrame extends JFrame
             }
             else if (e.getSource() == helpLabels[3])
             {
-                helpLabels[3].setText(startTagsSmall + littleBundle.getString("ValidateKey") + endTags);
+            	//make "ValidateKey" = Validate and Certification
+                helpLabels[3].setText(startTagsSmall + littleBundle.getString("ValidateCertKey") + endTags);
                 helpValidation();
             }
             else if (e.getSource() == helpLabels[4])
@@ -474,7 +490,7 @@ public class HelpFrame extends JFrame
             }
             else if (e.getSource() == helpLabels[3])
             {
-                helpLabels[3].setText(startTagsSmallSel + littleBundle.getString("ValidateKey") + endTags);
+                helpLabels[3].setText(startTagsSmallSel + littleBundle.getString("ValidateCertKey") + endTags);
             }
             else if (e.getSource() == helpLabels[4])
             {
@@ -499,7 +515,7 @@ public class HelpFrame extends JFrame
             }
             else if (e.getSource() == helpLabels[3])
             {
-                helpLabels[3].setText(startTagsSmall + littleBundle.getString("ValidateKey") + endTags);
+                helpLabels[3].setText(startTagsSmall + littleBundle.getString("ValidateCertKey") + endTags);
             }
             else if (e.getSource() == helpLabels[4])
             {
