@@ -176,7 +176,7 @@ ClipboardOwner
     
     
     // q&d hack for multi doc support
-    Vector m_VjdfDocument = new Vector();
+    Vector<EditorDocument> m_VjdfDocument = new Vector<EditorDocument>();
     int m_DocPos=-1; // document position
     
     // dragndrop support
@@ -436,7 +436,7 @@ ClipboardOwner
             File f = mergeResult.getFileToSave(); 
             if (f != null)
             {
-                JDFTreeModel.refresh();
+                Editor.getFrame().refresh();
                 clearViews();
             }   
         }
@@ -638,6 +638,29 @@ ClipboardOwner
             title+=" ("+ediDoc.getOriginalFileName()+")";
         return title;
     }
+    
+  
+    
+    /**
+     * Reload the currently opened file.
+     */
+    public void refresh()
+    {
+        final EditorDocument editorDoc = getEditorDoc();
+        if(editorDoc==null)
+            return;
+        if(editorDoc.getMimePackage()!=null)
+            return;
+        
+        if (editorDoc.getJDFDoc() != null)
+        {
+            final String originalFileName = getJDFDoc().getOriginalFileName();
+            setJDFDoc(null,null);
+            readFile(new File(originalFileName));
+        }
+    }
+    
+    
     /**
      * Method saveFile.
      * Save As-chooser
@@ -1343,7 +1366,7 @@ ClipboardOwner
             }
             else if (eSrc == m_buttonBar.m_refreshButton)
             {
-                JDFTreeModel.refresh();
+                refresh();
             }
         }
         Editor.setCursor(0,null);
@@ -1361,13 +1384,13 @@ ClipboardOwner
         if(pos>=m_VjdfDocument.size())
             pos=0;
         
-        EditorDocument ed=(EditorDocument) m_VjdfDocument.elementAt(m_DocPos);
+        EditorDocument ed=m_VjdfDocument.elementAt(m_DocPos);
         if(pos==m_DocPos)
             return ed; // nop
 
         m_menuBar.setWindowMenuItemColor(pos);
         m_DocPos=pos;
-        ed=(EditorDocument) m_VjdfDocument.elementAt(m_DocPos);
+        ed= m_VjdfDocument.elementAt(m_DocPos);
         
         refreshView(ed,null);
         return ed;
@@ -1917,7 +1940,7 @@ ClipboardOwner
     {
         if(m_DocPos<0)
             return null;
-        return (EditorDocument) m_VjdfDocument.elementAt(m_DocPos);
+        return m_VjdfDocument.elementAt(m_DocPos);
     }
     /**
      * get the JDFDoc of the currently displayed JDF

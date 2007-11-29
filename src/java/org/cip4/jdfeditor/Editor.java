@@ -343,27 +343,7 @@ public class Editor
         return my_Frame.m_treeArea;
     }    
     
-    /**
-     * Method getSetJDFDoc.
-     * @return ResourceBundle the static resource bundle
-     * BMI Created 07-08-31
-     */
-    public static int getSetJDFDoc()
-    {
-        return my_Frame.setJDFDoc(null,null);
-    }   
-    
-    /**
-     * Method getReadFile.
-     * @param fts the file to read
-     * @return true if at least one file was read or selected
-     * BMI Created 07-08-31
-     */
-    public static boolean getReadFile()
-    {
-        return my_Frame.readFile(null);
-    } 
-
+ 
     
     ///////////////////////////////////////////////////////////////
 }

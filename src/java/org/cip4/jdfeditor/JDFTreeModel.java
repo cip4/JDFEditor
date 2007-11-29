@@ -1222,27 +1222,6 @@ public class JDFTreeModel extends DefaultTreeModel
         return node;
     }
     
-    /**
-     * BMI Moved 07-08-31
-     * Reload the currently opened file.
-     * @return 
-     */
-    public static void refresh()
-    {
-        final EditorDocument editorDoc = Editor.getEditorDoc();
-        if(editorDoc==null)
-            return;
-        if(editorDoc.getMimePackage()!=null)
-            return;
-        
-        if (editorDoc.getJDFDoc() != null)
-        {
-            //final String originalFileName = Editor.getJDFDoc().getOriginalFileName();
-            Editor.getSetJDFDoc();
-            Editor.getReadFile();
-        }
-    }
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 }
