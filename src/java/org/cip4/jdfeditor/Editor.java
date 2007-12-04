@@ -285,7 +285,7 @@ public class Editor
      */
     public static String getEditorName()
     {
-        return "CIP4 JDF Editor -- Copyright © 2001-2007 CIP4\n";
+        return "CIP4 JDF Editor -- Copyright © 2001-2007 CIP4";
     }
 
     /**
@@ -294,7 +294,7 @@ public class Editor
      */
     public static String getEditorBuildDate()
     {
-        return "Estimated Build Date - 03 October 2007";
+        return "Estimated Build Date - 03 December 2007";
     }
 
     /**

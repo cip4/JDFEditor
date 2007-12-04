@@ -141,6 +141,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
     JMenuItem m_QuickValidateItem;
     JMenuItem m_fixVersionItem;
     JMenuItem m_fixCleanupItem;
+    JMenuItem m_removeExtenisionItem;
 
     JMenuItem m_copyValidationListItem;
     JMenuItem m_findItem;
@@ -573,6 +574,11 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
         m_fixCleanupItem.addActionListener(this);
         m_fixCleanupItem.setEnabled(true);
         m_toolsMenu.add(m_fixCleanupItem);
+        
+        m_removeExtenisionItem = new JMenuItem(m_littleBundle.getString("RemoveExtensionKey"));
+        m_removeExtenisionItem.addActionListener(this);
+        m_removeExtenisionItem.setEnabled(true);
+        m_toolsMenu.add(m_removeExtenisionItem);
 
 
         return m_toolsMenu;
@@ -1035,6 +1041,10 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
         else if (eSrc == m_fixCleanupItem)
         {
             Editor.getFrame().cleanupSelected();
+        }
+        else if (eSrc == m_removeExtenisionItem)
+        {
+            Editor.getFrame().removeExtensionsfromSelected();
         }
         else if (eSrc == m_findXPathItem)
         {

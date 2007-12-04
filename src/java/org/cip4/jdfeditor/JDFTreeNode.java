@@ -71,6 +71,7 @@ package org.cip4.jdfeditor;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
+import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFRefElement;
 import org.cip4.jdflib.core.JDFResourceLink;
@@ -80,6 +81,8 @@ import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.resource.devicecapability.JDFAbstractState;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCap;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCaps;
+import org.cip4.jdflib.resource.process.JDFSeparationSpec;
+import org.cip4.jdflib.span.JDFSpanBase;
 import org.cip4.jdflib.util.StringUtil;
 import org.w3c.dom.Attr;
 
@@ -366,12 +369,28 @@ public class JDFTreeNode extends DefaultMutableTreeNode
                 }
                 s+=") : "+ref;   
             }
-            else if((e instanceof JDFDevCap) || (e instanceof JDFDevCaps) || (e instanceof JDFAbstractState))
+            else if((e instanceof JDFDevCap) || (e instanceof JDFDevCaps) || (e instanceof JDFAbstractState) || (e instanceof JDFSeparationSpec) )
             {
                 final String nam=e.getAttribute("Name",null,null);
                 if(nam!=null)
                 {
                     s+=": "+nam;
+                }
+            }
+            else if(e instanceof JDFSpanBase)
+            {
+                final String act=e.getAttribute("Actual",null,null);
+                if(act!=null)
+                {
+                    s+=" actual: "+act;
+                }
+                else
+                {
+                    final String pref=e.getAttribute(AttributeName.PREFERRED,null,null);
+                    if(pref!=null)
+                    {
+                        s+=" preferred: "+pref;
+                    }
                 }
             }
             

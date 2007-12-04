@@ -1069,7 +1069,7 @@ ClipboardOwner
      * the closest JDF parent.
      *
      */
-    public void cleanupSelected()
+    void cleanupSelected()
     {
         JDFDoc doc=getJDFDoc();
         if(doc==null)
@@ -1098,6 +1098,40 @@ ClipboardOwner
                     element.eraseEmptyAttributes(true);
                     element.eraseEmptyNodes(true);                    
                 }
+            }
+            refreshView(getEditorDoc(),path);           
+        }
+        catch (Exception e) 
+        {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, 
+                    m_littleBundle.getString("FixVersionErrorKey") + e.getClass() + " \n"
+                    +(e.getMessage()!=null ? ("\"" + e.getMessage() + "\""): ""), 
+                    m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+        }
+    } 
+    
+    /**
+     * fixes the version of a JDF by calling fixVersion for the selected JDF node ore
+     * the closest JDF parent.
+     *
+     */
+    void removeExtensionsfromSelected()
+    {
+        JDFDoc doc=getJDFDoc();
+        if(doc==null)
+            return;
+        
+        try 
+        {
+             
+            // find the closest selectd JDF or JMF element and fix it
+            final TreePath path = m_treeArea.getSelectionPath();
+            final KElement element = EditorUtils.getElement(path);
+            if(element instanceof JDFElement)
+            {
+                JDFElement n1=(JDFElement)element;
+                n1.removeExtensions();
             }
             refreshView(getEditorDoc(),path);           
         }
