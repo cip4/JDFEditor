@@ -78,6 +78,7 @@ import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.node.JDFNode;
+import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.resource.devicecapability.JDFAbstractState;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCap;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCaps;
@@ -399,6 +400,15 @@ public class JDFTreeNode extends DefaultMutableTreeNode
             if(id!=null)
             {
                 s+=", "+id;
+            }
+            
+            // add any partidkeys in resources
+            if(e instanceof JDFResource)
+            {
+                JDFResource r=(JDFResource)e;
+                String partKey=r.getLocalPartitionKey();
+                if(partKey!=null)
+                    s+=" [@"+partKey+"="+r.getAttribute(partKey)+"]";               
             }
          }     
         
