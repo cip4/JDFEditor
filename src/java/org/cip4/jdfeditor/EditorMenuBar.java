@@ -80,9 +80,11 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ResourceBundle;
 
+import javax.swing.ImageIcon;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
@@ -110,62 +112,63 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
      */
     private static final long serialVersionUID = -8488973695389593826L;
 
-    JMenu m_recentFilesMenu;
-    JMenu m_insertElementMenu;
-    JMenu m_resourceMenu;
-    JMenu m_resourceLinkMenu;
+    private JMenu m_recentFilesMenu;
+    private JMenu m_insertElementMenu;
+    private JMenu m_resourceMenu;
+    private JMenu m_resourceLinkMenu;
 
-    JMenu m_fileMenu;
-    JMenu m_insertMenu;
-    JMenu m_toolsMenu;
-    JMenu m_editMenu;
-    JMenu m_validateMenu;
-    JMenu m_windowMenu;
-    JMenu m_helpMenu;
+    protected JMenu m_fileMenu;
+    protected JMenu m_insertMenu;
+    protected JMenu m_toolsMenu;
+    protected JMenu m_editMenu;
+    protected JMenu m_validateMenu;
+    protected JMenu m_windowMenu;
+    protected JMenu m_helpMenu;
 
-    JMenuItem m_newItem;
+    private JMenuItem m_newItem;
     JMenuItem m_saveItem;
     JMenuItem m_saveAsItem;
-    JMenuItem m_openItem;
-    JMenuItem m_nextItem;
+    private JMenuItem m_openItem;
+    private JMenuItem m_nextItem;
     JMenuItem m_quitItem;
     JMenuItem m_exportItem;
     JMenuItem m_copyItem;
     JMenuItem m_cutItem;
     JMenuItem m_undoItem;
     JMenuItem m_redoItem;
-    JMenuItem m_helpItem;
-    JMenuItem m_closeItem;
-    JMenuItem m_closeAllItem;
+    private JMenuItem m_helpItem;
+    private JMenuItem m_closeItem;
+    private JMenuItem m_closeAllItem;
     JMenuItem m_validateItem;
-    JMenuItem m_QuickValidateItem;
+    private JMenuItem m_QuickValidateItem;
     JMenuItem m_fixVersionItem;
-    JMenuItem m_fixCleanupItem;
-    JMenuItem m_removeExtenisionItem;
+    private JMenuItem m_fixCleanupItem;
+    private JMenuItem m_removeExtenisionItem;
 
     JMenuItem m_copyValidationListItem;
     JMenuItem m_findItem;
-    JMenuItem m_findXPathItem;
-    JMenuItem m_aboutItem;
+    private JMenuItem m_findXPathItem;
+    private JMenuItem m_aboutItem;
     JMenuItem m_versionItem;
     JMenuItem m_renameItem;
     JMenuItem m_modifyAttrValueItem;
     JMenuItem m_requiredAttrItem;
     JMenuItem m_requiredElemItem;
 
-    JMenuItem m_Windows[]=null;
+    private JMenuItem m_Windows[]=null;
 
     JMenuItem m_pasteItem;
-    JMenuItem m_deleteItem;
+    private JMenuItem m_deleteItem;
 
-    JMenuItem m_preferenceItem;
+    private JMenuItem m_preferenceItem;
 
-    JMenuItem m_sendToDeviceItem;
+    private JMenuItem m_sendToDeviceItem;
     JMenuItem m_spawnItem;
     JMenuItem m_spawnInformItem;
     JMenuItem m_mergeItem;
     JMenuItem m_devCapItem;
-    JMenuItem[] m_subMenuItem = new JMenuItem[5];
+    private JMenuItem[] m_subMenuItem = new JMenuItem[5];
+    private JMenuItem m_devcapOpenMenu;
 
     //popup menues 
     JMenuItem m_insertElemBeforeItem;
@@ -327,8 +330,12 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
             m_subMenuItem[i].setAccelerator(KeyStroke.getKeyStroke('1'+i, menuKeyMask));
             m_recentFilesMenu.add(m_subMenuItem[i]);
         }
-
         m_fileMenu.add(m_recentFilesMenu);
+        
+        m_devcapOpenMenu = new JMenuItem(m_littleBundle.getString("DevCapFileOpenKey"));
+        m_fileMenu.add(m_devcapOpenMenu);
+        m_devcapOpenMenu.addActionListener(this);
+        
         m_fileMenu.add(new JSeparator());
 
         m_quitItem = new JMenuItem(m_littleBundle.getString("ExitKey"));
@@ -355,14 +362,14 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
         m_helpMenu.addMouseListener(menuListener);
 
         m_helpItem = new JMenuItem(m_littleBundle.getString("HelpKey"));
-        m_helpItem.addActionListener(m_frame);
+        m_helpItem.addActionListener(this);
         m_helpItem.setAccelerator(KeyStroke.getKeyStroke('H', menuKeyMask));
         m_helpMenu.add(m_helpItem);
 
         m_helpMenu.add(new JSeparator());
 
         m_aboutItem = new JMenuItem(m_littleBundle.getString("AboutKey"));
-        m_aboutItem.addActionListener(m_frame);
+        m_aboutItem.addActionListener(this);
         m_helpMenu.add(m_aboutItem);
 
         m_versionItem = new JMenuItem(m_littleBundle.getString("JDFEditorVerKey"));
@@ -556,12 +563,12 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
         m_toolsMenu.add(new JSeparator());
 
         m_preferenceItem = new JMenuItem(m_littleBundle.getString("PreferenceMenuKey"));
-        m_preferenceItem.addActionListener(m_frame);
+        m_preferenceItem.addActionListener(this);
         m_toolsMenu.add(m_preferenceItem);
         m_toolsMenu.add(new JSeparator());
 
         m_sendToDeviceItem = new JMenuItem(m_littleBundle.getString("JDFSendToDeviceMenueEntry"));
-        m_sendToDeviceItem.addActionListener(m_frame);
+        m_sendToDeviceItem.addActionListener(this);
         m_toolsMenu.add(m_sendToDeviceItem);
 
         m_toolsMenu.add(new JSeparator());
@@ -755,7 +762,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
             }
             for (int i = 0; i < m_Windows.length;i++)
             {
-                JDFDoc d=((EditorDocument) m_frame.m_VjdfDocument.elementAt(i)).getJDFDoc();            
+                JDFDoc d=m_frame.m_VjdfDocument.elementAt(i).getJDFDoc();            
                 m_Windows[i].setText(d.getOriginalFileName());
             }
             setWindowMenuItemColor(m_frame.m_DocPos);
@@ -997,7 +1004,10 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
             if (getJDFDoc() != null)
                 ta.drawTreeView(frame.getEditorDoc());
         }
-
+        else if (eSrc == m_sendToDeviceItem)
+        {
+            SendToDevice.trySend();
+        } 
         else if (eSrc == m_showAttrRadioItem)
         {
             toggleAttributes();            
@@ -1050,6 +1060,40 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
         {
             Editor.getFrame().m_treeArea.findXPathElem();
         }    
+        else if (eSrc == m_aboutItem)
+        {
+            ImageIcon imgCIP = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "CIP4.gif");
+            
+            final String about = "Copyright © 2000-2006,\n"
+                + "International Cooperation for Integration of Processes in Prepress, Press and Postpress,\n"
+                + "hereinafter referred to as CIP4. All Rights Reserved\n\n"
+                + "Authors: Anna Andersson, Evelina Thunell, Ingemar Svenonius, Elena Skobchenko, Rainer Prosi\n\n"
+                + "PRELIMINARY PRE-RELEASE VERSION\n\n"
+                + "The APPLICATION is provided 'as is', without warranty of any kind, express, implied, or\n"
+                + "otherwise, including but not limited to the warranties of merchantability,fitness for a\n"
+                + "particular purpose and noninfringement. In no event will CIP4 be liable, for any claim,\n"
+                + "damages or other liability whether in an action of contract, tort or otherwise, arising\n"
+                + "from, out of, or in connection with the APPLICATION or the use or other dealings in the\n"
+                + "APPLICATION.";
+            JOptionPane.showMessageDialog(
+                    this, about, "CIP4 JDF Editor", JOptionPane.INFORMATION_MESSAGE, imgCIP);
+        }
+        else if (eSrc == m_helpItem)
+        {
+            HelpFrame h=HelpFrame.getHelp();
+            h.setVisible(true);
+            h.toFront();
+        }
+        else if (eSrc == m_preferenceItem)
+        {
+            showPreferences();
+        }
+        else if (eSrc == m_devcapOpenMenu)
+        {
+            File f=iniFile.getRecentDevCap();
+            openRecentFile(f);
+
+        }
 
 
 
@@ -1058,7 +1102,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
             if (eSrc == m_subMenuItem[i])
             {
                 final String newFile = m_subMenuItem[i].getText();
-                openRecentFile(newFile);
+                openRecentFile(new File(newFile));
             }
         }
         // select
@@ -1109,10 +1153,9 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
      * Called if a file is opened from the recent files menu.
      * @param filePathToSave - Path to the file that is to be opened
      */
-    private void openRecentFile(String filePathToSave)
+    private void openRecentFile(File fileToSave)
     {
         Editor.setCursor(1,null);
-        File fileToSave = new File(filePathToSave);
         boolean b=Editor.getFrame().readFile(fileToSave);
 
         if (b)
@@ -1122,6 +1165,10 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
             final INIReader m_iniFile = Editor.getIniFile();
             if (m_iniFile.nrOfRecentFiles() != 1)
                 m_iniFile.updateOrder(s, true);
+        }
+        else
+        {
+            EditorUtils.errorBox("OpenJDFErrorKey", fileToSave.getPath().toString());
         }
         Editor.setCursor(0,null);
     }  
@@ -1147,6 +1194,25 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
             else
                 m_Windows[i].setBackground(menuColor);               
         }
-
     }
+    
+    private void showPreferences()
+    {
+        ResourceBundle bundle=Editor.getBundle();
+        final String[] options = { bundle.getString("OkKey"), bundle.getString("CancelKey") };        
+        PreferenceDialog pd = new PreferenceDialog();
+        
+        final int option = JOptionPane.showOptionDialog(this, pd, bundle.getString("PreferenceKey"),
+                JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+        
+        if (option == JOptionPane.OK_OPTION)
+        {
+            pd.writeToIni();
+            EditorDocument ed=Editor.getEditorDoc();
+            if (ed != null &&  ed.getJDFTree()!=null){
+                ed.getJDFTree().repaint();
+            }
+        }
+    }
+
 }

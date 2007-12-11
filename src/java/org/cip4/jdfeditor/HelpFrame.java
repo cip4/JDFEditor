@@ -8,8 +8,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
@@ -36,7 +34,7 @@ public class HelpFrame extends JFrame
      * Comment for <code>serialVersionUID</code>
      */
     private static final long serialVersionUID = -7797849179421833321L;
-
+    private static HelpFrame theHelp=null;
     ResourceBundle littleBundle;
     private JLabel help1;
     private JLabel help2;
@@ -84,10 +82,10 @@ public class HelpFrame extends JFrame
     /**
      * Constructor for HelpFrame.
      */
-    public HelpFrame(ResourceBundle bundle)
+    public HelpFrame()
     {
         super();
-        this.littleBundle = bundle;
+        this.littleBundle = Editor.getBundle();
         this.setTitle(littleBundle.getString("HelpCIP4Key"));
         final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         this.setBounds(d.width / 3, 0, d.width * 2 / 3, d.height - 30);
@@ -96,7 +94,6 @@ public class HelpFrame extends JFrame
         {
             public void windowClosing(WindowEvent e)
             {
-                Editor.getFrame().setHelpExit();
                 dispose();
                 e.getID(); // make compile happy
             }
@@ -104,6 +101,7 @@ public class HelpFrame extends JFrame
         this.addWindowListener(winLis);
         this.toFront();
         init();
+        theHelp=this;
     }
     /**
      * Method init.
@@ -522,5 +520,14 @@ public class HelpFrame extends JFrame
                 helpLabels[4].setText(startTagsSmall + littleBundle.getString("DevelopmentNotesKey") + endTags);
             }
         }
+    }
+    /**
+     * @return
+     */
+    public static HelpFrame getHelp()
+    {
+       if(theHelp==null)
+           theHelp=new HelpFrame();
+       return theHelp;
     }
 }

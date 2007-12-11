@@ -169,7 +169,6 @@ ClipboardOwner
     public JDFTreeCopyNode m_copyNode;
     
     SearchDialog m_dialog = null;
-    private HelpFrame m_helpFrame = null;
     
     // all settings are stored here
     public ResourceBundle m_littleBundle;
@@ -514,29 +513,6 @@ ClipboardOwner
         }
     }
     
-    private void showPreferences()
-    {
-        final String[] options = { m_littleBundle.getString("OkKey"), m_littleBundle.getString("CancelKey") };        
-        PreferenceDialog pd = new PreferenceDialog();
-        
-        final int option = JOptionPane.showOptionDialog(this, pd, m_littleBundle.getString("PreferenceKey"),
-                JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
-        
-        if (option == JOptionPane.OK_OPTION)
-        {
-            pd.writeToIni();
-            EditorDocument ed=getEditorDoc();
-            if (ed != null &&  ed.getJDFTree()!=null){
-                ed.getJDFTree().repaint();
-            }
-        }
-    }
-    
-    //20040712 MRE
-    private void sendToDevice()
-    {
-        SendToDevice.trySend();
-    }
     
     /**
      * Method readFile.
@@ -1153,13 +1129,6 @@ ClipboardOwner
         m_dialog = new SearchDialog(this);
         m_dialog.setSearchComponent(searchComponent);
     }
-    /**
-     * Method setHelpExit.
-     */
-    public void setHelpExit()
-    {
-        m_helpFrame = null;
-    }
     
     /**
      * Mother of all action dispatchers
@@ -1212,34 +1181,6 @@ ClipboardOwner
             m_iniFile.writeINIFile();
             if (closeFile(9999) != JOptionPane.CANCEL_OPTION)
                 System.exit(0);
-        }
-        else if (eSrc == m_menuBar.m_aboutItem)
-        {
-            ImageIcon imgCIP = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "CIP4.gif");
-            
-            final String about = "Copyright © 2000-2006,\n"
-                + "International Cooperation for Integration of Processes in Prepress, Press and Postpress,\n"
-                + "hereinafter referred to as CIP4. All Rights Reserved\n\n"
-                + "Authors: Anna Andersson, Evelina Thunell, Ingemar Svenonius, Elena Skobchenko, Rainer Prosi\n\n"
-                + "PRELIMINARY PRE-RELEASE VERSION\n\n"
-                + "The APPLICATION is provided 'as is', without warranty of any kind, express, implied, or\n"
-                + "otherwise, including but not limited to the warranties of merchantability,fitness for a\n"
-                + "particular purpose and noninfringement. In no event will CIP4 be liable, for any claim,\n"
-                + "damages or other liability whether in an action of contract, tort or otherwise, arising\n"
-                + "from, out of, or in connection with the APPLICATION or the use or other dealings in the\n"
-                + "APPLICATION.";
-            JOptionPane.showMessageDialog(
-                    this, about, "CIP4 JDF Editor", JOptionPane.INFORMATION_MESSAGE, imgCIP);
-        }
-        else if (eSrc == m_menuBar.m_helpItem)
-        {
-            if (m_helpFrame == null)
-            {
-                m_helpFrame = new HelpFrame(m_littleBundle);
-                m_helpFrame.setVisible(true);
-            }
-            else
-                m_helpFrame.toFront();
         }
         else if (eSrc == m_menuBar.m_versionItem)
         {
@@ -1318,16 +1259,7 @@ ClipboardOwner
         {
             openDeviceCapFile();
         }    
-        else if (eSrc == m_menuBar.m_preferenceItem)
-        {
-            showPreferences();
-        }
-        //20040712 MRE
-        else if (eSrc == m_menuBar.m_sendToDeviceItem)
-        {
-            sendToDevice();
-        } 
-           // copy the results of the validation to the system clip board
+         // copy the results of the validation to the system clip board
         else if (eSrc == m_menuBar.m_copyValidationListItem)
         {    
             //TODO           m_errorTabbedPane.copyValidationListToClipBoard();
