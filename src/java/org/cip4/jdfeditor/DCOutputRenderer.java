@@ -22,7 +22,7 @@ public class DCOutputRenderer extends JDFTreeRenderer
     protected void setNodeIcon(JTree jdfTree,boolean sel, JDFTreeNode treeNode){
         final INIReader iniFile=Editor.getIniFile();
 
-        String n=treeNode.getName();
+        final String nodeName=treeNode.getName();
         KElement elem = treeNode.getElement();
         
         if(treeNode.isElement()){
@@ -56,65 +56,65 @@ public class DCOutputRenderer extends JDFTreeRenderer
                 setIcon(iniFile.attIcon);
             
         }
-        if (n.equals("RejectedNode")||n.equals("RejectedChildNode"))
+        if (nodeName.equals("RejectedNode")||nodeName.equals("RejectedChildNode"))
         {
             if (sel)
                 setIcon(iniFile.errElemIconS);
             else
                 setIcon(iniFile.errElemIcon);
         }
-        else if (n.equals("InvalidAttribute")||n.equals("InvalidSpan")||n.equals("InvalidComment"))
+        else if (nodeName.equals("InvalidAttribute")||nodeName.equals("InvalidSpan")||nodeName.equals("InvalidComment"))
         {
             if (sel)
                 setIcon(iniFile.errAttIconS);
             else
                 setIcon(iniFile.errAttIcon);
         }
-        else if (n.equals("InvalidSubelement")||n.equals("InvalidResource")||n.equals("InvalidPartitionLeaf"))
+        else if (nodeName.equals("InvalidSubelement")||nodeName.equals("InvalidResource")||nodeName.equals("InvalidPartitionLeaf"))
         {
             if (sel)
                 setIcon(iniFile.errElemIconS);
             else
                 setIcon(iniFile.errElemIcon);
         }
-        else if (n.equals("UnknownSubelement"))
+        else if (nodeName.equals("UnknownSubelement"))
         {
             if (sel)
                 setIcon(iniFile.errElemIconS);
             else
                 setIcon(iniFile.errElemIcon);
         }
-        else if (n.equals("MissingAttribute")||n.equals("MissingSpan"))
+        else if (nodeName.equals("MissingAttribute")||nodeName.equals("MissingSpan"))
         {
             if (sel)
                 setIcon(iniFile.errAttIconS);
             else
                 setIcon(iniFile.errAttIcon);
         }
-        else if (n.equals("UnknownAttribute")||n.equals("UnknownSpan")||n.equals("SyntaxWarning"))
+        else if (nodeName.equals("UnknownAttribute")||nodeName.equals("UnknownSpan")||nodeName.equals("SyntaxWarning"))
         {
             if (sel)
                 setIcon(iniFile.errAttIconS);
             else
                 setIcon(iniFile.errAttIcon);
         }
-        else if (n.equals("MissingSubelement")||n.equals("MissingResourceLink")
-                ||n.equals("MissingCustomerInfo")||n.equals("MissingNodeInfo"))
+        else if (nodeName.equals("MissingSubelement")||nodeName.equals("MissingElement")||nodeName.equals("MissingResourceLink")
+                ||nodeName.equals("MissingCustomerInfo")||nodeName.equals("MissingNodeInfo"))
         {
             if (sel)
                 setIcon(iniFile.errElemIconS);
             else
                 setIcon(iniFile.errElemIcon);
         }
-        else if (n.equals("MissingResources")||n.equals("InvalidResources")
-                ||n.equals("UnknownResources"))
+        else if (nodeName.equals("MissingResources")|| nodeName.equals("MissingElements")|| nodeName.equals("InvalidResources")
+                ||nodeName.equals("UnknownResources"))
         {
             if (sel)
                 setIcon(iniFile.errElemIconS);
             else
                 setIcon(iniFile.errElemIcon);
         }
-        else if (n.endsWith("Report"))
+        else if (nodeName.endsWith("Report"))
         {
             if(elem.hasChildElement("ExecutableNodes",null)||"true".equals(elem.getAttribute("IsValid")))
             {
@@ -132,7 +132,7 @@ public class DCOutputRenderer extends JDFTreeRenderer
                     setIcon(iniFile.errElemIcon);
             }
         }
-        else if (n.equals("ExecutableNodes"))
+        else if (nodeName.equals("ExecutableNodes"))
         {
             if (sel)
                 setIcon(iniFile.elemIconS);
