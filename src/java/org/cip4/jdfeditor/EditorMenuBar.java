@@ -316,6 +316,8 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
         m_saveAsItem = new JMenuItem(m_littleBundle.getString("SaveAsKey"));
         m_saveAsItem.addActionListener(m_frame);
+        m_saveAsItem.setAccelerator(KeyStroke.getKeyStroke('S', 
+                java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
         m_fileMenu.add(m_saveAsItem);
         m_fileMenu.add(new JSeparator());
 
