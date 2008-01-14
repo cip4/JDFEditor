@@ -961,35 +961,6 @@ ClipboardOwner
     }
     
     /**
-     * opens a Dialog for Settings of validation and
-     *
-     */
-    public void validateFile()
-    {
-        try 
-        {
-            final INIReader m_iniFile=Editor.getIniFile();
-            final ValidationDialog dialog = new ValidationDialog(this, m_littleBundle);
-            if (dialog.getValidationKeyChosen())
-            {
-                m_iniFile.setValidationLevel(dialog.validationLevel);
-                m_iniFile.setValidationVersion(dialog.version);
-                m_iniFile.setUseSchema(dialog.useSchema);
-                m_iniFile.setSchemaURL(dialog.schemaFile);
-                getModel().validate();
-            }
-        }
-        catch (Exception e) 
-        {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, 
-                    m_littleBundle.getString("ValidateErrorKey") + e.getClass() + " \n"
-                    +(e.getMessage()!=null ? ("\"" + e.getMessage() + "\""): ""), 
-                    m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
-        }
-    }
-    
-    /**
      * fixes the version of a JDF by calling fixVersion for the selected JDF node ore
      * the closest JDF parent.
      *
@@ -1201,13 +1172,6 @@ ClipboardOwner
             if (fileToSave != null) 
             {
                 getModel().validate();
-            }
-        }
-        else if (eSrc == m_menuBar.m_validateItem)
-        {
-            if (fileToSave != null) 
-            {
-                validateFile();
             }
         }
         else if (eSrc == m_menuBar.m_fixVersionItem)

@@ -224,6 +224,7 @@ public class INIReader
     private final String recentDevCap ="RecentFiles/@recentDevCap";
     
     private final String autoValidate = "ValidEdit/@autoValidate";
+    private final String exportValidate = "ValidEdit/@exportValidate";
     private final String highlightFN = "ValidEdit/@highlightFN";
     private final String readOnly = "ValidEdit/@readOnly";
     private final String schemaURL = "ValidEdit/@schemaURL";
@@ -241,7 +242,6 @@ public class INIReader
     
     private final String generateFull = "Validate/@GenerateFull";
     private String genericAtts = "Validate/@genericAtts";
-    private String warnCheck = "ValidEdit/@warnCheck";
     
     private XMLDoc xDoc; // The XMLDocument that represents the ini file
     
@@ -330,6 +330,14 @@ public class INIReader
     public void setAutoVal(boolean bVal)
     {
         setAttribute(autoValidate,bVal ? "on" : "off");
+    }
+    public boolean getExportValidation()
+    {
+        return getAttribute(exportValidate,"").equals("on");
+    }
+    public void setExportValidation(boolean bVal)
+    {
+        setAttribute(exportValidate,bVal ? "on" : "off");
     }
     public void setReadOnly(boolean bRO)
     {
@@ -513,12 +521,12 @@ public class INIReader
     }
     public EnumVersion getValidationVersion()
     {
-        final String s = getAttribute(validVersion,EnumVersion.Version_1_3.getName());
+        final String s = getAttribute(validVersion,null);
         return EnumVersion.getEnum(s);
     }
     public void setValidationVersion(EnumVersion level)
     {
-        setAttribute(validVersion,level.getName());
+        setAttribute(validVersion,level==null ? null : level.getName());
     }
     
     private void readINIFile()
@@ -968,15 +976,9 @@ public class INIReader
      */
     public boolean getWarnCheck()
     {
-        return getAttribute(warnCheck,"true").equalsIgnoreCase("true") ? true : false;
+        EnumValidationLevel level=getValidationLevel();
+        return !EnumValidationLevel.isNoWarn(level);
     }
 
-    /**
-     * @param normalizeOpen2
-     */
-    public void setWarnCheck(boolean bNormalizeOpen)
-    {
-        setAttribute(warnCheck,bNormalizeOpen?"true":"false");        
-    }
-
+ 
 }

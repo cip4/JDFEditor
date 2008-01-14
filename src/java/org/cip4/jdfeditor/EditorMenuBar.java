@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2006 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2008 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -139,7 +139,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
     private JMenuItem m_helpItem;
     private JMenuItem m_closeItem;
     private JMenuItem m_closeAllItem;
-    JMenuItem m_validateItem;
+
     private JMenuItem m_QuickValidateItem;
     JMenuItem m_fixVersionItem;
     private JMenuItem m_fixCleanupItem;
@@ -608,11 +608,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
         m_validateMenu.setBorderPainted(false);
         m_validateMenu.addMouseListener(new Menu_MouseListener());
 
-        m_validateItem = new JMenuItem(m_littleBundle.getString("ValidateDialogKey"));
-        m_validateItem.addActionListener(m_frame);
-        m_validateItem.setEnabled(false);
-        m_validateMenu.add(m_validateItem);
-
         m_QuickValidateItem = new JMenuItem(m_littleBundle.getString("ValidateKey"));
         m_QuickValidateItem.addActionListener(this);
         m_QuickValidateItem.setEnabled(false);
@@ -895,7 +890,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
         m_closeItem.setEnabled(mode);
         m_devCapItem.setEnabled(mode);
         m_exportItem.setEnabled(mode);
-        m_validateItem.setEnabled(mode);
         m_QuickValidateItem.setEnabled(mode);
         m_undoItem.setEnabled(mode);
         m_redoItem.setEnabled(mode);
@@ -921,7 +915,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
         m_closeItem.setEnabled(true);
         m_devCapItem.setEnabled(true);
         m_exportItem.setEnabled(true);
-        m_validateItem.setEnabled(true);
         m_QuickValidateItem.setEnabled(true);
         m_sendToDeviceItem.setEnabled(true);
     }

@@ -4,7 +4,7 @@ package org.cip4.jdfeditor;
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2006 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2008 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -73,6 +73,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
+import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -102,6 +103,9 @@ import javax.swing.border.EtchedBorder;
 
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.VString;
+import org.cip4.jdflib.core.JDFElement.EnumVersion;
+import org.cip4.jdflib.core.KElement.EnumValidationLevel;
+import org.cip4.jdflib.util.StringUtil;
 
 /*
  * PreferenceDialog.java
@@ -126,7 +130,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     final private ImageIcon japFlag = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "JapanFlag.gif");
 
     protected JPanel[] panels;
- 
+
     public boolean useSchema =false;
     private JCheckBox boxSchema = null;
     public File schemaFile=null;
@@ -144,10 +148,9 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     private JCheckBox boxLongID;
     private JCheckBox boxRemWhite;
     private JCheckBox boxCheckURL;
-    private JCheckBox boxCheckWarn;
     private JCheckBox boxGenerateFull;
     private JCheckBox boxIgnoreDefaults;
-    
+
     private JCheckBox boxValOpen;
     private JComboBox boxFontSize;
     private JComboBox boxFontName;
@@ -176,8 +179,8 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     private boolean enableExtensions;
     private boolean generateFull;
     private boolean ignoreDefaults;
-    private boolean bCheckWarn;
-
+    private boolean exportValidation;
+  
     private JTextField fieldGenericStrings;
     private String genericStrings;
 
@@ -185,19 +188,27 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     private ResourceBundle littleBundle;
     private String[] iconStrings;
 
-        
+    boolean bValidationKeyChosen = false;
+
+    private JComboBox chooseValidLevel;
+    private JComboBox chooseVersion;
+    private JCheckBox boxExportValidation;
+    
+    public EnumValidationLevel validationLevel = null;
+    public EnumVersion validationVersion = null;
+
     public PreferenceDialog()
     {
         super();
         this.littleBundle = Editor.getBundle();
         init();
     }
-    
+
     public boolean getReadOnly()
     {
         return this.currReadOnly;
     }
-    
+
     public boolean getAutoVal()
     {
         return this.currValidate;
@@ -206,32 +217,32 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     {
         return this.checkURL;
     }
-    
+
     public String getLNF()
     {
         return this.currLNF;
     }
-    
+
     public String getLanguage()
     {
         return this.currLang;
     }
-    
+
     public String[] getIconStrings()
     {
         return this.iconStrings;
     }
-    
+
     void setCurrentLNF(String _lnf)
     {
         this.currLNF = _lnf;
     }
-    
+
     void setCurrentLang(String _lang)
     {
         this.currLang = _lang;
     }
-    
+
     void setMethodSendToDevice(String methodSendToDevice)
     {
         this.currMethodSendToDevice = methodSendToDevice;
@@ -240,7 +251,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     {
         return this.currMethodSendToDevice;
     }
-    
+
     private void applyLnF()
     {
         final JDFFrame f = Editor.getFrame();
@@ -260,7 +271,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         if(fontName.equals("...Default"))
             fontName=null;
     }
-    
+
     private void init()
     {
         final INIReader iniFile=Editor.getIniFile();
@@ -282,25 +293,28 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         generateFull=iniFile.getGenerateFull();
         normalizeOpen=iniFile.getNormalizeOpen();
         ignoreDefaults=iniFile.getIgnoreDefault();
-        bCheckWarn=iniFile.getWarnCheck();
-        
+
+        validationVersion=iniFile.getValidationVersion();
+        validationLevel=iniFile.getValidationLevel();
+        exportValidation=iniFile.getExportValidation();
+
         this.setPreferredSize(new Dimension(390, 380));
         this.addMouseListener(new TabListener());
         drawPane();
         this.setVisible(true);
     }
-    
+
     private void drawPane()
     {
         Editor.setCursor(0,null);
-                
+
         panels=new JPanel[9];
         int n=0;
-        
+
         JPanel gen = createGeneralPref();
         prepareTab(n++, gen,"GeneralKey");
         this.setSelectedIndex(0);
-        
+
         JPanel lang = createLanguagePref();
         prepareTab(n++, lang,"LanguageKey");
 
@@ -315,7 +329,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
         JPanel send = createSendToDevicePref();
         prepareTab(n++, send,"SendToDeviceKey");
- 
+
         JPanel font = createFontPref();
         prepareTab(n++, font,"FontOptionsKey");
 
@@ -335,33 +349,33 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         this.setComponentAt(n, gen);
         panels[n]=gen;
     }
-    
+
     JPanel createGeneralPref()
     {
         final JPanel main = new JPanel(new BorderLayout());
-        
+
         main.add(Box.createVerticalStrut(5), BorderLayout.SOUTH);
         main.add(Box.createHorizontalStrut(5), BorderLayout.EAST);
         main.add(Box.createHorizontalStrut(5), BorderLayout.WEST);
         main.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
-        
+
         final JPanel genPanel = new JPanel(null);
         genPanel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("GeneralOptionsKey")));
-        
+
         int y = 30;
         boxReadOnly = new JCheckBox(littleBundle.getString("OpenReadOnlyKey"), currReadOnly);
         Dimension d = boxReadOnly.getPreferredSize();
         boxReadOnly.setBounds(10, y, d.width, d.height);
         boxReadOnly.addActionListener(this);
         genPanel.add(boxReadOnly);        
-        
+
         y += d.height + 3;
         boxNormalizeOpen = new JCheckBox(littleBundle.getString("NormalizeOpenKey"), normalizeOpen);
         d = boxNormalizeOpen.getPreferredSize();
         boxNormalizeOpen.setBounds(10, y, d.width, d.height);
         boxNormalizeOpen.addActionListener(this);
         genPanel.add(boxNormalizeOpen);        
-        
+
         y += d.height + 3;
         boxValOpen = new JCheckBox(littleBundle.getString("OpenAutoValKey"), currValidate);
         d = boxValOpen.getPreferredSize();
@@ -389,22 +403,22 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         boxRemWhite.setBounds(10, y, d.width, d.height);
         boxRemWhite.addActionListener(this);
         genPanel.add(boxRemWhite);
-        
+
         y += d.height + 3;
         boxLongID = new JCheckBox(littleBundle.getString("LongIDKey"), longID);
         d = boxLongID.getPreferredSize();
         boxLongID.setBounds(10, y, d.width, d.height);
         boxLongID.addActionListener(this);
         genPanel.add(boxLongID);
-        
-       
+
+
         y += d.height + 3;
         boxSchema = new JCheckBox(littleBundle.getString("UseSchemaKey"), useSchema);
         boxSchema.addActionListener(this);
         d = boxSchema.getPreferredSize();
         boxSchema.setBounds(10, y, d.width, d.height);
         genPanel.add(boxSchema);
-        
+
         schemaPath = new JTextField(35);
         if(schemaFile !=null)
             schemaPath.setText(schemaFile.getAbsolutePath());
@@ -413,7 +427,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         y += d.height + 9;
         schemaPath.setBounds(10, y, d.width, d.height);
         genPanel.add(schemaPath);
-        
+
         schemaBrowse = new JButton(littleBundle.getString("BrowseKey"));
         schemaBrowse.setPreferredSize(new Dimension(85,22));
         schemaBrowse.addActionListener(this);
@@ -424,35 +438,35 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         setVisible(true);
 
         main.add(genPanel, BorderLayout.CENTER);
-        
+
         return main;
     }
- 
+
     JPanel createFontPref()
     {
         final JPanel main = new JPanel(new BorderLayout());
-        
+
         main.add(Box.createVerticalStrut(5), BorderLayout.SOUTH);
         main.add(Box.createHorizontalStrut(5), BorderLayout.EAST);
         main.add(Box.createHorizontalStrut(5), BorderLayout.WEST);
         main.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
-        
+
         final JPanel genPanel = new JPanel(null);
         genPanel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("FontOptionsKey")));
-        
+
         int y = 30;
-                  
+
         Vector sizes=new Vector();
         sizes.add("10");
         sizes.add("12");
         sizes.add("14");
-        
+
         JLabel fl=new JLabel();
         fl.setText(littleBundle.getString("FontSizeKey"));
         Dimension d=fl.getPreferredSize();
         fl.setBounds(10,y,d.width,d.height);
         genPanel.add(fl);
-        
+
         fontSize=Editor.getIniFile().getFontSize();
         y += d.height + 9;
         boxFontSize = new JComboBox(sizes);
@@ -461,14 +475,14 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         boxFontSize.setBounds(10, y, d.width, d.height);
         boxFontSize.addActionListener(this);
         genPanel.add(boxFontSize);
-        
+
         y += d.height + 9;
         JLabel fnl=new JLabel();
         fnl.setText(littleBundle.getString("FontNameKey"));
         d=fnl.getPreferredSize();
         fnl.setBounds(10,y,d.width,d.height);
         genPanel.add(fnl);
-        
+
         fontName=Editor.getIniFile().getFontName();
         y += d.height + 9;
         String[] allFontNames_ = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
@@ -476,18 +490,18 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         allFontNames[0]="...Default";
         for(int i=0;i<allFontNames_.length;i++)
             allFontNames[i+1]=allFontNames_[i];
-        
+
         boxFontName = new JComboBox(allFontNames);
-        
+
         if(fontName!=null)
             boxFontName.setSelectedItem(fontName);
         d = boxFontName.getPreferredSize();
         boxFontName.setBounds(10, y, d.width, d.height);
         boxFontName.addActionListener(this);
         genPanel.add(boxFontName);
-        
+
         main.add(genPanel, BorderLayout.CENTER);
-        
+
         return main;
     }
     /**
@@ -497,21 +511,21 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     JPanel createLanguagePref()
     {
         final JPanel main = new JPanel(new BorderLayout());
-        
+
         final Box northBox = Box.createHorizontalBox();
         northBox.add(Box.createHorizontalStrut(10));
         final String txt = "<html><br>" + littleBundle.getString("LanguageTitleKey") + "<br></html>";
         final JLabel text = new JLabel(txt, SwingConstants.LEFT);
         northBox.add(text);
-        
+
         main.add(northBox, BorderLayout.NORTH);
         main.add(Box.createVerticalStrut(5), BorderLayout.SOUTH);
         main.add(Box.createHorizontalStrut(5), BorderLayout.EAST);
         main.add(Box.createHorizontalStrut(5), BorderLayout.WEST);
-        
+
         final JPanel langPanel = new JPanel(null);
         langPanel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("LangSelectKey")));
-        
+
         int y = 30;
         final Box sweBox = createRadioLang(swe, sweFlag, "sv", y);
         langPanel.add(sweBox);
@@ -530,34 +544,34 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         y += freBox.getHeight() + 10;
         final Box japBox = createRadioLang(jap, japFlag, "jp", y);
         langPanel.add(japBox);
-        
+
         main.add(langPanel, BorderLayout.CENTER);
 
         return main;
     }
-    
+
     JPanel createLnFPref()
     {
         final ButtonGroup buttonGroup = new ButtonGroup();
-        
+
         final JPanel main = new JPanel(new BorderLayout());
-        
+
         final Box northBox = Box.createHorizontalBox();
         northBox.add(Box.createHorizontalStrut(10));
         final String txt = "<html><br>" + littleBundle.getString("LnFTitleKey") + "<br></html>";
         final JLabel text = new JLabel(txt, SwingConstants.LEFT);
         northBox.add(text);
-        
+
         main.add(northBox, BorderLayout.NORTH);
         main.add(Box.createVerticalStrut(5), BorderLayout.SOUTH);
         main.add(Box.createHorizontalStrut(5), BorderLayout.EAST);
         main.add(Box.createHorizontalStrut(5), BorderLayout.WEST);
-        
+
         final JPanel lnfPanel = new JPanel();
         lnfPanel.setLayout(null);
         lnfPanel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("LnFSelectKey")));
         int y = 30;
-        
+
         for (int i = 0; i < aLnF.length; i++)
         {
             final String lnfStr = aLnF[i].getClassName();
@@ -583,40 +597,40 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         applyLnFButton.addActionListener(this);
         lnfPanel.add(applyLnFButton);
         main.add(lnfPanel, BorderLayout.CENTER);
-        
+
         return main;
     }
-    
+
 
     JPanel createDirPref()
     {
         final JPanel main = new JPanel(new BorderLayout());
-        
+
         main.add(Box.createVerticalStrut(5), BorderLayout.SOUTH);
         main.add(Box.createHorizontalStrut(5), BorderLayout.EAST);
         main.add(Box.createHorizontalStrut(5), BorderLayout.WEST);
         main.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
-        
+
         final JPanel dirPanel = new JPanel(null);
         dirPanel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("DefaultDirsKey")));
-        
+
         main.add(dirPanel, BorderLayout.CENTER);
-        
+
         return main;
     }
-    
+
     private JPanel createExtPref()
     {
         final JPanel main = new JPanel(new BorderLayout());
-        
+
         main.add(Box.createVerticalStrut(5), BorderLayout.SOUTH);
         main.add(Box.createHorizontalStrut(5), BorderLayout.EAST);
         main.add(Box.createHorizontalStrut(5), BorderLayout.WEST);
         main.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
-        
+
         final JPanel panel = new JPanel(null);
         panel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("ExtOptionsKey")));
-        
+
         int y = 30;
         boxEnableExtension = new JCheckBox(littleBundle.getString("EnableExtensionKey"), enableExtensions);
         Dimension d = boxEnableExtension.getPreferredSize();
@@ -624,7 +638,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         boxEnableExtension.addActionListener(this);
         panel.add(boxEnableExtension);        
 
-        
+
         main.add(panel, BorderLayout.CENTER);       
         return main;
     }
@@ -632,15 +646,15 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     private JPanel createValidatePref()
     {
         final JPanel main = new JPanel(new BorderLayout());
-        
+
         main.add(Box.createVerticalStrut(5), BorderLayout.SOUTH);
         main.add(Box.createHorizontalStrut(5), BorderLayout.EAST);
         main.add(Box.createHorizontalStrut(5), BorderLayout.WEST);
         main.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
-        
+
         final JPanel panel = new JPanel(null);
         panel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("ValidateKey")));
-        
+
         int y = 30;
         JLabel label=new JLabel(littleBundle.getString("DevCapGenericAttrKey"));
         Dimension d = label.getPreferredSize();
@@ -651,8 +665,8 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         fieldGenericStrings = new JTextField(genericStrings);
         fieldGenericStrings.setAutoscrolls(true);
         fieldGenericStrings.setEditable(true);
-//TODO multiline...
-        
+//      TODO multiline...
+
         d = fieldGenericStrings.getPreferredSize();
         fieldGenericStrings.setBounds(10, y, d.width, d.height);
         fieldGenericStrings.addActionListener(this);
@@ -664,7 +678,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         boxGenerateFull.setBounds(10, y, d.width, d.height);
         boxGenerateFull.addActionListener(this);
         panel.add(boxGenerateFull);        
- 
+
         y += d.height + 3;
         boxCheckURL = new JCheckBox(littleBundle.getString("CheckURLKey"), checkURL);
         d = boxCheckURL.getPreferredSize();
@@ -678,14 +692,48 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         boxIgnoreDefaults.setBounds(10, y, d.width, d.height);
         boxIgnoreDefaults.addActionListener(this);
         panel.add(boxIgnoreDefaults);
-        
+
         y += d.height + 3;
-        boxCheckWarn = new JCheckBox(littleBundle.getString("CheckWarningKey"), bCheckWarn);
-        d = boxIgnoreDefaults.getPreferredSize();
-        boxCheckWarn.setBounds(10, y, d.width, d.height);
-        boxCheckWarn.addActionListener(this);
-        panel.add(boxCheckWarn);
-         
+        boxExportValidation = new JCheckBox(littleBundle.getString("ExportValidationKey"), exportValidation);
+        d = boxExportValidation.getPreferredSize();
+        boxExportValidation.setBounds(10, y, d.width, d.height);
+        boxExportValidation.addActionListener(this);
+        panel.add(boxExportValidation);
+
+        y += d.height + 3;
+        final Vector allowedValues = StringUtil.getNamesVector(EnumValidationLevel.class);
+        chooseValidLevel = new JComboBox(allowedValues);
+        chooseValidLevel.setSelectedItem(validationLevel.getName());
+        chooseValidLevel.addActionListener(this);
+        d = chooseValidLevel.getPreferredSize();
+
+        final JPanel validLevelPanel = new JPanel();
+        validLevelPanel.setBorder(BorderFactory.createTitledBorder(
+                littleBundle.getString("ValidationLevelKey")));
+        validLevelPanel.add(chooseValidLevel);
+        d = validLevelPanel.getPreferredSize();
+        validLevelPanel.setBounds(10, y, d.width, d.height);
+        panel.add(validLevelPanel);
+        y+=d.height+3;
+
+        final Vector<String> allValues = new Vector<String>();
+        allValues.addElement(EnumVersion.Version_1_0.getName());
+        allValues.addElement(EnumVersion.Version_1_1.getName());
+        allValues.addElement(EnumVersion.Version_1_2.getName());
+        allValues.addElement(EnumVersion.Version_1_3.getName());
+        final JPanel versionPanel = new JPanel();
+        versionPanel.setBorder(BorderFactory.createTitledBorder("JDFVersion"));
+
+        chooseVersion = new JComboBox(allValues);
+        chooseVersion.setSelectedItem(validationVersion==null ? EnumVersion.getEnum(null).getName() : validationVersion.getName());
+        chooseVersion.addActionListener(this);
+        versionPanel.add(Box.createHorizontalGlue());
+        versionPanel.add(chooseVersion);
+        versionPanel.add(Box.createHorizontalGlue());
+        //   outLayout.setConstraints(versionPanel, outConstraints);
+        d=versionPanel.getPreferredSize();
+        versionPanel.setBounds(10, y, d.width, d.height);
+        panel.add(versionPanel);
 
         main.add(panel, BorderLayout.CENTER);       
         return main;
@@ -694,28 +742,28 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     private Box createRadioLang(JRadioButton jrb, ImageIcon flag, String language, int y)
     {
         String langStr = "";
-        
+
         if (language.equalsIgnoreCase("sv"))
             langStr = littleBundle.getString("SwedishKey");
-            
+
         else if (language.equalsIgnoreCase("en"))
             langStr = littleBundle.getString("EnglishKey");
-            
+
         else if (language.equalsIgnoreCase("de"))
             langStr = littleBundle.getString("GermanKey");
-            
+
         else if (language.equalsIgnoreCase("es"))
             langStr = littleBundle.getString("SpanishKey");
-            
+
         else if (language.equalsIgnoreCase("fr"))
             langStr = littleBundle.getString("FrenchKey");
 
         else if (language.equalsIgnoreCase("jp"))
             langStr = littleBundle.getString("JapaneseKey");
-            
+
         final boolean sel = language.equalsIgnoreCase(currLang);
         final Box langBox = Box.createHorizontalBox();
-        
+
         langBox.add(Box.createHorizontalStrut(10));
         langBox.add(new JLabel(flag));
         jrb = new JRadioButton(langStr);
@@ -731,66 +779,66 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         langBox.add(jrb);
         langGroup.add(jrb);
         langBox.add(Box.createGlue());
-        
+
         final Dimension d = langBox.getPreferredSize();
         langBox.setBounds(10, y, d.width, d.height);
-        
+
         return langBox;
     }
-    
+
     JPanel createIconPref()
     {
         final JPanel main = new JPanel(new BorderLayout());
-        
+
         main.add(Box.createVerticalStrut(5), BorderLayout.SOUTH);
         main.add(Box.createHorizontalStrut(5), BorderLayout.EAST);
         main.add(Box.createHorizontalStrut(5), BorderLayout.WEST);
         main.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
-        
+
         final JPanel iconPanel = new JPanel(null);
         iconPanel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("EditorIconsKey")));
-        
+
         final String[] iconNames = createIconNames();
-            
+
         currIcon = iconNames[0];
         final JComboBox icoBox = new JComboBox(iconNames);
         icoBox.setAlignmentX(Component.LEFT_ALIGNMENT);
         icoBox.addActionListener(this);
         icoBox.setBounds(155, 40, 210, 24);
         iconPanel.add(icoBox);
-        
+
         iconPreview = new JLabel();
         iconPreview.setHorizontalAlignment(SwingConstants.CENTER);
         setPic((String) icoBox.getSelectedItem());
         iconPreview.setBounds(20, 40, 80, 80);
         iconPreview.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         iconPanel.add(iconPreview);
-        
+
         defaultIconButton = new JButton(littleBundle.getString("DefaultIconKey"));
         defaultIconButton.addActionListener(this);
-        
+
         changeIconButton = new JButton(littleBundle.getString("ChangeIconKey"));
         changeIconButton.addActionListener(this);
-        
+
         final Dimension defaultDim = defaultIconButton.getPreferredSize();
         final Dimension changeDim = changeIconButton.getPreferredSize();
         final int defaultX = 390 - (defaultDim.width + changeDim.width + 35);
         final int changeX = 390 - (changeDim.width + 25);
-        
+
         defaultIconButton.setBounds(defaultX, 130, defaultDim.width, defaultDim.height);
         changeIconButton.setBounds(changeX, 130, changeDim.width, changeDim.height);
         iconPanel.add(defaultIconButton);
         iconPanel.add(changeIconButton);
-        
+
         main.add(iconPanel, BorderLayout.CENTER);
-        
+
         return main;
     }
-    
+
     private String[] createIconNames()
     {
         final String[] tmp = new String[iconStrings.length];
-        
+
         for (int i = 0; i < iconStrings.length; i++)
         {
             final int index = iconStrings[i].indexOf("=");
@@ -798,10 +846,10 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
             tmp[i] = name;
         }
         Arrays.sort(tmp);
-        
+
         return tmp;
     }
-    
+
     private void setPic(String iconName)
     {
         final INIReader iniFile=Editor.getIniFile();
@@ -877,7 +925,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         else if (iconName.equals("rRef Element (selected)"))
             iconPreview.setIcon(iniFile.rRefElemIconS);
     }
-    
+
     private void setDefaultPic(String iconName)
     {
         final INIReader iniFile=Editor.getIniFile();
@@ -894,7 +942,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
                 break;
             }
         }
-        
+
         if (iconName.equals("Attribute with Error"))
             iconPreview.setIcon(iniFile.defaultErrAttIcon);
 
@@ -967,7 +1015,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         else if (iconName.equals("rRef Element (selected)"))
             iconPreview.setIcon(iniFile.defaultRefElemIconS);
     }
-    
+
     private void changeIcon(String s)
     {
         final JFileChooser jfc = new JFileChooser(littleBundle.getString("SelectIconKey"));
@@ -979,7 +1027,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         {
             final String path = jfc.getSelectedFile().getAbsolutePath();
             final INIReader iniFile=Editor.getIniFile();
-            
+
             if (path != null)
             {
                 for (int i = 0; i < iconStrings.length; i++)
@@ -1003,21 +1051,21 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     JPanel createSendToDevicePref()
     {
         final JPanel main = new JPanel(new BorderLayout());
-        
+
         final ButtonGroup bgSendToDevice = new ButtonGroup();
         boolean selected = false;
-        
+
         main.add(Box.createVerticalStrut(5), BorderLayout.SOUTH);
         main.add(Box.createHorizontalStrut(5), BorderLayout.EAST);
         main.add(Box.createHorizontalStrut(5), BorderLayout.WEST);
         main.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
-        
+
         final JPanel sendPanel = new JPanel(null);
         sendPanel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("DefaultSendToDeviceKey")));
 
-        
+
         if(getMethodSendToDevice().equals("JMF"))
-                selected = true;
+            selected = true;
         final JRadioButton jrbSendJMF = new JRadioButton(littleBundle.getString("sendMethodJMF"), selected);
         Dimension d = jrbSendJMF.getPreferredSize();
         jrbSendJMF.setBounds(10, 40, d.width, d.height);
@@ -1030,7 +1078,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
                 setMethodSendToDevice(e.getActionCommand().toString());
             }
         });
-        
+
         if(getMethodSendToDevice().equals("MIME"))
             selected = true;
         final JRadioButton jrbSendMIME = new JRadioButton(littleBundle.getString("sendMethodMIME"), selected);
@@ -1060,17 +1108,17 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
                 setMethodSendToDevice(e.getActionCommand().toString());
             }
         });
-        
+
         sendPanel.add(jrbSendJMF);
         sendPanel.add(jrbSendMIME);
         sendPanel.add(jrbSendUser);
-        
+
         main.add(sendPanel, BorderLayout.CENTER);
 
         return main;
     }
 
-    
+
     class TabListener extends MouseAdapter
     {
         public void mouseClicked(MouseEvent e)
@@ -1085,7 +1133,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     }
 
     //////////////////////////////////////////////////////
-    
+
     public void actionPerformed(ActionEvent e)
     {
         final Object source = e.getSource();
@@ -1094,52 +1142,49 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
         else if (source == changeIconButton)
             changeIcon(currIcon);
-            
+
         else if (source == applyLnFButton)
             applyLnF();
-        
+
         else if (source == boxFontSize)
             applyFontSize();
-        
+
         else if (source == boxFontName)
             applyFontName();
-        
+
         else if (source == boxReadOnly)
             currReadOnly = boxReadOnly.isSelected();
-        
-        else if (source == boxCheckWarn)
-            bCheckWarn = boxCheckWarn.isSelected();
-        
+
         else if (source == boxNormalizeOpen)
             normalizeOpen = boxNormalizeOpen.isSelected();
-        
+
         else if (source == boxValOpen)
             currValidate = boxValOpen.isSelected();
 
         else if (source == boxCheckURL)
             checkURL = boxCheckURL.isSelected();
-        
+
         else if (source == boxDispDefault)
             currDispDefault = boxDispDefault.isSelected();
 
         else if (source == boxRemDefault)
             currRemoveDefault = boxRemDefault.isSelected();
-        
+
         else if (source == boxRemWhite)
             currRemoveWhite = boxRemWhite.isSelected();
-        
+
         else if (source == boxLongID)
             longID = boxLongID.isSelected();
-        
+
         else if (source == boxEnableExtension)
             enableExtensions = boxEnableExtension.isSelected();
-        
+
         else if (source == boxIgnoreDefaults)
             ignoreDefaults = boxIgnoreDefaults.isSelected();
-        
+
         else if (source == boxGenerateFull)
             generateFull = boxGenerateFull.isSelected();
-        
+
         else if (source == boxSchema)
         {
             useSchema = boxSchema.isSelected();
@@ -1148,7 +1193,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         {
             final EditorFileChooser files = new EditorFileChooser(schemaFile,"xsd");
             final int option = files.showOpenDialog(this);
-            
+
             if (option == JFileChooser.APPROVE_OPTION)
             {
                 schemaFile=files.getSelectedFile();
@@ -1164,12 +1209,25 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         {
             genericStrings=fieldGenericStrings.getText();
         }
+        if (source == chooseValidLevel)
+        {
+            validationLevel = EnumValidationLevel.getEnum((String)chooseValidLevel.getSelectedItem());
+        }
+        if (source == boxExportValidation)
+        {
+            exportValidation = boxExportValidation.isSelected();
+        }
+        else if (source == chooseVersion)
+        {
+            validationVersion = EnumVersion.getEnum((String)chooseVersion.getSelectedItem());
+        }
         else if (source.getClass().equals(JComboBox.class))
         {
             final JComboBox jcb = (JComboBox) source;
             currIcon = (String) jcb.getSelectedItem();
             setPic(currIcon);
         }
+
     }
 
     /**
@@ -1207,7 +1265,9 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         iniFile.setGenerateFull(generateFull);    
         iniFile.setNormalizeOpen(normalizeOpen);    
         iniFile.setIgnoreDefault(ignoreDefaults);   
-        iniFile.setWarnCheck(bCheckWarn);
+        iniFile.setValidationLevel(validationLevel);
+        iniFile.setValidationVersion(validationVersion);
+        iniFile.setExportValidation(exportValidation);
         genericStrings =fieldGenericStrings.getText();
         final VString genericAttributes = new VString(genericStrings,null);
         genericAttributes.unify();
@@ -1223,14 +1283,14 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
      */
     private File getSchemaURL()
     {
-       String s=schemaPath.getText();
-       if(s!=null && s.length()!=0)
-       {
-           File f=new File(s);
-           if(f.canRead())
-               schemaFile=f;
-       }
-       return schemaFile;
+        String s=schemaPath.getText();
+        if(s!=null && s.length()!=0)
+        {
+            File f=new File(s);
+            if(f.canRead())
+                schemaFile=f;
+        }
+        return schemaFile;
     }
 
     /**
