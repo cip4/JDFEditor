@@ -73,7 +73,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
-import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -184,11 +183,12 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     private JTextField fieldGenericStrings;
     private String genericStrings;
 
+    private JTextField fieldMISURL;
+    private String misURL;
+    
     private final UIManager.LookAndFeelInfo aLnF[] = UIManager.getInstalledLookAndFeels();
     private ResourceBundle littleBundle;
     private String[] iconStrings;
-
-    boolean bValidationKeyChosen = false;
 
     private JComboBox chooseValidLevel;
     private JComboBox chooseVersion;
@@ -297,6 +297,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         validationVersion=iniFile.getValidationVersion();
         validationLevel=iniFile.getValidationLevel();
         exportValidation=iniFile.getExportValidation();
+        misURL=iniFile.getMISURL();
 
         this.setPreferredSize(new Dimension(390, 380));
         this.addMouseListener(new TabListener());
@@ -308,7 +309,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     {
         Editor.setCursor(0,null);
 
-        panels=new JPanel[9];
+        panels=new JPanel[10];
         int n=0;
 
         JPanel gen = createGeneralPref();
@@ -339,6 +340,9 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         JPanel valid = createValidatePref();
         prepareTab(n++, valid,"ValidateKey");
 
+        JPanel goldenTicket = createGoldenTicketPref();
+        prepareTab(n++, goldenTicket,"GoldenTicketKey");
+        
         Editor.setCursor(0,null);
     }
 
@@ -734,6 +738,39 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         d=versionPanel.getPreferredSize();
         versionPanel.setBounds(10, y, d.width, d.height);
         panel.add(versionPanel);
+
+        main.add(panel, BorderLayout.CENTER);       
+        return main;
+    }
+    
+    private JPanel createGoldenTicketPref()
+    {
+        final JPanel main = new JPanel(new BorderLayout());
+
+        main.add(Box.createVerticalStrut(5), BorderLayout.SOUTH);
+        main.add(Box.createHorizontalStrut(5), BorderLayout.EAST);
+        main.add(Box.createHorizontalStrut(5), BorderLayout.WEST);
+        main.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
+
+        final JPanel panel = new JPanel(null);
+        panel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("GoldenTicketKey")));
+
+        int y = 30;
+        JLabel label=new JLabel(littleBundle.getString("MISURLKey"));
+        Dimension d = label.getPreferredSize();
+        label.setBounds(10,y,d.width,d.height);
+        panel.add(label);        
+        y+=15;
+
+        fieldMISURL = new JTextField(misURL);
+        fieldMISURL.setEditable(true);
+        fieldMISURL.setAutoscrolls(true);
+
+        d = fieldMISURL.getPreferredSize();
+        fieldMISURL.setBounds(10, y, Math.max(200,d.width), d.height);
+        fieldMISURL.addActionListener(this);
+        panel.add(fieldMISURL);        
+        y+=30;
 
         main.add(panel, BorderLayout.CENTER);       
         return main;
@@ -1221,6 +1258,11 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         {
             validationVersion = EnumVersion.getEnum((String)chooseVersion.getSelectedItem());
         }
+        else if(source==fieldMISURL)
+        {
+            misURL=fieldMISURL.getText();
+        }
+
         else if (source.getClass().equals(JComboBox.class))
         {
             final JComboBox jcb = (JComboBox) source;
@@ -1268,6 +1310,8 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         iniFile.setValidationLevel(validationLevel);
         iniFile.setValidationVersion(validationVersion);
         iniFile.setExportValidation(exportValidation);
+        misURL=fieldMISURL.getText();
+        iniFile.setMISURL(misURL);
         genericStrings =fieldGenericStrings.getText();
         final VString genericAttributes = new VString(genericStrings,null);
         genericAttributes.unify();

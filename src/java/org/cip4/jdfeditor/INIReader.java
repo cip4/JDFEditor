@@ -241,7 +241,10 @@ public class INIReader
     private final String inheritedAttr = "TreeView/@inheritedAttr";
     
     private final String generateFull = "Validate/@GenerateFull";
-    private String genericAtts = "Validate/@genericAtts";
+    private final String genericAtts = "Validate/@genericAtts";
+    
+    private final String misURL = "GoldenTicket/@misURL";
+    
     
     private XMLDoc xDoc; // The XMLDocument that represents the ini file
     
@@ -978,6 +981,28 @@ public class INIReader
     {
         EnumValidationLevel level=getValidationLevel();
         return !EnumValidationLevel.isNoWarn(level);
+    }
+
+    /**
+     * @param misURL
+     */
+    public void setMISURL(String _misURL)
+    {
+        setAttribute(misURL,_misURL);   
+    }
+
+    /**
+     * @return
+     */
+    public String getMISURL()
+    {
+        return getAttribute(misURL,null);
+    }
+
+    @Override
+    public String toString()
+    {
+        return xDoc==null ? "null ini file " : "INUReader: "+xDoc.toString();
     }
 
  
