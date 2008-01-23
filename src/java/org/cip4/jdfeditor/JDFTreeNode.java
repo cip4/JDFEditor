@@ -1,9 +1,8 @@
-package org.cip4.jdfeditor;
 /*
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2006 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2008 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -67,12 +66,14 @@ package org.cip4.jdfeditor;
  * <http://www.cip4.org/>.
  *
  */
+package org.cip4.jdfeditor;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFElement;
+import org.cip4.jdflib.core.JDFPartAmount;
 import org.cip4.jdflib.core.JDFRefElement;
 import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.KElement;
@@ -355,21 +356,24 @@ public class JDFTreeNode extends DefaultMutableTreeNode
                 if(ref!=null)
                     s+=": "+ref;                
             }
-            else if (e instanceof JDFResourceLink)
+            else if ((e instanceof JDFResourceLink) && !(e instanceof JDFPartAmount))
             {
                 final JDFResourceLink rl=(JDFResourceLink)e;
                 final String ref=rl.getrRef();
                 EnumUsage u=rl.getUsage();
+                boolean bUsage=false;
                 if(EnumUsage.Input.equals(u)|| EnumUsage.Output.equals(u))
                 {
                     s+="("+u.getName();  
+                    bUsage=true;
                 }
                 final String pu=rl.getProcessUsage();
                 if(!pu.equals(""))
                 {
                     s+=" ["+pu + "]";
                 }
-                s+=") : "+ref;   
+                if(bUsage)
+                    s+=") : "+ref;   
             }
             else if((e instanceof JDFDevCap) || (e instanceof JDFDevCaps) || (e instanceof JDFAbstractState) || (e instanceof JDFSeparationSpec) )
             {
