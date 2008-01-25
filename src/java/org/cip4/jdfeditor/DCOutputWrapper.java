@@ -72,6 +72,7 @@ package org.cip4.jdfeditor;
 
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.node.JDFNode;
+import org.cip4.jdflib.resource.devicecapability.JDFEvaluation;
 import org.w3c.dom.Attr;
 
 
@@ -117,12 +118,17 @@ class DCOutputWrapper extends JDFTreeNode
                s=" XPath in the Caps file: "+atr.getNodeValue();
            } 
            return s;
-        }
-        
+        } 
+         
         KElement e=(KElement)o;
         if (e instanceof JDFNode)
             return s; 
-        
+        if(e.getNodeName().endsWith("Evaluation"))
+        {
+            //TODO s="eval";
+            s+=getDCString("ValueList"," ","; ");
+        }
+
         s+=getDCString("Name"," ","; ");
         s+=getDCString("NodeType"," Node Type=","; ");
         s+=getDCString("Value",null,"; ");
