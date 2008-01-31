@@ -101,7 +101,6 @@ import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Box;
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
