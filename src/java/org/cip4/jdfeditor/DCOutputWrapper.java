@@ -72,7 +72,6 @@ package org.cip4.jdfeditor;
 
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.node.JDFNode;
-import org.cip4.jdflib.resource.devicecapability.JDFEvaluation;
 import org.w3c.dom.Attr;
 
 
