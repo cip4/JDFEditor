@@ -8,6 +8,12 @@ import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+
+import org.cip4.jdflib.core.JDFDoc;
+import org.cip4.jdflib.datatypes.VJDFAttributeMap;
+import org.cip4.jdflib.goldenticket.MISCPGoldenTicket;
+import org.cip4.jdflib.node.JDFNode;
 
 /**
  * @author BIskey ThunellE AnderssonA
@@ -31,26 +37,36 @@ public class NewGTChooser extends JPanel implements ActionListener
     private JRadioButton radioMISCPButton;
 //    private JRadioButton radioGTButton;
     private ButtonGroup fileTypeGroup;
+    
+    
+    /*
+    private final JTextField MISLevel;
+    private final JTextField JMFLevel;
+    */
+    
+    
 
-    /**
-     * Method NewFileChooser.
-     * @param littleBundle
-     */
+
     public NewGTChooser()
     {
         super();
         //This is going to change to the number of GT's available + 1 (for heading). There are 1 ticket(s) right now.
         setLayout(new GridLayout(2,1)); 
         this.fileType = "Base";
-        init();
+        buttoninit();
         setVisible(true);
+    }
+    
+    public void NewLevelChooser()
+    {
+    	//here is where you type the JMF, MIS levels. Base will always be 2 for any MIS golden ticket.
     }
 
     /**
      * Method init.
      * Create the new file chooser
      */
-    private void init()
+    private void buttoninit()
     {
         final ResourceBundle littleBundle = Editor.getBundle();
         final JLabel label = new JLabel(littleBundle.getString("ChooseNewGTKey"));
@@ -61,31 +77,9 @@ public class NewGTChooser extends JPanel implements ActionListener
         /*
          * List GoldenTickets available.
          * Updated 2007-09-24
-         * 1. Base
-         * 2. JMF
-         * 3. MIS
-         * 4. MISCP
+         * 1. MISCP
          */
-/*        
-        radioBaseButton = new JRadioButton(littleBundle.getString("NewBaseTicket"));
-        radioBaseButton.setActionCommand(littleBundle.getString("NewBaseTicket"));
-        radioBaseButton.addActionListener(this);
-        radioBaseButton.setSelected(true);
-        add(radioBaseButton);
-        fileTypeGroup.add(radioBaseButton);
-       
-        radioJMFButton = new JRadioButton(littleBundle.getString("NewJMFTicket"));
-        radioJMFButton.setActionCommand(littleBundle.getString("NewJMFTicket"));
-        radioJMFButton.addActionListener(this);
-        add(radioJMFButton);
-        fileTypeGroup.add(radioJMFButton);
-        
-        radioMISButton = new JRadioButton(littleBundle.getString("NewMISTicket"));
-        radioMISButton.setActionCommand(littleBundle.getString("NewMISTicket"));
-        radioMISButton.addActionListener(this);
-        add(radioMISButton);
-        fileTypeGroup.add(radioMISButton);
-*/        
+    
         radioMISCPButton = new JRadioButton(littleBundle.getString("NewMISCPTicket"));
         radioMISCPButton.setActionCommand(littleBundle.getString("NewMISCPTicket"));
         radioMISCPButton.addActionListener(this);
@@ -100,21 +94,9 @@ public class NewGTChooser extends JPanel implements ActionListener
     public void actionPerformed(ActionEvent e)
     {
         final Object src=e.getSource();
-/*        if(src==radioBaseButton)
-        {
-            this.fileType = "Base";
-        }
-        else*/ 
-        if (src==radioJMFButton)
-        {
-            this.fileType = "JMF";
-        }
-        /*else if (src==radioMISButton)
-        {
-            this.fileType = "MIS";
-        }
-        */
-        else
+        
+        //here is where you would create the ticket instead of JDFFrame.java??
+        if (src==radioMISCPButton)
         {
         	this.fileType = "MISCP";
         }
@@ -129,5 +111,14 @@ public class NewGTChooser extends JPanel implements ActionListener
     {
         return fileType;
     }
+    
+/*   
+ * Method will make a new GoldenTicketFile dependant on the levels entered.
+ *  
+ *  
+ *  public JDFDoc NewGoldenTicketFile()
+    {
+    	
+    }*/
 
 }

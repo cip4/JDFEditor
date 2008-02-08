@@ -183,8 +183,20 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     private JTextField fieldGenericStrings;
     private String genericStrings;
 
+    /*
+     * Use the following 2 lines in order to add the JMF, MIS, and Base Levels for Golden Ticket
+    */
     private JTextField fieldMISURL;
     private String misURL;
+    
+    private JTextField fieldMISLevel;
+    private String MISLevel;
+    
+    private JTextField fieldBaseLevel;
+    private String BaseLevel;
+    
+    private JTextField fieldJMFLevel;
+    private String JMFLevel;
     
     private final UIManager.LookAndFeelInfo aLnF[] = UIManager.getInstalledLookAndFeels();
     private ResourceBundle littleBundle;
@@ -242,6 +254,15 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     {
         this.currLang = _lang;
     }
+    
+    //This is a test to see if changes were made and accepted.
+    public String getBaseLevel()
+    {
+        String foo = this.BaseLevel;
+        System.out.println("Value of BL is: " + foo);
+		return foo;
+    }
+//  This is a test to see if changes were made and accepted.
 
     void setMethodSendToDevice(String methodSendToDevice)
     {
@@ -298,6 +319,10 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         validationLevel=iniFile.getValidationLevel();
         exportValidation=iniFile.getExportValidation();
         misURL=iniFile.getMISURL();
+        
+        BaseLevel=iniFile.getBaseLevel();
+/*        MISLevel=iniFile.getmisLevel();
+        JMFLevel=iniFile.getjmfLevel();*/
 
         this.setPreferredSize(new Dimension(390, 380));
         this.addMouseListener(new TabListener());
@@ -672,7 +697,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 //      TODO multiline...
 
         d = fieldGenericStrings.getPreferredSize();
-        fieldGenericStrings.setBounds(10, y, d.width, d.height);
+        fieldGenericStrings.setBounds(10, y, Math.max(200,d.width), d.height);
         fieldGenericStrings.addActionListener(this);
         panel.add(fieldGenericStrings);        
         y+=30;
@@ -754,14 +779,17 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
         final JPanel panel = new JPanel(null);
         panel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("GoldenTicketKey")));
-
+//////////
+        /*
+         * This section adds the MISURL text field and sets the MISURL. This is what I need to do for the Base, JMF, MIS levels. Cut/Paste
+        */
         int y = 30;
         JLabel label=new JLabel(littleBundle.getString("MISURLKey"));
         Dimension d = label.getPreferredSize();
         label.setBounds(10,y,d.width,d.height);
-        panel.add(label);        
+        panel.add(label);      
         y+=15;
-
+       
         fieldMISURL = new JTextField(misURL);
         fieldMISURL.setEditable(true);
         fieldMISURL.setAutoscrolls(true);
@@ -769,9 +797,59 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         d = fieldMISURL.getPreferredSize();
         fieldMISURL.setBounds(10, y, Math.max(200,d.width), d.height);
         fieldMISURL.addActionListener(this);
-        panel.add(fieldMISURL);        
-        y+=30;
+        panel.add(fieldMISURL);
+        y+=d.height+3;
 
+        //Allow user to enter default Base ICS Level
+        JLabel label2=new JLabel(littleBundle.getString("BaseLevelKey"));
+        d=label2.getPreferredSize();
+        label2.setBounds(10, y, d.width, d.height);
+        panel.add(label2);
+        y+=d.height+3;
+
+        fieldBaseLevel = new JTextField(BaseLevel);
+        fieldBaseLevel.setEditable(true);
+        fieldBaseLevel.setAutoscrolls(true);
+
+        d = fieldBaseLevel.getPreferredSize();
+        fieldBaseLevel.setBounds(10, y, Math.max(20,d.width), d.height);
+        fieldBaseLevel.addActionListener(this);
+        panel.add(fieldBaseLevel);
+        y+=d.height+3;
+        
+        //Allow user to enter default MIS ICS Level
+        JLabel label4=new JLabel(littleBundle.getString("MISLevelKey"));
+        d=label4.getPreferredSize();
+        label4.setBounds(10, y, d.width, d.height);
+        panel.add(label4);
+        y+=d.height+3;
+
+        fieldMISLevel = new JTextField(MISLevel);
+        fieldMISLevel.setEditable(true);
+        fieldMISLevel.setAutoscrolls(true);
+
+        d = fieldMISLevel.getPreferredSize();
+        fieldMISLevel.setBounds(10, y, Math.max(20,d.width), d.height);
+        fieldMISLevel.addActionListener(this);
+        panel.add(fieldMISLevel);
+        y+=d.height+3;
+        
+        //Allow user to enter default JMF ICS Level
+        JLabel label3=new JLabel(littleBundle.getString("JMFLevelKey"));
+        d=label3.getPreferredSize();
+        label3.setBounds(10, y, d.width, d.height);
+        panel.add(label3);
+        y+=d.height+3;
+
+        fieldJMFLevel = new JTextField(JMFLevel);
+        fieldJMFLevel.setEditable(true);
+        fieldJMFLevel.setAutoscrolls(true);
+
+        d = fieldJMFLevel.getPreferredSize();
+        fieldJMFLevel.setBounds(10, y, Math.max(20,d.width), d.height);
+        fieldJMFLevel.addActionListener(this);
+        panel.add(fieldJMFLevel);
+        
         main.add(panel, BorderLayout.CENTER);       
         return main;
     }
@@ -1174,6 +1252,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     public void actionPerformed(ActionEvent e)
     {
         final Object source = e.getSource();
+        System.out.println(source);
         if (source == defaultIconButton)
             setDefaultPic(currIcon);
 
@@ -1263,6 +1342,21 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
             misURL=fieldMISURL.getText();
         }
 
+        else if(source==fieldBaseLevel)
+        {
+            BaseLevel=fieldBaseLevel.getText();
+        }
+        
+        else if(source==fieldMISLevel)
+        {
+            MISLevel=fieldMISLevel.getText();
+        }
+        
+        else if(source==fieldJMFLevel)
+        {
+            JMFLevel=fieldJMFLevel.getText();
+        }
+        
         else if (source.getClass().equals(JComboBox.class))
         {
             final JComboBox jcb = (JComboBox) source;
@@ -1312,6 +1406,12 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         iniFile.setExportValidation(exportValidation);
         misURL=fieldMISURL.getText();
         iniFile.setMISURL(misURL);
+        BaseLevel=fieldBaseLevel.getText();
+        iniFile.setBaseLevel(BaseLevel);
+        MISLevel=fieldMISLevel.getText();
+        iniFile.setMISLevel(MISLevel);
+        JMFLevel=fieldJMFLevel.getText();
+        iniFile.setJMFLevel(JMFLevel);
         genericStrings =fieldGenericStrings.getText();
         final VString genericAttributes = new VString(genericStrings,null);
         genericAttributes.unify();

@@ -244,6 +244,9 @@ public class INIReader
     private final String genericAtts = "Validate/@genericAtts";
     
     private final String misURL = "GoldenTicket/@misURL";
+    private final String BaseLevel = "GoldenTicket/@BaseLevel";
+    private final String MISLevel = "GoldenTicket/@MISLevel";
+    private final String JMFLevel = "GoldenTicket/@JMFLevel";
     
     
     private XMLDoc xDoc; // The XMLDocument that represents the ini file
@@ -999,6 +1002,54 @@ public class INIReader
         return getAttribute(misURL,null);
     }
 
+    /**
+     * @param BaseLevel
+     */
+    public void setBaseLevel(String _baselevel)
+    {
+        setAttribute(BaseLevel,_baselevel);   
+    }
+
+    /**
+     * @return
+     */
+    public String getBaseLevel()
+    {
+        return getAttribute(BaseLevel,null);
+    }
+    
+    /**
+     * @param MISLevel
+     */
+    public void setMISLevel(String _mislevel)
+    {
+        setAttribute(MISLevel,_mislevel);   
+    }
+
+    /**
+     * @return
+     */
+    public String getMISLevel()
+    {
+        return getAttribute(MISLevel,null);
+    }
+    
+    /**
+     * @param JMFLevel
+     */
+    public void setJMFLevel(String _jmflevel)
+    {
+        setAttribute(JMFLevel,_jmflevel);   
+    }
+
+    /**
+     * @return
+     */
+    public String getJMFLevel()
+    {
+        return getAttribute(JMFLevel,null);
+    }
+    
     @Override
     public String toString()
     {

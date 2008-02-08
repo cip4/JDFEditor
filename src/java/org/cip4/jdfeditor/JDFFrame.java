@@ -825,21 +825,52 @@ ClipboardOwner
         {             	
         	//For new golden tickets, just add another if statement and edit NewGTChooser.java
             	if ((newGTChooser.getSelection()).equals("MISCP"))
+            	// Create a method w/in NewGTChooser which creates the newGT file.
+            		
+            		/*
+            		 * Here is where you set the MIS and JMF Levels w/ dialog boxes similar to modify attribute dialog box
+            		 * located at ???
+            		 * 
+            		 * set the levels with local variables assigned to the levels. Check modify attribute.
+            		 * Need for ICS level, MIS level, JMF level. 
+            		 * 
+            		 * */
+            		
+            		/*
+        			 * I need to change these values to the "get" levels in INIReader.java
+        			 * 
+        			 * icsLevel the level to init to (1,2 or 3) "getICSlevel"
+        			 * jmfLevel level of jmf ICS to support "getJMFlevel"
+        			 * misLevel level of MIS ICS to support "getMISlevel"
+        			 * 
+        			*/
+            		
             	{
             		try
                     {
+            			/*final JDFDoc jdfmiscpDoc=NewGTChooser.NewGoldenTicketFile(init.getICSLevel, null, init.getJMFLevel, init.getMISLevel)*/
             			//Get the MISCP golden ticket information.
+            			
+            			///////////////////////////////////////////////////////////////
+            			/*REMOVE STARTING HERE TO PUT INTO NEW METHOD IN NEWGTCHOOSER*/
+            			
             			VJDFAttributeMap vPartMap1 = new VJDFAttributeMap();
-						MISCPGoldenTicket jdfmiscp = new MISCPGoldenTicket(1, null, 1, 2, true, vPartMap1);
+            			            			
+            			MISCPGoldenTicket jdfmiscp = new MISCPGoldenTicket(1, null, 1, 2, true, vPartMap1);
             			jdfmiscp.assign(null);
             			
             			//assigns the newly created JDF node to jdfcproot
                         final JDFNode jdfcproot = jdfmiscp.getNode();
                         final JDFDoc jdfmiscpDoc = jdfcproot.getOwnerDocument_JDFElement();
                         setJDFDoc(jdfmiscpDoc, null);
+                        /*STOP REMOVING HERE*/
+            			///////////////////////////////////////////////////////////////
+                        
+                        
                         
                         //display the result.
                         m_treeArea.drawTreeView(getEditorDoc());
+                        //final JDFDoc jdfmiscpDoc = NewGTChooser.NewGT();
                         jdfmiscpDoc.setOriginalFileName("MISCPICSGoldenTicket.jdf");
                         setTitle(getWindowTitle());
                          
