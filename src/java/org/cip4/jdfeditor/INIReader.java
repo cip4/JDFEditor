@@ -1005,49 +1005,53 @@ public class INIReader
     /**
      * @param BaseLevel
      */
-    public void setBaseLevel(String _baselevel)
+    public void setBaseLevel(int _baselevel)
     {
-        setAttribute(BaseLevel,_baselevel);   
+    	setAttribute(BaseLevel,String.valueOf(_baselevel));
     }
 
     /**
      * @return
      */
-    public String getBaseLevel()
+    public int getBaseLevel()
     {
-        return getAttribute(BaseLevel,null);
+    	String s = getAttribute(BaseLevel,"1");
+    	return Integer.parseInt(s);
+ 
     }
     
     /**
      * @param MISLevel
      */
-    public void setMISLevel(String _mislevel)
+    public void setMISLevel(int _mislevel)
     {
-        setAttribute(MISLevel,_mislevel);   
+    	setAttribute(MISLevel,String.valueOf(_mislevel));  
     }
 
     /**
      * @return
      */
-    public String getMISLevel()
+    public int getMISLevel()
     {
-        return getAttribute(MISLevel,null);
+    	String s = getAttribute(MISLevel,"1");
+    	return Integer.parseInt(s);
     }
     
     /**
      * @param JMFLevel
      */
-    public void setJMFLevel(String _jmflevel)
+    public void setJMFLevel(int _jmflevel)
     {
-        setAttribute(JMFLevel,_jmflevel);   
+    	setAttribute(JMFLevel,String.valueOf(_jmflevel));   
     }
 
     /**
      * @return
      */
-    public String getJMFLevel()
+    public int getJMFLevel()
     {
-        return getAttribute(JMFLevel,null);
+    	String s = getAttribute(JMFLevel,"1");
+    	return Integer.parseInt(s);
     }
     
     @Override
