@@ -321,8 +321,8 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         misURL=iniFile.getMISURL();
         
         BaseLevel=iniFile.getBaseLevel();
-/*        MISLevel=iniFile.getmisLevel();
-        JMFLevel=iniFile.getjmfLevel();*/
+        MISLevel=iniFile.getMISLevel();
+        JMFLevel=iniFile.getJMFLevel();
 
         this.setPreferredSize(new Dimension(390, 380));
         this.addMouseListener(new TabListener());
@@ -779,10 +779,8 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
         final JPanel panel = new JPanel(null);
         panel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("GoldenTicketKey")));
-//////////
-        /*
-         * This section adds the MISURL text field and sets the MISURL. This is what I need to do for the Base, JMF, MIS levels. Cut/Paste
-        */
+
+        //Adds the MISURL to the GoldenTicket Tab
         int y = 30;
         JLabel label=new JLabel(littleBundle.getString("MISURLKey"));
         Dimension d = label.getPreferredSize();
