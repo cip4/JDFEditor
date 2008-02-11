@@ -255,15 +255,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         this.currLang = _lang;
     }
     
-    //This is a test to see if changes were made and accepted.
-    public String getBaseLevel()
-    {
-        String foo = this.BaseLevel;
-        System.out.println("Value of BL is: " + foo);
-		return foo;
-    }
-//  This is a test to see if changes were made and accepted.
-
     void setMethodSendToDevice(String methodSendToDevice)
     {
         this.currMethodSendToDevice = methodSendToDevice;
@@ -1250,7 +1241,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
     public void actionPerformed(ActionEvent e)
     {
         final Object source = e.getSource();
-        System.out.println(source);
         if (source == defaultIconButton)
             setDefaultPic(currIcon);
 
