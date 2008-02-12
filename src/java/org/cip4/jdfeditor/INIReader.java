@@ -1015,8 +1015,8 @@ public class INIReader
      */
     public int getBaseLevel()
     {
-    	String s = getAttribute(BaseLevel,"1");
-    	return Integer.parseInt(s);
+    	String s = getAttribute(BaseLevel,null);
+    	return StringUtil.parseInt(s,1);
  
     }
     
@@ -1033,8 +1033,8 @@ public class INIReader
      */
     public int getMISLevel()
     {
-    	String s = getAttribute(MISLevel,"1");
-    	return Integer.parseInt(s);
+    	String s = getAttribute(MISLevel,null);
+    	return StringUtil.parseInt(s, 1);
     }
     
     /**
@@ -1050,8 +1050,8 @@ public class INIReader
      */
     public int getJMFLevel()
     {
-    	String s = getAttribute(JMFLevel,"1");
-    	return Integer.parseInt(s);
+    	String s = getAttribute(JMFLevel,null);
+        return StringUtil.parseInt(s, 1);
     }
     
     @Override
