@@ -1,4 +1,5 @@
 package org.cip4.jdfeditor;
+import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -6,6 +7,7 @@ import java.util.ResourceBundle;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
@@ -57,11 +59,6 @@ public class NewGTChooser extends JPanel implements ActionListener
         setVisible(true);
     }
     
-    public void NewLevelChooser()
-    {
-    	//here is where you type the JMF, MIS levels. Base will always be 2 for any MIS golden ticket.
-    }
-
     /**
      * Method init.
      * Create the new file chooser
@@ -111,14 +108,5 @@ public class NewGTChooser extends JPanel implements ActionListener
     {
         return fileType;
     }
-    
-/*   
- * Method will make a new GoldenTicketFile dependant on the levels entered.
- *  
- *  
- *  public JDFDoc NewGoldenTicketFile()
-    {
-    	
-    }*/
 
 }

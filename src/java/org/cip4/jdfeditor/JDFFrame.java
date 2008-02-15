@@ -703,7 +703,7 @@ ClipboardOwner
      * Method clearViews.
      * clear all views before opening a new file
      */
-    private void clearViews()
+    void clearViews()
     {
         if(m_dialog!=null)
         {
@@ -803,6 +803,83 @@ ClipboardOwner
                     m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
         }
     }
+    
+    /**
+     * Method newMISCPTicket.
+     * creates a new MIS to Conventional Printing Golden Ticket
+     */
+    private void newMISCPTicket()
+    {
+    	clearViews();
+    	
+    	
+    	String[] l1 = { "1", "2" };
+    	String[] l2 = { "1", "2", "3" };
+    	
+    	//MISCP ICS Level Dialog Box
+    	String cp1 = (String) JOptionPane.showInputDialog(
+                this, m_littleBundle.getString("MISCPLevelKey2"), 
+                m_littleBundle.getString("MISCPLevelKey"),
+                JOptionPane.QUESTION_MESSAGE, null, 
+                l1, "1");
+
+    	int MISCPSelectLevel = 0;
+    	MISCPSelectLevel = Integer.parseInt(cp1);
+    	
+    	//JMF Level Dialog Box
+    	String j1 = (String) JOptionPane.showInputDialog(
+                this, m_littleBundle.getString("JMFLevelKey2"), 
+                m_littleBundle.getString("JMFLevelKey"),
+                JOptionPane.QUESTION_MESSAGE, null, 
+                l1, "1");
+
+    	int JMFSelectLevel = 0;
+    	JMFSelectLevel = Integer.parseInt(j1);
+    	
+    	//MIS Level Dialog Box
+    	String m1 = (String) JOptionPane.showInputDialog(
+    	                            this, m_littleBundle.getString("MISLevelKey2"), 
+    	                            m_littleBundle.getString("MISLevelKey"),
+    	                            JOptionPane.QUESTION_MESSAGE, null, 
+    	                            l2, "1");
+    	int MISSelectLevel = 0;
+    	MISSelectLevel = Integer.parseInt(m1);
+    	  	
+    	try
+    	{
+			VJDFAttributeMap vPartMap1 = new VJDFAttributeMap();
+			
+	        /**
+	         * create a BaseGoldenTicket
+	         * @param icsLevel the level to init to (1,2 or 3)
+	         * @param jdfVersion the version to generate a golden ticket for
+	         * @param jmfLevel level of jmf ICS to support
+	         * @param misLevel level of MIS ICS to support
+	         * @param isGrayBox if true, write a grayBox
+	         */
+			//Instead of hard numbers, using the results from the dialog boxes (boxes need to be int variables)
+			MISCPGoldenTicket jdfmiscp = new MISCPGoldenTicket(MISCPSelectLevel, null, JMFSelectLevel, MISSelectLevel, true, vPartMap1);
+			jdfmiscp.assign(null);
+			
+			//assigns the newly created JDF node to jdfcproot
+            final JDFNode jdfcproot = jdfmiscp.getNode();
+            final JDFDoc jdfmiscpDoc = jdfcproot.getOwnerDocument_JDFElement();
+            setJDFDoc(jdfmiscpDoc, null);
+            
+            //display the result.
+            m_treeArea.drawTreeView(getEditorDoc());
+            jdfmiscpDoc.setOriginalFileName("MISCPICSGoldenTicket.jdf");
+            setTitle(getWindowTitle());
+    	}
+        catch (Exception s)
+        {
+            s.printStackTrace();
+            JOptionPane.showMessageDialog(this, m_littleBundle.getString("FileNotOpenKey"),
+                    m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+        }
+
+    }
+    
     /**
      * Method newGoldenTicket.
      * creates a new JDF file from an existing Golden Ticket.java file.
@@ -823,64 +900,13 @@ ClipboardOwner
      
         if (option == JOptionPane.OK_OPTION)
         {             	
-        	//For new golden tickets, just add another if statement and edit NewGTChooser.java
-            	if ((newGTChooser.getSelection()).equals("MISCP"))
-            	// Create a method w/in NewGTChooser which creates the newGT file.
-            		
-            		/*
-            		 * Here is where you set the MIS and JMF Levels w/ dialog boxes similar to modify attribute dialog box
-            		 * located at ???
-            		 * 
-            		 * set the levels with local variables assigned to the levels. Check modify attribute.
-            		 * Need for ICS level, MIS level, JMF level. 
-            		 * 
-            		 * */
-            		
-            		/*
-        			 * I need to change these values to the "get" levels in INIReader.java
-        			 * 
-        			 * icsLevel the level to init to (1,2 or 3) "getICSlevel"
-        			 * jmfLevel level of jmf ICS to support "getJMFlevel"
-        			 * misLevel level of MIS ICS to support "getMISlevel"
-        			 * 
-        			*/
-            		
+        
+        	/*
+        	 * Move to another method either in GTChooser or JDFFrame (i.e. NewJDF() and NewJMF())
+        	 */
+            	if ((newGTChooser.getSelection()).equals("MISCP"))            		          		
             	{
-            		try
-                    {
-            			/*final JDFDoc jdfmiscpDoc=NewGTChooser.NewGoldenTicketFile(init.getICSLevel, null, init.getJMFLevel, init.getMISLevel)*/
-            			//Get the MISCP golden ticket information.
-            			
-            			///////////////////////////////////////////////////////////////
-            			/*REMOVE STARTING HERE TO PUT INTO NEW METHOD IN NEWGTCHOOSER*/
-            			
-            			VJDFAttributeMap vPartMap1 = new VJDFAttributeMap();
-            			            			
-            			MISCPGoldenTicket jdfmiscp = new MISCPGoldenTicket(1, null, 1, 2, true, vPartMap1);
-            			jdfmiscp.assign(null);
-            			
-            			//assigns the newly created JDF node to jdfcproot
-                        final JDFNode jdfcproot = jdfmiscp.getNode();
-                        final JDFDoc jdfmiscpDoc = jdfcproot.getOwnerDocument_JDFElement();
-                        setJDFDoc(jdfmiscpDoc, null);
-                        /*STOP REMOVING HERE*/
-            			///////////////////////////////////////////////////////////////
-                        
-                        
-                        
-                        //display the result.
-                        m_treeArea.drawTreeView(getEditorDoc());
-                        //final JDFDoc jdfmiscpDoc = NewGTChooser.NewGT();
-                        jdfmiscpDoc.setOriginalFileName("MISCPICSGoldenTicket.jdf");
-                        setTitle(getWindowTitle());
-                         
-                    }
-                    catch (Exception s)
-                    {
-                        s.printStackTrace();
-                        JOptionPane.showMessageDialog(this, m_littleBundle.getString("FileNotOpenKey"),
-                                m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
-                    }
+            		newMISCPTicket();
             	}
         }
     }
