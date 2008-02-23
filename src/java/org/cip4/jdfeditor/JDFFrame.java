@@ -190,6 +190,9 @@ ClipboardOwner
     public UndoAction undoAction = new UndoAction();
     public RedoAction redoAction = new RedoAction();
     
+	public String[] l1 = { "1", "2" };
+	public String[] l2 = { "1", "2", "3" };
+    
     /**
      * constructor of the frame
      *
@@ -811,54 +814,20 @@ ClipboardOwner
     private void newMISCPTicket()
     {
     	clearViews();
-    	
-    	
-    	String[] l1 = { "1", "2" };
-    	String[] l2 = { "1", "2", "3" };
-    	
-    	//MISCP ICS Level Dialog Box
-    	String cp1 = (String) JOptionPane.showInputDialog(
-                this, m_littleBundle.getString("MISCPLevelKey2"), 
-                m_littleBundle.getString("MISCPLevelKey"),
-                JOptionPane.QUESTION_MESSAGE, null, 
-                l1, "1");
+    	int MISCPLevel = 0;
+    	int JMFLevel = 0;
+    	int MISLevel = 0;
 
-    	int MISCPSelectLevel = 0;
-    	MISCPSelectLevel = Integer.parseInt(cp1);
-    	
-    	//JMF Level Dialog Box
-    	String j1 = (String) JOptionPane.showInputDialog(
-                this, m_littleBundle.getString("JMFLevelKey2"), 
-                m_littleBundle.getString("JMFLevelKey"),
-                JOptionPane.QUESTION_MESSAGE, null, 
-                l1, "1");
-
-    	int JMFSelectLevel = 0;
-    	JMFSelectLevel = Integer.parseInt(j1);
-    	
-    	//MIS Level Dialog Box
-    	String m1 = (String) JOptionPane.showInputDialog(
-    	                            this, m_littleBundle.getString("MISLevelKey2"), 
-    	                            m_littleBundle.getString("MISLevelKey"),
-    	                            JOptionPane.QUESTION_MESSAGE, null, 
-    	                            l2, "1");
-    	int MISSelectLevel = 0;
-    	MISSelectLevel = Integer.parseInt(m1);
+    	//Sets the dynamic levels
+    	MISCPLevel = newMISCPLevel();
+    	JMFLevel = newJMFLevel();
+    	MISLevel = newMISLevel();
     	  	
     	try
     	{
 			VJDFAttributeMap vPartMap1 = new VJDFAttributeMap();
-			
-	        /**
-	         * create a BaseGoldenTicket
-	         * @param icsLevel the level to init to (1,2 or 3)
-	         * @param jdfVersion the version to generate a golden ticket for
-	         * @param jmfLevel level of jmf ICS to support
-	         * @param misLevel level of MIS ICS to support
-	         * @param isGrayBox if true, write a grayBox
-	         */
-			//Instead of hard numbers, using the results from the dialog boxes (boxes need to be int variables)
-			MISCPGoldenTicket jdfmiscp = new MISCPGoldenTicket(MISCPSelectLevel, null, JMFSelectLevel, MISSelectLevel, true, vPartMap1);
+
+			MISCPGoldenTicket jdfmiscp = new MISCPGoldenTicket(MISCPLevel, null, JMFLevel, MISLevel, true, vPartMap1);
 			jdfmiscp.assign(null);
 			
 			//assigns the newly created JDF node to jdfcproot
@@ -894,10 +863,6 @@ ClipboardOwner
                 JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, 
                 null, GToptions, GToptions[0]);
         
-        /*
-         * Find which GT to load and load it.
-         */
-     
         if (option == JOptionPane.OK_OPTION)
         {             	
         
@@ -1951,5 +1916,45 @@ ClipboardOwner
     }
 
      ////////////////////////////////////////////////////////////////
+    
+    public int newMISCPLevel()
+    {
+    	String cp1 = (String) JOptionPane.showInputDialog(
+                this, m_littleBundle.getString("MISCPLevelKey2"), 
+                m_littleBundle.getString("MISCPLevelKey"),
+                JOptionPane.QUESTION_MESSAGE, null, 
+                l1, "1");
+
+    	int MISCPSelectLevel = 0;
+    	MISCPSelectLevel = Integer.parseInt(cp1);
+    	return MISCPSelectLevel;
+    }
+    
+    public int newJMFLevel()
+    {
+    	String j1 = (String) JOptionPane.showInputDialog(
+                this, m_littleBundle.getString("JMFLevelKey2"), 
+                m_littleBundle.getString("JMFLevelKey"),
+                JOptionPane.QUESTION_MESSAGE, null, 
+                l1, "1");
+    	
+    	int JMFSelectLevel = 0;
+    	JMFSelectLevel = Integer.parseInt(j1);
+    	return JMFSelectLevel;
+    }
+    
+    public int newMISLevel()
+    {
+    	String m1 = (String) JOptionPane.showInputDialog(
+                this, m_littleBundle.getString("MISLevelKey2"), 
+                m_littleBundle.getString("MISLevelKey"),
+                JOptionPane.QUESTION_MESSAGE, null, 
+                l2, "1");
+    	
+    	int MISSelectLevel = 0;
+    	MISSelectLevel = Integer.parseInt(m1);
+    	return MISSelectLevel;
+    }
+    ////////////////////////////////////////////////////////////////
 
 }
