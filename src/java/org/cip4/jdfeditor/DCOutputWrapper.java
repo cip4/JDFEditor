@@ -3,7 +3,7 @@
 * The CIP4 Software License, Version 1.0
 *
 *
-* Copyright (c) 2001-2006 The International Cooperation for the Integration of 
+* Copyright (c) 2001-2008 The International Cooperation for the Integration of 
 * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
 * reserved.
 *
@@ -122,10 +122,16 @@ class DCOutputWrapper extends JDFTreeNode
         KElement e=(KElement)o;
         if (e instanceof JDFNode)
             return s; 
-        if(e.getNodeName().endsWith("Evaluation"))
+        final String nodeName = e.getNodeName();
+        if(nodeName.endsWith("Evaluation"))
         {
             //TODO s="eval";
             s+=getDCString("ValueList"," ","; ");
+        }
+        if(nodeName.startsWith("Rejected")&&nodeName.endsWith("Node"))
+        {
+            boolean b=e.getBoolAttribute("FitsType",null,true);
+            s+=b?" Type match" : "Type mismatch"; 
         }
 
         s+=getDCString("Name"," ","; ");
