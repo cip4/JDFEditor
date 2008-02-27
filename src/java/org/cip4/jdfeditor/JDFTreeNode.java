@@ -79,6 +79,7 @@ import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.jmf.JDFMessage;
+import org.cip4.jdflib.jmf.JDFMessageService;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.resource.devicecapability.JDFAbstractState;
@@ -389,6 +390,19 @@ public class JDFTreeNode extends DefaultMutableTreeNode
                 if(typ!=null)
                 {
                     s+=": "+typ;
+                }
+            }
+            else if(e instanceof JDFMessageService)
+            {
+                String typ=e.getAttribute("Type",null,null);
+                if(typ!=null)
+                {
+                    s+=": "+typ;
+                }
+                typ=e.getAttribute("JMFRole",null,null);
+                if(typ!=null)
+                {
+                    s+=" - "+typ;
                 }
             }
             else if(e instanceof JDFSpanBase)
