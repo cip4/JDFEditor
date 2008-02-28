@@ -26,7 +26,7 @@ public class NewGTChooser extends JPanel implements ActionListener
     
     private String fileType;
 //    private JRadioButton radioBaseButton;
-    private JRadioButton radioJMFButton;
+//    private JRadioButton radioJMFButton;
 //    private JRadioButton radioMISButton;
     private JRadioButton radioMISCPButton;
 //    private JRadioButton radioGTButton;
