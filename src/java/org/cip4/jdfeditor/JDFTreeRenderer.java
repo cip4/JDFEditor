@@ -96,7 +96,7 @@ public class JDFTreeRenderer extends DefaultTreeCellRenderer
     protected boolean highlightFN;
     protected Font standardFont=null;
     private static VString warnMsgs=new VString("UnlinkedResource",null);
-
+    protected String toolString=null;
 
     public JDFTreeRenderer()
     {
@@ -123,7 +123,7 @@ public class JDFTreeRenderer extends DefaultTreeCellRenderer
         setFont(standardFont);
         
         String s=null;
-        String toolString=null;
+
         JDFTreeNode treeNode=null;
         if(value instanceof JDFTreeNode)
         {

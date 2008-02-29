@@ -58,6 +58,7 @@ public class DCOutputRenderer extends JDFTreeRenderer
         }
         if (nodeName.equals("RejectedNode")||nodeName.equals("RejectedChildNode"))
         {
+            
             if (sel)
                 setIcon(iniFile.errElemIconS);
             else
