@@ -4,7 +4,7 @@ package org.cip4.jdfeditor;
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2006 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2008 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -90,10 +90,6 @@ import org.cip4.jdflib.core.JDFElement;
 /**
  * @author AnderssA ThunellE
  *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
  */
 public class Editor
 {
@@ -285,7 +281,7 @@ public class Editor
      */
     public static String getEditorName()
     {
-        return "CIP4 JDF Editor -- Copyright © 2001-2007 CIP4";
+        return "CIP4 JDF Editor -- Copyright © 2001-2008 CIP4";
     }
 
     /**
@@ -294,7 +290,7 @@ public class Editor
      */
     public static String getEditorBuildDate()
     {
-        return "Estimated Build Date - 03 December 2007";
+        return "Estimated Build Date - 03 March 2008";
     }
 
     /**

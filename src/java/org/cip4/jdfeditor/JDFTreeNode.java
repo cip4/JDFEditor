@@ -85,6 +85,7 @@ import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.resource.devicecapability.JDFAbstractState;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCap;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCaps;
+import org.cip4.jdflib.resource.process.JDFColor;
 import org.cip4.jdflib.resource.process.JDFSeparationSpec;
 import org.cip4.jdflib.span.JDFSpanBase;
 import org.cip4.jdflib.util.StringUtil;
@@ -376,7 +377,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
                 if(bUsage)
                     s+=") : "+ref;   
             }
-            else if((e instanceof JDFDevCap) || (e instanceof JDFDevCaps) || (e instanceof JDFAbstractState) || (e instanceof JDFSeparationSpec) )
+            else if((e instanceof JDFDevCap) || (e instanceof JDFDevCaps) || (e instanceof JDFAbstractState) || (e instanceof JDFSeparationSpec) || (e instanceof JDFColor) )
             {
                 final String nam=e.getAttribute("Name",null,null);
                 if(nam!=null)

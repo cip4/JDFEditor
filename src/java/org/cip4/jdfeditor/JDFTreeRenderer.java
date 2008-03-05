@@ -139,7 +139,7 @@ public class JDFTreeRenderer extends DefaultTreeCellRenderer
                 }
                 String descName=e.getAttribute(AttributeName.DESCRIPTIVENAME,null,null);
                 if(descName!=null && toolString!=null)
-                    toolString+="\n"+descName;
+                    toolString+="\n "+descName;
                 
             }
             
