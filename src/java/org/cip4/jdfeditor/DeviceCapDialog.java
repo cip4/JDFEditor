@@ -191,7 +191,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
                                 if(device==null)
                                 {
                                     JOptionPane.showMessageDialog(parent, 
-                                            "File does not contain JDF Node Device Capability description", 
+                                            "DevCap File does not contain JDF Node Device Capability description", 
                                             "Error", JOptionPane.ERROR_MESSAGE);
                                 }
                                 else
@@ -205,7 +205,12 @@ public class DeviceCapDialog extends JPanel implements ActionListener
                                     }
                                     executableJDF = device.getExecutableJDF((JDFNode)docRoot,testlists,validationLevel);
                                     bugReport = device.getBadJDFInfo((JDFNode)docRoot,testlists,validationLevel);
-
+                                    
+                                    //Output BugReport to file. Location is the location of the DevCap file.
+                                    String dcReport = null;
+                                    final String dcr = devCapDoc.getOriginalFileName();
+                                    dcReport = StringUtil.newExtension(dcr, ".JDFDevCapREPORT.xml");
+                                    bugReport.write2File(dcReport, 2, true);
                                 }
                             }
                             else if(docRoot instanceof JDFJMF)
@@ -214,7 +219,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
                                 if(ms==null)
                                 {
                                     JOptionPane.showMessageDialog(parent, 
-                                            "File does not contain JMF Device Capability description", 
+                                            "DevCap File does not contain JMF Device Capability description", 
                                             "Error", JOptionPane.ERROR_MESSAGE);
                                 }
                                 else
@@ -224,6 +229,10 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 
                                     executableJDF = null;
                                     bugReport = JDFDeviceCap.getJMFInfo((JDFJMF)docRoot, respKnownMessages, testlists, validationLevel, !Editor.getIniFile().getHighlight());
+                                    
+                                    String dcr = devCapDoc.getOriginalFileName();
+                                    String dcReport = StringUtil.newExtension(dcr, ".JMFDevCapReport.xml");
+                                    bugReport.write2File(dcReport, 2, true);
                                 }
                             }
                         }         
