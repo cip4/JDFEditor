@@ -452,7 +452,15 @@ public class JDFTreeNode extends DefaultMutableTreeNode
             JDFNode n=(JDFNode)element;
             return n.buildXPath(null,1);
         }
-        return element.getAttribute("XPath");
+        String x= element.getAttribute("XPath",null,null);
+        if(x!=null)
+            return x;
+        x=element.getAttribute("Name",null,null);
+        if(x==null)
+            return null;
+        String parent=element.getInheritedAttribute("XPath",null,null);
+        return parent!=null ? parent+"/@"+x : null;
+        
     }
     
     ///////////////////////////////////////////////////////////////////////

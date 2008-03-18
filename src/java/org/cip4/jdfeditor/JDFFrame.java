@@ -4,7 +4,7 @@ package org.cip4.jdfeditor;
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2007 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2008 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -493,10 +493,10 @@ ClipboardOwner
     {
         try 
         {
-            final KElement nodeRoot = getJDFDoc().getRoot();
-            if (nodeRoot !=null )
+            final JDFDoc nodeDoc = getJDFDoc();
+            if (nodeDoc !=null )
             {
-                final DeviceCapDialog testResult = new DeviceCapDialog(nodeRoot);
+                final DeviceCapDialog testResult = new DeviceCapDialog(nodeDoc);
                 final XMLDoc bugReport = testResult.getBugReport();
                 final VElement executNodes = testResult.getExecutable();
 

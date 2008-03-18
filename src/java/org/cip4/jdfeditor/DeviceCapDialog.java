@@ -4,7 +4,7 @@ package org.cip4.jdfeditor;
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2006 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2008 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -128,22 +128,23 @@ public class DeviceCapDialog extends JPanel implements ActionListener
     private GridBagLayout outLayout = new GridBagLayout(); 
     private GridBagConstraints outConstraints = new GridBagConstraints();
     private VElement executableJDF = null;
-    private XMLDoc bugReport = null;
     private boolean ignoreDefaults;
     private boolean ignoreExtensions;
     private boolean breport;
+    private XMLDoc bugReport = null;
+    
     
     private JComboBox chooseValidLevel;
     EnumFitsValue testlists = EnumFitsValue.Allowed;
     private EnumValidationLevel validationLevel = KElement.EnumValidationLevel.RecursiveComplete;
     
-    public DeviceCapDialog(final KElement docRoot)
+    public DeviceCapDialog(final JDFDoc doc)
     {
         super();
         final INIReader iniFile=Editor.getIniFile();
         final ResourceBundle littleBundle=Editor.getBundle();
         JDFFrame parent=Editor.getFrame();
-        
+        KElement docRoot=doc.getRoot();
 
         idFile=iniFile.getRecentDevCap();
         ignoreDefaults=iniFile.getIgnoreDefault();
@@ -163,6 +164,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
                 idFile=tmpFile;
                 final JDFParser parser = new JDFParser();
                 iniFile.setRecentDevCap(idFile);
+                
                 try 
                 {
                     final JDFDoc devCapDoc = parser.parseFile(idFile.getAbsolutePath());
@@ -206,17 +208,6 @@ public class DeviceCapDialog extends JPanel implements ActionListener
                                     }
                                     executableJDF = device.getExecutableJDF((JDFNode)docRoot,testlists,validationLevel);
                                     bugReport = device.getBadJDFInfo((JDFNode)docRoot,testlists,validationLevel);
-                                    
-                                    if (bugReport!=(null))
-                                    {
-                                    	//There is a bugreport to write
-                                        //Output BugReport to file. Location is the location of the DevCap file.
-                                        String dcReport = null;
-                                        final String dcr = devCapDoc.getOriginalFileName();
-                                        dcReport = StringUtil.newExtension(dcr, ".JDFDevCapREPORT.xml");
-                                        bugReport.write2File(dcReport, 2, true);
-                                    }
-
                                 }
                             }
                             else if(docRoot instanceof JDFJMF)
@@ -230,24 +221,22 @@ public class DeviceCapDialog extends JPanel implements ActionListener
                                 }
                                 else
                                 {
-                                    final JDFResponse respKnownMessages = 
-                                        (JDFResponse) ms.getParentNode_KElement();
-
+                                    final JDFResponse respKnownMessages = (JDFResponse) ms.getParentNode_KElement();
                                     executableJDF = null;
                                     bugReport = JDFDeviceCap.getJMFInfo((JDFJMF)docRoot, respKnownMessages, testlists, validationLevel, !Editor.getIniFile().getHighlight());
                                     
-                                    if (bugReport!=(null))
-                                    {
-                                    	//There is a bug report to write
-                                        //Output BugReport to file. Location is the location of the DevCap file.
-                                        String dcReport = null;
-                                        final String dcr = devCapDoc.getOriginalFileName();
-                                        dcReport = StringUtil.newExtension(dcr, ".JDFDevCapREPORT.xml");
-                                        bugReport.write2File(dcReport, 2, true);
-                                    }
                                 }
                             }
-                        }         
+                        }
+                        if (bugReport!=(null))
+                        {
+                            //There is a bug report to write
+                            //Output BugReport to file. Location is the location of the DevCap file.
+                            String dcReport = null;
+                            final String dcr = doc.getOriginalFileName();
+                            dcReport = StringUtil.newExtension(dcr, ".JDFDevCapReport.xml");
+                            bugReport.write2File(dcReport, 2, true);
+                        }
                     }                  
                 }
                 catch (Exception e) 
