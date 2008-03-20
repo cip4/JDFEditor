@@ -666,6 +666,10 @@ public class JDFTreeArea extends JTextArea
                 {
                     message = exc.getMessage();
                 }  
+                catch (IllegalArgumentException exc)
+                {
+                    message = exc.getMessage();
+                }  
             }
             if (message!=null)
             {
