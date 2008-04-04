@@ -237,7 +237,7 @@ public class SendToDevice extends JPanel implements ActionListener
                 return false;
             try
             {
-                Multipart mp=MimeUtil.buildMimePackage(jmfDoc, editorDoc.getJDFDoc());
+                Multipart mp=MimeUtil.buildMimePackage(jmfDoc, editorDoc.getJDFDoc(), true);
                 HttpURLConnection uc=MimeUtil.writeToURL(mp, url.toExternalForm());
                 bSendTrue=bSendTrue&&uc.getResponseCode()==200;
                 if(!bSendTrue)

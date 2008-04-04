@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2006 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2008 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -107,7 +107,7 @@ public class EditorDocument
     // The model of the JDF
     private JDFTreeModel m_model=null;
     protected EditorSelectionListener m_SelectionListener=null;
-    protected Vector m_PathHistory=null; // history of selection path
+    protected Vector<JDFTreeNode> m_PathHistory=null; // history of selection path
     int m_HistoryPos=-1;
     private String m_MimePackage=null;
     private String m_cid=null;
@@ -135,7 +135,7 @@ public class EditorDocument
     public EditorDocument(JDFDoc jdfDoc, String packageName)
     {
         m_jdfDoc=jdfDoc;
-        m_PathHistory=new Vector();
+        m_PathHistory=new Vector<JDFTreeNode>();
         m_MimePackage=packageName;
         zoom=1.0;
     }
@@ -280,7 +280,7 @@ public class EditorDocument
         if(m_HistoryPos>0)
         {
             m_HistoryPos--;
-            selNode = (JDFTreeNode) m_PathHistory.elementAt(m_HistoryPos);
+            selNode = m_PathHistory.elementAt(m_HistoryPos);
             setSelectionNode(selNode,false);
         }
         enableNextLast();
@@ -340,7 +340,7 @@ public class EditorDocument
             m_HistoryPos=m_PathHistory.size()-1;
         if(m_HistoryPos>0)
         {
-            selNode = (JDFTreeNode) m_PathHistory.elementAt(m_HistoryPos);
+            selNode = m_PathHistory.elementAt(m_HistoryPos);
         }
         return selNode;
     }
@@ -354,7 +354,7 @@ public class EditorDocument
             m_HistoryPos++;
             if(m_HistoryPos<m_PathHistory.size())
             {
-                setSelectionNode((JDFTreeNode) m_PathHistory.elementAt(m_HistoryPos),false);
+                setSelectionNode(m_PathHistory.elementAt(m_HistoryPos),false);
             }
             else
             {
@@ -479,7 +479,7 @@ public class EditorDocument
             Multipart mp=null;
             if(m_MimePackage==null)
             {
-                mp=MimeUtil.buildMimePackage(null, getJDFDoc());
+                mp=MimeUtil.buildMimePackage(null, getJDFDoc(), true);
             }
             else
             {
@@ -490,7 +490,7 @@ public class EditorDocument
             }
             if(mp!=null)
             {
-                MimeUtil.writeToFile(mp, file.getAbsolutePath());
+                MimeUtil.writeToFile(mp, file.getAbsolutePath(),null);
                 m_MimePackage=file.getAbsolutePath();
             }
         }
