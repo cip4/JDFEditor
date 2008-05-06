@@ -81,11 +81,13 @@ import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.jmf.JDFMessage;
 import org.cip4.jdflib.jmf.JDFMessageService;
 import org.cip4.jdflib.node.JDFNode;
+import org.cip4.jdflib.resource.JDFMarkObject;
 import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.resource.devicecapability.JDFAbstractState;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCap;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCaps;
 import org.cip4.jdflib.resource.process.JDFColor;
+import org.cip4.jdflib.resource.process.JDFContentObject;
 import org.cip4.jdflib.resource.process.JDFSeparationSpec;
 import org.cip4.jdflib.span.JDFSpanBase;
 import org.cip4.jdflib.util.StringUtil;
@@ -105,9 +107,9 @@ public class JDFTreeNode extends DefaultMutableTreeNode
      * Comment for <code>serialVersionUID</code>
      */
     private static final long serialVersionUID = -2778264565816334126L;
-    
+
     public boolean isInherited;
-    
+
     /**
      * constructor for an element node
      * @param elem the element
@@ -117,7 +119,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
     {
         super(elem);
     }
-    
+
     /**
      * constructor for an attribute node
      * @param atr the attribute
@@ -128,15 +130,15 @@ public class JDFTreeNode extends DefaultMutableTreeNode
         super(atr);
         this.isInherited = _isInherited;
     }
-    
+
     ///////////////////////////////////////////////////////////////////////
-    
+
     public JDFTreeNode()
     {
         super();
         isInherited=false;
     }
-    
+
     /**
      * true, if either the element or attribute are identical 
      */
@@ -151,10 +153,10 @@ public class JDFTreeNode extends DefaultMutableTreeNode
         JDFTreeNode to=(JDFTreeNode)o;
         if(userObject==null)
             return to.getUserObject()==null;
-                
+
         return userObject.equals(to.getUserObject());            
     }
-    
+
     /**
      * return the KElement related to this node. 
      * In case of attribute or text nodes, it is the parent KElement 
@@ -165,15 +167,15 @@ public class JDFTreeNode extends DefaultMutableTreeNode
         Object o=this.getUserObject();
         if(o instanceof KElement)
             return (KElement) this.getUserObject();
-        
+
         // this is an attribute - try thises parent
         JDFTreeNode nParent=(JDFTreeNode) getParent();
         if(nParent==null)
             return null;
-        
+
         return nParent.getElement();
     }
-    
+
     /**
      * return the text string related to this node. 
      * In case of attribute or element nodes, it is null 
@@ -184,7 +186,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
         Object o=this.getUserObject();
         if(o instanceof String)
             return (String)o;
-        
+
         return null;
     }
     /**
@@ -206,34 +208,34 @@ public class JDFTreeNode extends DefaultMutableTreeNode
         Object o=this.getUserObject();
         if(o instanceof Attr)
             return (Attr)o;
-        
+
         return null;
     }
-    
+
     ///////////////////////////////////////////////////////////////////////
-    
+
     public boolean hasForeignNS()
     {
         final KElement e=getElement();
         return (e!=null) && !(e instanceof JDFElement);
     }
-    
+
     ///////////////////////////////////////////////////////////////////////
-    
+
     public boolean isElement()
     {
         return (userObject instanceof KElement);
     }
-    
+
     ///////////////////////////////////////////////////////////////////////
-    
+
     public boolean isInherited()
     {
         return this.isInherited;   
     }
-    
+
     ///////////////////////////////////////////////////////////////////////
-    
+
     public String getXPath()
     {
         final KElement element = getElement();
@@ -241,10 +243,10 @@ public class JDFTreeNode extends DefaultMutableTreeNode
             return null;
         if(this.isElement())
             return element.buildXPath(null,2);
-        
+
         return element.buildXPath(null,2)+"/@"+getName();
     }
-    
+
     /**
      * get the child with name name
      * @param name the name of the child node
@@ -279,7 +281,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
         while(n!=null){
             if(bAttribute && n.isElement())
                 return index; // elements are always last
-            
+
             if(n.getName().compareTo(name)>=0){
                 if(bAttribute&&!n.isElement()||!bAttribute&&n.isElement())
                     return index;
@@ -289,9 +291,9 @@ public class JDFTreeNode extends DefaultMutableTreeNode
         }
         return -1;
     }
-    
+
     ///////////////////////////////////////////////////////////////////////
-    
+
     public String getName()
     {
         if(isElement())
@@ -302,9 +304,9 @@ public class JDFTreeNode extends DefaultMutableTreeNode
             return JDFTreeModel.TEXT;
         return ((Attr)userObject).getNodeName();
     }
-    
+
     ///////////////////////////////////////////////////////////////////////
-    
+
     public String getValue()
     {
         if(isElement())
@@ -315,9 +317,9 @@ public class JDFTreeNode extends DefaultMutableTreeNode
             return (String)userObject;
         return ((Attr)userObject).getNodeValue();
     }
-    
+
     ///////////////////////////////////////////////////////////////////////
-    
+
     /**
      * this is the display of the object
      */
@@ -325,9 +327,9 @@ public class JDFTreeNode extends DefaultMutableTreeNode
     {
         return toDisplayString();
     }
-    
+
     ///////////////////////////////////////////////////////////////////////
-    
+
     /**
      * this is the display of the object in the tree
      */
@@ -337,7 +339,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
         String s=null;
         if(o==null)
             return null;
-        
+
         if(o instanceof Attr)
         {
             Attr a=(Attr) o;
@@ -393,6 +395,24 @@ public class JDFTreeNode extends DefaultMutableTreeNode
                     s+=": "+typ;
                 }
             }
+            else if(e instanceof JDFNode)
+            {
+                String typ=e.getAttribute("Type",null,null);
+                if(typ!=null)
+                {
+                    s+=": "+typ;
+                }
+                typ=e.getAttribute("JobID",null,null);
+                if(typ!=null)
+                {
+                    s+=" JobID="+typ;
+                }
+                typ=e.getAttribute("JobPartID",null,null);
+                if(typ!=null)
+                {
+                    s+=" JobPartID="+typ;
+                }
+            }
             else if(e instanceof JDFMessageService)
             {
                 String typ=e.getAttribute("Type",null,null);
@@ -422,14 +442,27 @@ public class JDFTreeNode extends DefaultMutableTreeNode
                     }
                 }
             }
-            
+            else if((e instanceof JDFContentObject) || (e instanceof JDFMarkObject))
+            {
+                final String ord=e.getAttribute("Ord",null,null);
+                if(ord!=null)
+                {
+                    s+=" Ord="+ord;
+                }
+                final String ctm=e.getAttribute("CTM",null,null);
+                if(ord!=null)
+                {
+                    s+=" CTM="+ctm;
+                }
+            }
+
             // always add id and descname
             final String id=e.getAttribute("ID",null,null);
             if(id!=null)
             {
                 s+=", "+id;
             }
-            
+
             // add any partidkeys in resources
             if(e instanceof JDFResource)
             {
@@ -438,13 +471,13 @@ public class JDFTreeNode extends DefaultMutableTreeNode
                 if(partKey!=null)
                     s+=" [@"+partKey+"="+r.getAttribute(partKey)+"]";               
             }
-         }     
-        
+        }     
+
         return s;
     }
-    
+
     ///////////////////////////////////////////////////////////////////////
-    
+
     public String getXPathAttr()
     {
         final KElement element = getElement();
@@ -460,11 +493,11 @@ public class JDFTreeNode extends DefaultMutableTreeNode
             return null;
         String parent=element.getInheritedAttribute("XPath",null,null);
         return parent!=null ? parent+"/@"+x : null;
-        
+
     }
-    
+
     ///////////////////////////////////////////////////////////////////////
-    
+
     protected String getDCString(String attName, String prefix, String postFix)
     {
         String strValue="";        
@@ -498,12 +531,12 @@ public class JDFTreeNode extends DefaultMutableTreeNode
     {
         if(path==null)
             return false;
-        
+
         int lastAt=path.lastIndexOf("@");
         int lastAt2=path.lastIndexOf("[@");
         if(lastAt2+1==lastAt)
             lastAt=-1;
-        
+
         String attribute=lastAt>0 ? StringUtil.token(path, -1, "@") : null;
         String elementString=lastAt>0?path.substring(0, lastAt):path;
         final boolean element = isElement();
@@ -512,15 +545,15 @@ public class JDFTreeNode extends DefaultMutableTreeNode
         if(!element)
         {
             if(attribute==null || !attribute.equals(getName()))
-                   return false;
+                return false;
             return getElement().matchesPath(elementString, true);
         }
         return getElement().matchesPath(path, true);     
     }
-    
+
     ///////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////
-    
+
 }
 
