@@ -81,15 +81,15 @@ import org.cip4.jdflib.core.KElement;
 public class CheckJDFOutputRenderer extends JDFTreeRenderer 
 {
     private static final long serialVersionUID = 6261287268245030123L;
-    
-    
+
+
     public CheckJDFOutputRenderer()
     {
         super();
     }
 
     ////////////////////////////////////////////////////////////////////
-    
+
     protected void setNodeIcon(JTree jdfTree,boolean sel, JDFTreeNode treeNode){
         String n=treeNode.getName();
         final INIReader iniFile=Editor.getIniFile();
@@ -115,7 +115,7 @@ public class CheckJDFOutputRenderer extends JDFTreeRenderer
                 }
                 String tts=CheckJDF.toMessageString(elem);
                 if(tts!=null)
-                   setToolTipText(tts);
+                    setToolTipText(tts);
             }        
             else if (n.equals("TestElement"))
             {
@@ -135,7 +135,7 @@ public class CheckJDFOutputRenderer extends JDFTreeRenderer
                 }
                 if(elem.getAttribute("Message")!=null)
                     setToolTipText(elem.getAttribute("Message"));
-                
+
             }
             else if (n.equals("CheckJDFOutput"))
             {
@@ -155,14 +155,34 @@ public class CheckJDFOutputRenderer extends JDFTreeRenderer
                 }
                 if(elem.getAttribute("Message")!=null)
                     setToolTipText(elem.getAttribute("Message"));
-                
+
             }
-            
+
             else if (n.equals("Part"))
             {
                 setIcon(iniFile.jdfElemIcon);
             }
-         }
+            else 
+            {
+                if("false".equals(elem.getInheritedAttribute("IsValid",null,null)))
+                {
+                    if (sel)
+                        setIcon(iniFile.errElemIconS);
+                    else
+                        setIcon(iniFile.errElemIcon);
+                }
+                else
+                {
+                    if (sel)
+                        setIcon(iniFile.jdfElemIconS);
+                    else
+                        setIcon(iniFile.jdfElemIcon);
+                }
+                if(elem.getAttribute("Message")!=null)
+                    setToolTipText(elem.getAttribute("Message"));
+
+            }
+        }
         else // real attributes
         {
             if (sel)
