@@ -76,6 +76,7 @@ import java.util.Vector;
 
 import javax.swing.JComponent;
 
+import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFConstants;
 import org.cip4.jdflib.core.JDFResourceLink;
@@ -111,12 +112,12 @@ public class ProcessPart extends JComponent
     public static final int NODE=1;
     public static final int RESOURCE=2;
     public static final int RES_EXTERNAL=3;
-    
-    
+
+
     public boolean isSelected=false; // if true, this element is selected and is connected by emphasized ResourceLink lines
     private final KElement elem; // the element (node or resource) that is displayed
     public int style; // the style of this ProcessPart, i.e Node, Parent Resource or Res_External
-    
+
     private Color gColor;
     private String[] gString;    
     private final Vector vInRes = new Vector();
@@ -129,14 +130,14 @@ public class ProcessPart extends JComponent
     static private Font procFont = null;
     static private Font resourceFont = null;
     static private Font parentFont = null;
-    
+
     public ProcessPart(KElement _elem, int _style, JDFResourceLink rl)
     {
         elem = _elem;
         style=_style;
         isSelected=_style==PARENT;
         setupFonts();
-        
+
         switch (style)
         {
             case 0:
@@ -173,7 +174,7 @@ public class ProcessPart extends JComponent
             parentFont = new Font(fontName, Font.BOLD, fontSize+2);
         }
     }
-    
+
     public void setPos(int _xPos, int _yPos)
     {
         xPos = _xPos;
@@ -190,7 +191,7 @@ public class ProcessPart extends JComponent
         if(elem instanceof JDFNode)
         {
             JDFNode node = (JDFNode) elem;
-           rawHeight = 75;
+            rawHeight = 75;
             if (style==PARENT && node.hasChildElement(ElementName.JDF, null))
             {
                 gColor = new Color(215, 245, 255);
@@ -211,52 +212,46 @@ public class ProcessPart extends JComponent
 
                 gColor = isExe ? nodeColorExec : nodeColorNonExec;
             }
-            if (node.getType().equals(JDFConstants.COMBINED))
-            {
-                String[] tmp = { elem.getNodeName() + " " + elem.getAttribute("Type"),
-                        elem.getAttribute("Types"),
-                        elem.getAttribute("ID"),
-                        elem.getAttribute("Status"),
-                        node.getDescriptiveName()};
-                gString = tmp;
-            }
-            else 
-            {
-                String[] tmp = { 
-                        elem.getNodeName() + " " + elem.getAttribute("Type"),
-                        elem.getAttribute("ID"),
-                        elem.getAttribute("Status"),
-                        elem.getAttribute("DescriptiveName")
-                        };
-                gString = tmp;
-            }
-           
+            String[] tmp = { 
+                    elem.getNodeName() + " " + elem.getAttribute("Type"),
+                    elem.getAttribute("ID")+" - "+elem.getAttribute("Status"),
+                    node.getJobID(true)+" - "+node.getJobPartID(false),
+                    node.getDescriptiveName()
+                    };
+            gString = tmp;
+            String types=elem.getAttribute(AttributeName.TYPES,null,null);
+            if(types!=null)
+                gString[0]+= " : " + elem.getAttribute(AttributeName.TYPES);
+            String cat=elem.getAttribute(AttributeName.CATEGORY,null,null);
+            if(cat!=null)
+                gString[0]+= " - " + elem.getAttribute(AttributeName.CATEGORY);
+            
             rawWidth = setPartWidth(gString);
             setToolTipText("JDFNode: "+elem.getAttribute("DescriptiveName"));
         }
         else if (style==RES_EXTERNAL)
         {
             rawHeight = 55;
-            
+
             String[] tmp = { 
                     elem.getNodeName(),
                     elem.getAttribute("ID"),
                     elem.getAttribute("Status")
             };
             gString = tmp;
-            
+
             rawWidth = setPartWidth(gString);
             setToolTipText(elem.getNodeName()+": "+elem.getAttribute("DescriptiveName"));
         }
         else 
         {
             rawHeight = 60;
-            
+
             String[] tmp = { elem.getNodeName(),
-                elem.getAttribute("ID"),
-                elem.getAttribute("Status", null, "") };
+                    elem.getAttribute("ID"),
+                    elem.getAttribute("Status", null, "") };
             gString = tmp;
-            
+
             rawWidth = setPartWidth(gString);
             setToolTipText(elem.getNodeName()+": "+elem.getAttribute("DescriptiveName"));
         }
@@ -305,7 +300,7 @@ public class ProcessPart extends JComponent
             }
         }
     }
-    
+
     private int setPartWidth(String[] s)
     {
         int w = 0;
@@ -316,59 +311,59 @@ public class ProcessPart extends JComponent
         }        
         return w;
     }
-        
+
     public KElement getElem()
     {
         return elem;
     }
-        
+
     public Point getRightPoint()
     {
         final Point p = new Point(xPos + this.rawWidth, yPos + this.rawHeight / 2);        
         return p;
     }
-    
+
     public Point getLeftPoint()
     {
         final Point p = new Point(xPos, yPos + this.rawHeight / 2);        
         return p;
     }
-                       
+
     public Vector getvInRes()
     {
         return vInRes;
     }
-        
+
     public void addTovInRes(ProcessPart pp)
     {
         vInRes.add(pp);
     }
-    
+
     public Vector getvOutRes()
     {
         return vOutRes;
     }
-        
+
     public void addTovOutRes(ProcessPart pp)
     {
         vOutRes.add(pp);
     }
-        
+
     public Color getgColor()
     {
         return gColor;
     }
-    
+
     public String[] getgString()
     {
         return this.gString;
     }
-    
+
     public int getxPos()
     {
         return xPos;
     }
-    
+
     public int getyPos()
     {
         return yPos;
@@ -384,7 +379,7 @@ public class ProcessPart extends JComponent
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
-	public boolean equals(Object arg0)
+    public boolean equals(Object arg0)
     {
         if (super.equals(arg0))
             return true;
@@ -394,9 +389,9 @@ public class ProcessPart extends JComponent
             return elem.equals(arg0);
         return false;
     }
-    
+
     @Override
-	public String toString()
+    public String toString()
     {
         String s="[ProcessPart: ";
         if(elem!=null)
@@ -438,5 +433,5 @@ public class ProcessPart extends JComponent
         }
         return v;
     }
-    
+
 }

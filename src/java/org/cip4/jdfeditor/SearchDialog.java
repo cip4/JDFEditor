@@ -1,3 +1,73 @@
+/*
+ *
+ * The CIP4 Software License, Version 1.0
+ *
+ *
+ * Copyright (c) 2001-2008 The International Cooperation for the Integration of 
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer. 
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. The end-user documentation included with the redistribution,
+ *    if any, must include the following acknowledgment:  
+ *       "This product includes software developed by the
+ *        The International Cooperation for the Integration of 
+ *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
+ *    Alternately, this acknowledgment may appear in the software itself,
+ *    if and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ *    Processes in  Prepress, Press and Postpress" must
+ *    not be used to endorse or promote products derived from this
+ *    software without prior written permission. For written 
+ *    permission, please contact info@cip4.org.
+ *
+ * 5. Products derived from this software may not be called "CIP4",
+ *    nor may "CIP4" appear in their name, without prior written
+ *    permission of the CIP4 organization
+ *
+ * Usage of this software in commercial products is subject to restrictions. For
+ * details please consult info@cip4.org.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED.  IN NO EVENT SHALL THE INTERNATIONAL COOPERATION FOR
+ * THE INTEGRATION OF PROCESSES IN PREPRESS, PRESS AND POSTPRESS OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of the The International Cooperation for the Integration 
+ * of Processes in Prepress, Press and Postpress and was
+ * originally based on software 
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
+ *  
+ * For more information on The International Cooperation for the 
+ * Integration of Processes in  Prepress, Press and Postpress , please see
+ * <http://www.cip4.org/>.
+ *  
+ * 
+ */
 package org.cip4.jdfeditor;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -34,31 +104,6 @@ import org.cip4.jdflib.core.JDFConstants;
  */
 public class SearchDialog extends JDialog implements ActionListener
 {
-    class MyDocumentListener implements DocumentListener
-    {
-        public void insertUpdate(DocumentEvent e)
-        {
-            changedUpdate(e);
-        }
-
-        public void removeUpdate(DocumentEvent e)
-        {
-            changedUpdate(e);
-        }
-
-        public void changedUpdate(DocumentEvent e)
-        {
-            e.getLength(); // fool compiler
-            if (m_searchTextField.getText().length() == 0)
-                m_findNextButton.setEnabled(false);
-            else
-            {
-                m_findNextButton.setEnabled(true);
-                m_findNextButton.setSelected(true);
-            }
-        }
-    }
-
     /**
      * Comment for <code>serialVersionUID</code>
      */
@@ -72,6 +117,7 @@ public class SearchDialog extends JDialog implements ActionListener
     private JRadioButton m_backwardRadioButton;
     private Vector m_vGlobalSearch = new Vector();
     private JDFFrame m_frame;
+    private static String lastSearch=null;
 //   private static VString recentSearches=new VString();
     /**
      * Constructor for SearchDialog.
@@ -94,11 +140,9 @@ public class SearchDialog extends JDialog implements ActionListener
         box2.add(findLabel);
         
         m_searchTextField = new JTextField();
-//        if(recentSearches.size()>0)
-//            m_searchTextField.setSelectedIndex(0);
+        if(lastSearch!=null)
+            m_searchTextField.setText(lastSearch);
         
-        final MyDocumentListener searchTextFieldListener = new MyDocumentListener();
-        m_searchTextField.getDocument().addDocumentListener(searchTextFieldListener);
         m_searchTextField.setPreferredSize(new Dimension(60, 20));
         box2.add(m_searchTextField);
         middleBox.add(box2);
@@ -139,7 +183,7 @@ public class SearchDialog extends JDialog implements ActionListener
         panel2.setBorder(BorderFactory.createEmptyBorder());
         m_findNextButton = new JButton(frame.m_littleBundle.getString("FindNextKey"));
         m_findNextButton.addActionListener(this);
-        m_findNextButton.setEnabled(false);
+        m_findNextButton.setEnabled(true);
         panel2.add(m_findNextButton);
         
         m_cancelButton = new JButton(frame.m_littleBundle.getString("CancelKey"));
@@ -147,8 +191,6 @@ public class SearchDialog extends JDialog implements ActionListener
         m_cancelButton.setMnemonic(KeyEvent.VK_ESCAPE);
         panel2.add(m_cancelButton);
         middleBox.add(panel2);
-        
-        
         
         getContentPane().add(middleBox);
         getContentPane().add(Box.createHorizontalStrut(15));
@@ -204,13 +246,13 @@ public class SearchDialog extends JDialog implements ActionListener
                     }
                 }
             }
-            findStringInTree(((JTextField) ((Box) ((Box) getContentPane().getComponent(1)).getComponent(1))
-                    .getComponent(1)).getText(), forwardDirection);
+//            lastSearch = ((JTextField) ((Box) ((Box) getContentPane().getComponent(1)).getComponent(1)).getComponent(1)).getText();
+            lastSearch = m_searchTextField.getText();
+            findStringInTree(lastSearch, forwardDirection);
         }
                 
         else if (getSearchComponent().equals("NeighbourTree"))
-            m_frame.m_topTabs.m_inOutScrollPane.findStringInNeighbourTree(((JTextField) ((Box) ((Box) getContentPane().getComponent(1))
-                    .getComponent(1)).getComponent(1)).getText(), forwardDirection);
+            m_frame.m_topTabs.m_inOutScrollPane.findStringInNeighbourTree(lastSearch, forwardDirection);
     }
 
     /**

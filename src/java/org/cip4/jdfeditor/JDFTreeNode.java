@@ -81,6 +81,7 @@ import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.jmf.JDFMessage;
 import org.cip4.jdflib.jmf.JDFMessageService;
 import org.cip4.jdflib.node.JDFNode;
+import org.cip4.jdflib.resource.JDFDevice;
 import org.cip4.jdflib.resource.JDFMarkObject;
 import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.resource.devicecapability.JDFAbstractState;
@@ -381,7 +382,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
             }
             else if((e instanceof JDFDevCap) || (e instanceof JDFDevCaps) || (e instanceof JDFAbstractState) || (e instanceof JDFSeparationSpec) || (e instanceof JDFColor) )
             {
-                final String nam=e.getAttribute("Name",null,null);
+                final String nam=e.getAttribute(AttributeName.NAME,null,null);
                 if(nam!=null)
                 {
                     s+=": "+nam;
@@ -389,7 +390,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
             }
             else if(e instanceof JDFMessage)
             {
-                final String typ=e.getAttribute("Type",null,null);
+                final String typ=e.getAttribute(AttributeName.TYPE,null,null);
                 if(typ!=null)
                 {
                     s+=": "+typ;
@@ -397,17 +398,22 @@ public class JDFTreeNode extends DefaultMutableTreeNode
             }
             else if(e instanceof JDFNode)
             {
-                String typ=e.getAttribute("Type",null,null);
+                String typ=e.getAttribute(AttributeName.TYPE,null,null);
                 if(typ!=null)
                 {
                     s+=": "+typ;
                 }
-                typ=e.getAttribute("JobID",null,null);
+                typ=e.getAttribute(AttributeName.CATEGORY,null,null);
+                if(typ!=null)
+                {
+                    s+="-"+typ;
+                }
+                typ=e.getAttribute(AttributeName.JOBID,null,null);
                 if(typ!=null)
                 {
                     s+=" JobID="+typ;
                 }
-                typ=e.getAttribute("JobPartID",null,null);
+                typ=e.getAttribute(AttributeName.JOBPARTID,null,null);
                 if(typ!=null)
                 {
                     s+=" JobPartID="+typ;
@@ -415,7 +421,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
             }
             else if(e instanceof JDFMessageService)
             {
-                String typ=e.getAttribute("Type",null,null);
+                String typ=e.getAttribute(AttributeName.TYPE,null,null);
                 if(typ!=null)
                 {
                     s+=": "+typ;
@@ -455,9 +461,17 @@ public class JDFTreeNode extends DefaultMutableTreeNode
                     s+=" CTM="+ctm;
                 }
             }
+            else if(e instanceof JDFDevice)
+            {
+                final String att=e.getAttribute(AttributeName.DEVICEID,null,null);
+                if(att!=null)
+                {
+                    s+=" DeviceID="+att;
+                }
+            }
 
             // always add id and descname
-            final String id=e.getAttribute("ID",null,null);
+            final String id=e.getAttribute(AttributeName.ID,null,null);
             if(id!=null)
             {
                 s+=", "+id;
