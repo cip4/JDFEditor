@@ -131,6 +131,7 @@ import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.core.XMLDocUserData.EnumDirtyPolicy;
 import org.cip4.jdflib.datatypes.VJDFAttributeMap;
 import org.cip4.jdflib.goldenticket.MISCPGoldenTicket;
+import org.cip4.jdflib.goldenticket.MISPreGoldenTicket;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFAuditPool;
@@ -808,72 +809,92 @@ ClipboardOwner
     }
     
     /**
-     * Method newMISCPTicket.
-     * creates a new MIS to Conventional Printing Golden Ticket
-     */
-    private void newMISCPTicket()
-    {
-    	clearViews();
-    	int MISCPLevel = 0;
-    	int JMFLevel = 0;
-    	int MISLevel = 0;
-
-    	//Sets the dynamic levels
-    	MISCPLevel = newMISCPLevel();
-    	JMFLevel = newJMFLevel();
-    	MISLevel = newMISLevel();
-    	  	
-    	try
-    	{
-			VJDFAttributeMap vPartMap1 = new VJDFAttributeMap();
-
-			MISCPGoldenTicket jdfmiscp = new MISCPGoldenTicket(MISCPLevel, null, JMFLevel, MISLevel, true, vPartMap1);
-			jdfmiscp.assign(null);
-			
-			//assigns the newly created JDF node to jdfcproot
-            final JDFNode jdfcproot = jdfmiscp.getNode();
-            final JDFDoc jdfmiscpDoc = jdfcproot.getOwnerDocument_JDFElement();
-            setJDFDoc(jdfmiscpDoc, null);
-            
-            //display the result.
-            m_treeArea.drawTreeView(getEditorDoc());
-            jdfmiscpDoc.setOriginalFileName("MISCPICSGoldenTicket.jdf");
-            setTitle(getWindowTitle());
-    	}
-        catch (Exception s)
-        {
-            s.printStackTrace();
-            JOptionPane.showMessageDialog(this, m_littleBundle.getString("FileNotOpenKey"),
-                    m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
-        }
-
-    }
-    
-    /**
      * Method newGoldenTicket.
      * creates a new JDF file from an existing Golden Ticket.java file.
      */
     private void newGoldenTicket()
     {
-		final String[] GToptions = { m_littleBundle.getString("OkKey"), m_littleBundle.getString("CancelKey") };  
-        final NewGTChooser newGTChooser = new NewGTChooser();
-        
-        final int option = JOptionPane.showOptionDialog(this, newGTChooser, 
-                m_littleBundle.getString("ChooseNewGT"),
-                JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, 
-                null, GToptions, GToptions[0]);
-        
-        if (option == JOptionPane.OK_OPTION)
-        {             	
-        
-        	/*
-        	 * Move to another method either in GTChooser or JDFFrame (i.e. NewJDF() and NewJMF())
-        	 */
-            	if ((newGTChooser.getSelection()).equals("MISCP"))            		          		
+    	int mis = 0;
+    	int jmf = 0;
+    	int gt1 = 0;
+    	String gtselect = "";
+    	
+        try 
+        {
+            final GoldenTicketDialog gt = new GoldenTicketDialog();
+            
+            gtselect=gt.getGoldenTicket();
+            mis=gt.getMISLevel();
+            jmf=gt.getJMFLevel();
+            gt1=gt.getGTLevel();
+  
+            if (gtselect == "MIS to Conventional Printing ICS")
+            {
+            	try
             	{
-            		newMISCPTicket();
+        			VJDFAttributeMap vPartMap1 = new VJDFAttributeMap();
+
+        			MISCPGoldenTicket jdfmiscp = new MISCPGoldenTicket(gt1, null, jmf, mis, true, vPartMap1);
+        			jdfmiscp.assign(null);
+        			
+        			//assigns the newly created JDF node to jdfcproot
+                    final JDFNode jdfcproot = jdfmiscp.getNode();
+                    final JDFDoc jdfmiscpDoc = jdfcproot.getOwnerDocument_JDFElement();
+                    setJDFDoc(jdfmiscpDoc, null);
+                    
+                    //display the result.
+                    m_treeArea.drawTreeView(getEditorDoc());
+                    jdfmiscpDoc.setOriginalFileName("MISCPICSGoldenTicket.jdf");
+                    setTitle(getWindowTitle());
             	}
+                catch (Exception s)
+                {
+                    s.printStackTrace();
+                    JOptionPane.showMessageDialog(this, m_littleBundle.getString("FileNotOpenKey"),
+                            m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+                }
+
+            }//end of MISCPS Golden Ticket Creation
+            
+            else if (gtselect == "MIS to Prepress ICS")
+            {
+            	/*System.out.println("In JDFFRame MISPRE W: " + gtselect + " " + mis + " " + jmf + " " + gt1);*/
+            	try
+            	{
+        			VJDFAttributeMap vPreMap1 = new VJDFAttributeMap();
+
+        			MISPreGoldenTicket jdfmispre = new MISPreGoldenTicket(gt1, null, jmf, mis, vPreMap1);
+        			jdfmispre.assign(null);
+        			
+        			//assigns the newly created JDF node to jdfcproot
+                    final JDFNode jdfpreroot = jdfmispre.getNode();
+                    final JDFDoc jdfmispreDoc = jdfpreroot.getOwnerDocument_JDFElement();
+                    setJDFDoc(jdfmispreDoc, null);
+                    
+                    //display the result.
+                    m_treeArea.drawTreeView(getEditorDoc());
+                    jdfmispreDoc.setOriginalFileName("MISPreICSGoldenTicket.jdf");
+                    setTitle(getWindowTitle());
+            	}
+                catch (Exception s)
+                {
+                    s.printStackTrace();
+                    JOptionPane.showMessageDialog(this, m_littleBundle.getString("FileNotOpenKey"),
+                            m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+                }
+                
+            }//end of MISPre Golden Ticket Creation
+
         }
+        catch (Exception e) 
+        {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, 
+                    m_littleBundle.getString("DevcapOpenErrorKey") + e.getClass() + " \n"
+                    +(e.getMessage()!=null ? ("\"" + e.getMessage() + "\""): ""), 
+                    m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+        }
+        
     }
     /**
      * Close the current file.
@@ -1917,7 +1938,7 @@ ClipboardOwner
 
      ////////////////////////////////////////////////////////////////
     
-    public int newMISCPLevel()
+  /*  public int newMISCPLevel()
     {
     	String cp1 = (String) JOptionPane.showInputDialog(
                 this, m_littleBundle.getString("MISCPLevelKey2"), 
@@ -1954,7 +1975,7 @@ ClipboardOwner
     	int MISSelectLevel = 0;
     	MISSelectLevel = Integer.parseInt(m1);
     	return MISSelectLevel;
-    }
+    }*/
     ////////////////////////////////////////////////////////////////
 
 }
