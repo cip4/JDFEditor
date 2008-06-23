@@ -78,7 +78,6 @@ import javax.swing.JComponent;
 
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.ElementName;
-import org.cip4.jdflib.core.JDFConstants;
 import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
@@ -120,8 +119,8 @@ public class ProcessPart extends JComponent
 
     private Color gColor;
     private String[] gString;    
-    private final Vector vInRes = new Vector();
-    private final Vector vOutRes = new Vector();
+    private final Vector<ProcessPart> vInRes = new Vector<ProcessPart>();
+    private final Vector<ProcessPart> vOutRes = new Vector<ProcessPart>();
     private int xPos;
     private int yPos;
 

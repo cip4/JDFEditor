@@ -78,17 +78,20 @@ import org.cip4.jdflib.core.JDFRefElement;
 import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
+import org.cip4.jdflib.jmf.JDFJobPhase;
 import org.cip4.jdflib.jmf.JDFMessage;
 import org.cip4.jdflib.jmf.JDFMessageService;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.resource.JDFDevice;
 import org.cip4.jdflib.resource.JDFMarkObject;
+import org.cip4.jdflib.resource.JDFPhaseTime;
 import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.resource.devicecapability.JDFAbstractState;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCap;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCaps;
 import org.cip4.jdflib.resource.process.JDFColor;
 import org.cip4.jdflib.resource.process.JDFContentObject;
+import org.cip4.jdflib.resource.process.JDFMedia;
 import org.cip4.jdflib.resource.process.JDFSeparationSpec;
 import org.cip4.jdflib.span.JDFSpanBase;
 import org.cip4.jdflib.util.StringUtil;
@@ -469,9 +472,22 @@ public class JDFTreeNode extends DefaultMutableTreeNode
                     s+=" DeviceID="+att;
                 }
             }
+            else if(e instanceof JDFPhaseTime || e instanceof JDFJobPhase)
+            {
+                String att=e.getAttribute(AttributeName.STATUS,null,null);
+                if(att!=null)
+                {
+                    s+=" "+att;
+                }
+                att=e.getAttribute(AttributeName.STATUSDETAILS,null,null);
+                if(att!=null)
+                {
+                    s+="/"+att;
+                }
+            }
 
             // always add id and descname
-            final String id=e.getAttribute(AttributeName.ID,null,null);
+            final String id=e.getAttribute_KElement(AttributeName.ID,null,null);
             if(id!=null)
             {
                 s+=", "+id;
@@ -480,10 +496,14 @@ public class JDFTreeNode extends DefaultMutableTreeNode
             // add any partidkeys in resources
             if(e instanceof JDFResource)
             {
+                if(e instanceof JDFMedia && e.hasAttribute(AttributeName.MEDIATYPE))
+                {
+                    s+="/"+e.getAttribute(AttributeName.MEDIATYPE); 
+                }
                 JDFResource r=(JDFResource)e;
                 String partKey=r.getLocalPartitionKey();
                 if(partKey!=null)
-                    s+=" [@"+partKey+"="+r.getAttribute(partKey)+"]";               
+                    s+=" [@"+partKey+"="+r.getAttribute(partKey)+"]";                       
             }
         }     
 

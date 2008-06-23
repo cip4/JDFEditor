@@ -1059,7 +1059,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
         {
             ImageIcon imgCIP = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "CIP4.gif");
             
-            final String about = "Copyright © 2000-2006,\n"
+            final String about = "Copyright © 2000-2008,\n"
                 + "International Cooperation for Integration of Processes in Prepress, Press and Postpress,\n"
                 + "hereinafter referred to as CIP4. All Rights Reserved\n\n"
                 + "Authors: Anna Andersson, Evelina Thunell, Ingemar Svenonius, Elena Skobchenko, Rainer Prosi\n\n"
