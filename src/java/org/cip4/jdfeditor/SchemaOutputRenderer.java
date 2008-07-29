@@ -71,8 +71,8 @@ package org.cip4.jdfeditor;
  */
 import javax.swing.JTree;
 
-import org.cip4.jdflib.CheckJDF;
 import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.validate.JDFValidator;
 
 /**
  * @author Elena Skobchenko
@@ -94,7 +94,7 @@ public class SchemaOutputRenderer extends JDFTreeRenderer
         if(treeNode.isElement())
         {
             KElement elem = treeNode.getElement();
-            String tts=CheckJDF.toMessageString(elem);
+            String tts=JDFValidator.toMessageString(elem);
             if(tts!=null)
                setToolTipText(tts);
             

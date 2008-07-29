@@ -71,8 +71,8 @@ package org.cip4.jdfeditor;
  */
 import javax.swing.JTree;
 
-import org.cip4.jdflib.CheckJDF;
 import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.validate.JDFValidator;
 
 /**
  * @author Elena Skobchenko
@@ -113,7 +113,7 @@ public class CheckJDFOutputRenderer extends JDFTreeRenderer
                     else
                         setIcon(iniFile.attIcon);
                 }
-                String tts=CheckJDF.toMessageString(elem);
+                String tts=JDFValidator.toMessageString(elem);
                 if(tts!=null)
                     setToolTipText(tts);
             }        

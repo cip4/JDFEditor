@@ -85,7 +85,6 @@ import javax.swing.tree.TreePath;
 import org.apache.commons.lang.ArrayUtils;
 import org.cip4.jdfeditor.extensions.Caps;
 import org.cip4.jdfeditor.extensions.XJDF20;
-import org.cip4.jdflib.CheckJDF;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFConstants;
@@ -107,6 +106,7 @@ import org.cip4.jdflib.resource.devicecapability.JDFDeviceCap;
 import org.cip4.jdflib.util.ContainerUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
+import org.cip4.jdflib.validate.JDFValidator;
 import org.w3c.dom.Attr;
 
 /**
@@ -148,7 +148,7 @@ public class JDFTreeModel extends DefaultTreeModel
             return false;
 
         final INIReader iniFile = Editor.getIniFile();
-        CheckJDF checkJDF=new CheckJDF();
+        JDFValidator checkJDF=new JDFValidator();
         checkJDF.setPrint(false);
         checkJDF.bQuiet=true;
         checkJDF.level=iniFile.getValidationLevel();
@@ -537,24 +537,9 @@ public class JDFTreeModel extends DefaultTreeModel
         boolean showDefaultAtts=iniFile.getDisplayDefault();        
         // get of 'elem' all not inherited attribute names
         VString vAttNames = elem.getAttributeVector_KElement();        
-        int attSize = vAttNames.size();
 
-        // remove defaults if any
-        if(!showDefaultAtts)
-        {
-            Map defMap=elem.getDefaultAttributeMap();
-            if(defMap!=null)
-            {
-                for(int d=attSize-1;d>=0;d--)
-                {
-                    final String key = vAttNames.stringAt(d);
-                    String defValue=(String) defMap.get(key);
-                    if(defValue!=null && elem.getAttribute(key).equals(defValue))
-                        vAttNames.remove(d);
-                }
-            }
-        }
-        attSize = vAttNames.size();
+        vAttNames = processDefaultAttributes(vAttNames, elem, showDefaultAtts);
+        int attSize = vAttNames.size();
         for (int i = 0; i < attSize; i++)
         {
             final String attName=vAttNames.stringAt(i);
@@ -575,6 +560,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
             // Create a vector with all the attribute names including the inherited attributes
             VString vInheritedAttNames = res.getAttributeVector_JDFResource();
+            vInheritedAttNames = processDefaultAttributes(vInheritedAttNames, elem, showDefaultAtts);
 
             for (int i = 0; i < vInheritedAttNames.size(); i++)
             {
@@ -598,6 +584,33 @@ public class JDFTreeModel extends DefaultTreeModel
                 setAttribute(node,TEXT,text,null,false);
             }
         }
+    }
+
+    /**
+     * @param elem
+     * @param showDefaultAtts
+     * @return
+     */
+    private VString processDefaultAttributes(VString vAttNames, KElement elem, boolean showDefaultAtts)
+    {
+        int attSize = vAttNames.size();
+
+        // remove defaults if any
+        if(!showDefaultAtts)
+        {
+            Map defMap=elem.getDefaultAttributeMap();
+            if(defMap!=null)
+            {
+                for(int d=attSize-1;d>=0;d--)
+                {
+                    final String key = vAttNames.stringAt(d);
+                    String defValue=(String) defMap.get(key);
+                    if(defValue!=null && elem.getAttribute(key).equals(defValue))
+                        vAttNames.remove(d);
+                }
+            }
+        }
+        return vAttNames;
     }
 
 
