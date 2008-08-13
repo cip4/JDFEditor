@@ -78,6 +78,7 @@ import org.cip4.jdflib.core.JDFRefElement;
 import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
+import org.cip4.jdflib.jmf.JDFDeviceInfo;
 import org.cip4.jdflib.jmf.JDFJobPhase;
 import org.cip4.jdflib.jmf.JDFMessage;
 import org.cip4.jdflib.jmf.JDFMessageService;
@@ -483,6 +484,15 @@ public class JDFTreeNode extends DefaultMutableTreeNode
                 if(att!=null)
                 {
                     s+="/"+att;
+                }
+            }
+            else if(e instanceof JDFDeviceInfo)
+            {
+                JDFDeviceInfo di=(JDFDeviceInfo)e;
+                String att=di.getDeviceID();
+                if(!KElement.isWildCard(att))
+                {
+                    s+=" "+att;
                 }
             }
 

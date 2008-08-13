@@ -1,4 +1,3 @@
-package org.cip4.jdfeditor;
 /*
  *
  * The CIP4 Software License, Version 1.0
@@ -69,6 +68,8 @@ package org.cip4.jdfeditor;
  *  
  * 
  */
+package org.cip4.jdfeditor;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -86,6 +87,7 @@ import javax.swing.WindowConstants;
 import org.cip4.jdflib.core.JDFAudit;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
+import org.cip4.jdflib.core.JDFParser;
 
 /**
  * @author AnderssA ThunellE
@@ -196,6 +198,7 @@ public class Editor
         JDFAudit.setStaticAgentVersion(getEditorVersion());
         JDFElement.setLongID(m_iniFile.getLongID());
         JDFElement.setFixVersionIDFix(true);
+        JDFParser.searchStream=true;
         
         try
         {
