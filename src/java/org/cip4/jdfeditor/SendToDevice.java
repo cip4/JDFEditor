@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2007 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2008 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -92,11 +92,12 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import org.cip4.jdflib.core.JDFDoc;
+import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.jmf.JDFCommand;
+import org.cip4.jdflib.jmf.JDFJMF;
+import org.cip4.jdflib.jmf.JDFQueueSubmissionParams;
 import org.cip4.jdflib.jmf.JDFMessage.EnumType;
 import org.cip4.jdflib.util.MimeUtil;
-
-
 
 /*
  * Created on 12.07.2004
@@ -112,257 +113,335 @@ import org.cip4.jdflib.util.MimeUtil;
  */
 public class SendToDevice extends JPanel implements ActionListener
 {
-    /**
-     * Comment for <code>serialVersionUID</code>
-     */
-    private static final long serialVersionUID = -4676135228882149268L;  
+	/**
+	 * Comment for <code>serialVersionUID</code>
+	 */
+	private static final long serialVersionUID = -4676135228882149268L;
 
-//  private File file;
-    private JTextField urlPath;
-    private JRadioButton rbJMF;
-    private JRadioButton rbMIME;
-//  private JButton browse;
+	//  private File file;
+	private JTextField urlPath;
+	private JTextField urlReturn;
+	private JRadioButton rbJMF;
+	private JRadioButton rbMIME;
 
+	//  private JButton browse;
 
-    public SendToDevice()
-    {
-        super();
-        setLayout(new GridLayout(3, 1, 0, 5));
-        init();
-        setVisible(true);
-    }
+	/**
+	 * 
+	 */
+	public SendToDevice()
+	{
+		super();
+		setLayout(new GridLayout(4, 1, 0, 5));
+		init();
+		setVisible(true);
+	}
 
-    /**
-     * Creates the input field for the URL of the device.
-     * The behaviour of the of the input window depends on the
-     * settings in the Editor.ini
-     *  -if method is set to "JMF" - the message will be send
-     *   as a SubmitQueueEntry with the location of the JDF
-     *   as an URL
-     * - if method is set to "MIME" a multipart/related message 
-     *   will be send
-     * - if method is set to "User" the user will be able to
-     *   choose the method to be send by means of radio buttons 
-     */
-    private void init()
-    {
-        final ResourceBundle littleBundle=Editor.getBundle();
-        final JLabel urlText = new JLabel(littleBundle.getString("setURL"));
-        urlText.setVerticalAlignment(SwingConstants.BOTTOM);
-        add(urlText);
+	/**
+	 * Creates the input field for the URL of the device.
+	 * The behaviour of the of the input window depends on the
+	 * settings in the Editor.ini
+	 *  -if method is set to "JMF" - the message will be send
+	 *   as a SubmitQueueEntry with the location of the JDF
+	 *   as an URL
+	 * - if method is set to "MIME" a multipart/related message 
+	 *   will be send
+	 * - if method is set to "User" the user will be able to
+	 *   choose the method to be send by means of radio buttons 
+	 */
+	private void init()
+	{
+		final ResourceBundle littleBundle = Editor.getBundle();
+		final JLabel urlText = new JLabel(littleBundle.getString("setURL"));
+		urlText.setVerticalAlignment(SwingConstants.BOTTOM);
+		add(urlText);
 
-        final JLabel urlLabel = new JLabel(littleBundle.getString("pathToURL"));
+		final INIReader iniFile = Editor.getIniFile();
 
-        final INIReader iniFile=Editor.getIniFile();
-        urlPath = new JTextField(50);
-        urlPath.setText(iniFile.getURLSendToDevice());
+		//RadioButtons to choose sending JDF with QueueSubmissionParams
+		//and URL or as a multipart/related MIME message
+		rbJMF = new JRadioButton(littleBundle.getString("sendMethodJMF"));
+		rbMIME = new JRadioButton(littleBundle.getString("sendMethodMIME"));
+		if (iniFile.getMethodSendToDevice().equals("MIME"))
+		{
+			rbMIME.setSelected(true);
+		}
+		else
+		{
+			rbJMF.setSelected(true);
+		}
+		rbMIME.addActionListener(this);
+		rbJMF.addActionListener(this);
+		final ButtonGroup sendMethodGroup = new ButtonGroup();
+		sendMethodGroup.add(rbJMF);
+		sendMethodGroup.add(rbMIME);
 
-        final Box URLBox = Box.createHorizontalBox();
+		final JLabel rbLabel = new JLabel(littleBundle.getString("sendMethod"));
+		final Box SendMethodBox = Box.createHorizontalBox();
 
-        URLBox.add(urlLabel);
-        URLBox.add(urlPath);
-        URLBox.add(Box.createHorizontalStrut(5));
+		SendMethodBox.add(rbLabel);
+		SendMethodBox.add(rbJMF);
+		SendMethodBox.add(rbMIME);
+		add(SendMethodBox);
+		urlPath = initURL(littleBundle.getString("pathToURL"), iniFile.getURLSendToDevice());
+		urlReturn = initURL(littleBundle.getString("returnToURL"), iniFile.getURLReturnToDevice());
+	}
 
-        //RadioButtons to choose sending JDF with QueueSubmissionParams
-        //and URL or as a multipart/related MIME message
-        rbJMF = new JRadioButton( littleBundle.getString("sendMethodJMF") );
-        rbMIME = new JRadioButton( littleBundle.getString("sendMethodMIME") );
-        if(iniFile.getMethodSendToDevice().equals("MIME"))
-        {
-            rbMIME.setSelected( true );
-        }
-        else
-        {
-            rbJMF.setSelected(true);
-        }
-        rbMIME.addActionListener(this);
-        rbJMF.addActionListener(this);
-        final ButtonGroup sendMethodGroup = new ButtonGroup();
-        sendMethodGroup.add( rbJMF ); 
-        sendMethodGroup.add( rbMIME );
+	/**
+	 * @param url the url label
+	 * @param preset
+	 * @return the set textfield
+	 */
+	private JTextField initURL(final String url, String preset)
+	{
+		final Box urlBox = Box.createHorizontalBox();
+		final JLabel urlLabel = new JLabel(url);
+		urlBox.add(urlLabel);
+		JTextField tf = new JTextField(50);
+		tf.setText(preset);
+		urlBox.add(tf);
+		urlBox.add(Box.createHorizontalStrut(5));
+		add(urlBox);
+		return tf;
+	}
 
-        final JLabel rbLabel = new JLabel(littleBundle.getString("sendMethod"));
-        final Box SendMethodBox = Box.createHorizontalBox();
+	/**
+	 * 
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
+	public void actionPerformed(ActionEvent e)
+	{
+		INIReader ini = Editor.getIniFile();
+		final Object eSrc = e.getSource();
+		if (eSrc == rbJMF)
+		{
+			ini.setMethodSendToDevice(rbJMF.isSelected() ? "JMF" : "MIME");
+		}
+		else
+		{
+			ini.setMethodSendToDevice(rbMIME.isSelected() ? "MIME" : "JMF");
+		}
+	}
 
-        SendMethodBox.add(rbLabel);
-        SendMethodBox.add(rbJMF);
-        SendMethodBox.add(rbMIME);
-        add(SendMethodBox);
-        //add boxes to the window
-        add(URLBox);
-    }
+	/**
+	 * sendJMFJDFmime
+	 * sends the actual open JDF as a MIME multipart/related message 
+	 * to the given URL
+	 * 
+	 * @param url
+	 * @param bMime 
+	 * @param returnURL 
+	 * @return true if success
+	 */
+	public boolean sendJDF(URL url, boolean bMime, URL returnURL)
+	{
 
-    /* (non-Javadoc)
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) 
-    { 
-        INIReader ini=Editor.getIniFile();
-        final Object eSrc = e.getSource();
-        if(eSrc==rbJMF)
-        {
-             ini.setMethodSendToDevice(rbJMF.isSelected()?"JMF":"MIME");
-        }
-        else
-        {
-            ini.setMethodSendToDevice(rbMIME.isSelected()?"MIME":"JMF");
-        }       
-    }
+		if (url == null)
+		{
+			EditorUtils.errorBox("ErrorSendDevice", "URL =null");
+		}
+		// create a JMF message
+		final EditorDocument editorDoc = Editor.getEditorDoc();
+		JDFDoc theDoc = editorDoc.getJDFDoc();
+		JDFJMF theJMF = theDoc.getJMFRoot();
+		if (theJMF != null)
+			return sendJMF(url);
 
-    /**
-     * sendJMFJDFmime
-     * sends the actual open JDF as a MIME multipart/related message 
-     * to the given URL
-     * 
-     * @param url
-     * @return
-     */
-    public boolean sendJDF(URL url, boolean bMime){
+		return submitJDFToDevice(url, bMime, returnURL);
+	}
 
-        boolean bSendTrue = true;
-        if (url == null)
-        {
-            EditorUtils.errorBox("ErrorSendDevice","URL =null");
-        }
-        // create a JMF message
+	/**
+	 * @param url
+	 * @param bMime
+	 * @param returnURL 
+	 * @return true iff success
+	 */
+	private boolean submitJDFToDevice(URL url, boolean bMime, URL returnURL)
+	{
+		boolean bSendTrue;
+		JDFDoc jmfDoc = new JDFDoc("JMF");
+		JDFCommand command = jmfDoc.getJMFRoot().appendCommand(EnumType.SubmitQueueEntry);
+		JDFQueueSubmissionParams qsp = command.appendQueueSubmissionParams();
+		if (returnURL != null)
+		{
+			qsp.setReturnJMF(returnURL);
+		}
 
-        JDFDoc jmfDoc=new JDFDoc("JMF");
-        JDFCommand command=jmfDoc.getJMFRoot().appendCommand(EnumType.SubmitQueueEntry);
-        command.appendQueueSubmissionParams();
+		int rc = -2;
+		String message = "Snafu";
+		final EditorDocument editorDoc = Editor.getEditorDoc();
+		if (editorDoc == null)
+			return false;
+		HttpURLConnection uc = null;
+		try
+		{
+			JDFDoc theDoc = editorDoc.getJDFDoc();
+			if (bMime)
+			{
+				Multipart mp = MimeUtil.buildMimePackage(jmfDoc, theDoc, true);
+				uc = MimeUtil.writeToURL(mp, url.toExternalForm());
+			}
+			else
+			{
+				uc = jmfDoc.write2HTTPURL(url, null);
+			}
+			if (uc != null)
+			{
+				rc = uc.getResponseCode();
+				message = uc.getResponseMessage();
+			}
+			bSendTrue = rc == 200;
+		}
+		catch (IOException x)
+		{
+			bSendTrue = false;
+		}
+		catch (MessagingException x)
+		{
+			bSendTrue = false;
+		}
 
-        if(bMime)
-        {
-            final EditorDocument editorDoc = Editor.getEditorDoc();
-            if(editorDoc==null)
-                return false;
-            try
-            {
-                Multipart mp=MimeUtil.buildMimePackage(jmfDoc, editorDoc.getJDFDoc(), true);
-                HttpURLConnection uc=MimeUtil.writeToURL(mp, url.toExternalForm());
-                bSendTrue=bSendTrue&&uc.getResponseCode()==200;
-                if(!bSendTrue)
-                    EditorUtils.errorBox("ErrorSendDevice","Bad reguest; rc= "+uc.getResponseCode()+" : "+uc.getResponseMessage());
-            }
-            catch (IOException x)
-            {
-                bSendTrue=false;
-            }
-            catch (MessagingException x)
-            {
-                bSendTrue=false;
-            }
-        }
-        else
-        {
-            JDFDoc resp=jmfDoc.write2URL(url.toExternalForm());
-            bSendTrue=resp!=null;
-        }
-        return bSendTrue;
-    }
+		if (!bSendTrue)
+			EditorUtils.errorBox("ErrorSendDevice", "Bad reguest; rc= " + rc + " : " + message);
 
+		return bSendTrue;
+	}
 
-    /**
-     * send
-     * 
-     * performes the sending process
-     * set the MIME type application/vnd.cip4-jdf+xml 
-     * 
-     * @param URL url (URL of the device)
-     * @param Message mMessage (message to be sent)
-     * @return
-     */
-    static boolean send(URL url, String sMessage)
-    {
-        try    {
-            HttpURLConnection httpURLconnection = (HttpURLConnection) url.openConnection();
-            httpURLconnection.setRequestMethod("POST");
-            //httpURLconnection.setRequestProperty("Connection","close");
-//          httpURLconnection.setRequestProperty("Content-type", "application/vnd.cip4-jmf+xml");
-//          httpURLconnection.setRequestProperty("User-Agent", "Queue (JMF protocol)");
-//          httpURLconnection.setRequestProperty("Accept", "application/vnd.cip4-jmf+xml");
-//          httpURLconnection.setUseCaches(false);
-            httpURLconnection.setDoOutput(true);
-            httpURLconnection.setDoInput(true);
+	/**
+	 * @param url
+	 * @return true if ok
+	 */
+	private boolean sendJMF(URL url)
+	{
+		boolean bSendTrue = true;
+		final EditorDocument editorDoc = Editor.getEditorDoc();
+		JDFDoc theDoc = editorDoc == null ? null : editorDoc.getJDFDoc();
+		if (theDoc == null)
+			return false;
 
-            final OutputStream out    = httpURLconnection.getOutputStream();
+		HttpURLConnection con = theDoc.write2HTTPURL(url, null);
 
-            out.write(sMessage.getBytes());
-//          String s=new String(sMessage.getBytes());
-//          TODO fix sending            
-            out.flush();
-            out.close();
+		try
+		{
+			bSendTrue = con != null && con.getResponseCode() == 200;
+		}
+		catch (IOException x)
+		{
+			bSendTrue = false;
+		}
+		return bSendTrue;
+	}
 
-            httpURLconnection.disconnect();
-        }
-        catch (Exception e){
-            EditorUtils.errorBox("ErrorSendDevice",null);
-            return false;
-        }
-        return true;
-    }
+	/**
+	 * send
+	 * 
+	 * performs the sending process
+	 * set the MIME type application/vnd.cip4-jdf+xml 
+	 * 
+	 * @param url (URL of the device)
+	 * @param sMessage (message to be sent)
+	 * @return true if successful
+	 */
+	static boolean send(URL url, String sMessage)
+	{
+		try
+		{
+			HttpURLConnection httpURLconnection = (HttpURLConnection) url.openConnection();
+			httpURLconnection.setRequestMethod("POST");
+			//httpURLconnection.setRequestProperty("Connection","close");
+			//          httpURLconnection.setRequestProperty("Content-type", "application/vnd.cip4-jmf+xml");
+			//          httpURLconnection.setRequestProperty("User-Agent", "Queue (JMF protocol)");
+			//          httpURLconnection.setRequestProperty("Accept", "application/vnd.cip4-jmf+xml");
+			//          httpURLconnection.setUseCaches(false);
+			httpURLconnection.setDoOutput(true);
+			httpURLconnection.setDoInput(true);
 
+			final OutputStream out = httpURLconnection.getOutputStream();
 
-    /**
-     * getURL
-     * 
-     * returns the URL of the device given by the user
-     * 
-     * @return URL url
-     */
+			out.write(sMessage.getBytes());
+			//          String s=new String(sMessage.getBytes());
+			//          TODO fix sending            
+			out.flush();
+			out.close();
 
-    public URL getURL() {
-        // returns the URL given by the user
-        URL url = null;
-        final String urlText = urlPath.getText();
-        try {
-            url = new URL(urlText);
-            INIReader ini=Editor.getIniFile();
-            ini.setURLSendToDevice(urlText);
-        } 
-        catch (MalformedURLException e) 
-        {
-            //e.printStackTrace();
-            EditorUtils.errorBox("InvalidURL",":"+urlText);
-            return null;
-        }
-        return url;
-    }    
+			httpURLconnection.disconnect();
+		}
+		catch (Exception e)
+		{
+			EditorUtils.errorBox("ErrorSendDevice", null);
+			return false;
+		}
+		return true;
+	}
 
- 
-    /**
-     * 
-     */
-    //TODO display response
-    public static void trySend()
-    {
-        if(Editor.getEditorDoc()==null)
-            return;
-        ResourceBundle m_littleBundle=Editor.getBundle();
-        //get the URL to send to and call the CommunicationController
-        boolean bSendTrue = false;
-        final String[] options = { m_littleBundle.getString("OkKey"), m_littleBundle.getString("CancelKey") };
-        final SendToDevice cc = new SendToDevice();
+	/**
+	 * getURL
+	 * 
+	 * returns the URL of the device given by the user
+	 * @param bReturn if true, the url is the returnurl, else it is the device url
+	 * 
+	 * @return URL the url
+	 */
 
-        final int option = JOptionPane.showOptionDialog(Editor.getFrame(), cc, m_littleBundle.getString("JDFSendToDevice"),
-                JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+	public URL getURL(boolean bReturn)
+	{
+		// returns the URL given by the user
+		URL url = null;
+		JTextField tf = bReturn ? urlReturn : urlPath;
+		final String urlText = tf.getText();
 
-        if (option == JOptionPane.OK_OPTION)
-        {
-            //the send method depends on the settings in the Editor.ini file
-            bSendTrue = cc.sendJDF(cc.getURL(),cc.isMime());            
-        }
+		if (bReturn && KElement.isWildCard(urlText))
+			return null;
 
-        //show success in a popup window
-        final String sLabel = (bSendTrue) ?m_littleBundle.getString("JDFSent") : m_littleBundle.getString("JDFNotSent"); 
-        JOptionPane.showMessageDialog(Editor.getFrame(), sLabel);
-    }
+		try
+		{
+			url = new URL(urlText);
+			INIReader ini = Editor.getIniFile();
+			if (bReturn)
+				ini.setURLReturnToDevice(urlText);
+			else
+				ini.setURLSendToDevice(urlText);
+		}
+		catch (MalformedURLException e)
+		{
+			EditorUtils.errorBox("InvalidURL", ":" + urlText);
+			return null;
+		}
+		return url;
+	}
 
-    /**
-     * @return
-     */
-    private boolean isMime()
-    {
-        return rbMIME.isSelected();
-    }
+	/**
+	 * 
+	 */
+	//TODO display response
+	public void trySend()
+	{
+		if (Editor.getEditorDoc() == null)
+			return;
+		ResourceBundle m_littleBundle = Editor.getBundle();
+		//get the URL to send to and call the CommunicationController
+		boolean bSendTrue = false;
+		final String[] options = { m_littleBundle.getString("OkKey"), m_littleBundle.getString("CancelKey") };
+
+		final int option = JOptionPane.showOptionDialog(Editor.getFrame(), this, m_littleBundle.getString("JDFSendToDevice"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+
+		if (option == JOptionPane.OK_OPTION)
+		{
+			//the send method depends on the settings in the Editor.ini file
+			bSendTrue = sendJDF(getURL(false), isMime(), getURL(true));
+		}
+
+		//show success in a popup window
+		final String sLabel = (bSendTrue) ? m_littleBundle.getString("JDFSent") : m_littleBundle.getString("JDFNotSent");
+		JOptionPane.showMessageDialog(Editor.getFrame(), sLabel);
+	}
+
+	/**
+	 * @return true if mime is selected
+	 */
+	private boolean isMime()
+	{
+		return rbMIME.isSelected();
+	}
 
 }
