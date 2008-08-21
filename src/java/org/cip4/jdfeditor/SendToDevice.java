@@ -80,7 +80,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
@@ -266,7 +265,6 @@ public class SendToDevice extends JPanel implements ActionListener
 		{
 			qsp.setReturnJMF(returnURL);
 		}
-
 		int rc = -2;
 		String message = "Snafu";
 		final EditorDocument editorDoc = Editor.getEditorDoc();
@@ -278,11 +276,13 @@ public class SendToDevice extends JPanel implements ActionListener
 			JDFDoc theDoc = editorDoc.getJDFDoc();
 			if (bMime)
 			{
+				qsp.setURL("dummy");
 				Multipart mp = MimeUtil.buildMimePackage(jmfDoc, theDoc, true);
 				uc = MimeUtil.writeToURL(mp, url.toExternalForm());
 			}
 			else
 			{
+				//TODO set url, but which???
 				uc = jmfDoc.write2HTTPURL(url, null);
 			}
 			if (uc != null)
@@ -292,11 +292,7 @@ public class SendToDevice extends JPanel implements ActionListener
 			}
 			bSendTrue = rc == 200;
 		}
-		catch (IOException x)
-		{
-			bSendTrue = false;
-		}
-		catch (MessagingException x)
+		catch (Exception x)
 		{
 			bSendTrue = false;
 		}
@@ -425,14 +421,18 @@ public class SendToDevice extends JPanel implements ActionListener
 
 		final int option = JOptionPane.showOptionDialog(Editor.getFrame(), this, m_littleBundle.getString("JDFSendToDevice"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
+		URL url = null;
 		if (option == JOptionPane.OK_OPTION)
 		{
 			//the send method depends on the settings in the Editor.ini file
-			bSendTrue = sendJDF(getURL(false), isMime(), getURL(true));
+			url = getURL(false);
+			bSendTrue = sendJDF(url, isMime(), getURL(true));
 		}
 
 		//show success in a popup window
-		final String sLabel = (bSendTrue) ? m_littleBundle.getString("JDFSent") : m_littleBundle.getString("JDFNotSent");
+		String sLabel = (bSendTrue) ? m_littleBundle.getString("JDFSent") : m_littleBundle.getString("JDFNotSent");
+		if (bSendTrue)
+			sLabel += "\n" + url.toExternalForm();
 		JOptionPane.showMessageDialog(Editor.getFrame(), sLabel);
 	}
 
