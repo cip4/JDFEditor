@@ -79,9 +79,11 @@ import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.jmf.JDFDeviceInfo;
+import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFJobPhase;
 import org.cip4.jdflib.jmf.JDFMessage;
 import org.cip4.jdflib.jmf.JDFMessageService;
+import org.cip4.jdflib.jmf.JDFQueueEntry;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.resource.JDFDevice;
 import org.cip4.jdflib.resource.JDFMarkObject;
@@ -108,496 +110,533 @@ import org.w3c.dom.Attr;
  */
 public class JDFTreeNode extends DefaultMutableTreeNode
 {
-    /**
-     * Comment for <code>serialVersionUID</code>
-     */
-    private static final long serialVersionUID = -2778264565816334126L;
+	/**
+	 * Comment for <code>serialVersionUID</code>
+	 */
+	private static final long serialVersionUID = -2778264565816334126L;
 
-    public boolean isInherited;
+	public boolean isInherited;
 
-    /**
-     * constructor for an element node
-     * @param elem the element
-     * @param _isValid
-     */
-    public JDFTreeNode(KElement elem)
-    {
-        super(elem);
-    }
+	/**
+	 * constructor for an element node
+	 * @param elem the element
+	 * @param _isValid
+	 */
+	public JDFTreeNode(KElement elem)
+	{
+		super(elem);
+	}
 
-    /**
-     * constructor for an attribute node
-     * @param atr the attribute
-     * @param _isValid
-     * */
-    public JDFTreeNode(Attr atr, boolean _isInherited)
-    {
-        super(atr);
-        this.isInherited = _isInherited;
-    }
+	/**
+	 * constructor for an attribute node
+	 * @param atr the attribute
+	 * @param _isValid
+	 * */
+	public JDFTreeNode(Attr atr, boolean _isInherited)
+	{
+		super(atr);
+		this.isInherited = _isInherited;
+	}
 
-    ///////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////
 
-    public JDFTreeNode()
-    {
-        super();
-        isInherited=false;
-    }
+	public JDFTreeNode()
+	{
+		super();
+		isInherited = false;
+	}
 
-    /**
-     * true, if either the element or attribute are identical 
-     */
-    public boolean equals(Object o)
-    {
-        if(super.equals(o))
-            return true;
-        if(o==null)
-            return false;
-        if(!(o instanceof JDFTreeNode))
-            return false;
-        JDFTreeNode to=(JDFTreeNode)o;
-        if(userObject==null)
-            return to.getUserObject()==null;
+	/**
+	 * true, if either the element or attribute are identical 
+	 */
+	@Override
+	public boolean equals(Object o)
+	{
+		if (super.equals(o))
+			return true;
+		if (o == null)
+			return false;
+		if (!(o instanceof JDFTreeNode))
+			return false;
+		JDFTreeNode to = (JDFTreeNode) o;
+		if (userObject == null)
+			return to.getUserObject() == null;
 
-        return userObject.equals(to.getUserObject());            
-    }
+		return userObject.equals(to.getUserObject());
+	}
 
-    /**
-     * return the KElement related to this node. 
-     * In case of attribute or text nodes, it is the parent KElement 
-     * @return the related element
-     */
-    public KElement getElement()
-    {
-        Object o=this.getUserObject();
-        if(o instanceof KElement)
-            return (KElement) this.getUserObject();
+	/**
+	 * return the KElement related to this node. 
+	 * In case of attribute or text nodes, it is the parent KElement 
+	 * @return the related element
+	 */
+	public KElement getElement()
+	{
+		Object o = this.getUserObject();
+		if (o instanceof KElement)
+			return (KElement) this.getUserObject();
 
-        // this is an attribute - try thises parent
-        JDFTreeNode nParent=(JDFTreeNode) getParent();
-        if(nParent==null)
-            return null;
+		// this is an attribute - try thises parent
+		JDFTreeNode nParent = (JDFTreeNode) getParent();
+		if (nParent == null)
+			return null;
 
-        return nParent.getElement();
-    }
+		return nParent.getElement();
+	}
 
-    /**
-     * return the text string related to this node. 
-     * In case of attribute or element nodes, it is null 
-     * @return the related element
-     */
-    public String getText()
-    {
-        Object o=this.getUserObject();
-        if(o instanceof String)
-            return (String)o;
+	/**
+	 * return the text string related to this node. 
+	 * In case of attribute or element nodes, it is null 
+	 * @return the related element
+	 */
+	public String getText()
+	{
+		Object o = this.getUserObject();
+		if (o instanceof String)
+			return (String) o;
 
-        return null;
-    }
-    /**
-     * set the text string related to this node. 
-     * In case of attribute or text nodes, it is null 
-     * @return the related element
-     */
-    public void setText(String text)
-    {
-        setUserObject(text);
-    }
-    /**
-     * return the Attr related to this node. 
-     * In case of attribute or text nodes, it is null 
-     * @return the related element
-     */
-    public Attr getAttr()
-    {
-        Object o=this.getUserObject();
-        if(o instanceof Attr)
-            return (Attr)o;
+		return null;
+	}
 
-        return null;
-    }
+	/**
+	 * set the text string related to this node. 
+	 * In case of attribute or text nodes, it is null 
+	 * @return the related element
+	 */
+	public void setText(String text)
+	{
+		setUserObject(text);
+	}
 
-    ///////////////////////////////////////////////////////////////////////
+	/**
+	 * return the Attr related to this node. 
+	 * In case of attribute or text nodes, it is null 
+	 * @return the related element
+	 */
+	public Attr getAttr()
+	{
+		Object o = this.getUserObject();
+		if (o instanceof Attr)
+			return (Attr) o;
 
-    public boolean hasForeignNS()
-    {
-        final KElement e=getElement();
-        return (e!=null) && !(e instanceof JDFElement);
-    }
+		return null;
+	}
 
-    ///////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////
 
-    public boolean isElement()
-    {
-        return (userObject instanceof KElement);
-    }
+	public boolean hasForeignNS()
+	{
+		final KElement e = getElement();
+		return (e != null) && !(e instanceof JDFElement);
+	}
 
-    ///////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////
 
-    public boolean isInherited()
-    {
-        return this.isInherited;   
-    }
+	public boolean isElement()
+	{
+		return (userObject instanceof KElement);
+	}
 
-    ///////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////
 
-    public String getXPath()
-    {
-        final KElement element = getElement();
-        if(element==null)
-            return null;
-        if(this.isElement())
-            return element.buildXPath(null,2);
+	public boolean isInherited()
+	{
+		return this.isInherited;
+	}
 
-        return element.buildXPath(null,2)+"/@"+getName();
-    }
+	///////////////////////////////////////////////////////////////////////
 
-    /**
-     * get the child with name name
-     * @param name the name of the child node
-     * @return JDFTreeNode the child with name=name
-     */
-    public JDFTreeNode getNodeWithName(String name)
-    {
-        if(getChildCount()==0)
-            return null;
-        JDFTreeNode n=(JDFTreeNode)getFirstChild();
-        while(n!=null){
-            if(n.getName().equals(name))
-                return n;
-            n=(JDFTreeNode)n.getNextSibling();
-        }
-        return n;
-    }
-    /**
-     * get the insert index for a child with name name 
-     * always place attributes in front of elements
-     * 
-     * @param name the name of the child node
-     * @param bAttribute if true, the placed element is an attribute, else it is an element
-     * @return the index for insertinto
-     */
-    public int getInsertIndexForName(String name, boolean bAttribute)
-    {
-        if(getChildCount()==0)
-            return -1;
-        JDFTreeNode n=(JDFTreeNode)getFirstChild();
-        int index=0;
-        while(n!=null){
-            if(bAttribute && n.isElement())
-                return index; // elements are always last
+	public String getXPath()
+	{
+		final KElement element = getElement();
+		if (element == null)
+			return null;
+		if (this.isElement())
+			return element.buildXPath(null, 2);
 
-            if(n.getName().compareTo(name)>=0){
-                if(bAttribute&&!n.isElement()||!bAttribute&&n.isElement())
-                    return index;
-            }
-            n=(JDFTreeNode)n.getNextSibling();
-            index++;
-        }
-        return -1;
-    }
+		return element.buildXPath(null, 2) + "/@" + getName();
+	}
 
-    ///////////////////////////////////////////////////////////////////////
+	/**
+	 * get the child with name name
+	 * @param name the name of the child node
+	 * @return JDFTreeNode the child with name=name
+	 */
+	public JDFTreeNode getNodeWithName(String name)
+	{
+		if (getChildCount() == 0)
+			return null;
+		JDFTreeNode n = (JDFTreeNode) getFirstChild();
+		while (n != null)
+		{
+			if (n.getName().equals(name))
+				return n;
+			n = (JDFTreeNode) n.getNextSibling();
+		}
+		return n;
+	}
 
-    public String getName()
-    {
-        if(isElement())
-            return getElement().getNodeName();
-        if(userObject==null)
-            return "";
-        if(userObject instanceof String)
-            return JDFTreeModel.TEXT;
-        return ((Attr)userObject).getNodeName();
-    }
+	/**
+	 * get the insert index for a child with name name 
+	 * always place attributes in front of elements
+	 * 
+	 * @param name the name of the child node
+	 * @param bAttribute if true, the placed element is an attribute, else it is an element
+	 * @return the index for insertinto
+	 */
+	public int getInsertIndexForName(String name, boolean bAttribute)
+	{
+		if (getChildCount() == 0)
+			return -1;
+		JDFTreeNode n = (JDFTreeNode) getFirstChild();
+		int index = 0;
+		while (n != null)
+		{
+			if (bAttribute && n.isElement())
+				return index; // elements are always last
 
-    ///////////////////////////////////////////////////////////////////////
+			if (n.getName().compareTo(name) >= 0)
+			{
+				if (bAttribute && !n.isElement() || !bAttribute && n.isElement())
+					return index;
+			}
+			n = (JDFTreeNode) n.getNextSibling();
+			index++;
+		}
+		return -1;
+	}
 
-    public String getValue()
-    {
-        if(isElement())
-            return "";
-        if(userObject==null)
-            return "";
-        if(userObject instanceof String)
-            return (String)userObject;
-        return ((Attr)userObject).getNodeValue();
-    }
+	///////////////////////////////////////////////////////////////////////
 
-    ///////////////////////////////////////////////////////////////////////
+	public String getName()
+	{
+		if (isElement())
+			return getElement().getNodeName();
+		if (userObject == null)
+			return "";
+		if (userObject instanceof String)
+			return JDFTreeModel.TEXT;
+		return ((Attr) userObject).getNodeName();
+	}
 
-    /**
-     * this is the display of the object
-     */
-    public String toString()
-    {
-        return toDisplayString();
-    }
+	///////////////////////////////////////////////////////////////////////
 
-    ///////////////////////////////////////////////////////////////////////
+	public String getValue()
+	{
+		if (isElement())
+			return "";
+		if (userObject == null)
+			return "";
+		if (userObject instanceof String)
+			return (String) userObject;
+		return ((Attr) userObject).getNodeValue();
+	}
 
-    /**
-     * this is the display of the object in the tree
-     */
-    public String toDisplayString()
-    {
-        Object o=this.getUserObject();
-        String s=null;
-        if(o==null)
-            return null;
+	///////////////////////////////////////////////////////////////////////
 
-        if(o instanceof Attr)
-        {
-            Attr a=(Attr) o;
-            s = a.getNodeName()+"=\""+a.getNodeValue()+"\"";        
-        }
-        else if(o instanceof String)
-        {
-            s=(String) o;
-            s = "#text=\""+s+"\"";        
-        }
-        else //element
-        {
-            KElement e=(KElement)o;
-            s=e.getNodeName();
-            if (e instanceof JDFRefElement)
-            {
-                final String ref=e.getAttribute("rRef",null,null);
-                if(ref!=null)
-                    s+=": "+ref;                
-            }
-            else if ((e instanceof JDFResourceLink) && !(e instanceof JDFPartAmount))
-            {
-                final JDFResourceLink rl=(JDFResourceLink)e;
-                final String ref=rl.getrRef();
-                EnumUsage u=rl.getUsage();
-                boolean bUsage=false;
-                if(EnumUsage.Input.equals(u)|| EnumUsage.Output.equals(u))
-                {
-                    s+="("+u.getName();  
-                    bUsage=true;
-                }
-                final String pu=rl.getProcessUsage();
-                if(!pu.equals(""))
-                {
-                    s+=" ["+pu + "]";
-                }
-                if(bUsage)
-                    s+=") : "+ref;   
-            }
-            else if((e instanceof JDFDevCap) || (e instanceof JDFDevCaps) || (e instanceof JDFAbstractState) || (e instanceof JDFSeparationSpec) || (e instanceof JDFColor) )
-            {
-                final String nam=e.getAttribute(AttributeName.NAME,null,null);
-                if(nam!=null)
-                {
-                    s+=": "+nam;
-                }
-            }
-            else if(e instanceof JDFMessage)
-            {
-                final String typ=e.getAttribute(AttributeName.TYPE,null,null);
-                if(typ!=null)
-                {
-                    s+=": "+typ;
-                }
-            }
-            else if(e instanceof JDFNode)
-            {
-                String typ=e.getAttribute(AttributeName.TYPE,null,null);
-                if(typ!=null)
-                {
-                    s+=": "+typ;
-                }
-                typ=e.getAttribute(AttributeName.CATEGORY,null,null);
-                if(typ!=null)
-                {
-                    s+="-"+typ;
-                }
-                typ=e.getAttribute(AttributeName.JOBID,null,null);
-                if(typ!=null)
-                {
-                    s+=" JobID="+typ;
-                }
-                typ=e.getAttribute(AttributeName.JOBPARTID,null,null);
-                if(typ!=null)
-                {
-                    s+=" JobPartID="+typ;
-                }
-            }
-            else if(e instanceof JDFMessageService)
-            {
-                String typ=e.getAttribute(AttributeName.TYPE,null,null);
-                if(typ!=null)
-                {
-                    s+=": "+typ;
-                }
-                typ=e.getAttribute("JMFRole",null,null);
-                if(typ!=null)
-                {
-                    s+=" - "+typ;
-                }
-            }
-            else if(e instanceof JDFSpanBase)
-            {
-                final String act=e.getAttribute("Actual",null,null);
-                if(act!=null)
-                {
-                    s+=" actual: "+act;
-                }
-                else
-                {
-                    final String pref=e.getAttribute(AttributeName.PREFERRED,null,null);
-                    if(pref!=null)
-                    {
-                        s+=" preferred: "+pref;
-                    }
-                }
-            }
-            else if((e instanceof JDFContentObject) || (e instanceof JDFMarkObject))
-            {
-                final String ord=e.getAttribute("Ord",null,null);
-                if(ord!=null)
-                {
-                    s+=" Ord="+ord;
-                }
-                final String ctm=e.getAttribute("CTM",null,null);
-                if(ord!=null)
-                {
-                    s+=" CTM="+ctm;
-                }
-            }
-            else if(e instanceof JDFDevice)
-            {
-                final String att=e.getAttribute(AttributeName.DEVICEID,null,null);
-                if(att!=null)
-                {
-                    s+=" DeviceID="+att;
-                }
-            }
-            else if(e instanceof JDFPhaseTime || e instanceof JDFJobPhase)
-            {
-                String att=e.getAttribute(AttributeName.STATUS,null,null);
-                if(att!=null)
-                {
-                    s+=" "+att;
-                }
-                att=e.getAttribute(AttributeName.STATUSDETAILS,null,null);
-                if(att!=null)
-                {
-                    s+="/"+att;
-                }
-            }
-            else if(e instanceof JDFDeviceInfo)
-            {
-                JDFDeviceInfo di=(JDFDeviceInfo)e;
-                String att=di.getDeviceID();
-                if(!KElement.isWildCard(att))
-                {
-                    s+=" "+att;
-                }
-            }
+	/**
+	 * this is the display of the object
+	 */
+	@Override
+	public String toString()
+	{
+		return toDisplayString();
+	}
 
-            // always add id and descname
-            final String id=e.getAttribute_KElement(AttributeName.ID,null,null);
-            if(id!=null)
-            {
-                s+=", "+id;
-            }
+	///////////////////////////////////////////////////////////////////////
 
-            // add any partidkeys in resources
-            if(e instanceof JDFResource)
-            {
-                if(e instanceof JDFMedia && e.hasAttribute(AttributeName.MEDIATYPE))
-                {
-                    s+="/"+e.getAttribute(AttributeName.MEDIATYPE); 
-                }
-                JDFResource r=(JDFResource)e;
-                String partKey=r.getLocalPartitionKey();
-                if(partKey!=null)
-                    s+=" [@"+partKey+"="+r.getAttribute(partKey)+"]";                       
-            }
-        }     
+	/**
+	 * this is the display of the object in the tree
+	 */
+	public String toDisplayString()
+	{
+		Object o = this.getUserObject();
+		String s = null;
+		if (o == null)
+			return null;
 
-        return s;
-    }
+		if (o instanceof Attr)
+		{
+			Attr a = (Attr) o;
+			s = a.getNodeName() + "=\"" + a.getNodeValue() + "\"";
+		}
+		else if (o instanceof String)
+		{
+			s = (String) o;
+			s = "#text=\"" + s + "\"";
+		}
+		else
+		//element
+		{
+			KElement e = (KElement) o;
+			s = e.getNodeName();
+			if (e instanceof JDFRefElement)
+			{
+				final String ref = e.getAttribute("rRef", null, null);
+				if (ref != null)
+					s += ": " + ref;
+			}
+			else if ((e instanceof JDFResourceLink) && !(e instanceof JDFPartAmount))
+			{
+				final JDFResourceLink rl = (JDFResourceLink) e;
+				final String ref = rl.getrRef();
+				EnumUsage u = rl.getUsage();
+				boolean bUsage = false;
+				if (EnumUsage.Input.equals(u) || EnumUsage.Output.equals(u))
+				{
+					s += "(" + u.getName();
+					bUsage = true;
+				}
+				final String pu = rl.getProcessUsage();
+				if (!pu.equals(""))
+				{
+					s += " [" + pu + "]";
+				}
+				if (bUsage)
+					s += ") : " + ref;
+			}
+			else if ((e instanceof JDFDevCap) || (e instanceof JDFDevCaps) || (e instanceof JDFAbstractState)
+					|| (e instanceof JDFSeparationSpec) || (e instanceof JDFColor))
+			{
+				final String nam = e.getAttribute(AttributeName.NAME, null, null);
+				if (nam != null)
+				{
+					s += ": " + nam;
+				}
+			}
+			else if (e instanceof JDFMessage)
+			{
+				final String typ = e.getAttribute(AttributeName.TYPE, null, null);
+				if (typ != null)
+				{
+					s += ": " + typ;
+				}
+				final String senderID = StringUtil.getNonEmpty(((JDFMessage) e).getSenderID());
+				if (senderID != null)
+				{
+					s += " SenderID: " + senderID;
+				}
+			}
+			else if (e instanceof JDFJMF)
+			{
+				final String senderID = StringUtil.getNonEmpty(((JDFJMF) e).getSenderID());
+				if (senderID != null)
+				{
+					s += " SenderID: " + senderID;
+				}
+			}
+			else if (e instanceof JDFNode)
+			{
+				String typ = e.getAttribute(AttributeName.TYPE, null, null);
+				if (typ != null)
+				{
+					s += ": " + typ;
+				}
+				typ = e.getAttribute(AttributeName.CATEGORY, null, null);
+				if (typ != null)
+				{
+					s += "-" + typ;
+				}
+				typ = e.getAttribute(AttributeName.JOBID, null, null);
+				if (typ != null)
+				{
+					s += " JobID=" + typ;
+				}
+				typ = e.getAttribute(AttributeName.JOBPARTID, null, null);
+				if (typ != null)
+				{
+					s += " JobPartID=" + typ;
+				}
+			}
+			else if (e instanceof JDFMessageService)
+			{
+				String typ = e.getAttribute(AttributeName.TYPE, null, null);
+				if (typ != null)
+				{
+					s += ": " + typ;
+				}
+				typ = e.getAttribute("JMFRole", null, null);
+				if (typ != null)
+				{
+					s += " - " + typ;
+				}
+			}
+			else if (e instanceof JDFSpanBase)
+			{
+				final String act = e.getAttribute("Actual", null, null);
+				if (act != null)
+				{
+					s += " actual: " + act;
+				}
+				else
+				{
+					final String pref = e.getAttribute(AttributeName.PREFERRED, null, null);
+					if (pref != null)
+					{
+						s += " preferred: " + pref;
+					}
+				}
+			}
+			else if ((e instanceof JDFContentObject) || (e instanceof JDFMarkObject))
+			{
+				final String ord = e.getAttribute("Ord", null, null);
+				if (ord != null)
+				{
+					s += " Ord=" + ord;
+				}
+				final String ctm = e.getAttribute("CTM", null, null);
+				if (ord != null)
+				{
+					s += " CTM=" + ctm;
+				}
+			}
+			else if (e instanceof JDFDevice)
+			{
+				final String att = e.getAttribute(AttributeName.DEVICEID, null, null);
+				if (att != null)
+				{
+					s += " DeviceID=" + att;
+				}
+			}
+			else if (e instanceof JDFQueueEntry)
+			{
+				String att = e.getAttribute(AttributeName.QUEUEENTRYID, null, null);
+				if (att != null)
+				{
+					s += " QEID=" + att;
+				}
+				att = e.getAttribute(AttributeName.STATUS, null, null);
+				if (att != null)
+				{
+					s += " Status=" + att;
+				}
+			}
+			else if (e instanceof JDFPhaseTime || e instanceof JDFJobPhase)
+			{
+				String att = e.getAttribute(AttributeName.STATUS, null, null);
+				if (att != null)
+				{
+					s += " " + att;
+				}
+				att = e.getAttribute(AttributeName.STATUSDETAILS, null, null);
+				if (att != null)
+				{
+					s += "/" + att;
+				}
+			}
+			else if (e instanceof JDFDeviceInfo)
+			{
+				JDFDeviceInfo di = (JDFDeviceInfo) e;
+				String att = di.getDeviceID();
+				if (!KElement.isWildCard(att))
+				{
+					s += " " + att;
+				}
+			}
 
-    ///////////////////////////////////////////////////////////////////////
+			// always add id and descname
+			final String id = e.getAttribute_KElement(AttributeName.ID, null, null);
+			if (id != null)
+			{
+				s += ", " + id;
+			}
 
-    public String getXPathAttr()
-    {
-        final KElement element = getElement();
-        if(element instanceof JDFNode){
-            JDFNode n=(JDFNode)element;
-            return n.buildXPath(null,1);
-        }
-        String x= element.getAttribute("XPath",null,null);
-        if(x!=null)
-            return x;
-        x=element.getAttribute("Name",null,null);
-        if(x==null)
-            return null;
-        String parent=element.getInheritedAttribute("XPath",null,null);
-        return parent!=null ? parent+"/@"+x : null;
+			// add any partidkeys in resources
+			if (e instanceof JDFResource)
+			{
+				if (e instanceof JDFMedia && e.hasAttribute(AttributeName.MEDIATYPE))
+				{
+					s += "/" + e.getAttribute(AttributeName.MEDIATYPE);
+				}
+				JDFResource r = (JDFResource) e;
+				String partKey = r.getLocalPartitionKey();
+				if (partKey != null)
+					s += " [@" + partKey + "=" + r.getAttribute(partKey) + "]";
+			}
+		}
 
-    }
+		return s;
+	}
 
-    ///////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////
 
-    protected String getDCString(String attName, String prefix, String postFix)
-    {
-        String strValue="";        
-        if (getElement().hasAttribute(attName))
-        {
-            if(prefix==null)
-                prefix= " "+attName+"=";
-            strValue = prefix + getElement().getAttribute(attName);
-            if(postFix!=null)
-                strValue+=postFix;
-        }
-        return strValue;   
-    }
+	public String getXPathAttr()
+	{
+		final KElement element = getElement();
+		if (element instanceof JDFNode)
+		{
+			JDFNode n = (JDFNode) element;
+			return n.buildXPath(null, 1);
+		}
+		String x = element.getAttribute("XPath", null, null);
+		if (x != null)
+			return x;
+		x = element.getAttribute("Name", null, null);
+		if (x == null)
+			return null;
+		String parent = element.getInheritedAttribute("XPath", null, null);
+		return parent != null ? parent + "/@" + x : null;
 
-    /**
-     * get the index of a TreeNode, -1 if null
-     * @see javax.swing.tree.DefaultMutableTreeNode#getIndex(javax.swing.tree.TreeNode)
-     */
-    public int getIndex(TreeNode arg0)
-    {
-        if(arg0==null)
-            return -1;
-        return super.getIndex(arg0);
-    }
+	}
 
-    /**
-     * @param path
-     * @return
-     */
-    public boolean matchesPath(String path)
-    {
-        if(path==null)
-            return false;
+	///////////////////////////////////////////////////////////////////////
 
-        int lastAt=path.lastIndexOf("@");
-        int lastAt2=path.lastIndexOf("[@");
-        if(lastAt2+1==lastAt)
-            lastAt=-1;
+	protected String getDCString(String attName, String prefix, String postFix)
+	{
+		String strValue = "";
+		if (getElement().hasAttribute(attName))
+		{
+			if (prefix == null)
+				prefix = " " + attName + "=";
+			strValue = prefix + getElement().getAttribute(attName);
+			if (postFix != null)
+				strValue += postFix;
+		}
+		return strValue;
+	}
 
-        String attribute=lastAt>0 ? StringUtil.token(path, -1, "@") : null;
-        String elementString=lastAt>0?path.substring(0, lastAt):path;
-        final boolean element = isElement();
-        if(element&&attribute!=null)
-            return false;
-        if(!element)
-        {
-            if(attribute==null || !attribute.equals(getName()))
-                return false;
-            return getElement().matchesPath(elementString, true);
-        }
-        return getElement().matchesPath(path, true);     
-    }
+	/**
+	 * get the index of a TreeNode, -1 if null
+	 * @see javax.swing.tree.DefaultMutableTreeNode#getIndex(javax.swing.tree.TreeNode)
+	 */
+	@Override
+	public int getIndex(TreeNode arg0)
+	{
+		if (arg0 == null)
+			return -1;
+		return super.getIndex(arg0);
+	}
 
-    ///////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////
+	/**
+	 * @param path
+	 * @return
+	 */
+	public boolean matchesPath(String path)
+	{
+		if (path == null)
+			return false;
+
+		int lastAt = path.lastIndexOf("@");
+		int lastAt2 = path.lastIndexOf("[@");
+		if (lastAt2 + 1 == lastAt)
+			lastAt = -1;
+
+		String attribute = lastAt > 0 ? StringUtil.token(path, -1, "@") : null;
+		String elementString = lastAt > 0 ? path.substring(0, lastAt) : path;
+		final boolean element = isElement();
+		if (element && attribute != null)
+			return false;
+		if (!element)
+		{
+			if (attribute == null || !attribute.equals(getName()))
+				return false;
+			return getElement().matchesPath(elementString, true);
+		}
+		return getElement().matchesPath(path, true);
+	}
+
+	///////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////
 
 }
-
