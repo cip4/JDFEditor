@@ -214,6 +214,7 @@ public class INIReader
 	private final String language = "General/@language";
 	private final String lookAndFeel = "General/@lookAndFeel";
 	private final String methodSendToDevice = "SendToDevice/@Method";
+	private final String incSendToDevice = "SendToDevice/@JobIncrement";
 	private final String urlSendToDevice = "SendToDevice/@URLSendTo";
 	private final String urlReturnToDevice = "SendToDevice/@URLReturnTo";
 	private final String longID = "General/@longID";
@@ -1065,6 +1066,23 @@ public class INIReader
 	public int getMISLevel()
 	{
 		String s = getAttribute(MISLevel, null);
+		return StringUtil.parseInt(s, 1);
+	}
+
+	/**
+	 * @param MISLevel
+	 */
+	public void setJobIncrement(int inc)
+	{
+		setAttribute(incSendToDevice, String.valueOf(inc));
+	}
+
+	/**
+	 * @return
+	 */
+	public int getJobIncrement()
+	{
+		String s = getAttribute(incSendToDevice, null);
 		return StringUtil.parseInt(s, 1);
 	}
 
