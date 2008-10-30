@@ -90,12 +90,18 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import org.cip4.jdfeditor.Editor;
+import org.cip4.jdfeditor.EditorDocument;
+import org.cip4.jdfeditor.EditorUtils;
+import org.cip4.jdfeditor.INIReader;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.elementwalker.AttributeReplacer;
 import org.cip4.jdflib.jmf.JDFCommand;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFQueueSubmissionParams;
 import org.cip4.jdflib.jmf.JDFMessage.EnumType;
+import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.util.MimeUtil;
 
 /*
@@ -273,7 +279,14 @@ public class SendToDevice extends JPanel implements ActionListener
 		HttpURLConnection uc = null;
 		try
 		{
-			JDFDoc theDoc = editorDoc.getJDFDoc();
+			JDFDoc theDoc = (JDFDoc) editorDoc.getJDFDoc().clone();
+
+			JDFNode root = theDoc.getJDFRoot();
+			if (root == null)
+			{
+				return false;
+			}
+			updateJobID(root);
 			if (bMime)
 			{
 				qsp.setURL("dummy");
@@ -301,6 +314,20 @@ public class SendToDevice extends JPanel implements ActionListener
 			EditorUtils.errorBox("ErrorSendDevice", "Bad reguest; rc= " + rc + " : " + message);
 
 		return bSendTrue;
+	}
+
+	/**
+	 * @param root
+	 */
+	private void updateJobID(JDFNode root)
+	{
+		INIReader ir = Editor.getIniFile();
+		int inc = ir.getJobIncrement();
+		inc = ++inc % 10000;
+		ir.setJobIncrement(inc);
+		String jobID = root.getJobID(true) + "." + inc;
+		AttributeReplacer ar = new AttributeReplacer("JobID", jobID, null);
+		ar.replace(root);
 	}
 
 	/**
