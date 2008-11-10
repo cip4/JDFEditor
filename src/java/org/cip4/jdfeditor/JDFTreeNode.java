@@ -86,7 +86,9 @@ import org.cip4.jdflib.jmf.JDFMessageService;
 import org.cip4.jdflib.jmf.JDFQueueEntry;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.resource.JDFDevice;
+import org.cip4.jdflib.resource.JDFEvent;
 import org.cip4.jdflib.resource.JDFMarkObject;
+import org.cip4.jdflib.resource.JDFNotification;
 import org.cip4.jdflib.resource.JDFPhaseTime;
 import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.resource.devicecapability.JDFAbstractState;
@@ -101,12 +103,8 @@ import org.cip4.jdflib.util.StringUtil;
 import org.w3c.dom.Attr;
 
 /**
- * @author AnderssA ThunellE
- * The treenode in the JTree
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * @author AnderssA ThunellE The treenode in the JTree To change this generated comment edit the template variable "typecomment":
+ *         Window>Preferences>Java>Templates. To enable and disable the creation of type comments go to Window>Preferences>Java>Code Generation.
  */
 public class JDFTreeNode extends DefaultMutableTreeNode
 {
@@ -122,7 +120,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 	 * @param elem the element
 	 * @param _isValid
 	 */
-	public JDFTreeNode(KElement elem)
+	public JDFTreeNode(final KElement elem)
 	{
 		super(elem);
 	}
@@ -131,14 +129,14 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 	 * constructor for an attribute node
 	 * @param atr the attribute
 	 * @param _isValid
-	 * */
-	public JDFTreeNode(Attr atr, boolean _isInherited)
+	 */
+	public JDFTreeNode(final Attr atr, final boolean _isInherited)
 	{
 		super(atr);
 		this.isInherited = _isInherited;
 	}
 
-	///////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////
 
 	public JDFTreeNode()
 	{
@@ -147,82 +145,94 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 	}
 
 	/**
-	 * true, if either the element or attribute are identical 
+	 * true, if either the element or attribute are identical
 	 */
 	@Override
-	public boolean equals(Object o)
+	public boolean equals(final Object o)
 	{
 		if (super.equals(o))
+		{
 			return true;
+		}
 		if (o == null)
+		{
 			return false;
+		}
 		if (!(o instanceof JDFTreeNode))
+		{
 			return false;
-		JDFTreeNode to = (JDFTreeNode) o;
+		}
+		final JDFTreeNode to = (JDFTreeNode) o;
 		if (userObject == null)
+		{
 			return to.getUserObject() == null;
+		}
 
 		return userObject.equals(to.getUserObject());
 	}
 
 	/**
-	 * return the KElement related to this node. 
-	 * In case of attribute or text nodes, it is the parent KElement 
+	 * return the KElement related to this node. In case of attribute or text nodes, it is the parent KElement
 	 * @return the related element
 	 */
 	public KElement getElement()
 	{
-		Object o = this.getUserObject();
+		final Object o = this.getUserObject();
 		if (o instanceof KElement)
+		{
 			return (KElement) this.getUserObject();
+		}
 
 		// this is an attribute - try thises parent
-		JDFTreeNode nParent = (JDFTreeNode) getParent();
+		final JDFTreeNode nParent = (JDFTreeNode) getParent();
 		if (nParent == null)
+		{
 			return null;
+		}
 
 		return nParent.getElement();
 	}
 
 	/**
-	 * return the text string related to this node. 
-	 * In case of attribute or element nodes, it is null 
+	 * return the text string related to this node. In case of attribute or element nodes, it is null
 	 * @return the related element
 	 */
 	public String getText()
 	{
-		Object o = this.getUserObject();
+		final Object o = this.getUserObject();
 		if (o instanceof String)
+		{
 			return (String) o;
+		}
 
 		return null;
 	}
 
 	/**
-	 * set the text string related to this node. 
-	 * In case of attribute or text nodes, it is null 
+	 * set the text string related to this node. In case of attribute or text nodes, it is null
 	 * @return the related element
 	 */
-	public void setText(String text)
+	public void setText(final String text)
 	{
 		setUserObject(text);
 	}
 
 	/**
-	 * return the Attr related to this node. 
-	 * In case of attribute or text nodes, it is null 
+	 * return the Attr related to this node. In case of attribute or text nodes, it is null
 	 * @return the related element
 	 */
 	public Attr getAttr()
 	{
-		Object o = this.getUserObject();
+		final Object o = this.getUserObject();
 		if (o instanceof Attr)
+		{
 			return (Attr) o;
+		}
 
 		return null;
 	}
 
-	///////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////
 
 	public boolean hasForeignNS()
 	{
@@ -230,29 +240,33 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		return (e != null) && !(e instanceof JDFElement);
 	}
 
-	///////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////
 
 	public boolean isElement()
 	{
 		return (userObject instanceof KElement);
 	}
 
-	///////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////
 
 	public boolean isInherited()
 	{
 		return this.isInherited;
 	}
 
-	///////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////
 
 	public String getXPath()
 	{
 		final KElement element = getElement();
 		if (element == null)
+		{
 			return null;
+		}
 		if (this.isElement())
+		{
 			return element.buildXPath(null, 2);
+		}
 
 		return element.buildXPath(null, 2) + "/@" + getName();
 	}
@@ -262,43 +276,51 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 	 * @param name the name of the child node
 	 * @return JDFTreeNode the child with name=name
 	 */
-	public JDFTreeNode getNodeWithName(String name)
+	public JDFTreeNode getNodeWithName(final String name)
 	{
 		if (getChildCount() == 0)
+		{
 			return null;
+		}
 		JDFTreeNode n = (JDFTreeNode) getFirstChild();
 		while (n != null)
 		{
 			if (n.getName().equals(name))
+			{
 				return n;
+			}
 			n = (JDFTreeNode) n.getNextSibling();
 		}
 		return n;
 	}
 
 	/**
-	 * get the insert index for a child with name name 
-	 * always place attributes in front of elements
-	 * 
+	 * get the insert index for a child with name name always place attributes in front of elements
 	 * @param name the name of the child node
 	 * @param bAttribute if true, the placed element is an attribute, else it is an element
 	 * @return the index for insertinto
 	 */
-	public int getInsertIndexForName(String name, boolean bAttribute)
+	public int getInsertIndexForName(final String name, final boolean bAttribute)
 	{
 		if (getChildCount() == 0)
+		{
 			return -1;
+		}
 		JDFTreeNode n = (JDFTreeNode) getFirstChild();
 		int index = 0;
 		while (n != null)
 		{
 			if (bAttribute && n.isElement())
+			{
 				return index; // elements are always last
+			}
 
 			if (n.getName().compareTo(name) >= 0)
 			{
 				if (bAttribute && !n.isElement() || !bAttribute && n.isElement())
+				{
 					return index;
+				}
 			}
 			n = (JDFTreeNode) n.getNextSibling();
 			index++;
@@ -306,33 +328,45 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		return -1;
 	}
 
-	///////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////
 
 	public String getName()
 	{
 		if (isElement())
+		{
 			return getElement().getNodeName();
+		}
 		if (userObject == null)
+		{
 			return "";
+		}
 		if (userObject instanceof String)
+		{
 			return JDFTreeModel.TEXT;
+		}
 		return ((Attr) userObject).getNodeName();
 	}
 
-	///////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////
 
 	public String getValue()
 	{
 		if (isElement())
+		{
 			return "";
+		}
 		if (userObject == null)
+		{
 			return "";
+		}
 		if (userObject instanceof String)
+		{
 			return (String) userObject;
+		}
 		return ((Attr) userObject).getNodeValue();
 	}
 
-	///////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////
 
 	/**
 	 * this is the display of the object
@@ -343,21 +377,23 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		return toDisplayString();
 	}
 
-	///////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////
 
 	/**
 	 * this is the display of the object in the tree
 	 */
 	public String toDisplayString()
 	{
-		Object o = this.getUserObject();
+		final Object o = this.getUserObject();
 		String s = null;
 		if (o == null)
+		{
 			return null;
+		}
 
 		if (o instanceof Attr)
 		{
-			Attr a = (Attr) o;
+			final Attr a = (Attr) o;
 			s = a.getNodeName() + "=\"" + a.getNodeValue() + "\"";
 		}
 		else if (o instanceof String)
@@ -366,21 +402,23 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 			s = "#text=\"" + s + "\"";
 		}
 		else
-		//element
+		// element
 		{
-			KElement e = (KElement) o;
+			final KElement e = (KElement) o;
 			s = e.getNodeName();
 			if (e instanceof JDFRefElement)
 			{
 				final String ref = e.getAttribute("rRef", null, null);
 				if (ref != null)
+				{
 					s += ": " + ref;
+				}
 			}
 			else if ((e instanceof JDFResourceLink) && !(e instanceof JDFPartAmount))
 			{
 				final JDFResourceLink rl = (JDFResourceLink) e;
 				final String ref = rl.getrRef();
-				EnumUsage u = rl.getUsage();
+				final EnumUsage u = rl.getUsage();
 				boolean bUsage = false;
 				if (EnumUsage.Input.equals(u) || EnumUsage.Output.equals(u))
 				{
@@ -393,10 +431,11 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 					s += " [" + pu + "]";
 				}
 				if (bUsage)
+				{
 					s += ") : " + ref;
+				}
 			}
-			else if ((e instanceof JDFDevCap) || (e instanceof JDFDevCaps) || (e instanceof JDFAbstractState)
-					|| (e instanceof JDFSeparationSpec) || (e instanceof JDFColor))
+			else if ((e instanceof JDFDevCap) || (e instanceof JDFDevCaps) || (e instanceof JDFAbstractState) || (e instanceof JDFSeparationSpec) || (e instanceof JDFColor))
 			{
 				final String nam = e.getAttribute(AttributeName.NAME, null, null);
 				if (nam != null)
@@ -526,11 +565,39 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 			}
 			else if (e instanceof JDFDeviceInfo)
 			{
-				JDFDeviceInfo di = (JDFDeviceInfo) e;
+				final JDFDeviceInfo di = (JDFDeviceInfo) e;
 				String att = di.getDeviceID();
 				if (!KElement.isWildCard(att))
 				{
 					s += " " + att;
+				}
+				att = e.getAttribute(AttributeName.DEVICESTATUS, null, null);
+				if (att != null)
+				{
+					s += " " + att;
+				}
+				att = e.getAttribute(AttributeName.STATUSDETAILS, null, null);
+				if (att != null)
+				{
+					s += "/" + att;
+				}
+			}
+			else if (e instanceof JDFNotification)
+			{
+				final JDFNotification no = (JDFNotification) e;
+				final String att = no.getType();
+				if (!KElement.isWildCard(att))
+				{
+					s += " " + att;
+				}
+			}
+			else if (e instanceof JDFEvent)
+			{
+				final JDFEvent di = (JDFEvent) e;
+				final String att = di.getEventID();
+				if (!KElement.isWildCard(att))
+				{
+					s += " EventID=" + att;
 				}
 			}
 
@@ -548,49 +615,59 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 				{
 					s += "/" + e.getAttribute(AttributeName.MEDIATYPE);
 				}
-				JDFResource r = (JDFResource) e;
-				String partKey = r.getLocalPartitionKey();
+				final JDFResource r = (JDFResource) e;
+				final String partKey = r.getLocalPartitionKey();
 				if (partKey != null)
+				{
 					s += " [@" + partKey + "=" + r.getAttribute(partKey) + "]";
+				}
 			}
 		}
 
 		return s;
 	}
 
-	///////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////
 
 	public String getXPathAttr()
 	{
 		final KElement element = getElement();
 		if (element instanceof JDFNode)
 		{
-			JDFNode n = (JDFNode) element;
+			final JDFNode n = (JDFNode) element;
 			return n.buildXPath(null, 1);
 		}
 		String x = element.getAttribute("XPath", null, null);
 		if (x != null)
+		{
 			return x;
+		}
 		x = element.getAttribute("Name", null, null);
 		if (x == null)
+		{
 			return null;
-		String parent = element.getInheritedAttribute("XPath", null, null);
+		}
+		final String parent = element.getInheritedAttribute("XPath", null, null);
 		return parent != null ? parent + "/@" + x : null;
 
 	}
 
-	///////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////
 
-	protected String getDCString(String attName, String prefix, String postFix)
+	protected String getDCString(final String attName, String prefix, final String postFix)
 	{
 		String strValue = "";
 		if (getElement().hasAttribute(attName))
 		{
 			if (prefix == null)
+			{
 				prefix = " " + attName + "=";
+			}
 			strValue = prefix + getElement().getAttribute(attName);
 			if (postFix != null)
+			{
 				strValue += postFix;
+			}
 		}
 		return strValue;
 	}
@@ -600,10 +677,12 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 	 * @see javax.swing.tree.DefaultMutableTreeNode#getIndex(javax.swing.tree.TreeNode)
 	 */
 	@Override
-	public int getIndex(TreeNode arg0)
+	public int getIndex(final TreeNode arg0)
 	{
 		if (arg0 == null)
+		{
 			return -1;
+		}
 		return super.getIndex(arg0);
 	}
 
@@ -611,32 +690,40 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 	 * @param path
 	 * @return
 	 */
-	public boolean matchesPath(String path)
+	public boolean matchesPath(final String path)
 	{
 		if (path == null)
+		{
 			return false;
+		}
 
 		int lastAt = path.lastIndexOf("@");
-		int lastAt2 = path.lastIndexOf("[@");
+		final int lastAt2 = path.lastIndexOf("[@");
 		if (lastAt2 + 1 == lastAt)
+		{
 			lastAt = -1;
+		}
 
-		String attribute = lastAt > 0 ? StringUtil.token(path, -1, "@") : null;
-		String elementString = lastAt > 0 ? path.substring(0, lastAt) : path;
+		final String attribute = lastAt > 0 ? StringUtil.token(path, -1, "@") : null;
+		final String elementString = lastAt > 0 ? path.substring(0, lastAt) : path;
 		final boolean element = isElement();
 		if (element && attribute != null)
+		{
 			return false;
+		}
 		if (!element)
 		{
 			if (attribute == null || !attribute.equals(getName()))
+			{
 				return false;
+			}
 			return getElement().matchesPath(elementString, true);
 		}
 		return getElement().matchesPath(path, true);
 	}
 
-	///////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////
 
 }
