@@ -329,7 +329,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		normalizeOpen = iniFile.getNormalizeOpen();
 		ignoreDefaults = iniFile.getIgnoreDefault();
 
-		validationVersion = iniFile.getValidationVersion();
+		validationVersion = iniFile.getDefaultVersion();
 		validationLevel = iniFile.getValidationLevel();
 		exportValidation = iniFile.getExportValidation();
 		misURL = iniFile.getMISURL();
@@ -1520,7 +1520,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		iniFile.setNormalizeOpen(normalizeOpen);
 		iniFile.setIgnoreDefault(ignoreDefaults);
 		iniFile.setValidationLevel(validationLevel);
-		iniFile.setValidationVersion(validationVersion);
+		iniFile.setDefaultVersion(validationVersion);
 		iniFile.setExportValidation(exportValidation);
 		misURL = fieldMISURL.getText();
 		iniFile.setMISURL(misURL);

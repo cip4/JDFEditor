@@ -77,6 +77,7 @@ import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 
 import org.cip4.jdflib.core.JDFConstants;
+import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VString;
@@ -97,64 +98,47 @@ import org.cip4.jdflib.util.StringUtil;
 
 /**
  * @author Rainer Prosi, Heidelberger Druckmaschinen
- *
+ * 
  */
 public class INIReader
 {
 
 	final public ImageIcon defaultErrAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ErrorAttIcon.gif");
-	final public ImageIcon defaultErrAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH
-			+ "ErrorAttIconSelected.gif");
+	final public ImageIcon defaultErrAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ErrorAttIconSelected.gif");
 	final public ImageIcon defaultErrElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ErrorElemIcon.gif");
-	final public ImageIcon defaultErrElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH
-			+ "ErrorElemIconSelected.gif");
+	final public ImageIcon defaultErrElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ErrorElemIconSelected.gif");
 
 	final public ImageIcon defaultWarnAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "WarnAttIcon.gif");
-	final public ImageIcon defaultWarnAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH
-			+ "WarnAttIconSelected.gif");
+	final public ImageIcon defaultWarnAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "WarnAttIconSelected.gif");
 	final public ImageIcon defaultWarnElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "WarnElemIcon.gif");
-	final public ImageIcon defaultWarnElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH
-			+ "WarnElemIconSelected.gif");
+	final public ImageIcon defaultWarnElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "WarnElemIconSelected.gif");
 
 	final public ImageIcon defaultAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "AttIcon.gif");
 	final public ImageIcon defaultAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "AttIconSelected.gif");
 	final public ImageIcon defaultIAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "InhAttIcon.gif");
-	final public ImageIcon defaultIAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH
-			+ "InhAttIconSelected.gif");
+	final public ImageIcon defaultIAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "InhAttIconSelected.gif");
 
-	final public ImageIcon defaultPAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH
-			+ "PartIDKeysAttIcon.gif");
-	final public ImageIcon defaultPAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH
-			+ "PartIDKeysAttIconSelected.gif");
+	final public ImageIcon defaultPAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "PartIDKeysAttIcon.gif");
+	final public ImageIcon defaultPAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "PartIDKeysAttIconSelected.gif");
 
-	final public ImageIcon defaultIPAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH
-			+ "InhPartIDKeysAttIcon.gif");
-	final public ImageIcon defaultIPAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH
-			+ "InhPartIDKeysAttIconSelected.gif");
+	final public ImageIcon defaultIPAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "InhPartIDKeysAttIcon.gif");
+	final public ImageIcon defaultIPAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "InhPartIDKeysAttIconSelected.gif");
 
 	final public ImageIcon defaultRefAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "RefAttIcon.gif");
-	final public ImageIcon defaultRefAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH
-			+ "RefAttIconSelected.gif");
+	final public ImageIcon defaultRefAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "RefAttIconSelected.gif");
 
 	final public ImageIcon defaultElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ElemIcon.gif");
-	final public ImageIcon defaultElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH
-			+ "ElemIconSelected.gif");
+	final public ImageIcon defaultElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ElemIconSelected.gif");
 
 	final public ImageIcon defaultJDFElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "JDFElemIcon.gif");
-	final public ImageIcon defaultJDFElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH
-			+ "JDFElemIconSelected.gif");
+	final public ImageIcon defaultJDFElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "JDFElemIconSelected.gif");
 
 	final public ImageIcon defaultRefElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefElemIcon.gif");
-	final public ImageIcon defaultRefElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH
-			+ "rRefElemIconSelected.gif");
-	final public ImageIcon defaultRefInElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH
-			+ "rRefInElemIcon.gif");
-	final public ImageIcon defaultRefInElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH
-			+ "rRefInElemIconSelected.gif");
-	final public ImageIcon defaultRefOutElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH
-			+ "rRefOutElemIcon.gif");
-	final public ImageIcon defaultRefOutElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH
-			+ "rRefOutElemIconSelected.gif");
+	final public ImageIcon defaultRefElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefElemIconSelected.gif");
+	final public ImageIcon defaultRefInElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefInElemIcon.gif");
+	final public ImageIcon defaultRefInElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefInElemIconSelected.gif");
+	final public ImageIcon defaultRefOutElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefOutElemIcon.gif");
+	final public ImageIcon defaultRefOutElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefOutElemIconSelected.gif");
 
 	public ImageIcon warnAttIcon = defaultWarnAttIcon;
 	public ImageIcon warnAttIconS = defaultWarnAttIconS;
@@ -184,32 +168,27 @@ public class INIReader
 	public ImageIcon rRefOutElemIconS;
 	public ImageIcon rRefElemIcon;
 	public ImageIcon rRefElemIconS;
-	//  public ImageIcon invElemIcon;
-	//  public ImageIcon invAttIcon;
-	//  public ImageIcon misElemIcon;
-	//  public ImageIcon misAttIcon;
-	//  public ImageIcon unkElemIcon;
-	//  public ImageIcon unkAttIcon;
-	//  public ImageIcon execJDFIcon;
-	//  public ImageIcon invElemIconS;
-	//  public ImageIcon invAttIconS;
-	//  public ImageIcon misElemIconS;
-	//  public ImageIcon misAttIconS;
-	//  public ImageIcon unkElemIconS;
-	//  public ImageIcon unkAttIconS;
+	// public ImageIcon invElemIcon;
+	// public ImageIcon invAttIcon;
+	// public ImageIcon misElemIcon;
+	// public ImageIcon misAttIcon;
+	// public ImageIcon unkElemIcon;
+	// public ImageIcon unkAttIcon;
+	// public ImageIcon execJDFIcon;
+	// public ImageIcon invElemIconS;
+	// public ImageIcon invAttIconS;
+	// public ImageIcon misElemIconS;
+	// public ImageIcon misAttIconS;
+	// public ImageIcon unkElemIconS;
+	// public ImageIcon unkAttIconS;
 
-	String iconStrings[] = { "Attribute with Error=default", "Attribute with Error (selected)=default",
-			"Element with Error=default", "Element with Error (selected)=default", "Attribute=default",
-			"Attribute (selected)=default", "Inherited Attribute=default", "Inherited Attribute (selected)=default",
-			"PartID Key Attribute=default", "PartID Key Attribute (selected)=default",
-			"Inherited PartID Key Attribute=default", "Inherited PartID Key Attribute (selected)=default",
-			"rRef Attribute=default", "rRef Attriubte (selected)=default", "Element=default",
-			"Element (selected)=default", "JDF Element=default", "JDF Element (selected)=default",
-			"Input rRef Element=default", "Input rRef Element (selected)=default", "Output rRef Element=default",
-			"Output rRef Element (selected)=default", "rRef Element=default", "rRef Element (selected)=default",
-			"Attribute with Warning=default", "Attribute with Warning (selected)=default",
-			"Element with Warning=default", "Element with Warning (selected)=default",
-	//          "JDF Folder=default"
+	String iconStrings[] = { "Attribute with Error=default", "Attribute with Error (selected)=default", "Element with Error=default", "Element with Error (selected)=default", "Attribute=default",
+			"Attribute (selected)=default", "Inherited Attribute=default", "Inherited Attribute (selected)=default", "PartID Key Attribute=default", "PartID Key Attribute (selected)=default",
+			"Inherited PartID Key Attribute=default", "Inherited PartID Key Attribute (selected)=default", "rRef Attribute=default", "rRef Attriubte (selected)=default", "Element=default",
+			"Element (selected)=default", "JDF Element=default", "JDF Element (selected)=default", "Input rRef Element=default", "Input rRef Element (selected)=default",
+			"Output rRef Element=default", "Output rRef Element (selected)=default", "rRef Element=default", "rRef Element (selected)=default", "Attribute with Warning=default",
+			"Attribute with Warning (selected)=default", "Element with Warning=default", "Element with Warning (selected)=default",
+	// "JDF Folder=default"
 	};
 	private final String language = "General/@language";
 	private final String lookAndFeel = "General/@lookAndFeel";
@@ -262,15 +241,15 @@ public class INIReader
 	private void init()
 	{
 		Arrays.sort(iconStrings);
-		//Read the Editor.ini file and store the data in it
+		// Read the Editor.ini file and store the data in it
 		try
 		{
-			JDFParser p = new JDFParser();
+			final JDFParser p = new JDFParser();
 			xDoc = p.parseFile(getIniPath());
 			readINIFile();
 		}
-		//If the Editor.ini file is not found, create a new default file and read it
-		catch (Exception ex)
+		// If the Editor.ini file is not found, create a new default file and read it
+		catch (final Exception ex)
 		{
 			setLanguage("en"); // dummy to set up a minimal xml document
 			writeINIFile();
@@ -284,10 +263,12 @@ public class INIReader
 		return getAttribute(language, "en");
 	}
 
-	private String getAttribute(String path, String def)
+	private String getAttribute(final String path, final String def)
 	{
 		if (xDoc == null)
+		{
 			return def;
+		}
 		return xDoc.getRoot().getXPathAttribute(path, def);
 	}
 
@@ -299,7 +280,7 @@ public class INIReader
 
 	public int getFontSize()
 	{
-		String s = getAttribute(fontSize, "10");
+		final String s = getAttribute(fontSize, "10");
 		return Integer.parseInt(s);
 	}
 
@@ -308,27 +289,26 @@ public class INIReader
 		return getAttribute(fontName, null);
 	}
 
-	public void setFontSize(int fs)
+	public void setFontSize(final int fs)
 	{
 		setAttribute(fontSize, String.valueOf(fs));
 	}
 
-	public void setFontName(String _fontName)
+	public void setFontName(final String _fontName)
 	{
 		setAttribute(fontName, _fontName);
 	}
 
 	public String getGenericAtts()
 	{
-		String defaultGenerics = "ID Type JobID JobPartID ProductID CustomerID SpawnIDs"
-				+ " Class Status PartIDKeys xmlns xmlns:xsi xsi:Type" + " SettingsPolicy BestEffortExceptions"
+		final String defaultGenerics = "ID Type JobID JobPartID ProductID CustomerID SpawnIDs" + " Class Status PartIDKeys xmlns xmlns:xsi xsi:Type" + " SettingsPolicy BestEffortExceptions"
 				+ " OperatorInterventionExceptions" + " MustHonorExceptions" + " DocIndex Locked DescriptiveName Brand";
 
-		String s = getAttribute(genericAtts, defaultGenerics);
+		final String s = getAttribute(genericAtts, defaultGenerics);
 		return s;
 	}
 
-	public void setGenericAtts(VString s)
+	public void setGenericAtts(final VString s)
 	{
 		setAttribute(genericAtts, StringUtil.setvString(s, " ", null, null));
 	}
@@ -338,7 +318,7 @@ public class INIReader
 		return getAttribute(autoValidate, "").equals("on");
 	}
 
-	public void setAutoVal(boolean bVal)
+	public void setAutoVal(final boolean bVal)
 	{
 		setAttribute(autoValidate, bVal ? "on" : "off");
 	}
@@ -348,12 +328,12 @@ public class INIReader
 		return getAttribute(exportValidate, "").equals("on");
 	}
 
-	public void setExportValidation(boolean bVal)
+	public void setExportValidation(final boolean bVal)
 	{
 		setAttribute(exportValidate, bVal ? "on" : "off");
 	}
 
-	public void setReadOnly(boolean bRO)
+	public void setReadOnly(final boolean bRO)
 	{
 		setAttribute(readOnly, bRO ? "on" : "off");
 	}
@@ -363,7 +343,7 @@ public class INIReader
 		return this.recentFiles;
 	}
 
-	public void setRecentDevCap(File devCapFile)
+	public void setRecentDevCap(final File devCapFile)
 	{
 		if (devCapFile == null)
 		{
@@ -377,13 +357,15 @@ public class INIReader
 
 	public File getRecentDevCap()
 	{
-		String s = getAttribute(recentDevCap, null);
+		final String s = getAttribute(recentDevCap, null);
 		if (s == null)
+		{
 			return null;
+		}
 		return new File(s);
 	}
 
-	public void setSchemaURL(File schema)
+	public void setSchemaURL(final File schema)
 	{
 		if (schema == null)
 		{
@@ -397,13 +379,15 @@ public class INIReader
 
 	public File getSchemaURL()
 	{
-		String s = getAttribute(schemaURL, null);
+		final String s = getAttribute(schemaURL, null);
 		if (s == null)
+		{
 			return null;
+		}
 		return new File(s);
 	}
 
-	public void setUseSchema(boolean schema)
+	public void setUseSchema(final boolean schema)
 	{
 		setAttribute(useSchema, schema ? "true" : "false");
 	}
@@ -413,7 +397,7 @@ public class INIReader
 		return getAttribute(useSchema, "false").equals("true");
 	}
 
-	public void setCheckURL(boolean url)
+	public void setCheckURL(final boolean url)
 	{
 		setAttribute(checkURL, url ? "true" : "false");
 	}
@@ -423,7 +407,7 @@ public class INIReader
 		return getAttribute(checkURL, "false").equals("true");
 	}
 
-	public void setRemoveWhite(boolean rem)
+	public void setRemoveWhite(final boolean rem)
 	{
 		setAttribute(removeWhite, rem ? "true" : "false");
 	}
@@ -433,7 +417,7 @@ public class INIReader
 		return getAttribute(removeWhite, "true").equals("true");
 	}
 
-	public void setRemoveDefault(boolean rem)
+	public void setRemoveDefault(final boolean rem)
 	{
 		setAttribute(removeDefault, rem ? "true" : "false");
 	}
@@ -443,7 +427,7 @@ public class INIReader
 		return getAttribute(removeDefault, "true").equals("true");
 	}
 
-	public void setDisplayDefault(boolean rem)
+	public void setDisplayDefault(final boolean rem)
 	{
 		setAttribute(displayDefault, rem ? "true" : "false");
 	}
@@ -453,7 +437,7 @@ public class INIReader
 		return getAttribute(displayDefault, "true").equals("true");
 	}
 
-	public void setIgnoreDefault(boolean rem)
+	public void setIgnoreDefault(final boolean rem)
 	{
 		setAttribute(ignoreDefault, rem ? "true" : "false");
 	}
@@ -478,12 +462,12 @@ public class INIReader
 		return getAttribute(highlightFN, "").equalsIgnoreCase("on") ? true : false;
 	}
 
-	public void setHighlight(boolean b)
+	public void setHighlight(final boolean b)
 	{
 		setAttribute(highlightFN, b ? "on" : "off");
 	}
 
-	public void setEnableExtensions(boolean b)
+	public void setEnableExtensions(final boolean b)
 	{
 		setAttribute(enableExtensions, b ? "true" : "false");
 	}
@@ -498,7 +482,7 @@ public class INIReader
 		return getAttribute(attribute, "on").equalsIgnoreCase("on") ? true : false;
 	}
 
-	public void setAttr(boolean b)
+	public void setAttr(final boolean b)
 	{
 		setAttribute(attribute, b ? "on" : "off");
 	}
@@ -508,7 +492,7 @@ public class INIReader
 		return getAttribute(inheritedAttr, "on").equalsIgnoreCase("on") ? true : false;
 	}
 
-	public void setInhAttr(boolean b)
+	public void setInhAttr(final boolean b)
 	{
 		setAttribute(inheritedAttr, b ? "on" : "off");
 	}
@@ -518,7 +502,7 @@ public class INIReader
 		return getAttribute(methodSendToDevice, "MIME");
 	}
 
-	public void setMethodSendToDevice(String method)
+	public void setMethodSendToDevice(final String method)
 	{
 		setAttribute(methodSendToDevice, method);
 	}
@@ -528,7 +512,7 @@ public class INIReader
 		return getAttribute(urlSendToDevice, "http://");
 	}
 
-	public void setURLSendToDevice(String url)
+	public void setURLSendToDevice(final String url)
 	{
 		setAttribute(urlSendToDevice, url);
 	}
@@ -538,7 +522,7 @@ public class INIReader
 		return getAttribute(urlReturnToDevice, "http://");
 	}
 
-	public void setURLReturnToDevice(String url)
+	public void setURLReturnToDevice(final String url)
 	{
 		setAttribute(urlReturnToDevice, url);
 	}
@@ -549,38 +533,57 @@ public class INIReader
 		return EnumValidationLevel.getEnum(s);
 	}
 
-	public void setValidationLevel(EnumValidationLevel level)
+	public void setValidationLevel(final EnumValidationLevel level)
 	{
 		setAttribute(validLevel, level.getName());
 	}
 
-	public EnumVersion getValidationVersion()
+	static private String defaultVersion = "1.3";
+
+	/**
+	 * 
+	 * @return the default version for new files, initialization, fixing to etc
+	 */
+	public EnumVersion getDefaultVersion()
 	{
-		final String s = getAttribute(validVersion, null);
+		final String s = getAttribute(validVersion, defaultVersion);
 		return EnumVersion.getEnum(s);
 	}
 
-	public void setValidationVersion(EnumVersion level)
+	/**
+	 * 
+	 * @param v the default version for new files, initialization, fixing to etc
+	 */
+	public void setDefaultVersion(final EnumVersion v)
 	{
-		setAttribute(validVersion, level == null ? null : level.getName());
+		setAttribute(validVersion, v == null ? defaultVersion : v.getName());
+		if (v != null)
+		{
+			JDFElement.setDefaultJDFVersion(v);
+		}
+
 	}
 
 	private void readINIFile()
 	{
 		for (int i = 0; i < 5; i++)
 		{
-			String s = getAttribute("RecentFiles/File[" + String.valueOf(i + 1) + "]/@Path", null);
+			final String s = getAttribute("RecentFiles/File[" + String.valueOf(i + 1) + "]/@Path", null);
 			if (s == null)
+			{
 				break;
+			}
 			recentFiles[i] = s;
 		}
 
 		for (int i = 0; true; i++)
 		{
-			String name = getAttribute("Icons/Icon[" + String.valueOf(i + 1) + "]/@Name", null);
-			String path = getAttribute("Icons/Icon[" + String.valueOf(i + 1) + "]/@Path", null);
+			final String name = getAttribute("Icons/Icon[" + String.valueOf(i + 1) + "]/@Name", null);
+			final String path = getAttribute("Icons/Icon[" + String.valueOf(i + 1) + "]/@Path", null);
 			if (name == null || path == null)
+			{
 				break;
+			}
 			checkIcon(name, path);
 		}
 
@@ -604,16 +607,18 @@ public class INIReader
 
 	private String getIniPath()
 	{
-		//TODO find correct property for application data
-		String path = System.getProperty("user.home");
-		File iniDir = new File(path + File.separator + "CIP4Editor");
+		// TODO find correct property for application data
+		final String path = System.getProperty("user.home");
+		final File iniDir = new File(path + File.separator + "CIP4Editor");
 		if (!iniDir.exists())
+		{
 			iniDir.mkdir();
+		}
 		final String iniPath = iniDir.getPath() + File.separator + "Editor.ini";
 		return iniPath;
 	}
 
-	private void checkIcon(String iconName, String iconPath)
+	private void checkIcon(final String iconName, final String iconPath)
 	{
 
 		for (int i = 0; i < iconStrings.length; i++)
@@ -641,213 +646,309 @@ public class INIReader
 			if (iconName.equals("Attribute with Error="))
 			{
 				if (iconPath.equalsIgnoreCase("default"))
+				{
 					errAttIcon = defaultErrAttIcon;
+				}
 				else
+				{
 					errAttIcon = new ImageIcon(iconPath);
+				}
 			}
 
 			else if (iconName.equals("Attribute with Error (selected)="))
 			{
 				if (iconPath.equalsIgnoreCase("default"))
+				{
 					errAttIconS = defaultErrAttIconS;
+				}
 				else
+				{
 					errAttIconS = new ImageIcon(iconPath);
+				}
 			}
 
 			else if (iconName.equals("Element with Error="))
 			{
 				if (iconPath.equalsIgnoreCase("default"))
+				{
 					errElemIcon = defaultErrElemIcon;
+				}
 				else
+				{
 					errElemIcon = new ImageIcon(iconPath);
+				}
 			}
 
 			else if (iconName.equals("Element with Error (selected)="))
 			{
 				if (iconPath.equalsIgnoreCase("default"))
+				{
 					errElemIconS = defaultErrElemIconS;
+				}
 				else
+				{
 					errElemIconS = new ImageIcon(iconPath);
+				}
 			}
 
 			else if (iconName.equals("Attribute="))
 			{
 				if (iconPath.equalsIgnoreCase("default"))
+				{
 					attIcon = defaultAttIcon;
+				}
 				else
+				{
 					attIcon = new ImageIcon(iconPath);
+				}
 			}
 
 			else if (iconName.equals("Attribute (selected)="))
 			{
 				if (iconPath.equalsIgnoreCase("default"))
+				{
 					attIconS = defaultAttIconS;
+				}
 				else
+				{
 					attIconS = new ImageIcon(iconPath);
+				}
 			}
 
 			else if (iconName.equals("Inherited Attribute="))
 			{
 				if (iconPath.equalsIgnoreCase("default"))
+				{
 					iAttIcon = defaultIAttIcon;
+				}
 				else
+				{
 					iAttIcon = new ImageIcon(iconPath);
+				}
 			}
 
 			else if (iconName.equals("Inherited Attribute (selected)="))
 			{
 				if (iconPath.equalsIgnoreCase("default"))
+				{
 					iAttIconS = defaultIAttIconS;
+				}
 				else
+				{
 					iAttIconS = new ImageIcon(iconPath);
+				}
 			}
 
 			else if (iconName.equals("PartID Key Attribute="))
 			{
 				if (iconPath.equalsIgnoreCase("default"))
+				{
 					pAttIcon = defaultPAttIcon;
+				}
 				else
+				{
 					pAttIcon = new ImageIcon(iconPath);
+				}
 			}
 
 			else if (iconName.equals("PartID Key Attribute (selected)="))
 			{
 				if (iconPath.equalsIgnoreCase("default"))
+				{
 					pAttIconS = defaultPAttIconS;
+				}
 				else
+				{
 					pAttIconS = new ImageIcon(iconPath);
+				}
 			}
 
 			else if (iconName.equals("Inherited PartID Key Attribute="))
 			{
 				if (iconPath.equalsIgnoreCase("default"))
+				{
 					iPAttIcon = defaultIPAttIcon;
+				}
 				else
+				{
 					iPAttIcon = new ImageIcon(iconPath);
+				}
 			}
 
 			else if (iconName.equals("Inherited PartID Key Attribute (selected)="))
 			{
 				if (iconPath.equalsIgnoreCase("default"))
+				{
 					iPAttIconS = defaultIPAttIconS;
+				}
 				else
+				{
 					iPAttIconS = new ImageIcon(iconPath);
+				}
 			}
 
 			else if (iconName.equals("rRef Attribute="))
 			{
 				if (iconPath.equalsIgnoreCase("default"))
+				{
 					refAttIcon = defaultRefAttIcon;
+				}
 				else
+				{
 					refAttIcon = new ImageIcon(iconPath);
+				}
 			}
 
 			else if (iconName.equals("rRef Attriubte (selected)="))
 			{
 				if (iconPath.equalsIgnoreCase("default"))
+				{
 					refAttIconS = defaultRefAttIconS;
+				}
 				else
+				{
 					refAttIconS = new ImageIcon(iconPath);
+				}
 			}
 
 			else if (iconName.equals("Element="))
 			{
 				if (iconPath.equalsIgnoreCase("default"))
+				{
 					elemIcon = defaultElemIcon;
+				}
 				else
+				{
 					elemIcon = new ImageIcon(iconPath);
+				}
 			}
 
 			else if (iconName.equals("Element (selected)="))
 			{
 				if (iconPath.equalsIgnoreCase("default"))
+				{
 					elemIconS = defaultElemIconS;
+				}
 				else
+				{
 					elemIconS = new ImageIcon(iconPath);
+				}
 			}
 
 			else if (iconName.equals("JDF Element="))
 			{
 				if (iconPath.equalsIgnoreCase("default"))
+				{
 					jdfElemIcon = defaultJDFElemIcon;
+				}
 				else
+				{
 					jdfElemIcon = new ImageIcon(iconPath);
+				}
 			}
 
 			else if (iconName.equals("JDF Element (selected)="))
 			{
 				if (iconPath.equalsIgnoreCase("default"))
+				{
 					jdfElemIconS = defaultJDFElemIconS;
+				}
 				else
+				{
 					jdfElemIconS = new ImageIcon(iconPath);
+				}
 			}
 
 			else if (iconName.equals("Input rRef Element="))
 			{
 				if (iconPath.equalsIgnoreCase("default"))
+				{
 					rRefInElemIcon = defaultRefInElemIcon;
+				}
 				else
+				{
 					rRefInElemIcon = new ImageIcon(iconPath);
+				}
 			}
 
 			else if (iconName.equals("Input rRef Element (selected)="))
 			{
 				if (iconPath.equalsIgnoreCase("default"))
+				{
 					rRefInElemIconS = defaultRefInElemIconS;
+				}
 				else
+				{
 					rRefInElemIconS = new ImageIcon(iconPath);
+				}
 			}
 
 			else if (iconName.equals("Output rRef Element="))
 			{
 				if (iconPath.equalsIgnoreCase("default"))
+				{
 					rRefOutElemIcon = defaultRefOutElemIcon;
+				}
 				else
+				{
 					rRefOutElemIcon = new ImageIcon(iconPath);
+				}
 			}
 
 			else if (iconName.equals("Output rRef Element (selected)="))
 			{
 				if (iconPath.equalsIgnoreCase("default"))
+				{
 					rRefOutElemIconS = defaultRefOutElemIconS;
+				}
 				else
+				{
 					rRefOutElemIconS = new ImageIcon(iconPath);
+				}
 			}
 
 			else if (iconName.equals("rRef Element="))
 			{
 				if (iconPath.equalsIgnoreCase("default"))
+				{
 					rRefElemIcon = defaultRefElemIcon;
+				}
 				else
+				{
 					rRefElemIcon = new ImageIcon(iconPath);
+				}
 			}
 
 			else if (iconName.equals("rRef Element (selected)="))
 			{
 				if (iconPath.equalsIgnoreCase("default"))
+				{
 					rRefElemIconS = defaultRefElemIconS;
+				}
 				else
+				{
 					rRefElemIconS = new ImageIcon(iconPath);
+				}
 			}
-			//          else if (iconName.equals("JDF Folder="))
-			//          {
-			//          if (iconPath.equalsIgnoreCase("default"))
-			//          execJDFIcon = defaultExecJDFIcon;
-			//          }
+			// else if (iconName.equals("JDF Folder="))
+			// {
+			// if (iconPath.equalsIgnoreCase("default"))
+			// execJDFIcon = defaultExecJDFIcon;
+			// }
 
-			//          invElemIcon = defaultInvElemIcon;
-			//          invAttIcon = defaultInvAttIcon;
-			//          misElemIcon = defaultMisElemIcon;
-			//          misAttIcon = defaultMisAttIcon;
-			//          unkElemIcon = defaultUnkElemIcon;
-			//          unkAttIcon = defaultUnkAttIcon;
-			//          execJDFIcon = defaultExecJDFIcon;
-			//          invElemIconS = defaultInvElemIconS;
-			//          invAttIconS = defaultInvAttIconS;
-			//          misElemIconS = defaultMisElemIconS;
-			//          misAttIconS = defaultMisAttIconS;
-			//          unkElemIconS = defaultUnkElemIconS;
-			//          unkAttIconS = defaultUnkAttIconS;
+			// invElemIcon = defaultInvElemIcon;
+			// invAttIcon = defaultInvAttIcon;
+			// misElemIcon = defaultMisElemIcon;
+			// misAttIcon = defaultMisAttIcon;
+			// unkElemIcon = defaultUnkElemIcon;
+			// unkAttIcon = defaultUnkAttIcon;
+			// execJDFIcon = defaultExecJDFIcon;
+			// invElemIconS = defaultInvElemIconS;
+			// invAttIconS = defaultInvAttIconS;
+			// misElemIconS = defaultMisElemIconS;
+			// misAttIconS = defaultMisAttIconS;
+			// unkElemIconS = defaultUnkElemIconS;
+			// unkAttIconS = defaultUnkAttIconS;
 		}
 	}
 
@@ -859,10 +960,14 @@ public class INIReader
 	{
 		int nr = 0;
 		if (recentFiles == null)
+		{
 			return nr;
+		}
 
 		while (nr < recentFiles.length && recentFiles[nr] != null)
+		{
 			nr++;
+		}
 
 		return nr;
 	}
@@ -872,23 +977,25 @@ public class INIReader
 	 * @param s - The path to the file
 	 * @return true if the path already is in the recent files menu; false otherwise.
 	 */
-	public boolean pathNameExists(String s)
+	public boolean pathNameExists(final String s)
 	{
 		final int nrOfRecentFiles = nrOfRecentFiles();
 		for (int i = 0; i < nrOfRecentFiles; i++)
 		{
 			if (s.equals(recentFiles[i]))
+			{
 				return true;
+			}
 		}
 		return false;
 	}
 
 	/**
 	 * Updates the order in the recent files menu.
-	 * @param s     - The path to the file
+	 * @param s - The path to the file
 	 * @param exist - Do the path already exists?
 	 */
-	void updateOrder(String s, boolean exist)
+	void updateOrder(final String s, final boolean exist)
 	{
 		final String[] tmpFiles = new String[5];
 
@@ -927,25 +1034,29 @@ public class INIReader
 	 * @param s - The path to the file
 	 * @return The position in the m_recentFiles String[] as an integer.
 	 */
-	public int pathNamePosition(String s)
+	public int pathNamePosition(final String s)
 	{
 		for (int i = 0; i < nrOfRecentFiles(); i++)
 		{
 			if (s.equals(recentFiles[i]))
+			{
 				return i;
+			}
 		}
 		return -1;
 	}
 
-	public void setLanguage(String _language)
+	public void setLanguage(final String _language)
 	{
 		setAttribute(language, _language);
 	}
 
-	private void setAttribute(String xPath, String attrib)
+	private void setAttribute(final String xPath, final String attrib)
 	{
 		if (xDoc == null)
+		{
 			xDoc = new XMLDoc("EditorIni", null);
+		}
 		final KElement root = xDoc.getRoot();
 		if (attrib == null)
 		{
@@ -957,12 +1068,12 @@ public class INIReader
 		}
 	}
 
-	public void setLookAndFeel(String lnf)
+	public void setLookAndFeel(final String lnf)
 	{
 		setAttribute(lookAndFeel, lnf);
 	}
 
-	public void setIconStrings(String[] is)
+	public void setIconStrings(final String[] is)
 	{
 		iconStrings = is;
 	}
@@ -975,7 +1086,7 @@ public class INIReader
 		return getAttribute(longID, "true").equalsIgnoreCase("true") ? true : false;
 	}
 
-	public void setLongID(boolean b)
+	public void setLongID(final boolean b)
 	{
 		setAttribute(longID, b ? "true" : "false");
 	}
@@ -988,7 +1099,7 @@ public class INIReader
 		return getAttribute(generateFull, "true").equalsIgnoreCase("true") ? true : false;
 	}
 
-	public void setGenerateFull(boolean b)
+	public void setGenerateFull(final boolean b)
 	{
 		setAttribute(generateFull, b ? "true" : "false");
 	}
@@ -1004,24 +1115,24 @@ public class INIReader
 	/**
 	 * @param normalizeOpen2
 	 */
-	public void setNormalizeOpen(boolean bNormalizeOpen)
+	public void setNormalizeOpen(final boolean bNormalizeOpen)
 	{
 		setAttribute(normalizeOpen, bNormalizeOpen ? "true" : "false");
 	}
 
 	/**
-	* @return
-	*/
+	 * @return
+	 */
 	public boolean getWarnCheck()
 	{
-		EnumValidationLevel level = getValidationLevel();
+		final EnumValidationLevel level = getValidationLevel();
 		return !EnumValidationLevel.isNoWarn(level);
 	}
 
 	/**
 	 * @param misURL
 	 */
-	public void setMISURL(String _misURL)
+	public void setMISURL(final String _misURL)
 	{
 		setAttribute(misURL, _misURL);
 	}
@@ -1037,7 +1148,7 @@ public class INIReader
 	/**
 	 * @param BaseLevel
 	 */
-	public void setBaseLevel(int _baselevel)
+	public void setBaseLevel(final int _baselevel)
 	{
 		setAttribute(BaseLevel, String.valueOf(_baselevel));
 	}
@@ -1047,7 +1158,7 @@ public class INIReader
 	 */
 	public int getBaseLevel()
 	{
-		String s = getAttribute(BaseLevel, null);
+		final String s = getAttribute(BaseLevel, null);
 		return StringUtil.parseInt(s, 1);
 
 	}
@@ -1055,7 +1166,7 @@ public class INIReader
 	/**
 	 * @param MISLevel
 	 */
-	public void setMISLevel(int _mislevel)
+	public void setMISLevel(final int _mislevel)
 	{
 		setAttribute(MISLevel, String.valueOf(_mislevel));
 	}
@@ -1065,14 +1176,14 @@ public class INIReader
 	 */
 	public int getMISLevel()
 	{
-		String s = getAttribute(MISLevel, null);
+		final String s = getAttribute(MISLevel, null);
 		return StringUtil.parseInt(s, 1);
 	}
 
 	/**
 	 * @param MISLevel
 	 */
-	public void setJobIncrement(int inc)
+	public void setJobIncrement(final int inc)
 	{
 		setAttribute(incSendToDevice, String.valueOf(inc));
 	}
@@ -1082,14 +1193,14 @@ public class INIReader
 	 */
 	public int getJobIncrement()
 	{
-		String s = getAttribute(incSendToDevice, null);
+		final String s = getAttribute(incSendToDevice, null);
 		return StringUtil.parseInt(s, 1);
 	}
 
 	/**
 	 * @param JMFLevel
 	 */
-	public void setJMFLevel(int _jmflevel)
+	public void setJMFLevel(final int _jmflevel)
 	{
 		setAttribute(JMFLevel, String.valueOf(_jmflevel));
 	}
@@ -1099,7 +1210,7 @@ public class INIReader
 	 */
 	public int getJMFLevel()
 	{
-		String s = getAttribute(JMFLevel, null);
+		final String s = getAttribute(JMFLevel, null);
 		return StringUtil.parseInt(s, 1);
 	}
 

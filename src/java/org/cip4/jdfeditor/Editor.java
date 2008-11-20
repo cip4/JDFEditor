@@ -91,7 +91,7 @@ import org.cip4.jdflib.core.JDFParser;
 
 /**
  * @author AnderssA ThunellE
- *
+ * 
  */
 public class Editor
 {
@@ -100,21 +100,20 @@ public class Editor
 	private static INIReader m_iniFile;
 
 	/*
-	 * This package is found under JDFEditor in the src/java section. It contains all of the icons associated with the JDFEditor.
-	 * For your icons to appear, remember to refresh the package.
+	 * This package is found under JDFEditor in the src/java section. It contains all of the icons associated with the JDFEditor. For your icons to appear,
+	 * remember to refresh the package.
 	 * 
-	 * To change the icons in the Menu bar, go to EditorButton.java.
-	 * To change the icons in the tree mode, error icons, go to INIReader.java.
+	 * To change the icons in the Menu bar, go to EditorButton.java. To change the icons in the tree mode, error icons, go to INIReader.java.
 	 * 
-	 * If you would like to change the appearance of how the menu items appear, go to JDFEditor_(Language want, i.e. en)_.properties
-	 * located under org.cip4.jdfeditor.messages package.
+	 * If you would like to change the appearance of how the menu items appear, go to JDFEditor_(Language want, i.e. en)_.properties located under
+	 * org.cip4.jdfeditor.messages package.
 	 */
 
 	public static final String ICONS_PATH = "/org/cip4/jdfeditor/icons/";
 
-	public static ImageIcon getImageIcon(Class myClass, String resString)
+	public static ImageIcon getImageIcon(final Class myClass, final String resString)
 	{
-		URL url = myClass.getResource(resString);
+		final URL url = myClass.getResource(resString);
 		ImageIcon imIc = null;
 		if (url != null)
 		{
@@ -127,9 +126,9 @@ public class Editor
 		return imIc;
 	}
 
-	//////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////
 
-	public static void main(String[] args)
+	public static void main(final String[] args)
 	{
 		File file = null;
 		// mac may have 2nd argument
@@ -137,7 +136,7 @@ public class Editor
 		{
 			if (!args[i].startsWith("-"))
 			{
-				File f = new File(args[i]);
+				final File f = new File(args[i]);
 				if (f.canRead())
 				{
 					file = f;
@@ -149,19 +148,18 @@ public class Editor
 		my_Editor.init(file);
 	}
 
-	//////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////
 	/**
 	 * set the cursor to wait or ready
-	 * @param iWait
-	 * 0=ready
-	 * 1=wait
-	 * 2=hand
+	 * @param iWait 0=ready 1=wait 2=hand
 	 * @param parentComponent the parent frame to set the cursor in, if null use the main frame
 	 */
-	static void setCursor(int iWait, Component parentComponent)
+	static void setCursor(final int iWait, Component parentComponent)
 	{
 		if (parentComponent == null)
+		{
 			parentComponent = my_Frame;
+		}
 
 		if (iWait == 0)
 		{
@@ -184,20 +182,20 @@ public class Editor
 	}
 
 	/**
-	 * Method init.
-	 * instanciate the editor window
+	 * Method init. instanciate the editor window
 	 */
-	public void init(File file)
+	public void init(final File file)
 	{
-		// read the initialization stuff
 		m_iniFile = new INIReader();
-
 		my_Frame = new JDFFrame();
 		setCursor(0, null);
+
+		// read the initialization stuff
 		JDFAudit.setStaticAgentName(getEditorName());
 		JDFAudit.setStaticAgentVersion(getEditorVersion());
 		JDFElement.setLongID(m_iniFile.getLongID());
 		JDFElement.setFixVersionIDFix(true);
+		JDFElement.setDefaultJDFVersion(m_iniFile.getDefaultVersion());
 		JDFParser.m_searchStream = true;
 
 		try
@@ -208,7 +206,7 @@ public class Editor
 			final WindowListener winLis = new WindowAdapter()
 			{
 				@Override
-				public void windowClosing(WindowEvent e)
+				public void windowClosing(final WindowEvent e)
 				{
 					if (my_Frame.closeFile(999) != JOptionPane.CANCEL_OPTION)
 					{
@@ -220,17 +218,17 @@ public class Editor
 			};
 			my_Frame.addWindowListener(winLis);
 
-			//this is only for the PC version
+			// this is only for the PC version
 			if (file != null)
 			{
-				boolean b = my_Frame.readFile(file);
+				final boolean b = my_Frame.readFile(file);
 				if (b)
 				{
 					my_Frame.m_menuBar.updateRecentFilesMenu(file.toString());
 				}
 			}
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -296,7 +294,7 @@ public class Editor
 	 */
 	public static String getEditorBuildDate()
 	{
-		return "Estimated Build Date - 25 July 2008";
+		return "Estimated Build Date - 25 November 2008";
 	}
 
 	/**
@@ -314,22 +312,21 @@ public class Editor
 	 */
 	public static JDFTreeModel getModel()
 	{
-		EditorDocument ed = getEditorDoc();
+		final EditorDocument ed = getEditorDoc();
 		return ed == null ? null : ed.getModel();
 	}
 
-	public static void getsetModel(JDFTreeModel m_model)
+	public static void getsetModel(final JDFTreeModel m_model)
 	{
-		EditorDocument ed = getEditorDoc();
+		final EditorDocument ed = getEditorDoc();
 		ed.setModel(m_model);
 	}
 
-	///////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////
 
 	/**
 	 * get the JDFDoc of the currently displayed JDF
-	 * @return the JDFDoc that is currently being displayed
-	 * BMI Created 07-08-31
+	 * @return the JDFDoc that is currently being displayed BMI Created 07-08-31
 	 */
 	public static JDFDoc getJDFDoc()
 	{
@@ -338,13 +335,12 @@ public class Editor
 
 	/**
 	 * Method getTreeArea.
-	 * @return ResourceBundle the static resource bundle
-	 * BMI Created 07-08-31
+	 * @return ResourceBundle the static resource bundle BMI Created 07-08-31
 	 */
 	public static JDFTreeArea getTreeArea()
 	{
 		return my_Frame.m_treeArea;
 	}
 
-	///////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////
 }
