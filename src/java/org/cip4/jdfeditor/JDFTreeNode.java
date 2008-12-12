@@ -68,6 +68,8 @@
  */
 package org.cip4.jdfeditor;
 
+import java.util.Collections;
+
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
@@ -77,7 +79,9 @@ import org.cip4.jdflib.core.JDFPartAmount;
 import org.cip4.jdflib.core.JDFRefElement;
 import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
+import org.cip4.jdflib.datatypes.JDFAttributeMap;
 import org.cip4.jdflib.jmf.JDFDeviceInfo;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFJobPhase;
@@ -89,6 +93,7 @@ import org.cip4.jdflib.resource.JDFDevice;
 import org.cip4.jdflib.resource.JDFEvent;
 import org.cip4.jdflib.resource.JDFMarkObject;
 import org.cip4.jdflib.resource.JDFNotification;
+import org.cip4.jdflib.resource.JDFPart;
 import org.cip4.jdflib.resource.JDFPhaseTime;
 import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.resource.devicecapability.JDFAbstractState;
@@ -104,7 +109,7 @@ import org.w3c.dom.Attr;
 
 /**
  * @author AnderssA ThunellE The treenode in the JTree To change this generated comment edit the template variable "typecomment":
- *         Window>Preferences>Java>Templates. To enable and disable the creation of type comments go to Window>Preferences>Java>Code Generation.
+ * Window>Preferences>Java>Templates. To enable and disable the creation of type comments go to Window>Preferences>Java>Code Generation.
  */
 public class JDFTreeNode extends DefaultMutableTreeNode
 {
@@ -487,6 +492,11 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 					s += " JobPartID=" + typ;
 				}
 			}
+			else if (e instanceof JDFNode)
+			{
+				final String stat = e.getAttribute(AttributeName.NODESTATUS, null, null);
+				s += " NodeStatus=" + stat;
+			}
 			else if (e instanceof JDFMessageService)
 			{
 				String typ = e.getAttribute(AttributeName.TYPE, null, null);
@@ -598,6 +608,20 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 				if (!KElement.isWildCard(att))
 				{
 					s += " EventID=" + att;
+				}
+			}
+			else if (e instanceof JDFPart)
+			{
+				final JDFPart p = (JDFPart) e;
+				final JDFAttributeMap map = p.getPartMap();
+				final VString keys = p == null ? null : map.getKeys();
+				if (keys != null)
+				{
+					Collections.sort(keys);
+					for (int i = 0; i < keys.size(); i++)
+					{
+						s += " " + keys.elementAt(i) + "=" + map.get(keys.elementAt(i));
+					}
 				}
 			}
 

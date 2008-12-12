@@ -93,10 +93,9 @@ import org.cip4.jdflib.pool.JDFResourceLinkPool;
 import org.cip4.jdflib.resource.devicecapability.JDFDeviceCap;
 
 /**
- * Class to implement all the menu bar and menu related stuff
- * moved here from JDFFrame
+ * Class to implement all the menu bar and menu related stuff moved here from JDFFrame
  * @author prosirai
- *
+ * 
  */
 public class PopUpRightClick extends JPopupMenu implements ActionListener
 {
@@ -133,10 +132,10 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 	private JMenuItem m_saveXJDFCaps = null;
 
 	/**
-	 * Creates the popupmenu after a right mouse click on node in the Tree View.   
+	 * Creates the popupmenu after a right mouse click on node in the Tree View.
 	 * @param path - The path to the clicked node
 	 */
-	public PopUpRightClick(TreePath path)
+	public PopUpRightClick(final TreePath path)
 	{
 		super();
 		final JSeparator separator = new JSeparator();
@@ -149,9 +148,11 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		final JMenu insertPopupMenu = new JMenu(m_littleBundle.getString("InsertElKey"));
 		insertPopupMenu.setEnabled(elem != null);
 
-		JMenuItem xpath = new JMenuItem(node.getXPath());
+		final JMenuItem xpath = new JMenuItem(node.getXPath());
 		xpath.setBackground(Color.YELLOW);
 		add(xpath);
+		final JMenuItem size = new JMenuItem("Size: " + elem.toString().length());
+		add(size);
 		add(separator);
 
 		m_insertElemBeforePopupItem = new JMenuItem(m_littleBundle.getString("BeforeKey"));
@@ -188,8 +189,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		add(resMenu);
 
 		final JMenu resLinkMenu = new JMenu(m_littleBundle.getString("InsertResLinkKey"));
-		resLinkMenu.setEnabled(elem != null
-				&& (elem instanceof JDFNode || elem.getNodeName().equals("ResourceLinkPool")));
+		resLinkMenu.setEnabled(elem != null && (elem instanceof JDFNode || elem.getNodeName().equals("ResourceLinkPool")));
 
 		m_insertInResLinkPopupItem = new JMenuItem(m_littleBundle.getString("ResourceInLinkKey"));
 		m_insertInResLinkPopupItem.addActionListener(this);
@@ -212,13 +212,13 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		add(separator);
 
 		m_cutPopupItem = addMenuItem(m_littleBundle, "CutKey");
-		//      m_cutPopupItem.setAccelerator(KeyStroke.getKeyStroke('X', menuKeyMask));
+		// m_cutPopupItem.setAccelerator(KeyStroke.getKeyStroke('X', menuKeyMask));
 
 		m_copyPopupItem = addMenuItem(m_littleBundle, "CopyKey");
-		//      m_copyPopupItem.setAccelerator(KeyStroke.getKeyStroke('C', menuKeyMask));
+		// m_copyPopupItem.setAccelerator(KeyStroke.getKeyStroke('C', menuKeyMask));
 
 		m_pastePopupItem = addMenuItem(m_littleBundle, "PasteKey");
-		//      m_pastePopupItem.setAccelerator(KeyStroke.getKeyStroke('P', menuKeyMask));
+		// m_pastePopupItem.setAccelerator(KeyStroke.getKeyStroke('P', menuKeyMask));
 		m_deletePopupItem = addMenuItem(m_littleBundle, "DeleteKey");
 
 		add(separator);
@@ -255,28 +255,27 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		m_xpandPopupItem = addMenuItem(m_littleBundle, "ExpandKey");
 		m_collapsePopupItem = addMenuItem(m_littleBundle, "CollapseKey");
 
-		//20040913 MRE
+		// 20040913 MRE
 		m_copyToClipBoardPopupItem = addMenuItem(m_littleBundle, "CopyNode");
 		setEnabledInMouseMenu(node, elem);
 	}
 
 	private JMenuItem addMenuItem(final ResourceBundle m_littleBundle, final String key)
 	{
-		JMenuItem item = new JMenuItem(m_littleBundle.getString(key));
+		final JMenuItem item = new JMenuItem(m_littleBundle.getString(key));
 		item.addActionListener(this);
 		add(item);
 		return item;
 	}
 
 	/**
-	 * Disables the MenuItems in the MouseMenu that isn't selectable for the selected
-	 * JDFTreeNode.
+	 * Disables the MenuItems in the MouseMenu that isn't selectable for the selected JDFTreeNode.
 	 * @param node - The selected node
 	 * @param elem - The KElement for the selected node, can be null
 	 */
-	private void setEnabledInMouseMenu(JDFTreeNode node, KElement elem)
+	private void setEnabledInMouseMenu(final JDFTreeNode node, final KElement elem)
 	{
-		JDFFrame m_frame = Editor.getFrame();
+		final JDFFrame m_frame = Editor.getFrame();
 		final boolean isElement = node.isElement();
 		if (isElement && elem != null)
 		{
@@ -288,7 +287,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 				if (elem.getTagName().equals("Comment"))
 				{
 					m_insertElemIntoPopupItem.setEnabled(false);
-					//TODO insert text
+					// TODO insert text
 					m_insertTextPopupItem.setEnabled(false);
 				}
 				else
@@ -321,7 +320,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 			m_insertInResLinkPopupItem.setEnabled(bNodeOK || bResLinkPoolOK);
 			m_insertOutResLinkPopupItem.setEnabled(bNodeOK || bResLinkPoolOK);
 
-			boolean bHasChildNodes = elem.hasChildElements() || elem.hasAttributes();
+			final boolean bHasChildNodes = elem.hasChildElements() || elem.hasAttributes();
 
 			m_xpandPopupItem.setEnabled(bHasChildNodes);
 			m_collapsePopupItem.setEnabled(bHasChildNodes);
@@ -355,7 +354,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 * @param e
 	 */
-	public void actionPerformed(ActionEvent e)
+	public void actionPerformed(final ActionEvent e)
 	{
 		Editor.setCursor(1, null);
 
@@ -476,10 +475,10 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 	}
 
 	/**
-	 * copies the content of the marked node to the system clip board 
+	 * copies the content of the marked node to the system clip board
 	 * @param p - The TreePath to collapse
 	 */
-	private void copyToClipBoard(TreePath p)
+	private void copyToClipBoard(final TreePath p)
 	{
 		final JDFTreeNode node = (JDFTreeNode) p.getLastPathComponent();
 		final Enumeration<JDFTreeNode> e = node.postorderEnumeration();
@@ -492,7 +491,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 			{
 				final KElement elem = treeNode.getElement();
 
-				//Copy XML representation of the selected node to clip board
+				// Copy XML representation of the selected node to clip board
 				final Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
 				final StringSelection contents = new StringSelection(elem.toXML());
 				cb.setContents(contents, null);
