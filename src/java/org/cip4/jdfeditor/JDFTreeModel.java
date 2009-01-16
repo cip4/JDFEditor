@@ -111,7 +111,7 @@ import org.w3c.dom.Attr;
 
 /**
  * @author rainer prosi This is a new dump for some of the JDFFrame classes anything related to the abstract datamodel in the jdf tree belongs here TODO move
- *         some of the routines from JDFTreeArea to here, where they belong and reduce the dependencies with JDFFrame
+ * some of the routines from JDFTreeArea to here, where they belong and reduce the dependencies with JDFFrame
  */
 public class JDFTreeModel extends DefaultTreeModel
 {
@@ -495,8 +495,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 		final Vector addedElementNodesVector = new Vector();
 		final VString requiredElements = kElement.getMissingElements(9999999);
-		final String[] abstractElems =
-		{ ElementName.RESOURCELINK, "ResourceRef" };
+		final String[] abstractElems = { ElementName.RESOURCELINK, "ResourceRef" };
 		for (int i = 0; i < requiredElements.size(); i++)
 		{
 			final String elName = requiredElements.stringAt(i);
@@ -658,7 +657,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	 * @param node - JDFTreeNode representation of parentNode
 	 * @param selectedResource - name of resource to insert
 	 * @param hasResourcePool - Has parentNode had a resourcePool before action started? Importent for representation of m_jdfTree. ResourcePool is
-	 *        automatically added to parentNode but we need to insert it into m_model.
+	 * automatically added to parentNode but we need to insert it into m_model.
 	 * @param withLink - insert Resource + ResourceLink if true and only Resource if false
 	 * @param input - resource link usage. true - input, false - output
 	 * @returns created newResourceNode. null if operation was not completed successful
@@ -726,7 +725,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	 * @param parentNode - JDFNode to add resource link to
 	 * @param node - JDFTreeNode representation of parentNode
 	 * @param hasResourceLinkPool - Has parentNode had a resourceLinkPool before action started? Importent for representation of m_jdfTree. ResourceLinkPool is
-	 *        automatically added to parentNode but we need to insert it into m_model.
+	 * automatically added to parentNode but we need to insert it into m_model.
 	 * @param resLink - ResourceLink to insert
 	 * @returns created newLinkNode. null if operation was not completed successful
 	 */
@@ -1082,11 +1081,11 @@ public class JDFTreeModel extends DefaultTreeModel
 		final String fn = eDoc.getOriginalFileName();
 		if (bZip)
 		{
-			XJDF20.saveZip(StringUtil.newExtension(fn, "zip"), (JDFNode) e, true);
+			new XJDF20().saveZip(StringUtil.newExtension(fn, "zip"), (JDFNode) e, true);
 		}
 		else
 		{
-			final KElement xJDF = XJDF20.makeNewJDF((JDFNode) e, (VJDFAttributeMap) null);
+			final KElement xJDF = new XJDF20().makeNewJDF((JDFNode) e, (VJDFAttributeMap) null);
 			final XMLDoc d = xJDF.getOwnerDocument_KElement();
 			final String fnNew = StringUtil.newExtension(fn, XJDF20.getExtension());
 			d.write2File(fnNew, 2, false);
