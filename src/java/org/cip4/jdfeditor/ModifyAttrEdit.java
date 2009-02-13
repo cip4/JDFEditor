@@ -99,7 +99,8 @@ public class ModifyAttrEdit extends EditorUndoableEdit
         canUndo=canRedo=true;
     }
 
-    public void undo() throws CannotUndoException 
+    @Override
+	public void undo() throws CannotUndoException 
     {
         Attr atr=attrNode.getAttr();
         String keep=atr.getNodeValue();
@@ -109,12 +110,14 @@ public class ModifyAttrEdit extends EditorUndoableEdit
         Editor.getFrame().updateViews(path);
     }
 
-    public void redo() throws CannotRedoException 
+    @Override
+	public void redo() throws CannotRedoException 
     {
         undo(); // since the strings are simply swapped undo and redo are identical
     }
 
-    public String getPresentationName() 
+    @Override
+	public String getPresentationName() 
     {
          return "ModifyAttribute";
     }

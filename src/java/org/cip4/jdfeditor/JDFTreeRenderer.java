@@ -110,7 +110,8 @@ public class JDFTreeRenderer extends DefaultTreeCellRenderer
         standardFont=new Font(iniFile.getFontName(), Font.PLAIN, iniFile.getFontSize());
     }
     
-    public Component getTreeCellRendererComponent(
+    @Override
+	public Component getTreeCellRendererComponent(
             JTree jdfTree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean _hasFocus)
     {
         if((expanded!=_hasFocus)||(leaf==expanded)||(row==0)) // fool compiler

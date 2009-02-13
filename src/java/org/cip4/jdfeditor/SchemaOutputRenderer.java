@@ -88,7 +88,8 @@ public class SchemaOutputRenderer extends JDFTreeRenderer
         super();
     }
     
-    protected void setNodeIcon(JTree jdfTree,boolean sel, JDFTreeNode treeNode){
+    @Override
+	protected void setNodeIcon(JTree jdfTree,boolean sel, JDFTreeNode treeNode){
         String n=treeNode.getName();
         INIReader iniFile=Editor.getIniFile();
         if(treeNode.isElement())
@@ -121,6 +122,7 @@ public class SchemaOutputRenderer extends JDFTreeRenderer
                     else
                         setIcon(iniFile.jdfElemIcon);
                 }
+                
                 if(elem.getAttribute("Message")!=null)
                     setToolTipText(elem.getAttribute("Message"));
                 

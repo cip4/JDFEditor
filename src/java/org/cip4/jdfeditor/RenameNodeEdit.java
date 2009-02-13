@@ -102,7 +102,8 @@ public class RenameNodeEdit extends EditorUndoableEdit
         canUndo=canRedo=true;
     }
     
-    public void undo() throws CannotUndoException 
+    @Override
+	public void undo() throws CannotUndoException 
     { 
         String keep=node.getName();
         if (node.isElement())
@@ -122,12 +123,14 @@ public class RenameNodeEdit extends EditorUndoableEdit
         Editor.getFrame().updateViews(path);
     }
     
-    public void redo() throws CannotRedoException 
+    @Override
+	public void redo() throws CannotRedoException 
     {
         undo();
     }
         
-    public String getPresentationName() 
+    @Override
+	public String getPresentationName() 
     {
         return "Rename";
     }

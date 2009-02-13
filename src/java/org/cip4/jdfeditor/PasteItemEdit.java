@@ -35,7 +35,8 @@ public class PasteItemEdit extends AbstractUndoableEdit
         parFrame.updateViews(pasteNodePath);
     }
 
-    public void undo() throws CannotUndoException 
+    @Override
+	public void undo() throws CannotUndoException 
     { 
         JDFFrame parFrame=Editor.getFrame();
         success = parFrame.getModel().deleteItem(pasteNodePath);
@@ -43,7 +44,8 @@ public class PasteItemEdit extends AbstractUndoableEdit
         parFrame.updateViews(path); 
     }
 
-    public void redo() throws CannotRedoException 
+    @Override
+	public void redo() throws CannotRedoException 
     {
         JDFFrame parFrame=Editor.getFrame();
         if (!pasteNode.isElement())
@@ -59,17 +61,20 @@ public class PasteItemEdit extends AbstractUndoableEdit
         parFrame.updateViews(pasteNodePath);
     }
 
-    public boolean canUndo() 
+    @Override
+	public boolean canUndo() 
     {
         return  success;
     }
 
-    public boolean canRedo() 
+    @Override
+	public boolean canRedo() 
     {
         return  success;
     }
 
-    public String getPresentationName() 
+    @Override
+	public String getPresentationName() 
     {
         return "Paste";
     }

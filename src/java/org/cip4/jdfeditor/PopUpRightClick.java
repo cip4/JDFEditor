@@ -170,7 +170,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		add(insertPopupMenu);
 
 		final JMenu resMenu = new JMenu(m_littleBundle.getString("InsertResKey"));
-		resMenu.setEnabled(elem != null && (elem instanceof JDFNode || elem.getNodeName().equals("ResourcePool")));
+		resMenu.setEnabled(elem instanceof JDFNode || elem.getNodeName().equals("ResourcePool"));
 
 		m_insertInResPopupItem = new JMenuItem(m_littleBundle.getString("InputResourceKey"));
 		m_insertInResPopupItem.addActionListener(this);
@@ -189,7 +189,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		add(resMenu);
 
 		final JMenu resLinkMenu = new JMenu(m_littleBundle.getString("InsertResLinkKey"));
-		resLinkMenu.setEnabled(elem != null && (elem instanceof JDFNode || elem.getNodeName().equals("ResourceLinkPool")));
+		resLinkMenu.setEnabled(elem instanceof JDFNode || elem.getNodeName().equals("ResourceLinkPool"));
 
 		m_insertInResLinkPopupItem = new JMenuItem(m_littleBundle.getString("ResourceInLinkKey"));
 		m_insertInResLinkPopupItem.addActionListener(this);
@@ -247,7 +247,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 			m_nodeFromCaps = addMenuItem(m_littleBundle, "NodeFromCapsKey");
 			add(separator);
 		}
-		else if (elem != null && elem.getNodeName().equals(XJDF20.rootName))
+		else if (elem.getNodeName().equals(XJDF20.rootName))
 		{
 			m_saveXJDFCaps = addMenuItem(m_littleBundle, "ExportToDevCapKey");
 		}

@@ -31,7 +31,8 @@ public class JDFFileFilter extends FileFilter
     /**
      * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
      */
-    public boolean accept(File file)
+    @Override
+	public boolean accept(File file)
     {
         if (file != null)
         {
@@ -79,7 +80,8 @@ public class JDFFileFilter extends FileFilter
     /**
      * @see javax.swing.filechooser.FileFilter#getDescription()
      */
-    public String getDescription()
+    @Override
+	public String getDescription()
     {
         if (fullDescription == null)
         {

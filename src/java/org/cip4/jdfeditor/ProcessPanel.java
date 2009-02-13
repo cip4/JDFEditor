@@ -43,7 +43,8 @@ public class ProcessPanel extends JPanel
 {
     class PartListener extends MouseAdapter
     {
-        public void mouseClicked(MouseEvent e)
+        @Override
+		public void mouseClicked(MouseEvent e)
         {
             if (SwingUtilities.isLeftMouseButton(e))
             {
@@ -82,7 +83,8 @@ public class ProcessPanel extends JPanel
         super();
     }
 
-    public void paintComponent(Graphics g)
+    @Override
+	public void paintComponent(Graphics g)
     {        
         super.paintComponent(g);
         final EditorDocument editorDoc = Editor.getEditorDoc();
@@ -701,22 +703,31 @@ public class ProcessPanel extends JPanel
      */
     private void drawSubResLinks(final VElement vJDFNodes, final Vector _vParts)
     {
-        final int sizeJDF = vJDFNodes==null ? 0 : vJDFNodes.size();
-        for (int i = 1; i < sizeJDF; i++)
-        {
-            final JDFNode nodeElem = (JDFNode) vJDFNodes.get(i);
-            final ProcessPart nodePart = addPart(new ProcessPart(nodeElem, ProcessPart.NODE,null));
+    	if (vJDFNodes != null)
+    	{
+			final int sizeJDF = vJDFNodes.size();
+			for (int i = 1; i < sizeJDF; i++)
+			{
+				final JDFNode nodeElem = (JDFNode) vJDFNodes.get(i);
+				final ProcessPart nodePart = addPart(new ProcessPart(nodeElem, ProcessPart.NODE, null));
 
-            final JDFResourceLinkPool resLinkPool =  nodeElem.getResourceLinkPool();
-            final VElement links = resLinkPool==null ? null : resLinkPool.getInOutLinks(null, true, null, null);
-
-            final int size = links==null ? 0 : links.size();
-            for (int j = 0; j < size; j++)
-            {
-                prepareResLink(nodePart, (JDFResourceLink)links.elementAt(j));
-            }
-            _vParts.add(nodePart);
-        }
+				final JDFResourceLinkPool resLinkPool = nodeElem.getResourceLinkPool();
+				if (resLinkPool != null)
+				{
+					final VElement links = resLinkPool.getInOutLinks(null, true, null, null);
+					if (links != null)
+					{
+						final int size = links.size();
+						for (int j = 0; j < size; j++)
+						{
+							prepareResLink(nodePart, (JDFResourceLink) links.elementAt(j));
+						}
+					}
+				}
+				
+				_vParts.add(nodePart);
+			}
+		}
     }
 
     /**
@@ -758,11 +769,13 @@ public class ProcessPanel extends JPanel
         //listen for both MousePressed and MouseReleased events to
         //ensure functionality on all OSes
         addMouseListener(new MouseAdapter() {
-            public void mouseReleased(MouseEvent e) {
+            @Override
+			public void mouseReleased(MouseEvent e) {
                 if (e.isPopupTrigger())
                     jpmPopup.show(e.getComponent(), e.getX(), e.getY());
             }
-            public void mousePressed(MouseEvent e) {
+            @Override
+			public void mousePressed(MouseEvent e) {
                 if (e.isPopupTrigger())
                     jpmPopup.show(e.getComponent(), e.getX(), e.getY());
             }

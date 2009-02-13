@@ -47,7 +47,8 @@ public class InsertResourceLinkEdit extends AbstractUndoableEdit
         parFrame.updateViews(resLinkPath);
     }
 
-    public void undo() throws CannotUndoException 
+    @Override
+	public void undo() throws CannotUndoException 
     {
         final JDFTreeModel model = parFrame.getModel();
         success = model.deleteItem(resLinkPath);
@@ -62,7 +63,8 @@ public class InsertResourceLinkEdit extends AbstractUndoableEdit
         parFrame.updateViews(path);
     }
 
-    public void redo() throws CannotRedoException 
+    @Override
+	public void redo() throws CannotRedoException 
     {        
         final JDFTreeModel model = parFrame.getModel();
         if (!hasResourceLinkPool)
@@ -76,17 +78,20 @@ public class InsertResourceLinkEdit extends AbstractUndoableEdit
         parFrame.updateViews(resLinkPath);
     }
 
-    public boolean canUndo() 
+    @Override
+	public boolean canUndo() 
     {
         return success;
     }
 
-    public boolean canRedo() 
+    @Override
+	public boolean canRedo() 
     {
         return success;
     }
     
-    public String getPresentationName() 
+    @Override
+	public String getPresentationName() 
     {
         return "Insert ResourceLink";
     }

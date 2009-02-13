@@ -191,7 +191,8 @@ public class ValidationScrollPane extends JScrollPane
 
     class ValidationPopupListener extends MouseAdapter
     {
-        public void mousePressed(MouseEvent e)
+        @Override
+		public void mousePressed(MouseEvent e)
         {
             final TreePath path = m_reportTree.getPathForLocation(e.getX(), e.getY());
             

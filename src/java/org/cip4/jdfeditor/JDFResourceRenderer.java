@@ -25,7 +25,8 @@ public class JDFResourceRenderer extends JDFTreeRenderer
         colorSel = new Color(200, 200, 200);
     }
     
-    public Component getTreeCellRendererComponent(JTree jdfTree, Object value, boolean sel, boolean expanded,
+    @Override
+	public Component getTreeCellRendererComponent(JTree jdfTree, Object value, boolean sel, boolean expanded,
             boolean leaf, int row, boolean _hasFocus)
     {
         

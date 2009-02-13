@@ -614,7 +614,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 			{
 				final JDFPart p = (JDFPart) e;
 				final JDFAttributeMap map = p.getPartMap();
-				final VString keys = p == null ? null : map.getKeys();
+				final VString keys = map.getKeys();
 				if (keys != null)
 				{
 					Collections.sort(keys);
@@ -661,18 +661,21 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 			final JDFNode n = (JDFNode) element;
 			return n.buildXPath(null, 1);
 		}
+		
 		String x = element.getAttribute("XPath", null, null);
 		if (x != null)
 		{
 			return x;
 		}
+		
 		x = element.getAttribute("Name", null, null);
 		if (x == null)
 		{
 			return null;
 		}
-		final String parent = element.getInheritedAttribute("XPath", null, null);
-		return parent != null ? parent + "/@" + x : null;
+		
+		final String parentLocal = element.getInheritedAttribute("XPath", null, null);
+		return parentLocal != null ? parentLocal + "/@" + x : null;
 
 	}
 

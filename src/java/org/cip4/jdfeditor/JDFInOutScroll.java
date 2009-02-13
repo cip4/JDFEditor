@@ -108,9 +108,9 @@ public class JDFInOutScroll extends JScrollPane
      */
     private static final long serialVersionUID = 8635330186484361532L;
     JPanel m_inOutArea;
-    private JPanel m_inOutAreaLeft;
-    private JPanel m_inOutAreaMiddle;
-    private JPanel m_inOutAreaRight;
+    private final JPanel m_inOutAreaLeft;
+    private final JPanel m_inOutAreaMiddle;
+    private final JPanel m_inOutAreaRight;
     private JDFTreeNode m_searchInOutNode; 
     private int m_inTreePos = 0;
     private int m_outTreePos = 0;
@@ -608,13 +608,16 @@ public class JDFInOutScroll extends JScrollPane
                             if(rlp!=null)
                             {
                                 final VElement resourceLinks = rlp.getPoolChildren(null, null, null);
-                                final int size = resourceLinks==null ? 0 : resourceLinks.size();
-                                for (int j = 0; j < size; j++)
+                                if (resourceLinks != null)
                                 {
-                                    final JDFResourceLink link = (JDFResourceLink) resourceLinks.elementAt(j);
-                                    if (link.getLinkRoot() ==r )
-                                        addResourceTree(link, isJDFNode);
-                                }
+									final int size = resourceLinks.size();
+									for (int j = 0; j < size; j++)
+									{
+										final JDFResourceLink link = (JDFResourceLink) resourceLinks.elementAt(j);
+										if (link.getLinkRoot() == r)
+											addResourceTree(link, isJDFNode);
+									}
+								}
                             }
                         }
                     }
@@ -646,7 +649,8 @@ public class JDFInOutScroll extends JScrollPane
 
         MouseAdapter mouseListener = new MouseAdapter()
         {
-            public void mouseClicked(MouseEvent e)
+            @Override
+			public void mouseClicked(MouseEvent e)
             {
                 final JTree tree = (JTree) e.getSource();
 

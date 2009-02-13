@@ -264,21 +264,25 @@ public class ProcessPart extends JComponent
                 if(rl!=null)
                 {
                     VElement v=rl.getTargetVector(-1);
-                    final int size = v==null ? 0 : v.size();
-                    for(int i=0;i<size;i++)
+                    if (v != null)
                     {
-                        JDFResource rPart0=(JDFResource) v.elementAt(i);
-                        VElement vv=rPart0.getLeaves(false);
-                        for(int j=0;j<vv.size();j++)
-                        {
-                            JDFResource rPart=(JDFResource) vv.elementAt(j);
+						final int size = v.size();
+						for (int i = 0; i < size; i++)
+						{
+							JDFResource rPart0 = (JDFResource) v.elementAt(i);
+							VElement vv = rPart0.getLeaves(false);
+							for (int j = 0; j < vv.size(); j++)
+							{
+								JDFResource rPart = (JDFResource) vv.elementAt(j);
 
-                            final EnumResStatus resStatus = rPart.getResStatus(false);
-                            int col=resStatus==null ? 0:resStatus.getValue();
-                            if(col>colMax)
-                                colMax=col;
-                        }
-                    }
+								final EnumResStatus resStatus = rPart.getResStatus(false);
+								int col = resStatus == null ? 0 : resStatus.getValue();
+								if (col > colMax)
+									colMax = col;
+							}
+						}
+					}
+                    
                     final EnumResStatus enumStatus = EnumResStatus.getEnum(colMax);
                     gString[2] = enumStatus==null ? "unknown" : enumStatus.getName();
                 }
