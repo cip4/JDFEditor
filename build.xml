@@ -180,7 +180,7 @@
 	</target>
 	<target name="windist-compile" depends="bindist" description="This target is only need if the EXE file needs to be recompiled.">
 		<property name="win.dist.bin.dir" value="${dist.dir}/${base.filename}-win" />
-		<echo>Loading JSmooth Ant tasks. Make sure you have installed http://jsmooth.sourceforge.net in ANT_HOME/lib</echo>
+		<echo>Loading JSmooth Ant tasks. Make sure you have jsmoothgen-ant.jar (http://jsmooth.sourceforge.net) installed in ANT_HOME/lib</echo>
 		<taskdef name="jsmoothgen" classname="net.charabia.jsmoothgen.ant.JSmoothGen" />
 		<copy file="${src.dir}/bin/windows/JDFEditor.jsmooth" todir="${win.dist.bin.dir}" />
 		<jsmoothgen project="${win.dist.bin.dir}/JDFEditor.jsmooth" skeletonroot="${src.dir}/bin/windows/skeletons" />
