@@ -107,7 +107,8 @@ public class InsertElementEdit extends EditorUndoableEdit
 
     ///////////////////////////////////////////////////////////////////////////////////////
     
-    public void undo() throws CannotUndoException 
+    @Override
+	public void undo() throws CannotUndoException 
     {
         Editor.getModel().deleteItem(newNodePath);
         Editor.getFrame().updateViews(newNodePath.getParentPath());
@@ -116,7 +117,8 @@ public class InsertElementEdit extends EditorUndoableEdit
     
     ///////////////////////////////////////////////////////////////////////////////////////
     
-    public void redo() throws CannotRedoException 
+    @Override
+	public void redo() throws CannotRedoException 
     {
         KElement newElement=newNode.getElement();
         final JDFTreeNode parentNode=(JDFTreeNode) newNodePath.getParentPath().getLastPathComponent();
@@ -130,7 +132,8 @@ public class InsertElementEdit extends EditorUndoableEdit
 
     ///////////////////////////////////////////////////////////////////////////////////////
     
-    public String getPresentationName() 
+    @Override
+	public String getPresentationName() 
     {
          return presentationString;
     }

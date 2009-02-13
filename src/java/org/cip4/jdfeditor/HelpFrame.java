@@ -92,7 +92,8 @@ public class HelpFrame extends JFrame
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         final WindowListener winLis = new WindowAdapter()
         {
-            public void windowClosing(WindowEvent e)
+            @Override
+			public void windowClosing(WindowEvent e)
             {
                 dispose();
                 e.getID(); // make compile happy
@@ -442,7 +443,8 @@ public class HelpFrame extends JFrame
      */
     class LabelMouseListener extends MouseAdapter
     {
-        public void mouseClicked(MouseEvent e)
+        @Override
+		public void mouseClicked(MouseEvent e)
         {
             if (e.getSource() == helpLabels[0])
             {
@@ -471,7 +473,8 @@ public class HelpFrame extends JFrame
                 helpFurtherDevelopment();
             }
         }
-        public void mouseEntered(MouseEvent e)
+        @Override
+		public void mouseEntered(MouseEvent e)
         {
             Editor.setCursor(2,(Component)e.getSource());
             if (e.getSource() == helpLabels[0])
@@ -495,7 +498,8 @@ public class HelpFrame extends JFrame
                 helpLabels[4].setText(startTagsSmallSel + littleBundle.getString("DevelopmentNotesKey") + endTags);
             }
         }
-        public void mouseExited(MouseEvent e)
+        @Override
+		public void mouseExited(MouseEvent e)
         {
             Editor.setCursor(0,(Component)e.getSource());
 

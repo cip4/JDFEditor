@@ -93,24 +93,28 @@ public abstract class EditorUndoableEdit extends AbstractUndoableEdit
          canRedo=false;
     }
 
-    public void undo() throws CannotUndoException 
+    @Override
+	public void undo() throws CannotUndoException 
     { 
          canRedo=true;
          canUndo=false;
     }
 
-    public void redo() throws CannotRedoException 
+    @Override
+	public void redo() throws CannotRedoException 
     {
         canRedo=false;
         canUndo=true;
     }
 
-    public boolean canUndo() 
+    @Override
+	public boolean canUndo() 
     {
          return canUndo;
     }
 
-    public boolean canRedo() 
+    @Override
+	public boolean canRedo() 
     {
         return canRedo;
     }

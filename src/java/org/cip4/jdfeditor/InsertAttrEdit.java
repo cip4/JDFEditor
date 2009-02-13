@@ -101,7 +101,8 @@ public class InsertAttrEdit extends EditorUndoableEdit
          Editor.getFrame().updateViews(path);
     }
 
-    public void undo() throws CannotUndoException 
+    @Override
+	public void undo() throws CannotUndoException 
     { 
          TreePath attrPath=new TreePath(attrNode.getPath());
          Editor.getModel().deleteItem(attrPath);
@@ -109,7 +110,8 @@ public class InsertAttrEdit extends EditorUndoableEdit
          super.undo();
     }
 
-    public void redo() throws CannotRedoException 
+    @Override
+	public void redo() throws CannotRedoException 
     {
         Editor.getModel().insertInto(attrNode, intoNode, pos);
         intoNode.getElement().setAttributeNode(attrNode.getAttr());
@@ -117,7 +119,8 @@ public class InsertAttrEdit extends EditorUndoableEdit
         super.redo();
     }
 
-    public String getPresentationName() 
+    @Override
+	public String getPresentationName() 
     {
          return "InsertAttribute";
     }

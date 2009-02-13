@@ -103,7 +103,8 @@ public class AddRequiredElemEdit extends EditorUndoableEdit
          Editor.getFrame().updateViews(path);
     }
 
-    public void undo() throws CannotUndoException 
+    @Override
+	public void undo() throws CannotUndoException 
     { 
          for (int i=0; i < addedVector.size(); i++)
          {
@@ -115,7 +116,8 @@ public class AddRequiredElemEdit extends EditorUndoableEdit
          super.undo();
     }
 
-    public void redo() throws CannotRedoException 
+    @Override
+	public void redo() throws CannotRedoException 
     {
         KElement intoElement=intoNode.getElement();
     	for (int i=0; i < addedVector.size(); i++)
@@ -130,7 +132,8 @@ public class AddRequiredElemEdit extends EditorUndoableEdit
     }
 
 
-    public String getPresentationName() 
+    @Override
+	public String getPresentationName() 
     {
          return "AddRequiredElements";
     }

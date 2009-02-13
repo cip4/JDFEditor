@@ -90,7 +90,8 @@ public class CheckJDFOutputRenderer extends JDFTreeRenderer
 
     ////////////////////////////////////////////////////////////////////
 
-    protected void setNodeIcon(JTree jdfTree,boolean sel, JDFTreeNode treeNode){
+    @Override
+	protected void setNodeIcon(JTree jdfTree,boolean sel, JDFTreeNode treeNode){
         String n=treeNode.getName();
         final INIReader iniFile=Editor.getIniFile();
         if(treeNode.isElement())
@@ -113,6 +114,7 @@ public class CheckJDFOutputRenderer extends JDFTreeRenderer
                     else
                         setIcon(iniFile.attIcon);
                 }
+                
                 String tts=JDFValidator.toMessageString(elem);
                 if(tts!=null)
                     setToolTipText(tts);
@@ -133,6 +135,7 @@ public class CheckJDFOutputRenderer extends JDFTreeRenderer
                     else
                         setIcon(iniFile.jdfElemIcon);
                 }
+                
                 if(elem.getAttribute("Message")!=null)
                     setToolTipText(elem.getAttribute("Message"));
 
@@ -153,6 +156,7 @@ public class CheckJDFOutputRenderer extends JDFTreeRenderer
                     else
                         setIcon(iniFile.jdfElemIcon);
                 }
+                
                 if(elem.getAttribute("Message")!=null)
                     setToolTipText(elem.getAttribute("Message"));
 
@@ -178,9 +182,9 @@ public class CheckJDFOutputRenderer extends JDFTreeRenderer
                     else
                         setIcon(iniFile.jdfElemIcon);
                 }
+                
                 if(elem.getAttribute("Message")!=null)
                     setToolTipText(elem.getAttribute("Message"));
-
             }
         }
         else // real attributes

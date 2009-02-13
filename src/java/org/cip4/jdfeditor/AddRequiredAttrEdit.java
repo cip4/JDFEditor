@@ -101,7 +101,8 @@ public class AddRequiredAttrEdit extends EditorUndoableEdit
          Editor.getFrame().updateViews(path);
     }
 
-    public void undo() throws CannotUndoException 
+    @Override
+	public void undo() throws CannotUndoException 
     { 
          for (int i=0; i < addedVector.size(); i++)
          {
@@ -112,7 +113,8 @@ public class AddRequiredAttrEdit extends EditorUndoableEdit
          super.undo();
     }
 
-    public void redo() throws CannotRedoException 
+    @Override
+	public void redo() throws CannotRedoException 
     {
     	for (int i=0; i < addedVector.size(); i++)
         {
@@ -124,17 +126,20 @@ public class AddRequiredAttrEdit extends EditorUndoableEdit
         super.redo();
     }
 
-    public boolean canUndo() 
+    @Override
+	public boolean canUndo() 
     {
          return super.canUndo() && addedVector.size()>0;
     }
 
-    public boolean canRedo() 
+    @Override
+	public boolean canRedo() 
     {
         return super.canRedo() && addedVector.size()>0;
     }
 
-    public String getPresentationName() 
+    @Override
+	public String getPresentationName() 
     {
          return "AddRequiredAttributes";
     }

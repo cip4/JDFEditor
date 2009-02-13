@@ -101,8 +101,8 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
     private JTextField idPath;
     private JButton browse; 
     private File idFile;
-    private GridBagLayout outLayout = new GridBagLayout(); 
-    private GridBagConstraints outConstraints = new GridBagConstraints();
+    private final GridBagLayout outLayout = new GridBagLayout(); 
+    private final GridBagConstraints outConstraints = new GridBagConstraints();
     
     private JComboBox goldenTicketLevel;
     private JComboBox MISICSLevel1;
@@ -149,7 +149,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
         }
         else 
             {
-            	
+//             	
             }           
 
     }

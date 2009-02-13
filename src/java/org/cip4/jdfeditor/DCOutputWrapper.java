@@ -95,7 +95,8 @@ class DCOutputWrapper extends JDFTreeNode
     /**
      * generates the string to be displayed in the tree
      */
-    public String toDisplayString()
+    @Override
+	public String toDisplayString()
     {
         String s=super.toDisplayString();
         if(s==null)

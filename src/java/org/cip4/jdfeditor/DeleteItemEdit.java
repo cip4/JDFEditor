@@ -116,7 +116,8 @@ public class DeleteItemEdit extends EditorUndoableEdit
     }
 
 
-    public void undo() throws CannotUndoException 
+    @Override
+	public void undo() throws CannotUndoException 
     {
         if (!delNode.isElement())
         {
@@ -133,7 +134,8 @@ public class DeleteItemEdit extends EditorUndoableEdit
         super.undo();
     }
 
-    public void redo() throws CannotRedoException 
+    @Override
+	public void redo() throws CannotRedoException 
     {
         TreePath path=new TreePath(delNode.getPath());
         Editor.getModel().deleteNode(delNode,path);
@@ -141,7 +143,8 @@ public class DeleteItemEdit extends EditorUndoableEdit
         super.redo();
     }
 
-    public String getPresentationName() 
+    @Override
+	public String getPresentationName() 
     {
          return "Delete";
     }

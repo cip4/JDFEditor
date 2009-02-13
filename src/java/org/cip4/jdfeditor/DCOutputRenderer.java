@@ -19,7 +19,8 @@ public class DCOutputRenderer extends JDFTreeRenderer
         super();
     }
     
-    protected void setNodeIcon(JTree jdfTree,boolean sel, JDFTreeNode treeNode){
+    @Override
+	protected void setNodeIcon(JTree jdfTree,boolean sel, JDFTreeNode treeNode){
         final INIReader iniFile=Editor.getIniFile();
 
         final String nodeName=treeNode.getName();

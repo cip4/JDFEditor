@@ -119,6 +119,7 @@ public class EditorUtils
                 vInvalidAt.add(Integer.toString(index));
         }
     }
+    
     /**
      * Check if a KElement is valid or not.
      * @param elem - The KElement you want to check.
@@ -132,80 +133,6 @@ public class EditorUtils
         }
         return elem.isValid(KElement.EnumValidationLevel.Complete);
     }
-
-    /**
-     * Method setValueForNewAttribute.
-     * set a value to the new attribute if nothing is declared the value
-     * will be "New Value"
-     * @param att
-     */
-    
-    /*
-     * 07-08-09: BMI moved to JDFElement.java
-    static public String  getValueForNewAttribute(KElement e,String attName)
-    {
-        //TODO move this to JDFElement and let JDFLib predefine reasonable attributes 
-        if (attName.equals("ID"))
-            return JDFElement.uniqueID(0);
-
-        if (attName.equals("JobID"))
-            return JDFElement.uniqueID(0);
-
-        if (attName.equals("JobPartID") &&(e instanceof JDFElement))
-        {
-            return ((JDFElement)e).generateDotID("JobPartID", null);
-        }
-
-        if (attName.equals("Status") &&(e instanceof JDFNode))
-        {
-            return "Waiting";
-        }
-        if (attName.equals("Status") &&(e instanceof JDFResource))
-        {
-            return "Unavailable";
-        }
-
-        if (attName.equals("Type"))
-            return "Product";
-
-        if (attName.equals("TimeStamp"))
-            return new JDFDate().getDateTimeISO();
-
-        if (attName.equals("ComponentType"))
-            return "PartialProduct";
-
-        if (attName.equals("PreviewType"))
-            return "Separation";
-        
-        EnumAttributeType attyp=e.getAtrType(attName);
-        if(attyp!=null)
-        {
-            if(EnumAttributeType.boolean_.equals(attyp))
-                return "true";
-            if(EnumAttributeType.CMYKColor.equals(attyp))
-                return "1 0 0 0";
-            if(EnumAttributeType.dateTime.equals(attyp) || EnumAttributeType.DateTimeRange.equals(attyp)|| EnumAttributeType.DateTimeRangeList.equals(attyp))
-                return new JDFDate().getDateTimeISO();
-            if(EnumAttributeType.double_.equals(attyp))
-                return "0.0";
-            if(EnumAttributeType.duration.equals(attyp)|| EnumAttributeType.DurationRange.equals(attyp)|| EnumAttributeType.DurationRangeList.equals(attyp))
-                return "PT1H";
-            //TODO evaluate durations
-//            if(EnumAttributeType.enumeration.equals(attyp) || EnumAttributeType.enumerations.equals(attyp))
-//                return "";
-            if(EnumAttributeType.integer.equals(attyp)||EnumAttributeType.IntegerRange.equals(attyp)||EnumAttributeType.IntegerRangeList.equals(attyp)||EnumAttributeType.IntegerList.equals(attyp))
-                return "0";
-            if(EnumAttributeType.JDFJMFVersion.equals(attyp))
-                return "1.3";
-            if(EnumAttributeType.matrix.equals(attyp))
-                return "1 0 0 1 0 0";            
-            if(EnumAttributeType.XYPair.equals(attyp)||EnumAttributeType.XYPairRange.equals(attyp)||EnumAttributeType.XYPairRangeList.equals(attyp))
-                return "0 0";            
-        }
-
-        return "New Value";
-    }
-    */
 
     /**
      * gets all resources from this node and from all its ancestors.
@@ -238,20 +165,24 @@ public class EditorUtils
         {
             final JDFResource res = (JDFResource) resourcesInTree.item(i);
             String resName = res.getNodeName();
-            int vRLSize=vResLinks==null ? 0 : vResLinks.size();
-
-            String id=res.getID();
-            if(id!=null)
-            {
-                for(int j=0;j<vRLSize;j++)
-                {
-                    if(id.equals(vResLinks.item(j).getAttribute(AttributeName.RREF)))
-                    {
-                        resourcesInTree.remove(res);
-                        continue;
-                    }
-                }
-            }
+            
+            if (vResLinks != null)
+			{
+            	int vRLSize = vResLinks.size();
+				String id = res.getID();
+				if (id != null)
+				{
+					for (int j = 0; j < vRLSize; j++)
+					{
+						if (id.equals(vResLinks.item(j).getAttribute(AttributeName.RREF)))
+						{
+							resourcesInTree.remove(res);
+							continue;
+						}
+					}
+				}
+			}
+            
             int n=vValidLinks.index(resName);
             if(n<0)
                 n=iAny;
@@ -426,7 +357,7 @@ public class EditorUtils
      * @return
      * @throws Exception
      */
-    public static JDFDoc parseInStream(InputStream inStream, boolean useSchemaDefault) throws Exception
+    public static JDFDoc parseInStream(InputStream inStream, boolean useSchemaDefault)
     {
         final JDFParser p = new JDFParser();
         File schemaloc=null;

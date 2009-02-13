@@ -194,7 +194,8 @@ public class EditorDocument
     }
     /////////////////////////////////////////////////////////////////
     
-    public String toString()
+    @Override
+	public String toString()
     {
         if(m_jdfDoc==null)
             return "EditorDocument: #null";

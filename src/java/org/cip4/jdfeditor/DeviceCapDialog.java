@@ -125,12 +125,12 @@ public class DeviceCapDialog extends JPanel implements ActionListener
     private JTextField idPath;
     private JButton browse; 
     private File idFile;
-    private GridBagLayout outLayout = new GridBagLayout(); 
-    private GridBagConstraints outConstraints = new GridBagConstraints();
+    private final GridBagLayout outLayout = new GridBagLayout(); 
+    private final GridBagConstraints outConstraints = new GridBagConstraints();
     private VElement executableJDF = null;
-    private boolean ignoreDefaults;
-    private boolean ignoreExtensions;
-    private boolean breport;
+    private final boolean ignoreDefaults;
+    private final boolean ignoreExtensions;
+//    private boolean breport;
     private XMLDoc bugReport = null;
     
     
@@ -411,10 +411,10 @@ public class DeviceCapDialog extends JPanel implements ActionListener
         return bugReport;
     }
     
-    private void PrintReport(XMLDoc bugReport2) 
-    {
-		// TODO Auto-generated method stub
-    	System.out.println("I'm in Print");
-		
-	}
+//    private void PrintReport(XMLDoc bugReport2) 
+//    {
+//		// TODO Auto-generated method stub
+//    	System.out.println("I'm in Print");
+//		
+//	  }
 }

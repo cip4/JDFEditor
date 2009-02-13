@@ -167,7 +167,8 @@ public class EditorTabbedPaneA extends JTabbedPane
 
         final MouseAdapter tabbedPaneListener = new MouseAdapter()
         {
-            public void mouseClicked(MouseEvent e)
+            @Override
+			public void mouseClicked(MouseEvent e)
             {
                 e.getID(); // fool compiler
                 onSelect();

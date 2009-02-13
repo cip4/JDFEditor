@@ -391,7 +391,8 @@ public class EditorButtonBar extends JToolBar implements ActionListener
     
     class Button_MouseListener extends MouseAdapter
     {
-        public void mouseEntered(MouseEvent e)
+        @Override
+		public void mouseEntered(MouseEvent e)
         {
             final Object source = e.getSource();
             if(m_allButtons.contains(source))
@@ -403,7 +404,8 @@ public class EditorButtonBar extends JToolBar implements ActionListener
         }
         
 ///////////////////////////////////////////////////////////////
-        public void mouseExited(MouseEvent e)
+        @Override
+		public void mouseExited(MouseEvent e)
         {
             final Object source = e.getSource();
             if(m_allButtons.contains(source))

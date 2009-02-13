@@ -538,7 +538,7 @@ public class INIReader
 		setAttribute(validLevel, level.getName());
 	}
 
-	static private String defaultVersion = "1.3";
+	static private String defaultVersion = "1.4";
 
 	/**
 	 * 
