@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2008 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2009 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -97,90 +97,91 @@ import org.cip4.jdflib.util.StringUtil;
  */
 
 /**
- * @author Rainer Prosi, Heidelberger Druckmaschinen
+ * @author Dr. Rainer Prosi, Heidelberger Druckmaschinen AG
  * 
+ * 13.02.2009
  */
 public class INIReader
 {
 
-	final public ImageIcon defaultErrAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ErrorAttIcon.gif");
-	final public ImageIcon defaultErrAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ErrorAttIconSelected.gif");
-	final public ImageIcon defaultErrElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ErrorElemIcon.gif");
-	final public ImageIcon defaultErrElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ErrorElemIconSelected.gif");
+	final ImageIcon defaultErrAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ErrorAttIcon.gif");
+	final ImageIcon defaultErrAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ErrorAttIconSelected.gif");
+	final ImageIcon defaultErrElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ErrorElemIcon.gif");
+	final ImageIcon defaultErrElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ErrorElemIconSelected.gif");
 
-	final public ImageIcon defaultWarnAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "WarnAttIcon.gif");
-	final public ImageIcon defaultWarnAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "WarnAttIconSelected.gif");
-	final public ImageIcon defaultWarnElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "WarnElemIcon.gif");
-	final public ImageIcon defaultWarnElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "WarnElemIconSelected.gif");
+	final ImageIcon defaultWarnAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "WarnAttIcon.gif");
+	final ImageIcon defaultWarnAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "WarnAttIconSelected.gif");
+	final ImageIcon defaultWarnElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "WarnElemIcon.gif");
+	final ImageIcon defaultWarnElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "WarnElemIconSelected.gif");
 
-	final public ImageIcon defaultAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "AttIcon.gif");
-	final public ImageIcon defaultAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "AttIconSelected.gif");
-	final public ImageIcon defaultIAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "InhAttIcon.gif");
-	final public ImageIcon defaultIAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "InhAttIconSelected.gif");
+	final ImageIcon defaultAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "AttIcon.gif");
+	final ImageIcon defaultAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "AttIconSelected.gif");
+	final ImageIcon defaultIAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "InhAttIcon.gif");
+	final ImageIcon defaultIAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "InhAttIconSelected.gif");
 
-	final public ImageIcon defaultPAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "PartIDKeysAttIcon.gif");
-	final public ImageIcon defaultPAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "PartIDKeysAttIconSelected.gif");
+	final ImageIcon defaultPAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "PartIDKeysAttIcon.gif");
+	final ImageIcon defaultPAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "PartIDKeysAttIconSelected.gif");
 
-	final public ImageIcon defaultIPAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "InhPartIDKeysAttIcon.gif");
-	final public ImageIcon defaultIPAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "InhPartIDKeysAttIconSelected.gif");
+	final ImageIcon defaultIPAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "InhPartIDKeysAttIcon.gif");
+	final ImageIcon defaultIPAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "InhPartIDKeysAttIconSelected.gif");
 
-	final public ImageIcon defaultRefAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "RefAttIcon.gif");
-	final public ImageIcon defaultRefAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "RefAttIconSelected.gif");
+	final ImageIcon defaultRefAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "RefAttIcon.gif");
+	final ImageIcon defaultRefAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "RefAttIconSelected.gif");
 
-	final public ImageIcon defaultElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ElemIcon.gif");
-	final public ImageIcon defaultElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ElemIconSelected.gif");
+	final ImageIcon defaultElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ElemIcon.gif");
+	final ImageIcon defaultElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ElemIconSelected.gif");
 
-	final public ImageIcon defaultJDFElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "JDFElemIcon.gif");
-	final public ImageIcon defaultJDFElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "JDFElemIconSelected.gif");
+	final ImageIcon defaultJDFElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "JDFElemIcon.gif");
+	final ImageIcon defaultJDFElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "JDFElemIconSelected.gif");
 
-	final public ImageIcon defaultRefElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefElemIcon.gif");
-	final public ImageIcon defaultRefElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefElemIconSelected.gif");
-	final public ImageIcon defaultRefInElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefInElemIcon.gif");
-	final public ImageIcon defaultRefInElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefInElemIconSelected.gif");
-	final public ImageIcon defaultRefOutElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefOutElemIcon.gif");
-	final public ImageIcon defaultRefOutElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefOutElemIconSelected.gif");
+	final ImageIcon defaultRefElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefElemIcon.gif");
+	final ImageIcon defaultRefElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefElemIconSelected.gif");
+	final ImageIcon defaultRefInElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefInElemIcon.gif");
+	final ImageIcon defaultRefInElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefInElemIconSelected.gif");
+	final ImageIcon defaultRefOutElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefOutElemIcon.gif");
+	final ImageIcon defaultRefOutElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefOutElemIconSelected.gif");
 
-	public ImageIcon warnAttIcon = defaultWarnAttIcon;
-	public ImageIcon warnAttIconS = defaultWarnAttIconS;
-	public ImageIcon warnElemIcon = defaultWarnElemIcon;
-	public ImageIcon warnElemIconS = defaultWarnElemIconS;
-	public ImageIcon errAttIcon;
-	public ImageIcon errAttIconS;
-	public ImageIcon errElemIcon;
-	public ImageIcon errElemIconS;
-	public ImageIcon attIcon;
-	public ImageIcon attIconS;
-	public ImageIcon iAttIcon;
-	public ImageIcon iAttIconS;
-	public ImageIcon pAttIcon;
-	public ImageIcon pAttIconS;
-	public ImageIcon iPAttIcon;
-	public ImageIcon iPAttIconS;
-	public ImageIcon refAttIcon;
-	public ImageIcon refAttIconS;
-	public ImageIcon elemIcon;
-	public ImageIcon elemIconS;
-	public ImageIcon jdfElemIcon;
-	public ImageIcon jdfElemIconS;
-	public ImageIcon rRefInElemIcon;
-	public ImageIcon rRefInElemIconS;
-	public ImageIcon rRefOutElemIcon;
-	public ImageIcon rRefOutElemIconS;
-	public ImageIcon rRefElemIcon;
-	public ImageIcon rRefElemIconS;
-	// public ImageIcon invElemIcon;
-	// public ImageIcon invAttIcon;
-	// public ImageIcon misElemIcon;
-	// public ImageIcon misAttIcon;
-	// public ImageIcon unkElemIcon;
-	// public ImageIcon unkAttIcon;
-	// public ImageIcon execJDFIcon;
-	// public ImageIcon invElemIconS;
-	// public ImageIcon invAttIconS;
-	// public ImageIcon misElemIconS;
-	// public ImageIcon misAttIconS;
-	// public ImageIcon unkElemIconS;
-	// public ImageIcon unkAttIconS;
+	ImageIcon warnAttIcon = defaultWarnAttIcon;
+	ImageIcon warnAttIconS = defaultWarnAttIconS;
+	ImageIcon warnElemIcon = defaultWarnElemIcon;
+	ImageIcon warnElemIconS = defaultWarnElemIconS;
+	ImageIcon errAttIcon;
+	ImageIcon errAttIconS;
+	ImageIcon errElemIcon;
+	ImageIcon errElemIconS;
+	ImageIcon attIcon;
+	ImageIcon attIconS;
+	ImageIcon iAttIcon;
+	ImageIcon iAttIconS;
+	ImageIcon pAttIcon;
+	ImageIcon pAttIconS;
+	ImageIcon iPAttIcon;
+	ImageIcon iPAttIconS;
+	ImageIcon refAttIcon;
+	ImageIcon refAttIconS;
+	ImageIcon elemIcon;
+	ImageIcon elemIconS;
+	ImageIcon jdfElemIcon;
+	ImageIcon jdfElemIconS;
+	ImageIcon rRefInElemIcon;
+	ImageIcon rRefInElemIconS;
+	ImageIcon rRefOutElemIcon;
+	ImageIcon rRefOutElemIconS;
+	ImageIcon rRefElemIcon;
+	ImageIcon rRefElemIconS;
+	// ImageIcon invElemIcon;
+	// ImageIcon invAttIcon;
+	// ImageIcon misElemIcon;
+	// ImageIcon misAttIcon;
+	// ImageIcon unkElemIcon;
+	// ImageIcon unkAttIcon;
+	// ImageIcon execJDFIcon;
+	// ImageIcon invElemIconS;
+	// ImageIcon invAttIconS;
+	// ImageIcon misElemIconS;
+	// ImageIcon misAttIconS;
+	// ImageIcon unkElemIconS;
+	// ImageIcon unkAttIconS;
 
 	String iconStrings[] = { "Attribute with Error=default", "Attribute with Error (selected)=default", "Element with Error=default", "Element with Error (selected)=default", "Attribute=default",
 			"Attribute (selected)=default", "Inherited Attribute=default", "Inherited Attribute (selected)=default", "PartID Key Attribute=default", "PartID Key Attribute (selected)=default",
@@ -233,6 +234,9 @@ public class INIReader
 
 	private XMLDoc xDoc; // The XMLDocument that represents the ini file
 
+	/**
+	 * the ini file reader for the editor
+	 */
 	public INIReader()
 	{
 		init();
@@ -258,6 +262,9 @@ public class INIReader
 		setIcons();
 	}
 
+	/**
+	 * @return
+	 */
 	public String getLanguage()
 	{
 		return getAttribute(language, "en");

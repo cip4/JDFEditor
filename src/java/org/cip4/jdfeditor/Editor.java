@@ -109,9 +109,12 @@ public class Editor
 	 * org.cip4.jdfeditor.messages package.
 	 */
 
-	public static final String ICONS_PATH = "/org/cip4/jdfeditor/icons/";
+	/**
+	 * 
+	 */
+	static final String ICONS_PATH = "/org/cip4/jdfeditor/icons/";
 
-	public static ImageIcon getImageIcon(final Class myClass, final String resString)
+	static ImageIcon getImageIcon(final Class myClass, final String resString)
 	{
 		final URL url = myClass.getResource(resString);
 		ImageIcon imIc = null;
@@ -126,8 +129,10 @@ public class Editor
 		return imIc;
 	}
 
+	/**
+	 * @param args
+	 */
 	// ////////////////////////////////////////////////////////////////
-
 	public static void main(final String[] args)
 	{
 		File file = null;
@@ -176,13 +181,17 @@ public class Editor
 		}
 	}
 
+	/**
+	 * 
+	 */
 	public Editor()
 	{
 		// nothing to do here (yet)
 	}
 
 	/**
-	 * Method init. instanciate the editor window
+	 * Method instantiate the editor window
+	 * @param file the file to open initially
 	 */
 	public void init(final File file)
 	{
@@ -316,6 +325,9 @@ public class Editor
 		return ed == null ? null : ed.getModel();
 	}
 
+	/**
+	 * @param m_model
+	 */
 	public static void getsetModel(final JDFTreeModel m_model)
 	{
 		final EditorDocument ed = getEditorDoc();
