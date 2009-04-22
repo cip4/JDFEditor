@@ -289,10 +289,25 @@ public class Editor
 	}
 
 	/**
+	 * @return
+	 */
+	public String getAboutText()
+	{
+		final String about = getEditorName() + "\n" + getEditorVersion() + "\nInternational Cooperation for Integration of Processes in Prepress, Press and Postpress,\n"
+				+ "hereinafter referred to as CIP4. All Rights Reserved\n\n" + "Authors: Anna Andersson, Evelina Thunell, Ingemar Svenonius, Elena Skobchenko, Rainer Prosi\n\n"
+				+ "PRELIMINARY PRE-RELEASE VERSION\n\n" + "The APPLICATION is provided 'as is', without warranty of any kind, express, implied, or\n"
+				+ "otherwise, including but not limited to the warranties of merchantability,fitness for a\n"
+				+ "particular purpose and noninfringement. In no event will CIP4 be liable, for any claim,\n"
+				+ "damages or other liability whether in an action of contract, tort or otherwise, arising\n"
+				+ "from, out of, or in connection with the APPLICATION or the use or other dealings in the\n" + "APPLICATION.";
+		return about;
+	}
+
+	/**
 	 * 
 	 * @return
 	 */
-	public static String getEditorName()
+	public String getEditorName()
 	{
 		return "CIP4 JDF Editor -- Copyright © 2001-2009 CIP4";
 	}
@@ -301,16 +316,16 @@ public class Editor
 	 * 
 	 * @return the editor build date
 	 */
-	public static String getEditorBuildDate()
+	public String getEditorBuildDate()
 	{
-		return "Estimated Build Date - 12 February 2009";
+		return "Estimated Build Date - 28 March 2009";
 	}
 
 	/**
 	 * 
 	 * @return the editor version
 	 */
-	public static String getEditorVersion()
+	public String getEditorVersion()
 	{
 		return "Build version " + JDFAudit.software();
 	}

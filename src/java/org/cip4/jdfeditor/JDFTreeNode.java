@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2008 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2009 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -73,6 +73,7 @@ import java.util.Collections;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
+import org.cip4.jdflib.auto.JDFAutoRefAnchor.EnumAnchor;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFPartAmount;
@@ -95,12 +96,14 @@ import org.cip4.jdflib.resource.JDFMarkObject;
 import org.cip4.jdflib.resource.JDFNotification;
 import org.cip4.jdflib.resource.JDFPart;
 import org.cip4.jdflib.resource.JDFPhaseTime;
+import org.cip4.jdflib.resource.JDFRefAnchor;
 import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.resource.devicecapability.JDFAbstractState;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCap;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCaps;
 import org.cip4.jdflib.resource.process.JDFColor;
 import org.cip4.jdflib.resource.process.JDFContentObject;
+import org.cip4.jdflib.resource.process.JDFGeneralID;
 import org.cip4.jdflib.resource.process.JDFMedia;
 import org.cip4.jdflib.resource.process.JDFSeparationSpec;
 import org.cip4.jdflib.span.JDFSpanBase;
@@ -108,7 +111,7 @@ import org.cip4.jdflib.util.StringUtil;
 import org.w3c.dom.Attr;
 
 /**
- * @author AnderssA ThunellE The treenode in the JTree To change this generated comment edit the template variable "typecomment":
+ * @author AnderssA ThunellE The tree node in the JTree To change this generated comment edit the template variable "typecomment":
  * Window>Preferences>Java>Templates. To enable and disable the creation of type comments go to Window>Preferences>Java>Code Generation.
  */
 public class JDFTreeNode extends DefaultMutableTreeNode
@@ -118,12 +121,14 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 	 */
 	private static final long serialVersionUID = -2778264565816334126L;
 
+	/**
+	 * 
+	 */
 	public boolean isInherited;
 
 	/**
 	 * constructor for an element node
 	 * @param elem the element
-	 * @param _isValid
 	 */
 	public JDFTreeNode(final KElement elem)
 	{
@@ -133,7 +138,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 	/**
 	 * constructor for an attribute node
 	 * @param atr the attribute
-	 * @param _isValid
+	 * @param _isInherited
 	 */
 	public JDFTreeNode(final Attr atr, final boolean _isInherited)
 	{
@@ -143,6 +148,9 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 
 	// /////////////////////////////////////////////////////////////////////
 
+	/**
+	 * 
+	 */
 	public JDFTreeNode()
 	{
 		super();
@@ -215,7 +223,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 
 	/**
 	 * set the text string related to this node. In case of attribute or text nodes, it is null
-	 * @return the related element
+	 * @param text
 	 */
 	public void setText(final String text)
 	{
@@ -239,6 +247,9 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 
 	// /////////////////////////////////////////////////////////////////////
 
+	/**
+	 * @return
+	 */
 	public boolean hasForeignNS()
 	{
 		final KElement e = getElement();
@@ -247,6 +258,9 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 
 	// /////////////////////////////////////////////////////////////////////
 
+	/**
+	 * @return
+	 */
 	public boolean isElement()
 	{
 		return (userObject instanceof KElement);
@@ -254,6 +268,9 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 
 	// /////////////////////////////////////////////////////////////////////
 
+	/**
+	 * @return
+	 */
 	public boolean isInherited()
 	{
 		return this.isInherited;
@@ -261,6 +278,9 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 
 	// /////////////////////////////////////////////////////////////////////
 
+	/**
+	 * @return
+	 */
 	public String getXPath()
 	{
 		final KElement element = getElement();
@@ -335,6 +355,9 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 
 	// /////////////////////////////////////////////////////////////////////
 
+	/**
+	 * @return
+	 */
 	public String getName()
 	{
 		if (isElement())
@@ -354,6 +377,9 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 
 	// /////////////////////////////////////////////////////////////////////
 
+	/**
+	 * @return
+	 */
 	public String getValue()
 	{
 		if (isElement())
@@ -386,6 +412,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 
 	/**
 	 * this is the display of the object in the tree
+	 * @return the string to be displayed in the tree view
 	 */
 	public String toDisplayString()
 	{
@@ -491,10 +518,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 				{
 					s += " JobPartID=" + typ;
 				}
-			}
-			else if (e instanceof JDFNode)
-			{
-				final String stat = e.getAttribute(AttributeName.NODESTATUS, null, null);
+				final String stat = e.getAttribute(AttributeName.STATUS, null, null);
 				s += " NodeStatus=" + stat;
 			}
 			else if (e instanceof JDFMessageService)
@@ -624,6 +648,20 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 					}
 				}
 			}
+			else if (e instanceof JDFGeneralID)
+			{
+				final JDFGeneralID p = (JDFGeneralID) e;
+				s += " " + p.getIDUsage() + " = " + p.getIDValue();
+			}
+			else if (e instanceof JDFRefAnchor)
+			{
+				final JDFRefAnchor p = (JDFRefAnchor) e;
+				final EnumAnchor anchor = p.getAnchor();
+				if (anchor != null)
+				{
+					s += " " + anchor.getName();
+				}
+			}
 
 			// always add id and descname
 			final String id = e.getAttribute_KElement(AttributeName.ID, null, null);
@@ -661,19 +699,19 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 			final JDFNode n = (JDFNode) element;
 			return n.buildXPath(null, 1);
 		}
-		
+
 		String x = element.getAttribute("XPath", null, null);
 		if (x != null)
 		{
 			return x;
 		}
-		
+
 		x = element.getAttribute("Name", null, null);
 		if (x == null)
 		{
 			return null;
 		}
-		
+
 		final String parentLocal = element.getInheritedAttribute("XPath", null, null);
 		return parentLocal != null ? parentLocal + "/@" + x : null;
 

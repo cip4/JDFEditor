@@ -140,9 +140,8 @@ import org.cip4.jdflib.resource.JDFModified;
 import org.cip4.jdflib.util.StringUtil;
 
 /**
- * @author AnderssA ThunellE SvenoniusI Elena Skobchenko
- * This is the junk dump all in class with gazillions of private members
- * TODO clean up and move routines to the model
+ * @author AnderssA ThunellE SvenoniusI Elena Skobchenko This is the junk dump all in class with gazillions of private members TODO clean up and move routines
+ * to the model
  */
 
 public class JDFFrame extends JFrame implements ActionListener, DropTargetListener, DragSourceListener, DragGestureListener, ClipboardOwner
@@ -153,7 +152,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 */
 	private static final long serialVersionUID = 626128726824503039L;
 
-	// TODO remove messy globals   
+	// TODO remove messy globals
 
 	public JDFTreeArea m_treeArea;
 
@@ -192,7 +191,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	/**
 	 * constructor of the frame
-	 *
+	 * 
 	 */
 	public JDFFrame()
 	{
@@ -203,9 +202,9 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds(0, 0, d.width, d.height - 30);
 
-		INIReader iniFile = Editor.getIniFile();
-		String language = iniFile.getLanguage();
-		String currentLookAndFeel = iniFile.getLookAndFeel();
+		final INIReader iniFile = Editor.getIniFile();
+		final String language = iniFile.getLanguage();
+		final String currentLookAndFeel = iniFile.getLookAndFeel();
 
 		final Locale currentLocale = new Locale(language, language.toUpperCase());
 
@@ -217,7 +216,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		{
 			UIManager.setLookAndFeel(currentLookAndFeel);
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, m_littleBundle.getString("LookAndFeelErrorKey"), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
@@ -289,18 +288,22 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 */
 	void openFile()
 	{
-		File fileToSave = null; //Do this for GT
+		File fileToSave = null; // Do this for GT
 		if (getJDFDoc() != null)
 		{
 			final String originalFileName = getJDFDoc().getOriginalFileName();
-			if (originalFileName != null) //Do this if statement for GT
+			if (originalFileName != null)
+			{
 				fileToSave = new File(originalFileName);
+			}
 		}
 		else
 		{
 			final String recentFile = Editor.getIniFile().getRecentFiles()[0];
 			if (recentFile != null)
+			{
 				fileToSave = new File(recentFile);
+			}
 		}
 
 		final EditorFileChooser chooser = new EditorFileChooser(fileToSave, EditorFileChooser.allFiles);
@@ -308,12 +311,12 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 		if (answer == JFileChooser.APPROVE_OPTION)
 		{
-			fileToSave = chooser.getSelectedFile(); //Do this GT
-			readFile(fileToSave); //Do this as well for GT
+			fileToSave = chooser.getSelectedFile(); // Do this GT
+			readFile(fileToSave); // Do this as well for GT
 		}
 	}
 
-	public void applyLookAndFeel(PreferenceDialog pd)
+	public void applyLookAndFeel(final PreferenceDialog pd)
 	{
 		try
 		{
@@ -322,31 +325,33 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			m_buttonBar.removeAll();
 			m_buttonBar.drawButtonBar();
 			SwingUtilities.updateComponentTreeUI(JDFFrame.this);
-			EditorDocument ed = getEditorDoc();
+			final EditorDocument ed = getEditorDoc();
 			if (ed != null && ed.getJDFTree() != null)
+			{
 				ed.getJDFTree().setRowHeight(18);
+			}
 
 			if (pd != null)
 			{
 				SwingUtilities.updateComponentTreeUI(pd);
 			}
 		}
-		catch (ClassNotFoundException e)
+		catch (final ClassNotFoundException e)
 		{
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, m_littleBundle.getString("LookAndFeelErrorKey"), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
-		catch (InstantiationException e)
+		catch (final InstantiationException e)
 		{
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, m_littleBundle.getString("LookAndFeelErrorKey"), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
-		catch (IllegalAccessException e)
+		catch (final IllegalAccessException e)
 		{
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, m_littleBundle.getString("LookAndFeelErrorKey"), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
-		catch (UnsupportedLookAndFeelException e)
+		catch (final UnsupportedLookAndFeelException e)
 		{
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, m_littleBundle.getString("LookAndFeelErrorKey"), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
@@ -361,33 +366,38 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 		final int option = JOptionPane.showOptionDialog(this, cc, m_littleBundle.getString("PrintMessKey"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
-		EditorDocument ed = getEditorDoc();
+		final EditorDocument ed = getEditorDoc();
 		if (option == JOptionPane.OK_OPTION)
 		{
 			Component comp = null;
 
 			if (cc.getComponent().equals(m_littleBundle.getString("ProcessViewKey")))
+			{
 				comp = m_topTabs.m_pArea;
-
+			}
 			else if (cc.getComponent().equals(m_littleBundle.getString("NextNeighbourKey")))
+			{
 				comp = m_topTabs.m_inOutScrollPane.m_inOutArea;
-
+			}
 			else if (cc.getComponent().equals(m_littleBundle.getString("TreeViewKey")))
+			{
 				comp = ed.getJDFTree();
+			}
 
 			PrintDialog.printIt(comp);
 		}
 	}
 
 	/**
-	 * Spawn informative
-	 * TODO correctly dump into multiple file
+	 * Spawn informative TODO correctly dump into multiple file
 	 */
-	void spawn(boolean bSpawnInformative)
+	void spawn(final boolean bSpawnInformative)
 	{
-		EditorDocument ed = getEditorDoc();
+		final EditorDocument ed = getEditorDoc();
 		if (ed == null)
+		{
 			return;
+		}
 		try
 		{
 			final JDFTreeNode node = (JDFTreeNode) ed.getSelectionPath().getLastPathComponent();
@@ -399,16 +409,18 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				clearViews();
 
 				if (!bSpawnInformative)
+				{
 					readFile(spawnDialog.newRootFile);
+				}
 
 				readFile(spawnDialog.newPartFile);
 			}
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("SpawnErrorKey") + e.getClass() + " \n"
-					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, m_littleBundle.getString("SpawnErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle
+					.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -421,18 +433,18 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		{
 			final MergeDialog mergeResult = new MergeDialog(this, m_littleBundle, getJDFDoc().getJDFRoot());
 
-			File f = mergeResult.getFileToSave();
+			final File f = mergeResult.getFileToSave();
 			if (f != null)
 			{
 				Editor.getFrame().refresh();
 				clearViews();
 			}
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("MergeErrorKey") + e.getClass() + " \n"
-					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, m_littleBundle.getString("MergeErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle
+					.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -453,10 +465,10 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			cleanupSelected(); // remove all defaults etc. so that the generated file remains reasonable
 			final ExportDialog exportDialog = new ExportDialog(root);
 
-			File fileToOpen = exportDialog.getFileToOpen();
+			final File fileToOpen = exportDialog.getFileToOpen();
 			if (fileToOpen != null)
 			{
-				VString vs = StringUtil.tokenize(exportDialog.generAttrString, " ", false);
+				final VString vs = StringUtil.tokenize(exportDialog.generAttrString, " ", false);
 				vs.unify();
 				final INIReader m_iniFile = Editor.getIniFile();
 				m_iniFile.setGenericAtts(vs);
@@ -464,11 +476,11 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				readFile(fileToOpen);
 			}
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("DevcapExportErrorKey") + e.getClass() + " \n"
-					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, m_littleBundle.getString("DevcapExportErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""),
+					m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -488,11 +500,11 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				m_errorTabbedPane.setSelectedIndex(m_errorTabbedPane.m_DC_ERRORS_INDEX);
 			}
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("DevcapOpenErrorKey") + e.getClass() + " \n"
-					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, m_littleBundle.getString("DevcapOpenErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle
+					.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -501,14 +513,14 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 * @param fts the file to read
 	 * @return true if at least one file was read or selected
 	 */
-	public boolean readFile(File fts)
+	public boolean readFile(final File fts)
 	{
 		EditorDocument eDoc[] = null;
 		Runtime.getRuntime().gc(); // clean up before loading
 
 		if (fts != null)
 		{
-			int docIndex = EditorDocument.indexOfFile(fts, m_VjdfDocument);
+			final int docIndex = EditorDocument.indexOfFile(fts, m_VjdfDocument);
 			if (docIndex >= 0)
 			{
 				nextFile(docIndex);
@@ -530,7 +542,9 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 						refreshView(eDoc[i], null);
 						final JDFDoc doc = eDoc[i].getJDFDoc();
 						if (doc != null)
+						{
 							doc.clearDirtyIDs();
+						}
 					}
 				}
 			}
@@ -538,16 +552,22 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		return eDoc != null;
 	}
 
-	/////////////////////////////////////////////////////////////
+	// ///////////////////////////////////////////////////////////
 
 	public void refreshView(EditorDocument eDoc, TreePath path)
 	{
 		if (eDoc == null)
+		{
 			eDoc = getEditorDoc();
+		}
 		if (eDoc == null)
+		{
 			return;
+		}
 		if (path == null)
+		{
 			path = eDoc.getLastSelection();
+		}
 
 		Editor.setCursor(1, null);
 		try
@@ -567,7 +587,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			}
 			this.toFront();
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			setJDFDoc(null, null);
 			e.printStackTrace();
@@ -585,14 +605,18 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 */
 	private String getWindowTitle()
 	{
-		EditorDocument ediDoc = getEditorDoc();
+		final EditorDocument ediDoc = getEditorDoc();
 		String title = "CIP4 JDFEditor";
 		if (ediDoc == null)
+		{
 			return title;
+		}
 		title += ": " + ediDoc.getSaveFileName();
-		String packageName = ediDoc.getMimePackage();
+		final String packageName = ediDoc.getMimePackage();
 		if (packageName != null)
+		{
 			title += " (" + ediDoc.getOriginalFileName() + ")";
+		}
 		return title;
 	}
 
@@ -603,9 +627,13 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	{
 		final EditorDocument editorDoc = getEditorDoc();
 		if (editorDoc == null)
+		{
 			return;
+		}
 		if (editorDoc.getMimePackage() != null)
+		{
 			return;
+		}
 
 		if (editorDoc.getJDFDoc() != null)
 		{
@@ -616,30 +644,31 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 * Method saveFile.
-	 * Save As-chooser
+	 * Method saveFile. Save As-chooser
 	 */
 	public void saveAs()
 	{
 		final EditorDocument ediDoc = getEditorDoc();
 		if (ediDoc == null)
+		{
 			return;
-		String fileName = ediDoc.getSaveFileName();
+		}
+		final String fileName = ediDoc.getSaveFileName();
 
-		File fileToSave = new File(fileName);
+		final File fileToSave = new File(fileName);
 		final EditorFileChooser saveChooser = new EditorFileChooser(fileToSave, EditorFileChooser.allFiles);
 		final int answer = saveChooser.showSaveDialog(null);
 
 		if (answer == JFileChooser.APPROVE_OPTION)
 		{
-			File file = saveChooser.getSelectedFile();
+			final File file = saveChooser.getSelectedFile();
 			int newAnswer = JOptionPane.YES_OPTION;
 
 			if (file.exists() && !file.equals(fileToSave))
 			{
-				final String[] options = { m_littleBundle.getString("YesKey"), m_littleBundle.getString("NoKey"),
-						m_littleBundle.getString("CancelKey") };
-				newAnswer = JOptionPane.showOptionDialog(this, m_littleBundle.getString("FileExistsKey"), null, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+				final String[] options = { m_littleBundle.getString("YesKey"), m_littleBundle.getString("NoKey"), m_littleBundle.getString("CancelKey") };
+				newAnswer = JOptionPane.showOptionDialog(this, m_littleBundle.getString("FileExistsKey"), null, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options,
+						options[0]);
 
 			}
 			if (newAnswer == JOptionPane.YES_OPTION)
@@ -656,7 +685,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 * @param source - The location in the Process View that's been selected
 	 * @return the JDFTreeNode that is to be searched for.
 	 */
-	void getProcessSearchNode(Object src)
+	void getProcessSearchNode(final Object src)
 	{
 		final ProcessPart pp = (ProcessPart) src;
 		JDFTreeNode node = null;
@@ -665,18 +694,19 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			final KElement kElement = pp.getElem();
 			node = new JDFTreeNode(kElement);
 		}
-		catch (Exception s)
+		catch (final Exception s)
 		{
 			JOptionPane.showMessageDialog(this, m_littleBundle.getString("FindErrorKey"), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 			s.printStackTrace();
 		}
 		if (node != null)
+		{
 			m_treeArea.findNode(node);
+		}
 	}
 
 	/**
-	 * Method clearViews.
-	 * clear all views before opening a new file
+	 * Method clearViews. clear all views before opening a new file
 	 */
 	void clearViews()
 	{
@@ -690,8 +720,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 * Method saveFileQuestion.
-	 * ask if the user wants to save an unsaved file before closing
+	 * Method saveFileQuestion. ask if the user wants to save an unsaved file before closing
 	 * @param nMax maximum number of saves
 	 * 
 	 * @return int
@@ -707,10 +736,11 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			{
 				String originalFileName = doc.getOriginalFileName();
 				if (originalFileName == null)
+				{
 					originalFileName = "Untitled";
+				}
 
-				final String question = m_littleBundle.getString("SaveQuestionKey") + "\n" + '"' + originalFileName
-						+ '"';
+				final String question = m_littleBundle.getString("SaveQuestionKey") + "\n" + '"' + originalFileName + '"';
 				save = JOptionPane.showConfirmDialog(this, question, "", JOptionPane.YES_NO_CANCEL_OPTION);
 			}
 		}
@@ -718,8 +748,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 * Method newJDF.
-	 * creates a new JDF file
+	 * Method newJDF. creates a new JDF file
 	 */
 	private void newJDF()
 	{
@@ -736,7 +765,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			setTitle(getWindowTitle());
 
 		}
-		catch (Exception s)
+		catch (final Exception s)
 		{
 			s.printStackTrace();
 			JOptionPane.showMessageDialog(this, m_littleBundle.getString("FileNotOpenKey"), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
@@ -745,8 +774,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 * Method newJMF.
-	 * creates a new JMF file
+	 * Method newJMF. creates a new JMF file
 	 */
 	private void newJMF()
 	{
@@ -762,7 +790,9 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			{
 				final String s = JDFElement.getValueForNewAttribute(jmfRoot, requiredAttributes.stringAt(i));
 				if (!jmfRoot.hasAttribute(requiredAttributes.stringAt(i)))
+				{
 					jmfRoot.setAttribute(requiredAttributes.stringAt(i), s);
+				}
 			}
 
 			setJDFDoc(jdfDoc, null);
@@ -771,7 +801,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			setTitle(getWindowTitle());
 
 		}
-		catch (Exception s)
+		catch (final Exception s)
 		{
 			s.printStackTrace();
 			JOptionPane.showMessageDialog(this, m_littleBundle.getString("FileNotOpenKey"), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
@@ -779,8 +809,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 * Method newGoldenTicket.
-	 * creates a new JDF file from an existing Golden Ticket.java file.
+	 * Method newGoldenTicket. creates a new JDF file from an existing Golden Ticket.java file.
 	 */
 	private void newGoldenTicket()
 	{
@@ -802,63 +831,63 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			{
 				try
 				{
-					VJDFAttributeMap vPartMap1 = new VJDFAttributeMap();
+					final VJDFAttributeMap vPartMap1 = new VJDFAttributeMap();
 
-					MISCPGoldenTicket jdfmiscp = new MISCPGoldenTicket(gt1, null, jmf, mis, true, vPartMap1);
+					final MISCPGoldenTicket jdfmiscp = new MISCPGoldenTicket(gt1, null, jmf, mis, true, vPartMap1);
 					jdfmiscp.assign(null);
 
-					//assigns the newly created JDF node to jdfcproot
+					// assigns the newly created JDF node to jdfcproot
 					final JDFNode jdfcproot = jdfmiscp.getNode();
 					final JDFDoc jdfmiscpDoc = jdfcproot.getOwnerDocument_JDFElement();
 					setJDFDoc(jdfmiscpDoc, null);
 
-					//display the result.
+					// display the result.
 					m_treeArea.drawTreeView(getEditorDoc());
 					jdfmiscpDoc.setOriginalFileName("MISCPICSGoldenTicket.jdf");
 					setTitle(getWindowTitle());
 				}
-				catch (Exception s)
+				catch (final Exception s)
 				{
 					s.printStackTrace();
 					JOptionPane.showMessageDialog(this, m_littleBundle.getString("FileNotOpenKey"), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 				}
 
-			}//end of MISCPS Golden Ticket Creation
+			}// end of MISCPS Golden Ticket Creation
 
 			else if (gtselect == "MIS to Prepress ICS")
 			{
-				/*System.out.println("In JDFFRame MISPRE W: " + gtselect + " " + mis + " " + jmf + " " + gt1);*/
+				/* System.out.println("In JDFFRame MISPRE W: " + gtselect + " " + mis + " " + jmf + " " + gt1); */
 				try
 				{
-					VJDFAttributeMap vPreMap1 = new VJDFAttributeMap();
+					final VJDFAttributeMap vPreMap1 = new VJDFAttributeMap();
 
-					MISPreGoldenTicket jdfmispre = new MISPreGoldenTicket(gt1, null, jmf, mis, vPreMap1);
+					final MISPreGoldenTicket jdfmispre = new MISPreGoldenTicket(gt1, null, jmf, mis, vPreMap1);
 					jdfmispre.assign(null);
 
-					//assigns the newly created JDF node to jdfcproot
+					// assigns the newly created JDF node to jdfcproot
 					final JDFNode jdfpreroot = jdfmispre.getNode();
 					final JDFDoc jdfmispreDoc = jdfpreroot.getOwnerDocument_JDFElement();
 					setJDFDoc(jdfmispreDoc, null);
 
-					//display the result.
+					// display the result.
 					m_treeArea.drawTreeView(getEditorDoc());
 					jdfmispreDoc.setOriginalFileName("MISPreICSGoldenTicket.jdf");
 					setTitle(getWindowTitle());
 				}
-				catch (Exception s)
+				catch (final Exception s)
 				{
 					s.printStackTrace();
 					JOptionPane.showMessageDialog(this, m_littleBundle.getString("FileNotOpenKey"), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 				}
 
-			}//end of MISPre Golden Ticket Creation
+			}// end of MISPre Golden Ticket Creation
 
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("DevcapOpenErrorKey") + e.getClass() + " \n"
-					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, m_littleBundle.getString("DevcapOpenErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle
+					.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 
 	}
@@ -866,7 +895,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	/**
 	 * Close the current file.
 	 */
-	public int closeFile(int nMax)
+	public int closeFile(final int nMax)
 	{
 		int save = 0;
 		int n = 0;
@@ -874,7 +903,9 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		while (doc != null)
 		{
 			if (n++ >= nMax)
+			{
 				break;
+			}
 
 			final INIReader m_iniFile = Editor.getIniFile();
 			if (isDirty() && !m_iniFile.getReadOnly())
@@ -888,13 +919,13 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 			if (save != JOptionPane.CANCEL_OPTION)
 			{
-				String originalFileName = doc.getOriginalFileName();
+				final String originalFileName = doc.getOriginalFileName();
 				if (originalFileName != null && !originalFileName.startsWith("Untitled"))
 				{
 					m_iniFile.writeINIFile();
 					m_menuBar.updateRecentFilesMenu(originalFileName);
 				}
-				
+
 				if (save == JOptionPane.YES_OPTION)
 				{
 					if (originalFileName.startsWith("Untitled"))
@@ -929,7 +960,9 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				new DropTarget(textArea, this);
 
 				if (!m_iniFile.getReadOnly())
+				{
 					setEnableClose(false);
+				}
 
 				m_treeArea.m_treeView.setView(textArea);
 				clearViews();
@@ -941,8 +974,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 * Asks if the user wants to create a new JDF or JMF file.
-	 * BMI: Also where can select Golden Ticket
+	 * Asks if the user wants to create a new JDF or JMF file. BMI: Also where can select Golden Ticket
 	 * 
 	 * Coming from EditorMenuBar, second stop in the chain. called from frame.NewFile()
 	 */
@@ -952,18 +984,23 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 		final NewFileChooser newFileChooser = new NewFileChooser();
 
-		final int option = JOptionPane.showOptionDialog(this, newFileChooser, m_littleBundle.getString("ChooseNewFileKey"), JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+		final int option = JOptionPane.showOptionDialog(this, newFileChooser, m_littleBundle.getString("ChooseNewFileKey"), JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null, options,
+				options[0]);
 
 		if (option == JOptionPane.OK_OPTION)
 		{
 			if ((newFileChooser.getSelection()).equals("JDF"))
+			{
 				newJDF();
-
+			}
 			else if ((newFileChooser.getSelection()).equals("JMF"))
+			{
 				newJMF();
-
+			}
 			else
+			{
 				newGoldenTicket();
+			}
 
 			final INIReader m_iniFile = Editor.getIniFile();
 			setEnableOpen(!m_iniFile.getReadOnly());
@@ -971,15 +1008,16 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 * fixes the version of a JDF by calling fixVersion for the selected JDF node ore
-	 * the closest JDF parent.
-	 *
+	 * fixes the version of a JDF by calling fixVersion for the selected JDF node ore the closest JDF parent.
+	 * 
 	 */
 	public void fixVersion()
 	{
 		final JDFDoc doc = getJDFDoc();
 		if (doc == null)
+		{
 			return;
+		}
 
 		try
 		{
@@ -992,12 +1030,14 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			{
 				KElement n1 = element.getDeepParent(ElementName.JDF, 0);
 				if (n1 == null)
+				{
 					n1 = element.getDeepParent(ElementName.JMF, 0);
+				}
 				if (n1 != null && n1 instanceof JDFNode)
 				{
-					JDFNode theRoot = (JDFNode) n1;
-					JDFAuditPool ap = theRoot.getCreateAuditPool();
-					JDFModified modi = ap.addModified(Editor.getEditorName(), null);
+					final JDFNode theRoot = (JDFNode) n1;
+					final JDFAuditPool ap = theRoot.getCreateAuditPool();
+					final JDFModified modi = ap.addModified(Editor.getEditor().getEditorName(), null);
 					modi.setDescriptiveName("update to version " + dialog.getVersion());
 				}
 			}
@@ -1013,24 +1053,25 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 			refreshView(getEditorDoc(), path);
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("FixVersionErrorKey") + e.getClass() + " \n"
-					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, m_littleBundle.getString("FixVersionErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle
+					.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
 	/**
-	 * fixes the version of a JDF by calling fixVersion for the selected JDF node ore
-	 * the closest JDF parent.
-	 *
+	 * fixes the version of a JDF by calling fixVersion for the selected JDF node ore the closest JDF parent.
+	 * 
 	 */
 	void cleanupSelected()
 	{
-		JDFDoc doc = getJDFDoc();
+		final JDFDoc doc = getJDFDoc();
 		if (doc == null)
+		{
 			return;
+		}
 
 		try
 		{
@@ -1040,7 +1081,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			final KElement element = EditorUtils.getElement(path);
 			if (element != null)
 			{
-				JDFNode n1 = (JDFNode) element.getDeepParent(ElementName.JDF, 0);
+				final JDFNode n1 = (JDFNode) element.getDeepParent(ElementName.JDF, 0);
 
 				if (n1 != null)
 				{
@@ -1058,24 +1099,25 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			}
 			refreshView(getEditorDoc(), path);
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("FixVersionErrorKey") + e.getClass() + " \n"
-					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, m_littleBundle.getString("FixVersionErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle
+					.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
 	/**
-	 * fixes the version of a JDF by calling fixVersion for the selected JDF node ore
-	 * the closest JDF parent.
-	 *
+	 * fixes the version of a JDF by calling fixVersion for the selected JDF node ore the closest JDF parent.
+	 * 
 	 */
 	void removeExtensionsfromSelected()
 	{
-		JDFDoc doc = getJDFDoc();
+		final JDFDoc doc = getJDFDoc();
 		if (doc == null)
+		{
 			return;
+		}
 
 		try
 		{
@@ -1085,16 +1127,16 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			final KElement element = EditorUtils.getElement(path);
 			if (element instanceof JDFElement)
 			{
-				JDFElement n1 = (JDFElement) element;
+				final JDFElement n1 = (JDFElement) element;
 				n1.removeExtensions();
 			}
 			refreshView(getEditorDoc(), path);
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("FixVersionErrorKey") + e.getClass() + " \n"
-					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, m_littleBundle.getString("FixVersionErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle
+					.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -1102,7 +1144,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 * Creates the SearchDialog.
 	 * @param searchComponent - Where to perform the search?
 	 */
-	private void findWhatDialog(String searchComponent)
+	private void findWhatDialog(final String searchComponent)
 	{
 		m_dialog = new SearchDialog(this);
 		m_dialog.setSearchComponent(searchComponent);
@@ -1112,7 +1154,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 * Mother of all action dispatchers
 	 * @param e the event that gets checked
 	 */
-	public void actionPerformed(ActionEvent e)
+	public void actionPerformed(final ActionEvent e)
 	{
 		Editor.setCursor(1, null);
 		final INIReader m_iniFile = Editor.getIniFile();
@@ -1123,7 +1165,9 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		{
 			final String originalFileName = doc.getSaveFileName();
 			if (originalFileName != null)
+			{
 				fileToSave = new File(originalFileName);
+			}
 		}
 
 		final Object eSrc = e.getSource();
@@ -1158,12 +1202,15 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		{
 			m_iniFile.writeINIFile();
 			if (closeFile(9999) != JOptionPane.CANCEL_OPTION)
+			{
 				System.exit(0);
+			}
 		}
 		else if (eSrc == m_menuBar.m_versionItem)
 		{
-			JOptionPane.showMessageDialog(this, Editor.getEditorName() + "\n" + Editor.getEditorBuildDate()
-					+ "\nJDF 1.4 compatible version\n" + "Schema JDF_1.4.xsd\n" + Editor.getEditorVersion(), "Version", JOptionPane.INFORMATION_MESSAGE);
+			final Editor editor = Editor.getEditor();
+			JOptionPane.showMessageDialog(this, editor.getEditorName() + "\n" + editor.getEditorBuildDate() + "\nJDF 1.4 compatible version\n" + "Schema JDF_1.4.xsd\n" + editor.getEditorVersion(),
+					"Version", JOptionPane.INFORMATION_MESSAGE);
 		}
 		else if (eSrc == m_menuBar.m_findItem)
 		{
@@ -1228,7 +1275,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		// copy the results of the validation to the system clip board
 		else if (eSrc == m_menuBar.m_copyValidationListItem)
 		{
-			//TODO           m_errorTabbedPane.copyValidationListToClipBoard();
+			// TODO m_errorTabbedPane.copyValidationListToClipBoard();
 		}
 		else if (!m_iniFile.getReadOnly())
 		{
@@ -1240,8 +1287,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			{
 				copySelectedNode();
 			}
-			else if (eSrc == m_buttonBar.m_pasteButton || eSrc == m_menuBar.m_pastePopupItem
-					|| eSrc == m_menuBar.m_pasteItem)
+			else if (eSrc == m_buttonBar.m_pasteButton || eSrc == m_menuBar.m_pastePopupItem || eSrc == m_menuBar.m_pasteItem)
 			{
 				pasteCopiedNode();
 			}
@@ -1305,21 +1351,29 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		Editor.setCursor(0, null);
 	}
 
-	///////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////
 
 	public EditorDocument nextFile(int pos)
 	{
 		if (m_VjdfDocument.isEmpty())
+		{
 			return null;
+		}
 		if (pos == -1)
+		{
 			pos = m_DocPos + 1;
+		}
 
 		if (pos >= m_VjdfDocument.size())
+		{
 			pos = 0;
+		}
 
 		EditorDocument ed = m_VjdfDocument.elementAt(m_DocPos);
 		if (pos == m_DocPos)
+		{
 			return ed; // nop
+		}
 
 		m_menuBar.setWindowMenuItemColor(pos);
 		m_DocPos = pos;
@@ -1329,11 +1383,11 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		return ed;
 	}
 
-	public void updateViews(TreePath path)
+	public void updateViews(final TreePath path)
 	{
 		Editor.setCursor(1, null);
 		m_treeArea.repaint();
-		EditorDocument ed = getEditorDoc();
+		final EditorDocument ed = getEditorDoc();
 		if (path != null && ed != null)
 		{
 			ed.getJDFTree().scrollPathToVisible(path);
@@ -1369,14 +1423,16 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			final JDFTreeNode lastPathComponent = (JDFTreeNode) path.getLastPathComponent();
 			final String previousNodeName = lastPathComponent.getName();
 			String previousNodeValue = null;
-			String newName = getModel().renameElementsAndAttributes(path);
+			final String newName = getModel().renameElementsAndAttributes(path);
 			if (newName != null)
 			{
 				if (!lastPathComponent.isElement() && !newName.equals(previousNodeName))
 				{
-					KElement e = lastPathComponent.getElement();
+					final KElement e = lastPathComponent.getElement();
 					if (e.hasAttribute(newName))
+					{
 						previousNodeValue = e.getAttribute(newName);
+					}
 				}
 				final RenameNodeEdit edit = new RenameNodeEdit(path, lastPathComponent, newName, previousNodeValue);
 				edit.redo();
@@ -1384,8 +1440,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			}
 			else
 			{
-				JOptionPane.showMessageDialog(this, "Rename operation was not completed."
-						+ "\nNo name selected or an error occured", "Rename", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(this, "Rename operation was not completed." + "\nNo name selected or an error occured", "Rename", JOptionPane.INFORMATION_MESSAGE);
 			}
 			updateViews(path);
 		}
@@ -1419,7 +1474,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			{
 				intoNode = (JDFTreeNode) path.getLastPathComponent();
 			}
-			catch (Exception s)
+			catch (final Exception s)
 			{
 				intoNode = (JDFTreeNode) path.getParentPath().getLastPathComponent();
 			}
@@ -1451,7 +1506,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			{
 				intoNode = (JDFTreeNode) path.getLastPathComponent();
 			}
-			catch (Exception s)
+			catch (final Exception s)
 			{
 				intoNode = (JDFTreeNode) path.getParentPath().getLastPathComponent();
 			}
@@ -1490,7 +1545,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		final TreePath path = m_treeArea.getSelectionPath();
 		if (path != null && m_copyNode != null)
 		{
-			JDFTreeNode intoNode = (JDFTreeNode) path.getLastPathComponent();
+			final JDFTreeNode intoNode = (JDFTreeNode) path.getLastPathComponent();
 			final JDFTreeNode pasteNode = m_copyNode.pasteNode(path);
 			if (pasteNode != null)
 			{
@@ -1506,11 +1561,11 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	private void findIt()
 	{
 		String findString = "JDFTree";
-		EditorDocument ed = getEditorDoc();
+		final EditorDocument ed = getEditorDoc();
 		if (!ed.getJDFTree().isFocusOwner())
 		{
 			m_searchTree = m_topTabs.m_inOutScrollPane.findIt();
-			boolean found = m_searchTree != null;
+			final boolean found = m_searchTree != null;
 
 			if (found)
 			{
@@ -1519,7 +1574,9 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		}
 		// findstring is always set at least to JDFTree
 		if (m_dialog == null)
+		{
 			findWhatDialog(findString);
+		}
 		else
 		{
 			m_dialog.setSearchComponent(findString);
@@ -1536,16 +1593,16 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		final JDFDoc doc = getJDFDoc();
 		if (doc != null)
 		{
-			KElement e = doc.getRoot();
+			final KElement e = doc.getRoot();
 			return e.isDirty();
 		}
 		return false;
 	}
 
-	/////////////////////////////////////////////////////////////
+	// ///////////////////////////////////////////////////////////
 	class MyTreeSelectionListener implements TreeSelectionListener
 	{
-		public void valueChanged(TreeSelectionEvent e)
+		public void valueChanged(final TreeSelectionEvent e)
 		{
 			e.getClass(); // fool compiler
 			if (m_treeArea.getSelectionPath() != null)
@@ -1553,7 +1610,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				final JDFTreeNode node = (JDFTreeNode) m_treeArea.getSelectionPath().getLastPathComponent();
 				if (node.isElement())
 				{
-					KElement elem = node.getElement();
+					final KElement elem = node.getElement();
 
 					if (elem instanceof JDFNode)
 					{
@@ -1602,13 +1659,13 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		}
 	}
 
-	private void setEnableClose(boolean mode)
+	private void setEnableClose(final boolean mode)
 	{
 		m_menuBar.setEnableClose(mode);
 		m_buttonBar.setEnableClose(mode);
 	}
 
-	private void setEnableOpen(boolean mode)
+	private void setEnableOpen(final boolean mode)
 	{
 		m_menuBar.setEnableOpen(mode);
 		m_buttonBar.setEnableOpen(mode);
@@ -1619,7 +1676,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		private static final long serialVersionUID = 626128726824504001L;
 
 		@Override
-		public void undoableEditHappened(UndoableEditEvent e)
+		public void undoableEditHappened(final UndoableEditEvent e)
 		{
 			addEdit(e.getEdit());
 			undoAction.updateUndoState();
@@ -1631,15 +1688,17 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	{
 		private static final long serialVersionUID = 626128726824504002L;
 
-		public void actionPerformed(ActionEvent e)
+		public void actionPerformed(final ActionEvent e)
 		{
 			e.getID();
 			try
 			{
 				if (undomanager.canUndo())
+				{
 					undomanager.undo();
+				}
 			}
-			catch (CannotUndoException ex)
+			catch (final CannotUndoException ex)
 			{
 				EditorUtils.errorBox("UnableUndo", ex.getMessage());
 				ex.printStackTrace();
@@ -1663,15 +1722,17 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	{
 		private static final long serialVersionUID = 626128726824504003L;
 
-		public void actionPerformed(ActionEvent e)
+		public void actionPerformed(final ActionEvent e)
 		{
 			e.getID(); // fool compiler
 			try
 			{
 				if (undomanager.canRedo())
+				{
 					undomanager.redo();
+				}
 			}
-			catch (CannotUndoException ex)
+			catch (final CannotUndoException ex)
 			{
 				ex.printStackTrace();
 			}
@@ -1692,74 +1753,78 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	class EditChangeListener implements ChangeListener
 	{
-		public void stateChanged(ChangeEvent e)
+		public void stateChanged(final ChangeEvent e)
 		{
 			e.getClass(); // fool compiler
 			if (m_treeArea != null)
+			{
 				m_treeArea.repaint();
+			}
 
 			if (getJDFDoc() == null)
+			{
 				m_buttonBar.m_validateButton.setEnabled(false);
+			}
 
 			final INIReader m_iniFile = Editor.getIniFile();
 			m_iniFile.writeINIFile();
 		}
 	}
 
-	public void dragGestureRecognized(DragGestureEvent e)
+	public void dragGestureRecognized(final DragGestureEvent e)
 	{
 		e.getClass(); // fool compiler
 		//
 	}
 
-	public void dragDropEnd(DragSourceDropEvent e)
+	public void dragDropEnd(final DragSourceDropEvent e)
 	{
 		e.getClass(); // fool compiler
 		//
 	}
 
-	public void dragEnter(DragSourceDragEvent e)
+	public void dragEnter(final DragSourceDragEvent e)
 	{
 		e.getClass(); // fool compiler
 		//
 	}
 
-	public void dragExit(DragSourceEvent e)
+	public void dragExit(final DragSourceEvent e)
 	{
 		e.getClass(); // fool compiler
 		//
 	}
 
-	public void dragOver(DragSourceDragEvent e)
+	public void dragOver(final DragSourceDragEvent e)
 	{
 		e.getClass(); // fool compiler
 		//
 	}
 
-	public void dropActionChanged(DragSourceDragEvent e)
+	public void dropActionChanged(final DragSourceDragEvent e)
 	{
 		e.getClass(); // fool compiler
 		//
 	}
 
-	public void dragEnter(DropTargetDragEvent e)
+	public void dragEnter(final DropTargetDragEvent e)
 	{
 		e.acceptDrag(DnDConstants.ACTION_COPY_OR_MOVE);
 	}
 
-	public void dragExit(DropTargetEvent e)
+	public void dragExit(final DropTargetEvent e)
 	{
 		e.getClass(); // fool compiler
 		//
 	}
 
-	public void dragOver(DropTargetDragEvent e)
+	public void dragOver(final DropTargetDragEvent e)
 	{
 		e.getClass(); // fool compiler
 		//
 	}
 
-	public synchronized void drop(DropTargetDropEvent e)
+	public synchronized void drop(final DropTargetDropEvent e)
 	{
 		try
 		{
@@ -1778,31 +1843,34 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				e.getDropTargetContext().dropComplete(true);
 			}
 			else
+			{
 				e.rejectDrop();
+			}
 		}
-		catch (IOException ioe)
+		catch (final IOException ioe)
 		{
 			System.out.println("data no longer available in the requested flavor");
 			e.rejectDrop();
 		}
-		catch (UnsupportedFlavorException ufe)
+		catch (final UnsupportedFlavorException ufe)
 		{
 			System.out.println("data flavor not supported");
 			e.rejectDrop();
 		}
 	}
 
-	public void dropActionChanged(DropTargetDragEvent e)
+	public void dropActionChanged(final DropTargetDragEvent e)
 	{
 		e.getClass(); // fool compiler
 		//
 	}
 
-	/* (non-Javadoc)
-	 * @see java.awt.datatransfer.boardOwner#lostOwnership(
-	 *      java.awt.datatransfer.Clipboard, java.awt.datatransfer.Transferable)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.datatransfer.boardOwner#lostOwnership( java.awt.datatransfer.Clipboard, java.awt.datatransfer.Transferable)
 	 */
-	public void lostOwnership(Clipboard arg0, Transferable arg1)
+	public void lostOwnership(final Clipboard arg0, final Transferable arg1)
 	{
 		// TODO Auto-generated method stub
 		arg0.getClass();
@@ -1816,7 +1884,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	public JDFTreeNode getRootNode()
 	{
-		EditorDocument ed = getEditorDoc();
+		final EditorDocument ed = getEditorDoc();
 		return ed == null ? null : ed.getRootNode();
 	}
 
@@ -1825,7 +1893,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 * @param doc
 	 * @return the index in the list of docs that doc is stored in
 	 */
-	public int setJDFDoc(JDFDoc doc, String mimePackage)
+	public int setJDFDoc(final JDFDoc doc, final String mimePackage)
 	{
 		int i = m_DocPos;
 		if (doc != null)
@@ -1851,7 +1919,9 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			m_DocPos--;
 			// roll over to the end; also ok if size=0, since -1 is the flag for all closed
 			if (m_DocPos == -1)
+			{
 				m_DocPos = m_VjdfDocument.size() - 1;
+			}
 		}
 		m_menuBar.updateWindowsMenu();
 
@@ -1865,7 +1935,9 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	public EditorDocument getEditorDoc()
 	{
 		if (m_DocPos < 0)
+		{
 			return null;
+		}
 		return m_VjdfDocument.elementAt(m_DocPos);
 	}
 
@@ -1875,61 +1947,39 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 */
 	public JDFDoc getJDFDoc()
 	{
-		EditorDocument ed = getEditorDoc();
+		final EditorDocument ed = getEditorDoc();
 		return ed == null ? null : ed.getJDFDoc();
 	}
 
-	public void setModel(JDFTreeModel m_model)
+	public void setModel(final JDFTreeModel m_model)
 	{
-		EditorDocument ed = getEditorDoc();
+		final EditorDocument ed = getEditorDoc();
 		ed.setModel(m_model);
 	}
 
 	public JDFTreeModel getModel()
 	{
-		EditorDocument ed = getEditorDoc();
+		final EditorDocument ed = getEditorDoc();
 		return ed == null ? null : ed.getModel();
 	}
 
-	////////////////////////////////////////////////////////////////
+	// //////////////////////////////////////////////////////////////
 
-	/*  public int newMISCPLevel()
-	  {
-	  	String cp1 = (String) JOptionPane.showInputDialog(
-	              this, m_littleBundle.getString("MISCPLevelKey2"), 
-	              m_littleBundle.getString("MISCPLevelKey"),
-	              JOptionPane.QUESTION_MESSAGE, null, 
-	              l1, "1");
-
-	  	int MISCPSelectLevel = 0;
-	  	MISCPSelectLevel = Integer.parseInt(cp1);
-	  	return MISCPSelectLevel;
-	  }
-	  
-	  public int newJMFLevel()
-	  {
-	  	String j1 = (String) JOptionPane.showInputDialog(
-	              this, m_littleBundle.getString("JMFLevelKey2"), 
-	              m_littleBundle.getString("JMFLevelKey"),
-	              JOptionPane.QUESTION_MESSAGE, null, 
-	              l1, "1");
-	  	
-	  	int JMFSelectLevel = 0;
-	  	JMFSelectLevel = Integer.parseInt(j1);
-	  	return JMFSelectLevel;
-	  }
-	  
-	  public int newMISLevel()
-	  {
-	  	String m1 = (String) JOptionPane.showInputDialog(
-	              this, m_littleBundle.getString("MISLevelKey2"), 
-	              m_littleBundle.getString("MISLevelKey"),
-	              JOptionPane.QUESTION_MESSAGE, null, 
-	              l2, "1");
-	  	
-	  	int MISSelectLevel = 0;
-	  	MISSelectLevel = Integer.parseInt(m1);
-	  	return MISSelectLevel;
-	  }*/
-	////////////////////////////////////////////////////////////////
+	/*
+	 * public int newMISCPLevel() { String cp1 = (String) JOptionPane.showInputDialog( this, m_littleBundle.getString("MISCPLevelKey2"),
+	 * m_littleBundle.getString("MISCPLevelKey"), JOptionPane.QUESTION_MESSAGE, null, l1, "1");
+	 * 
+	 * int MISCPSelectLevel = 0; MISCPSelectLevel = Integer.parseInt(cp1); return MISCPSelectLevel; }
+	 * 
+	 * public int newJMFLevel() { String j1 = (String) JOptionPane.showInputDialog( this, m_littleBundle.getString("JMFLevelKey2"),
+	 * m_littleBundle.getString("JMFLevelKey"), JOptionPane.QUESTION_MESSAGE, null, l1, "1");
+	 * 
+	 * int JMFSelectLevel = 0; JMFSelectLevel = Integer.parseInt(j1); return JMFSelectLevel; }
+	 * 
+	 * public int newMISLevel() { String m1 = (String) JOptionPane.showInputDialog( this, m_littleBundle.getString("MISLevelKey2"),
+	 * m_littleBundle.getString("MISLevelKey"), JOptionPane.QUESTION_MESSAGE, null, l2, "1");
+	 * 
+	 * int MISSelectLevel = 0; MISSelectLevel = Integer.parseInt(m1); return MISSelectLevel; }
+	 */
+	// //////////////////////////////////////////////////////////////
 }

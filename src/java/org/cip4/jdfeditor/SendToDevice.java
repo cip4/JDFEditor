@@ -73,6 +73,7 @@ package org.cip4.jdfeditor;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -90,6 +91,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import org.cip4.jdflib.core.JDFDoc;
+import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.elementwalker.AttributeReplacer;
 import org.cip4.jdflib.jmf.JDFCommand;
@@ -98,6 +100,7 @@ import org.cip4.jdflib.jmf.JDFQueueSubmissionParams;
 import org.cip4.jdflib.jmf.JDFMessage.EnumType;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.util.MimeUtil;
+import org.cip4.jdflib.util.StringUtil;
 
 /*
  * Created on 12.07.2004
@@ -344,6 +347,14 @@ public class SendToDevice extends JPanel implements ActionListener
 		try
 		{
 			bSendTrue = con != null && con.getResponseCode() == 200;
+			if (bSendTrue)
+			{
+				final JDFDoc d2 = new JDFParser().parseStream(con.getInputStream());
+				String newFileName = Editor.getEditorDoc().getOriginalFileName();
+				newFileName = StringUtil.newExtension(newFileName, ".resp.jmf");
+				d2.write2File(newFileName, 2, true);
+				Editor.getFrame().readFile(new File(newFileName));
+			}
 		}
 		catch (final IOException x)
 		{

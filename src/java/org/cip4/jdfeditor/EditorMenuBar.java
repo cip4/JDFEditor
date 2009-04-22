@@ -97,13 +97,11 @@ import org.cip4.jdflib.pool.JDFResourceLinkPool;
 import org.cip4.jdflib.pool.JDFResourcePool;
 
 /**
- * Class to implement all the menu bar and menu related stuff
- * moved here from JDFFrame
+ * Class to implement all the menu bar and menu related stuff moved here from JDFFrame
  * @author prosirai
  * 
- * Code for the menu on the top of the JDFEditor as well as the pop up menus. You can modify the hot key settings here for every menu
- * choice.
- *
+ * Code for the menu on the top of the JDFEditor as well as the pop up menus. You can modify the hot key settings here for every menu choice.
+ * 
  */
 public class EditorMenuBar extends JMenuBar implements ActionListener
 {
@@ -170,7 +168,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	private final JMenuItem[] m_subMenuItem = new JMenuItem[5];
 	private JMenuItem m_devcapOpenMenu;
 
-	//popup menues 
+	// popup menues
 	JMenuItem m_insertElemBeforeItem;
 	JMenuItem m_insertElemAfterItem;
 	JMenuItem m_insertElemIntoItem;
@@ -198,8 +196,8 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	 */
 	private JMenu drawEditMenu()
 	{
-		JDFFrame frame = Editor.getFrame();
-		ResourceBundle littleBundle = Editor.getBundle();
+		final JDFFrame frame = Editor.getFrame();
+		final ResourceBundle littleBundle = Editor.getBundle();
 		final Menu_MouseListener menuListener = new Menu_MouseListener();
 		final int menuKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
@@ -223,22 +221,19 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 		m_cutItem = new JMenuItem(littleBundle.getString("CutKey"));
 		m_cutItem.addActionListener(frame);
-		m_cutItem.setAccelerator(KeyStroke.getKeyStroke('X', java.awt.event.InputEvent.CTRL_MASK
-				+ java.awt.event.InputEvent.SHIFT_MASK));
+		m_cutItem.setAccelerator(KeyStroke.getKeyStroke('X', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
 		m_cutItem.setEnabled(false);
 		m_editMenu.add(m_cutItem);
 
 		m_copyItem = new JMenuItem(littleBundle.getString("CopyKey"));
 		m_copyItem.addActionListener(frame);
-		m_copyItem.setAccelerator(KeyStroke.getKeyStroke('C', java.awt.event.InputEvent.CTRL_MASK
-				+ java.awt.event.InputEvent.SHIFT_MASK));
+		m_copyItem.setAccelerator(KeyStroke.getKeyStroke('C', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
 		m_copyItem.setEnabled(false);
 		m_editMenu.add(m_copyItem);
 
 		m_pasteItem = new JMenuItem(littleBundle.getString("PasteKey"));
 		m_pasteItem.addActionListener(frame);
-		m_pasteItem.setAccelerator(KeyStroke.getKeyStroke('V', java.awt.event.InputEvent.CTRL_MASK
-				+ java.awt.event.InputEvent.SHIFT_MASK));
+		m_pasteItem.setAccelerator(KeyStroke.getKeyStroke('V', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
 		m_pasteItem.setEnabled(false);
 		m_editMenu.add(m_pasteItem);
 
@@ -278,8 +273,8 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	 */
 	private JMenu drawFileMenu()
 	{
-		JDFFrame m_frame = Editor.getFrame();
-		ResourceBundle m_littleBundle = Editor.getBundle();
+		final JDFFrame m_frame = Editor.getFrame();
+		final ResourceBundle m_littleBundle = Editor.getBundle();
 		final Menu_MouseListener menuListener = new Menu_MouseListener();
 		final int menuKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
@@ -315,8 +310,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 		m_saveAsItem = new JMenuItem(m_littleBundle.getString("SaveAsKey"));
 		m_saveAsItem.addActionListener(m_frame);
-		m_saveAsItem.setAccelerator(KeyStroke.getKeyStroke('S', java.awt.event.InputEvent.CTRL_MASK
-				+ java.awt.event.InputEvent.SHIFT_MASK));
+		m_saveAsItem.setAccelerator(KeyStroke.getKeyStroke('S', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
 		m_fileMenu.add(m_saveAsItem);
 		m_fileMenu.add(new JSeparator());
 
@@ -353,8 +347,8 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	 */
 	private JMenu drawHelpMenu()
 	{
-		JDFFrame m_frame = Editor.getFrame();
-		ResourceBundle m_littleBundle = Editor.getBundle();
+		final JDFFrame m_frame = Editor.getFrame();
+		final ResourceBundle m_littleBundle = Editor.getBundle();
 		final Menu_MouseListener menuListener = new Menu_MouseListener();
 		final int menuKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
@@ -388,7 +382,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	{
 		final Menu_MouseListener menuListener = new Menu_MouseListener();
 		final int menuKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
-		ResourceBundle m_littleBundle = Editor.getBundle();
+		final ResourceBundle m_littleBundle = Editor.getBundle();
 
 		m_windowMenu = new JMenu(m_littleBundle.getString("WindowKey"));
 		m_windowMenu.setBorderPainted(false);
@@ -457,8 +451,8 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	{
 		final Menu_MouseListener menuListener = new Menu_MouseListener();
 
-		JDFFrame m_frame = Editor.getFrame();
-		ResourceBundle m_littleBundle = Editor.getBundle();
+		final JDFFrame m_frame = Editor.getFrame();
+		final ResourceBundle m_littleBundle = Editor.getBundle();
 		m_insertMenu = new JMenu(m_littleBundle.getString("InsertKey"));
 		m_insertMenu.setBorderPainted(false);
 		m_insertMenu.addMouseListener(menuListener);
@@ -534,30 +528,27 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	{
 		final Menu_MouseListener menuListener = new Menu_MouseListener();
 
-		JDFFrame m_frame = Editor.getFrame();
-		ResourceBundle m_littleBundle = Editor.getBundle();
+		final JDFFrame m_frame = Editor.getFrame();
+		final ResourceBundle m_littleBundle = Editor.getBundle();
 		m_toolsMenu = new JMenu(m_littleBundle.getString("ToolsKey"));
 		m_toolsMenu.setBorderPainted(false);
 		m_toolsMenu.addMouseListener(menuListener);
 
 		m_spawnItem = new JMenuItem("Spawn...");
 		m_spawnItem.addActionListener(m_frame);
-		m_spawnItem.setAccelerator(KeyStroke.getKeyStroke('S', java.awt.event.InputEvent.CTRL_MASK
-				+ java.awt.event.InputEvent.ALT_MASK));
+		m_spawnItem.setAccelerator(KeyStroke.getKeyStroke('S', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.ALT_MASK));
 		m_spawnItem.setEnabled(false);
 		m_toolsMenu.add(m_spawnItem);
 
 		m_spawnInformItem = new JMenuItem("Spawn Informative...");
 		m_spawnInformItem.addActionListener(m_frame);
-		m_spawnInformItem.setAccelerator(KeyStroke.getKeyStroke('I', java.awt.event.InputEvent.CTRL_MASK
-				+ java.awt.event.InputEvent.ALT_MASK));
+		m_spawnInformItem.setAccelerator(KeyStroke.getKeyStroke('I', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.ALT_MASK));
 		m_spawnInformItem.setEnabled(false);
 		m_toolsMenu.add(m_spawnInformItem);
 
 		m_mergeItem = new JMenuItem("Merge...");
 		m_mergeItem.addActionListener(m_frame);
-		m_mergeItem.setAccelerator(KeyStroke.getKeyStroke('M', java.awt.event.InputEvent.CTRL_MASK
-				+ java.awt.event.InputEvent.ALT_MASK));
+		m_mergeItem.setAccelerator(KeyStroke.getKeyStroke('M', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.ALT_MASK));
 		m_mergeItem.setEnabled(false);
 		m_toolsMenu.add(m_mergeItem);
 		m_toolsMenu.add(new JSeparator());
@@ -600,8 +591,8 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	{
 		final int menuKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 		final INIReader m_iniFile = Editor.getIniFile();
-		JDFFrame m_frame = Editor.getFrame();
-		ResourceBundle m_littleBundle = Editor.getBundle();
+		final JDFFrame m_frame = Editor.getFrame();
+		final ResourceBundle m_littleBundle = Editor.getBundle();
 
 		m_validateMenu = new JMenu(m_littleBundle.getString("ValidateKey"));
 		m_validateMenu.setBorderPainted(false);
@@ -662,40 +653,44 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	 */
 
 	/**
-	 * Checks if the String[] m_iniFile.recentFiles file has any content. 
-	 * Called to check if the the m_recentFilesMenu is to be created. 
+	 * Checks if the String[] m_iniFile.recentFiles file has any content. Called to check if the the m_recentFilesMenu is to be created.
 	 * @return true if any file has recently been opened; false otherwise.
 	 */
 	public String[] recentFiles()
 	{
 		int l = 0;
-		String[] v = Editor.getIniFile().getRecentFiles();
+		final String[] v = Editor.getIniFile().getRecentFiles();
 		for (int i = 0; i < v.length; i++)
 		{
 			if (v[i] != null)
+			{
 				l++;
+			}
 		}
 		// no nulls - just return v
 		if (l == v.length)
+		{
 			return v;
+		}
 
 		// create new continuous list w
-		String w[] = new String[l];
+		final String w[] = new String[l];
 		l = 0;
 		for (int i = 0; i < v.length; i++)
 		{
 			if (v[i] != null)
+			{
 				w[l++] = v[i];
+			}
 		}
 		return w;
 	}
 
 	/**
-	 * Updates the order in the Recent Files Menu.
-	 * also updates all windows and the ini file - just in case
+	 * Updates the order in the Recent Files Menu. also updates all windows and the ini file - just in case
 	 * @param pathName - The path to the file
 	 */
-	public void updateRecentFilesMenu(String pathName)
+	public void updateRecentFilesMenu(final String pathName)
 	{
 		final INIReader iniReader = Editor.getIniFile();
 		final boolean exist = iniReader.pathNameExists(pathName);
@@ -714,11 +709,15 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 					m_recentFilesMenu.add(m_subMenuItem[i]);
 				}
 				else
+				{
 					m_subMenuItem[i].setText(iniReader.getRecentFiles()[i]);
+				}
 			}
 		}
 		else
+		{
 			m_recentFilesMenu.setEnabled(false);
+		}
 
 		updateWindowsMenu();
 	}
@@ -728,7 +727,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	 */
 	public void updateWindowsMenu()
 	{
-		JDFFrame m_frame = Editor.getFrame();
+		final JDFFrame m_frame = Editor.getFrame();
 		if (m_frame.m_DocPos >= 0)
 		{
 			JMenuItem mwindows[] = null;
@@ -740,9 +739,13 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 					for (int i = 0; i < m_Windows.length; i++)
 					{
 						if (i < mwindows.length)
+						{
 							mwindows[i] = m_Windows[i];
+						}
 						else
+						{
 							m_windowMenu.remove(m_Windows[i]);
+						}
 					}
 				}
 				for (int i = m_Windows == null ? 0 : m_Windows.length; i < mwindows.length; i++)
@@ -755,7 +758,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 			}
 			for (int i = 0; i < m_Windows.length; i++)
 			{
-				JDFDoc d = m_frame.m_VjdfDocument.elementAt(i).getJDFDoc();
+				final JDFDoc d = m_frame.m_VjdfDocument.elementAt(i).getJDFDoc();
 				m_Windows[i].setText(d.getOriginalFileName());
 			}
 			setWindowMenuItemColor(m_frame.m_DocPos);
@@ -774,7 +777,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	 * enable or disable spawn n merge in bulk
 	 * @param enable
 	 */
-	public void setSpawnMergeEnabled(boolean enable)
+	public void setSpawnMergeEnabled(final boolean enable)
 	{
 		m_spawnItem.setEnabled(enable);
 		m_spawnInformItem.setEnabled(enable);
@@ -783,7 +786,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 	protected void setEnabledInMenu(final TreePath path)
 	{
-		JDFFrame m_frame = Editor.getFrame();
+		final JDFFrame m_frame = Editor.getFrame();
 		final JDFTreeNode node = (JDFTreeNode) path.getLastPathComponent();
 		final JDFTreeNode parNode = (JDFTreeNode) node.getParent();
 		Object parent = null;
@@ -835,8 +838,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 				m_insertOutResItem.setEnabled(true);
 				m_insertResItem.setEnabled(true);
 			}
-			else if ((kElement instanceof JDFResourceLinkPool)
-					&& EditorUtils.getResourcesAllowedToLink(((JDFResourceLinkPool) kElement).getParentJDF(), null) != null)
+			else if ((kElement instanceof JDFResourceLinkPool) && EditorUtils.getResourcesAllowedToLink(((JDFResourceLinkPool) kElement).getParentJDF(), null) != null)
 			{
 				m_insertInResItem.setEnabled(false);
 				m_insertOutResItem.setEnabled(false);
@@ -865,7 +867,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		}
 	}
 
-	public void setEnableClose(boolean mode)
+	public void setEnableClose(final boolean mode)
 	{
 		m_cutItem.setEnabled(mode);
 		m_copyItem.setEnabled(mode);
@@ -892,7 +894,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		m_sendToDeviceItem.setEnabled(mode);
 	}
 
-	public void setEnableOpen(boolean mode)
+	public void setEnableOpen(final boolean mode)
 	{
 		m_cutItem.setEnabled(mode);
 		m_copyItem.setEnabled(mode);
@@ -915,68 +917,84 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		m_sendToDeviceItem.setEnabled(true);
 	}
 
-	////////////////////////////////////////////////////////////////////////////////
+	// //////////////////////////////////////////////////////////////////////////////
 
 	class Menu_MouseListener extends MouseAdapter
 	{
 		@Override
-		public void mouseEntered(MouseEvent e)
+		public void mouseEntered(final MouseEvent e)
 		{
 			final Object source = e.getSource();
 			if (source == m_fileMenu)
+			{
 				m_fileMenu.setBorderPainted(true);
-
+			}
 			else if (source == m_insertMenu)
+			{
 				m_insertMenu.setBorderPainted(true);
-
+			}
 			else if (source == m_toolsMenu)
+			{
 				m_toolsMenu.setBorderPainted(true);
-
+			}
 			else if (source == m_editMenu)
+			{
 				m_editMenu.setBorderPainted(true);
-
+			}
 			else if (source == m_validateMenu)
+			{
 				m_validateMenu.setBorderPainted(true);
-
+			}
 			else if (source == m_helpMenu)
+			{
 				m_helpMenu.setBorderPainted(true);
-
+			}
 			else if (source == m_windowMenu)
+			{
 				m_windowMenu.setBorderPainted(true);
+			}
 		}
 
 		@Override
-		public void mouseExited(MouseEvent e)
+		public void mouseExited(final MouseEvent e)
 		{
 			final Object source = e.getSource();
 			if (source == m_fileMenu)
+			{
 				m_fileMenu.setBorderPainted(false);
-
+			}
 			else if (source == m_insertMenu)
+			{
 				m_insertMenu.setBorderPainted(false);
-
+			}
 			else if (source == m_toolsMenu)
+			{
 				m_toolsMenu.setBorderPainted(false);
-
+			}
 			else if (source == m_editMenu)
+			{
 				m_editMenu.setBorderPainted(false);
-
+			}
 			else if (source == m_validateMenu)
+			{
 				m_validateMenu.setBorderPainted(false);
-
+			}
 			else if (source == m_windowMenu)
+			{
 				m_windowMenu.setBorderPainted(false);
-
+			}
 			else if (source == m_helpMenu)
+			{
 				m_helpMenu.setBorderPainted(false);
+			}
 		}
 	}
 
-	///////////////////////////////////////////////////////////////////// 
+	// ///////////////////////////////////////////////////////////////////
 	/*
 	 * WHERE the process begins when you select File->New from the JDFEditor menu.
 	 */
-	public void actionPerformed(ActionEvent e)
+	public void actionPerformed(final ActionEvent e)
 	{
 		Editor.setCursor(1, null);
 		final Object eSrc = e.getSource();
@@ -988,7 +1006,9 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 			iniFile.setInhAttr(m_showInhAttrRadioItem.isSelected());
 			iniFile.writeINIFile();
 			if (getJDFDoc() != null)
+			{
 				ta.drawTreeView(frame.getEditorDoc());
+			}
 
 		}
 		if (eSrc == m_DispDefAttrRadioItem)
@@ -996,7 +1016,9 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 			iniFile.setDisplayDefault(m_DispDefAttrRadioItem.isSelected());
 			iniFile.writeINIFile();
 			if (getJDFDoc() != null)
+			{
 				ta.drawTreeView(frame.getEditorDoc());
+			}
 		}
 		else if (eSrc == m_sendToDeviceItem)
 		{
@@ -1056,24 +1078,14 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		}
 		else if (eSrc == m_aboutItem)
 		{
-			ImageIcon imgCIP = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "CIP4.gif");
+			final ImageIcon imgCIP = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "CIP4.gif");
 
-			final String about = "Copyright © 2000-2008,\n"
-					+ "International Cooperation for Integration of Processes in Prepress, Press and Postpress,\n"
-					+ "hereinafter referred to as CIP4. All Rights Reserved\n\n"
-					+ "Authors: Anna Andersson, Evelina Thunell, Ingemar Svenonius, Elena Skobchenko, Rainer Prosi\n\n"
-					+ "PRELIMINARY PRE-RELEASE VERSION\n\n"
-					+ "The APPLICATION is provided 'as is', without warranty of any kind, express, implied, or\n"
-					+ "otherwise, including but not limited to the warranties of merchantability,fitness for a\n"
-					+ "particular purpose and noninfringement. In no event will CIP4 be liable, for any claim,\n"
-					+ "damages or other liability whether in an action of contract, tort or otherwise, arising\n"
-					+ "from, out of, or in connection with the APPLICATION or the use or other dealings in the\n"
-					+ "APPLICATION.";
+			final String about = Editor.getEditor().getAboutText();
 			JOptionPane.showMessageDialog(this, about, "CIP4 JDF Editor", JOptionPane.INFORMATION_MESSAGE, imgCIP);
 		}
 		else if (eSrc == m_helpItem)
 		{
-			HelpFrame h = HelpFrame.getHelp();
+			final HelpFrame h = HelpFrame.getHelp();
 			h.setVisible(true);
 			h.toFront();
 		}
@@ -1083,7 +1095,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		}
 		else if (eSrc == m_devcapOpenMenu)
 		{
-			File f = iniFile.getRecentDevCap();
+			final File f = iniFile.getRecentDevCap();
 			openRecentFile(f);
 
 		}
@@ -1102,7 +1114,9 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 			for (int i = 0; i < m_Windows.length; i++)
 			{
 				if (eSrc == m_Windows[i])
+				{
 					Editor.getFrame().nextFile(i);
+				}
 			}
 		}
 
@@ -1137,17 +1151,19 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		iniFile.setAttr(m_showAttrRadioItem.isSelected());
 		iniFile.writeINIFile();
 		if (getJDFDoc() != null)
+		{
 			ta.drawTreeView(frame.getEditorDoc());
+		}
 	}
 
 	/**
 	 * Called if a file is opened from the recent files menu.
 	 * @param filePathToSave - Path to the file that is to be opened
 	 */
-	private void openRecentFile(File fileToSave)
+	private void openRecentFile(final File fileToSave)
 	{
 		Editor.setCursor(1, null);
-		boolean b = Editor.getFrame().readFile(fileToSave);
+		final boolean b = Editor.getFrame().readFile(fileToSave);
 
 		if (b)
 		{
@@ -1155,7 +1171,9 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 			final INIReader m_iniFile = Editor.getIniFile();
 			if (m_iniFile.nrOfRecentFiles() != 1)
+			{
 				m_iniFile.updateOrder(s, true);
+			}
 		}
 		else
 		{
@@ -1164,11 +1182,11 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		Editor.setCursor(0, null);
 	}
 
-	////////////////////////////////////////////////////////////
+	// //////////////////////////////////////////////////////////
 
 	private JDFDoc getJDFDoc()
 	{
-		EditorDocument ed = Editor.getFrame().getEditorDoc();
+		final EditorDocument ed = Editor.getFrame().getEditorDoc();
 		return ed == null ? null : ed.getJDFDoc();
 	}
 
@@ -1176,30 +1194,34 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	 * set the windows menuiten background color of pos
 	 * @param pos the position in the document list
 	 */
-	public void setWindowMenuItemColor(int pos)
+	public void setWindowMenuItemColor(final int pos)
 	{
 		final Color menuColor = m_nextItem.getBackground();
 		for (int i = 0; i < m_Windows.length; i++)
 		{
 			if (i == pos)
+			{
 				m_Windows[i].setBackground(Color.orange);
+			}
 			else
+			{
 				m_Windows[i].setBackground(menuColor);
+			}
 		}
 	}
 
 	private void showPreferences()
 	{
-		ResourceBundle bundle = Editor.getBundle();
+		final ResourceBundle bundle = Editor.getBundle();
 		final String[] options = { bundle.getString("OkKey"), bundle.getString("CancelKey") };
-		PreferenceDialog pd = new PreferenceDialog();
+		final PreferenceDialog pd = new PreferenceDialog();
 
 		final int option = JOptionPane.showOptionDialog(this, pd, bundle.getString("PreferenceKey"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
 		if (option == JOptionPane.OK_OPTION)
 		{
 			pd.writeToIni();
-			EditorDocument ed = Editor.getEditorDoc();
+			final EditorDocument ed = Editor.getEditorDoc();
 			if (ed != null && ed.getJDFTree() != null)
 			{
 				ed.getJDFTree().repaint();
