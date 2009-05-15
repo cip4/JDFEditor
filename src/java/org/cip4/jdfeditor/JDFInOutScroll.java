@@ -1,10 +1,11 @@
 package org.cip4.jdfeditor;
+
 /*
  *
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2006 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2009 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -103,594 +104,620 @@ import org.cip4.jdflib.resource.JDFResource;
 public class JDFInOutScroll extends JScrollPane
 {
 
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 8635330186484361532L;
-    JPanel m_inOutArea;
-    private final JPanel m_inOutAreaLeft;
-    private final JPanel m_inOutAreaMiddle;
-    private final JPanel m_inOutAreaRight;
-    private JDFTreeNode m_searchInOutNode; 
-    private int m_inTreePos = 0;
-    private int m_outTreePos = 0;
+	private static final long serialVersionUID = 8635330186484361532L;
+	JPanel m_inOutArea;
+	private final JPanel m_inOutAreaLeft;
+	private final JPanel m_inOutAreaMiddle;
+	private final JPanel m_inOutAreaRight;
+	private JDFTreeNode m_searchInOutNode;
+	private int m_inTreePos = 0;
+	private int m_outTreePos = 0;
 
-    public JDFInOutScroll()
-    {
-        super();
-        m_inOutArea = new JPanel();
-        m_inOutArea.setLayout(null);
-        m_inOutArea.setBackground(Color.white);
+	public JDFInOutScroll()
+	{
+		super();
+		m_inOutArea = new JPanel();
+		m_inOutArea.setLayout(null);
+		m_inOutArea.setBackground(Color.white);
 
-        m_inOutAreaLeft = new JPanel();
-        m_inOutAreaLeft.setLayout(null);
-        m_inOutAreaLeft.setBackground(Color.white);
-        m_inOutArea.add(m_inOutAreaLeft);
+		m_inOutAreaLeft = new JPanel();
+		m_inOutAreaLeft.setLayout(null);
+		m_inOutAreaLeft.setBackground(Color.white);
+		m_inOutArea.add(m_inOutAreaLeft);
 
-        m_inOutAreaMiddle = new JPanel();
-        m_inOutAreaMiddle.setLayout(null);
-        m_inOutAreaMiddle.setBackground(Color.white);
-        m_inOutArea.add(m_inOutAreaMiddle);
+		m_inOutAreaMiddle = new JPanel();
+		m_inOutAreaMiddle.setLayout(null);
+		m_inOutAreaMiddle.setBackground(Color.white);
+		m_inOutArea.add(m_inOutAreaMiddle);
 
-        m_inOutAreaRight = new JPanel();
-        m_inOutAreaRight.setLayout(null);
-        m_inOutAreaRight.setBackground(Color.white);
-        m_inOutArea.add(m_inOutAreaRight);
+		m_inOutAreaRight = new JPanel();
+		m_inOutAreaRight.setLayout(null);
+		m_inOutAreaRight.setBackground(Color.white);
+		m_inOutArea.add(m_inOutAreaRight);
 
-        m_inOutArea.add(Box.createHorizontalGlue());
-        getViewport().add(m_inOutArea, null);
-        getVerticalScrollBar().setUnitIncrement(20);
-        getHorizontalScrollBar().setUnitIncrement(20);
-    }
+		m_inOutArea.add(Box.createHorizontalGlue());
+		getViewport().add(m_inOutArea, null);
+		getVerticalScrollBar().setUnitIncrement(20);
+		getHorizontalScrollBar().setUnitIncrement(20);
+	}
 
-    /**
-     *  
-     * Draws the In & Output View Area with its components, except for
-     * the Input/JDF Producer and Output/JDF Consumer Trees.
-     * *
-     * @param element The element you wish to draw in the In & Output View
-     * @param lStr The Left Title
-     * @param mStr The Middle Title
-     * @param rStr The Right Title
-     */
-    private void drawInOutView(KElement element, String lStr, String mStr, String rStr)
-    {
-        final Dimension d = getSize();
-        final int w = d.width / 3;
+	/**
+	 * 
+	 * Draws the In & Output View Area with its components, except for the Input/JDF Producer and Output/JDF Consumer Trees. *
+	 * @param element The element you wish to draw in the In & Output View
+	 * @param lStr The Left Title
+	 * @param mStr The Middle Title
+	 * @param rStr The Right Title
+	 */
+	private void drawInOutView(final KElement element, final String lStr, final String mStr, final String rStr)
+	{
+		final Dimension d = getSize();
+		final int w = d.width / 3;
 
-        m_inOutAreaLeft.add(getTitleLabel(lStr, w));
-        m_inOutAreaMiddle.add(getTitleLabel(mStr, w));
-        m_inOutAreaRight.add(getTitleLabel(rStr, w));
+		m_inOutAreaLeft.add(getTitleLabel(lStr, w));
+		m_inOutAreaMiddle.add(getTitleLabel(mStr, w));
+		m_inOutAreaRight.add(getTitleLabel(rStr, w));
 
-        final JTree mTree = getInOutNodes(element);
-        ToolTipManager.sharedInstance().registerComponent(mTree);
-        mTree.setShowsRootHandles(false);
-        m_inOutAreaMiddle.add(mTree);
-        final int mHeight = mTree.getPreferredSize().height;
-        mTree.setBounds(5, 50, w - 10, mHeight);
+		final JTree mTree = getInOutNodes(element);
+		ToolTipManager.sharedInstance().registerComponent(mTree);
+		mTree.setShowsRootHandles(false);
+		m_inOutAreaMiddle.add(mTree);
+		final int mHeight = mTree.getPreferredSize().height;
+		mTree.setBounds(5, 50, w - 10, mHeight);
 
-        m_inOutAreaLeft.setBounds(0, 0, w, m_inTreePos);
-        m_inOutAreaMiddle.setBounds(w, 0, w, mHeight + 50);
-        m_inOutAreaRight.setBounds(2 * w, 0, w, m_outTreePos);
-        final int h = m_inTreePos < m_outTreePos ? m_outTreePos : m_inTreePos;
-        final Dimension dim = new Dimension(d.width-20, h < mHeight + 50 ? mHeight + 50 : h);
-        m_inOutArea.setPreferredSize(dim);
+		m_inOutAreaLeft.setBounds(0, 0, w, m_inTreePos);
+		m_inOutAreaMiddle.setBounds(w, 0, w, mHeight + 50);
+		m_inOutAreaRight.setBounds(2 * w, 0, w, m_outTreePos);
+		final int h = m_inTreePos < m_outTreePos ? m_outTreePos : m_inTreePos;
+		final Dimension dim = new Dimension(d.width - 20, h < mHeight + 50 ? mHeight + 50 : h);
+		m_inOutArea.setPreferredSize(dim);
 
-        m_inOutArea.repaint();
-        getViewport().add(m_inOutArea, null);
-        final JDFFrame m_frame=Editor.getFrame();
-        final EditorTabbedPaneA editorTabbedPaneA = m_frame.m_topTabs;
-        editorTabbedPaneA.setComponentAt(editorTabbedPaneA.m_IO_INDEX, this);
-        editorTabbedPaneA.setSelectedIndex(editorTabbedPaneA.m_IO_INDEX);
-    }
+		m_inOutArea.repaint();
+		getViewport().add(m_inOutArea, null);
+		final JDFFrame m_frame = Editor.getFrame();
+		final EditorTabbedPaneA editorTabbedPaneA = m_frame.m_topTabs;
+		editorTabbedPaneA.setComponentAt(editorTabbedPaneA.m_IO_INDEX, this);
+		editorTabbedPaneA.setSelectedIndex(editorTabbedPaneA.m_IO_INDEX);
+	}
 
+	/**
+	 * Creates a JLabel for the titles in the In & Output View
+	 * @param String - The text on the JLabel
+	 * @param int - The width of the JLabel
+	 * @return A JLabel with the title text
+	 */
+	private JLabel getTitleLabel(final String title, final int width)
+	{
+		final JLabel label = new JLabel(title);
+		label.setFont(new Font("Verdana", Font.BOLD, 12));
+		label.setBackground(Color.white);
+		label.setForeground(Color.black);
+		label.setBounds(5, 0, width, 50);
 
-    /**
-     * Creates a JLabel for the titles in the In & Output View
-     * @param String - The text on the JLabel
-     * @param int    - The width of the JLabel
-     * @return A JLabel with the title text
-     */
-    private JLabel getTitleLabel(String title, int width)
-    {
-        final JLabel label = new JLabel(title);
-        label.setFont(new Font("Verdana", Font.BOLD, 12));
-        label.setBackground(Color.white);
-        label.setForeground(Color.black);
-        label.setBounds(5, 0, width, 50);
+		return label;
+	}
 
-        return label;
-    }
+	/**
+	 * Adds the Input/JDF Producer and Output/JDF Consumer Trees to the In & Output View. Called numerous times to draw all the different trees
+	 * @param elem - The element you want to add as a Tree to the In & Output View
+	 * @param isJDFElem - Is the element a JDF element?
+	 */
+	private void addResourceTree(final KElement elem, final boolean isJDFElem)
+	{
+		final Dimension d = getSize();
+		final int w = d.width / 3;
+		final String usage = elem.getAttribute("Usage", null, "");
+		final String rRef = elem.getAttribute("rRef", null, "");
 
-    /**
-     * Adds the Input/JDF Producer and Output/JDF Consumer Trees to
-     * the In & Output View. Called numerous times to draw all the
-     * different trees
-     * @param elem -  The element you want to add as a Tree to
-     * the In & Output View
-     * @param isJDFElem - Is the  element a JDF element? 
-     */
-    private void addResourceTree(KElement elem, boolean isJDFElem)
-    {
-        final Dimension d = getSize();
-        final int w = d.width / 3;
-        final String usage = elem.getAttribute("Usage", null, "");
-        final String rRef = elem.getAttribute("rRef", null, "");
+		KElement res = null;
+		if (isJDFElem)
+		{
+			res = elem.getTarget_KElement(rRef, "ID");
+		}
+		else
+		{
+			res = (KElement) elem.getParentNode().getParentNode();
+		}
 
-        KElement res = null;
-        if (isJDFElem)
-            res = elem.getTarget_KElement(rRef, "ID");
-        else
-            res = (KElement) elem.getParentNode().getParentNode();
+		if (usage.equals("Input") == isJDFElem)
+		{
+			final JTree inTree = getInOutNodes(res);
+			m_inOutAreaLeft.add(inTree);
+			ToolTipManager.sharedInstance().registerComponent(inTree);
+			inTree.setBounds(5, m_inTreePos, w - 10, inTree.getPreferredSize().height);
+			m_inTreePos += inTree.getPreferredSize().height + 10;
+		}
+		if (usage.equals("Output") == isJDFElem)
+		{
+			final JTree outTree = getInOutNodes(res);
+			m_inOutAreaRight.add(outTree);
+			ToolTipManager.sharedInstance().registerComponent(outTree);
+			outTree.setBounds(5, m_outTreePos, w - 10, outTree.getPreferredSize().height);
+			m_outTreePos += outTree.getPreferredSize().height + 10;
+		}
+	}
 
-        if (usage.equals("Input")==isJDFElem)
-        {
-            final JTree inTree = getInOutNodes(res);
-            m_inOutAreaLeft.add(inTree);
-            ToolTipManager.sharedInstance().registerComponent(inTree);
-            inTree.setBounds(5, m_inTreePos, w - 10, inTree.getPreferredSize().height);
-            m_inTreePos += inTree.getPreferredSize().height + 10;
-        }
-        if (usage.equals("Output")==isJDFElem)
-        {
-            final JTree outTree = getInOutNodes(res);
-            m_inOutAreaRight.add(outTree);
-            ToolTipManager.sharedInstance().registerComponent(outTree);
-            outTree.setBounds(5, m_outTreePos, w - 10, outTree.getPreferredSize().height);
-            m_outTreePos += outTree.getPreferredSize().height + 10;
-        }
-    }
+	/**
+	 * Searching after a string in the nextneigbour view, starting from the selected node.
+	 * @param inString - The String to search for
+	 * @param forwardDirection - Search forward or backward?
+	 */
+	public void findStringInNeighbourTree(final String inString, final boolean forwardDirection)
+	{
+		Editor.setCursor(1, null);
+		final JDFFrame m_frame = Editor.getFrame();
+		if (m_frame.m_searchTree != null && m_searchInOutNode != null && inString != null && !inString.equals(JDFConstants.EMPTYSTRING))
+		{
+			boolean found = false;
+			final String searchString = inString.toUpperCase();
+			final JPanel[] areaArray = { m_inOutAreaLeft, m_inOutAreaMiddle, m_inOutAreaRight };
+			JPanel areaPanel;
+			boolean finishedFirstSearch = false;
+			JTree lastSelectedTree = m_frame.m_searchTree;
 
-    /**
-     * Searching after a string in the nextneigbour view, starting from the selected node.
-     * @param inString         - The String to search for
-     * @param forwardDirection - Search forward or backward?
-     */
-    public void findStringInNeighbourTree(String inString, boolean forwardDirection)
-    {
-        Editor.setCursor(1,null);
-        final JDFFrame m_frame=Editor.getFrame();
-        if (m_frame.m_searchTree != null && m_searchInOutNode != null && 
-                inString!=null && !inString.equals(JDFConstants.EMPTYSTRING))
-        {
-            boolean found = false;
-            final String searchString = inString.toUpperCase();
-            final JPanel[] areaArray = { m_inOutAreaLeft, m_inOutAreaMiddle, m_inOutAreaRight };
-            JPanel areaPanel;
-            boolean finishedFirstSearch = false;
-            JTree lastSelectedTree = m_frame.m_searchTree;
+			if (forwardDirection)
+			{
+				for (int j = 0; j < areaArray.length; j++)
+				{
+					areaPanel = areaArray[j];
+					final int count = areaPanel.getComponentCount() - 1;
 
-            if (forwardDirection)
-            {
-                for (int j = 0; j < areaArray.length; j++)
-                {
-                    areaPanel = areaArray[j];
-                    int count = areaPanel.getComponentCount() - 1;
+					for (int i = 0; i < count; i++)
+					{
 
-                    for (int i = 0; i < count; i++)
-                    {
-                        
-                        final Component component2 = areaPanel.getComponent(i);
-                        if(!(component2 instanceof JTree))
-                                continue;
-                        
-                        JTree tmpTree = (JTree) component2;
+						final Component component2 = areaPanel.getComponent(i);
+						if (!(component2 instanceof JTree))
+						{
+							continue;
+						}
 
-                        if (finishedFirstSearch)
-                        {
-                            m_frame.m_searchTree = tmpTree;
-                            m_searchInOutNode =
-                                (JDFTreeNode) (tmpTree.getPathForRow(0)).getLastPathComponent();
-                        }
-                        if (tmpTree.equals(m_frame.m_searchTree))
-                        {
-                            if (((JDFTreeNode) (tmpTree.getPathForRow(0)).getLastPathComponent())
-                                    .equals(m_searchInOutNode))
-                            {
-                                final Enumeration e = m_searchInOutNode.preorderEnumeration();
-                                Object currNode;
+						final JTree tmpTree = (JTree) component2;
 
-                                if (!finishedFirstSearch)
-                                    e.nextElement();
+						if (finishedFirstSearch)
+						{
+							m_frame.m_searchTree = tmpTree;
+							m_searchInOutNode = (JDFTreeNode) (tmpTree.getPathForRow(0)).getLastPathComponent();
+						}
+						if (tmpTree.equals(m_frame.m_searchTree))
+						{
+							if (((JDFTreeNode) (tmpTree.getPathForRow(0)).getLastPathComponent()).equals(m_searchInOutNode))
+							{
+								final Enumeration e = m_searchInOutNode.preorderEnumeration();
+								Object currNode;
 
-                                while (e.hasMoreElements())
-                                {
-                                    currNode = e.nextElement();
-                                    JDFTreeNode checkNode = (JDFTreeNode) currNode;
-                                    final String tmpString = checkNode.toString().toUpperCase();
+								if (!finishedFirstSearch)
+								{
+									e.nextElement();
+								}
 
-                                    if (tmpString.indexOf(searchString) != -1)
-                                    {
-                                        lastSelectedTree.removeSelectionPath(lastSelectedTree.getSelectionPath());
-                                        m_searchInOutNode = checkNode;
-                                        m_frame.m_searchTree = tmpTree;
-                                        ((JLabel) ((Box) ((Box) m_frame.m_dialog.getContentPane().getComponent(1))
-                                                .getComponent(7)).getComponent(1)).setText(" ");
-                                        final TreePath path = new TreePath(checkNode.getPath());
-                                        lastSelectedTree = tmpTree;
-                                        tmpTree.makeVisible(path);
-                                        tmpTree.setSelectionPath(path);
-                                        tmpTree.scrollPathToVisible(path);
-                                        found = true;
-                                        break;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                JDFTreeNode checkNode = m_searchInOutNode;
+								while (e.hasMoreElements())
+								{
+									currNode = e.nextElement();
+									final JDFTreeNode checkNode = (JDFTreeNode) currNode;
+									final String tmpString = checkNode.toString().toUpperCase();
 
-                                while (checkNode.getNextSibling() != null)
-                                {
-                                    checkNode = (JDFTreeNode) checkNode.getNextSibling();
-                                    final String tmpString = checkNode.toString().toUpperCase();
-                                    if (tmpString.indexOf(searchString) != -1)
-                                    {
-                                        lastSelectedTree.removeSelectionPath(lastSelectedTree.getSelectionPath());
-                                        m_searchInOutNode = checkNode;
-                                        m_frame.m_searchTree = tmpTree;
-                                        ((JLabel) ((Box) ((Box) m_frame.m_dialog.getContentPane().getComponent(1))
-                                                .getComponent(7)).getComponent(1)).setText(" ");
-                                        final TreePath path = new TreePath(checkNode.getPath());
-                                        lastSelectedTree = tmpTree;
-                                        tmpTree.makeVisible(path);
-                                        tmpTree.setSelectionPath(path);
-                                        tmpTree.scrollPathToVisible(path);
-                                        found = true;
-                                        break;
-                                    }
-                                }
-                            }
-                            if (found)
-                                break;
+									if (tmpString.indexOf(searchString) != -1)
+									{
+										lastSelectedTree.removeSelectionPath(lastSelectedTree.getSelectionPath());
+										m_searchInOutNode = checkNode;
+										m_frame.m_searchTree = tmpTree;
+										((JLabel) ((Box) ((Box) m_frame.m_dialog.getContentPane().getComponent(1)).getComponent(7)).getComponent(1)).setText(" ");
+										final TreePath path = new TreePath(checkNode.getPath());
+										lastSelectedTree = tmpTree;
+										tmpTree.makeVisible(path);
+										tmpTree.setSelectionPath(path);
+										tmpTree.scrollPathToVisible(path);
+										found = true;
+										break;
+									}
+								}
+							}
+							else
+							{
+								JDFTreeNode checkNode = m_searchInOutNode;
 
-                            finishedFirstSearch = true;
-                        }
-                    }
-                    if (found)
-                        break;
-                }
-            }
-            else
-            {
-                boolean lastWasRoot = false;
-                for (int j = areaArray.length - 1; j >= 0; j--)
-                {
-                    areaPanel = areaArray[j];
-                    int nr = areaPanel.getComponentCount() -1;
-                    int count = 0;
+								while (checkNode.getNextSibling() != null)
+								{
+									checkNode = (JDFTreeNode) checkNode.getNextSibling();
+									final String tmpString = checkNode.toString().toUpperCase();
+									if (tmpString.indexOf(searchString) != -1)
+									{
+										lastSelectedTree.removeSelectionPath(lastSelectedTree.getSelectionPath());
+										m_searchInOutNode = checkNode;
+										m_frame.m_searchTree = tmpTree;
+										((JLabel) ((Box) ((Box) m_frame.m_dialog.getContentPane().getComponent(1)).getComponent(7)).getComponent(1)).setText(" ");
+										final TreePath path = new TreePath(checkNode.getPath());
+										lastSelectedTree = tmpTree;
+										tmpTree.makeVisible(path);
+										tmpTree.setSelectionPath(path);
+										tmpTree.scrollPathToVisible(path);
+										found = true;
+										break;
+									}
+								}
+							}
+							if (found)
+							{
+								break;
+							}
 
-                     for (int i = nr; i >= count; i--)
-                    {                        
-                         final Component component2 = areaPanel.getComponent(i);
-                         if(!(component2 instanceof JTree))
-                                 continue;
-                         
-                         JTree tmpTree = (JTree) component2;
+							finishedFirstSearch = true;
+						}
+					}
+					if (found)
+					{
+						break;
+					}
+				}
+			}
+			else
+			{
+				boolean lastWasRoot = false;
+				for (int j = areaArray.length - 1; j >= 0; j--)
+				{
+					areaPanel = areaArray[j];
+					final int nr = areaPanel.getComponentCount() - 1;
+					final int count = 0;
 
-                        if (finishedFirstSearch)
-                        {
-                            m_frame.m_searchTree = tmpTree;
-                            JDFTreeNode tmpNode =
-                                (JDFTreeNode) (tmpTree.getPathForRow(0)).getLastPathComponent();
-                            if (tmpNode.getChildCount() != 0)
-                                m_searchInOutNode = (JDFTreeNode) tmpNode.getLastChild();
-                            else
-                                m_searchInOutNode = tmpNode;
-                        }
-                        if (tmpTree.equals(m_frame.m_searchTree))
-                        {
-                            if (!((JDFTreeNode) (tmpTree.getPathForRow(0)).getLastPathComponent())
-                                    .equals(m_searchInOutNode))
-                            {
-                                final Enumeration e = ((JDFTreeNode) (tmpTree.getPathForRow(0))
-                                        .getLastPathComponent()).preorderEnumeration();
-                                final Stack tmpStack = new Stack();
+					for (int i = nr; i >= count; i--)
+					{
+						final Component component2 = areaPanel.getComponent(i);
+						if (!(component2 instanceof JTree))
+						{
+							continue;
+						}
 
-                                while (e.hasMoreElements())
-                                {
-                                    tmpStack.push(e.nextElement());
-                                }
-                                JDFTreeNode checkNode;
-                                while (!tmpStack.isEmpty())
-                                {
-                                    checkNode = m_searchInOutNode;
+						final JTree tmpTree = (JTree) component2;
 
-                                    if (!lastWasRoot)
-                                        checkNode = (JDFTreeNode) tmpStack.pop();
+						if (finishedFirstSearch)
+						{
+							m_frame.m_searchTree = tmpTree;
+							final JDFTreeNode tmpNode = (JDFTreeNode) (tmpTree.getPathForRow(0)).getLastPathComponent();
+							if (tmpNode.getChildCount() != 0)
+							{
+								m_searchInOutNode = (JDFTreeNode) tmpNode.getLastChild();
+							}
+							else
+							{
+								m_searchInOutNode = tmpNode;
+							}
+						}
+						if (tmpTree.equals(m_frame.m_searchTree))
+						{
+							if (!((JDFTreeNode) (tmpTree.getPathForRow(0)).getLastPathComponent()).equals(m_searchInOutNode))
+							{
+								final Enumeration e = ((JDFTreeNode) (tmpTree.getPathForRow(0)).getLastPathComponent()).preorderEnumeration();
+								final Stack tmpStack = new Stack();
 
-                                    if (checkNode.equals(m_searchInOutNode))
-                                    {
-                                        while (!tmpStack.isEmpty())
-                                        {
-                                            checkNode = (JDFTreeNode) tmpStack.pop();
-                                            final String tmpString = checkNode.toString().toUpperCase();
+								while (e.hasMoreElements())
+								{
+									tmpStack.push(e.nextElement());
+								}
+								JDFTreeNode checkNode;
+								while (!tmpStack.isEmpty())
+								{
+									checkNode = m_searchInOutNode;
 
-                                            if (tmpString.indexOf(searchString) != -1)
-                                            {
-                                                lastSelectedTree.removeSelectionPath(
-                                                        lastSelectedTree.getSelectionPath());
-                                                m_searchInOutNode = checkNode;
-                                                ((JLabel) ((Box) ((Box) m_frame.m_dialog.getContentPane().getComponent(1))
-                                                        .getComponent(7)).getComponent(1)).setText(" ");
-                                                final TreePath path = new TreePath(checkNode.getPath());
-                                                lastSelectedTree = tmpTree;
-                                                tmpTree.makeVisible(path);
-                                                tmpTree.setSelectionPath(path);
-                                                tmpTree.scrollPathToVisible(path);
-                                                found = true;
-                                                break;
-                                            }
-                                        }
-                                        if (found)
-                                            break;
-                                    }
-                                }
-                                lastWasRoot = false;
-                            }
-                            else
-                                lastWasRoot = true;
+									if (!lastWasRoot)
+									{
+										checkNode = (JDFTreeNode) tmpStack.pop();
+									}
 
-                            finishedFirstSearch = true;
-                        }
-                        if (found)
-                            break;
-                    }
-                    if (found)
-                        break;
-                }
-            }
-            if (!found)
-                ((JLabel) ((Box) ((Box) m_frame.m_dialog.getContentPane().getComponent(1)).getComponent(7)).getComponent(1))
-                .setText(Editor.getBundle().getString("StringNotFoundKey"));
-        }
-        Editor.setCursor(0,null);
-    }
+									if (checkNode.equals(m_searchInOutNode))
+									{
+										while (!tmpStack.isEmpty())
+										{
+											checkNode = (JDFTreeNode) tmpStack.pop();
+											final String tmpString = checkNode.toString().toUpperCase();
 
-    public JTree findIt()
-    {
-        boolean found=false;
-        JTree searchTree=null;
-        if (!found)
-        {
-            for (int i = 0; i < m_inOutAreaLeft.getComponentCount() && !found; i++)
-            {
-                final Component comp = m_inOutAreaLeft.getComponent(i);
-                if (comp instanceof JTree && comp.isFocusOwner())
-                {
-                    searchTree = (JTree) comp;
-                    m_searchInOutNode = (JDFTreeNode) ((JTree)comp).getSelectionPath().getLastPathComponent();
-                    found = true;
-                }
-            }
-        }
-        if (!found)
-        {
-            if (m_inOutAreaMiddle.getComponentCount() > 1)
-            {
-                final Component comp = m_inOutAreaMiddle.getComponent(1);
-                if (comp instanceof JTree && comp.isFocusOwner())
-                {
-                    searchTree = (JTree) comp;
-                    m_searchInOutNode = (JDFTreeNode) ((JTree) comp).getSelectionPath().getLastPathComponent();
-                    found = true;
-                }
-            }
-        }
-        if (!found)
-        {
-            for (int i = 0; i < m_inOutAreaRight.getComponentCount() && !found; i++)
-            {
-                final Component comp = m_inOutAreaRight.getComponent(i);
-                if (comp instanceof JTree && comp.isFocusOwner())
-                {
-                    searchTree = (JTree) comp;
-                    m_searchInOutNode = (JDFTreeNode) ((JTree) comp).getSelectionPath().getLastPathComponent();
-                    found = true;
-                }
-            }
-        }
-        return searchTree;
-    }
-    /**
-     * clear the input ouput view
-     *
-     */
-    public void clearInOutView()
-    {
-        m_inOutAreaLeft.removeAll();
-        m_inOutAreaRight.removeAll();
-        m_inOutAreaMiddle.removeAll();
-        m_inOutArea.validate();
-        m_inOutArea.repaint();
-    }
+											if (tmpString.indexOf(searchString) != -1)
+											{
+												lastSelectedTree.removeSelectionPath(lastSelectedTree.getSelectionPath());
+												m_searchInOutNode = checkNode;
+												((JLabel) ((Box) ((Box) m_frame.m_dialog.getContentPane().getComponent(1)).getComponent(7)).getComponent(1)).setText(" ");
+												final TreePath path = new TreePath(checkNode.getPath());
+												lastSelectedTree = tmpTree;
+												tmpTree.makeVisible(path);
+												tmpTree.setSelectionPath(path);
+												tmpTree.scrollPathToVisible(path);
+												found = true;
+												break;
+											}
+										}
+										if (found)
+										{
+											break;
+										}
+									}
+								}
+								lastWasRoot = false;
+							}
+							else
+							{
+								lastWasRoot = true;
+							}
 
-    /**
-     * Creates the In & Output View.
-     */
-    public void initInOutView(EditorDocument eDoc)
-    {
-        if (eDoc==null)
-            eDoc=Editor.getEditorDoc();
+							finishedFirstSearch = true;
+						}
+						if (found)
+						{
+							break;
+						}
+					}
+					if (found)
+					{
+						break;
+					}
+				}
+			}
+			if (!found)
+			{
+				((JLabel) ((Box) ((Box) m_frame.m_dialog.getContentPane().getComponent(1)).getComponent(7)).getComponent(1)).setText(Editor.getBundle().getString("StringNotFoundKey"));
+			}
+		}
+		Editor.setCursor(0, null);
+	}
 
-        if (eDoc==null)
-            return;
+	public JTree findIt()
+	{
+		boolean found = false;
+		JTree searchTree = null;
+		if (!found)
+		{
+			for (int i = 0; i < m_inOutAreaLeft.getComponentCount() && !found; i++)
+			{
+				final Component comp = m_inOutAreaLeft.getComponent(i);
+				if (comp instanceof JTree && comp.isFocusOwner())
+				{
+					searchTree = (JTree) comp;
+					m_searchInOutNode = (JDFTreeNode) ((JTree) comp).getSelectionPath().getLastPathComponent();
+					found = true;
+				}
+			}
+		}
+		if (!found)
+		{
+			if (m_inOutAreaMiddle.getComponentCount() > 1)
+			{
+				final Component comp = m_inOutAreaMiddle.getComponent(1);
+				if (comp instanceof JTree && comp.isFocusOwner())
+				{
+					searchTree = (JTree) comp;
+					m_searchInOutNode = (JDFTreeNode) ((JTree) comp).getSelectionPath().getLastPathComponent();
+					found = true;
+				}
+			}
+		}
+		if (!found)
+		{
+			for (int i = 0; i < m_inOutAreaRight.getComponentCount() && !found; i++)
+			{
+				final Component comp = m_inOutAreaRight.getComponent(i);
+				if (comp instanceof JTree && comp.isFocusOwner())
+				{
+					searchTree = (JTree) comp;
+					m_searchInOutNode = (JDFTreeNode) ((JTree) comp).getSelectionPath().getLastPathComponent();
+					found = true;
+				}
+			}
+		}
+		return searchTree;
+	}
 
-        Editor.setCursor(1,null);
-        TreePath path = eDoc.getSelectionPath();
+	/**
+	 * clear the input ouput view
+	 * 
+	 */
+	public void clearInOutView()
+	{
+		m_inOutAreaLeft.removeAll();
+		m_inOutAreaRight.removeAll();
+		m_inOutAreaMiddle.removeAll();
+		m_inOutArea.validate();
+		m_inOutArea.repaint();
+	}
 
-        JDFTreeNode node = null;        
-        final JDFFrame m_frame=Editor.getFrame();
+	/**
+	 * Creates the In & Output View.
+	 */
+	public void initInOutView(EditorDocument eDoc)
+	{
+		if (eDoc == null)
+		{
+			eDoc = Editor.getEditorDoc();
+		}
 
-        if (path != null)
-        {
-            node = (JDFTreeNode) path.getLastPathComponent();
-        }
-        else if (m_frame.m_treeArea != null)
-        {
-            node = (JDFTreeNode) eDoc.getRootNode().getFirstChild();
-        }
-        if(node==null)
-            return;
-        
-        eDoc.setSelectionPath(new TreePath(node.getPath()),true);            
+		if (eDoc == null)
+		{
+			return;
+		}
 
-        KElement root=eDoc.getJDFDoc().getRoot(); // check whether JMF, 
-        if (node.isElement() && (root instanceof JDFNode))
-        {            
-            final KElement kElement =  node.getElement();
-            m_inTreePos = m_outTreePos = 50;        
-            SwingUtilities.updateComponentTreeUI(this);
+		Editor.setCursor(1, null);
+		final TreePath path = eDoc.getSelectionPath();
 
-            if (kElement != null)
-            {
+		JDFTreeNode node = null;
+		final JDFFrame m_frame = Editor.getFrame();
 
-                String lTitle = "";
-                String mTitle = "";
-                String rTitle = "";
-                boolean isJDFNode = false;
+		if (path != null)
+		{
+			node = (JDFTreeNode) path.getLastPathComponent();
+		}
+		else if (m_frame.m_treeArea != null)
+		{
+			final JDFTreeNode rootNode = eDoc.getRootNode();
+			node = rootNode == null ? null : (JDFTreeNode) rootNode.getFirstChild();
+		}
+		if (node == null)
+		{
+			return;
+		}
 
-                if (kElement instanceof JDFNode)
-                {
-                    ResourceBundle m_littleBundle=Editor.getBundle();
-                    mTitle = m_littleBundle.getString("JDFElementKey");
-                    isJDFNode = true;
-                    JDFNode n=(JDFNode) kElement;
+		eDoc.setSelectionPath(new TreePath(node.getPath()), true);
 
-                    if (kElement.hasChildElement(ElementName.RESOURCELINKPOOL, null))
-                    {
-                        final JDFResourceLinkPool resourceLinkPool = n.getResourceLinkPool();
-                        if (resourceLinkPool!=null && resourceLinkPool.hasChildNodes())
-                        {
-                            final VElement resourceLinks = resourceLinkPool.getPoolChildren(null, null, null);
+		final KElement root = eDoc.getJDFDoc().getRoot(); // check whether JMF,
+		if (node.isElement() && (root instanceof JDFNode))
+		{
+			final KElement kElement = node.getElement();
+			m_inTreePos = m_outTreePos = 50;
+			SwingUtilities.updateComponentTreeUI(this);
 
-                            lTitle = m_littleBundle.getString("InputResourceKey");
-                            rTitle = m_littleBundle.getString("OutputResourceKey");
+			if (kElement != null)
+			{
 
-                            for (int i = 0; i < resourceLinks.size(); i++)
-                            {
-                                final JDFResourceLink link = (JDFResourceLink) resourceLinks.item(i);
-                                if (link.getTarget() != null)
-                                    addResourceTree(link, isJDFNode);
-                            }
-                        }
-                    }
-                    drawInOutView(kElement, lTitle, mTitle, rTitle);
-                }
-                else if (kElement instanceof JDFResource
-                        && (kElement.hasChildElements() || kElement.hasAttributes()))
-                {
-                    JDFResource r=(JDFResource)kElement;
+				String lTitle = "";
+				String mTitle = "";
+				String rTitle = "";
+				boolean isJDFNode = false;
 
-                    String id = r.getID();
-                    if (id.equals(JDFConstants.EMPTYSTRING))
-                    {
-                        id=r.getResourceRoot().getID();
-                    }
-                    ResourceBundle m_littleBundle=Editor.getBundle();
+				if (kElement instanceof JDFNode)
+				{
+					final ResourceBundle m_littleBundle = Editor.getBundle();
+					mTitle = m_littleBundle.getString("JDFElementKey");
+					isJDFNode = true;
+					final JDFNode n = (JDFNode) kElement;
 
-                    mTitle = m_littleBundle.getString("ResourceKey");                    
-                    Vector vProcs = new Vector();                    
-                    if(root instanceof JDFNode)
-                    {
-                        vProcs = ((JDFNode) root).getvJDFNode(null, null, false);
-                    }
+					if (kElement.hasChildElement(ElementName.RESOURCELINKPOOL, null))
+					{
+						final JDFResourceLinkPool resourceLinkPool = n.getResourceLinkPool();
+						if (resourceLinkPool != null && resourceLinkPool.hasChildNodes())
+						{
+							final VElement resourceLinks = resourceLinkPool.getPoolChildren(null, null, null);
 
-                    for (int i = 0; i < vProcs.size(); i++)
-                    {
-                        final JDFNode jdfNode = (JDFNode) vProcs.elementAt(i);
-                        if (jdfNode.hasChildElement(ElementName.RESOURCELINKPOOL, null))
-                        {
-                            rTitle = m_littleBundle.getString("JDFConsumerKey");
-                            lTitle = m_littleBundle.getString("JDFProducerKey");
+							lTitle = m_littleBundle.getString("InputResourceKey");
+							rTitle = m_littleBundle.getString("OutputResourceKey");
 
-                            final JDFResourceLinkPool rlp= jdfNode.getResourceLinkPool();
-                            if(rlp!=null)
-                            {
-                                final VElement resourceLinks = rlp.getPoolChildren(null, null, null);
-                                if (resourceLinks != null)
-                                {
+							for (int i = 0; i < resourceLinks.size(); i++)
+							{
+								final JDFResourceLink link = (JDFResourceLink) resourceLinks.item(i);
+								if (link.getTarget() != null)
+								{
+									addResourceTree(link, isJDFNode);
+								}
+							}
+						}
+					}
+					drawInOutView(kElement, lTitle, mTitle, rTitle);
+				}
+				else if (kElement instanceof JDFResource && (kElement.hasChildElements() || kElement.hasAttributes()))
+				{
+					final JDFResource r = (JDFResource) kElement;
+
+					String id = r.getID();
+					if (id.equals(JDFConstants.EMPTYSTRING))
+					{
+						id = r.getResourceRoot().getID();
+					}
+					final ResourceBundle m_littleBundle = Editor.getBundle();
+
+					mTitle = m_littleBundle.getString("ResourceKey");
+					Vector vProcs = new Vector();
+					if (root instanceof JDFNode)
+					{
+						vProcs = ((JDFNode) root).getvJDFNode(null, null, false);
+					}
+
+					for (int i = 0; i < vProcs.size(); i++)
+					{
+						final JDFNode jdfNode = (JDFNode) vProcs.elementAt(i);
+						if (jdfNode.hasChildElement(ElementName.RESOURCELINKPOOL, null))
+						{
+							rTitle = m_littleBundle.getString("JDFConsumerKey");
+							lTitle = m_littleBundle.getString("JDFProducerKey");
+
+							final JDFResourceLinkPool rlp = jdfNode.getResourceLinkPool();
+							if (rlp != null)
+							{
+								final VElement resourceLinks = rlp.getPoolChildren(null, null, null);
+								if (resourceLinks != null)
+								{
 									final int size = resourceLinks.size();
 									for (int j = 0; j < size; j++)
 									{
 										final JDFResourceLink link = (JDFResourceLink) resourceLinks.elementAt(j);
 										if (link.getLinkRoot() == r)
+										{
 											addResourceTree(link, isJDFNode);
+										}
 									}
 								}
-                            }
-                        }
-                    }
-                    drawInOutView(kElement, lTitle, mTitle, rTitle);
-                }
-                else
-                {
-                    mTitle = kElement.getLocalName();
-                    drawInOutView(kElement, lTitle, mTitle, rTitle);
-                }
-            }
-        }
-        Editor.setCursor(0,null);
+							}
+						}
+					}
+					drawInOutView(kElement, lTitle, mTitle, rTitle);
+				}
+				else
+				{
+					mTitle = kElement.getLocalName();
+					drawInOutView(kElement, lTitle, mTitle, rTitle);
+				}
+			}
+		}
+		Editor.setCursor(0, null);
 
-    }
+	}
 
-    /**
-     * Creates the Trees from the Nodes in the In & Output View
-     * @param rootElement - The element you want to create a Tree from
-     * @return The JTree 
-     */
-    private JTree getInOutNodes(KElement rootElement)
-    {
-        JDFTreeNode mRoot = new JDFTreeNode(rootElement);
-        final JTree resTree = new JTree(mRoot);
-        final JDFTreeModel treeModel = new JDFTreeModel(mRoot, true);
-        treeModel.addNodeAttributes(mRoot);
-        resTree.setModel(treeModel);
+	/**
+	 * Creates the Trees from the Nodes in the In & Output View
+	 * @param rootElement - The element you want to create a Tree from
+	 * @return The JTree
+	 */
+	private JTree getInOutNodes(final KElement rootElement)
+	{
+		final JDFTreeNode mRoot = new JDFTreeNode(rootElement);
+		final JTree resTree = new JTree(mRoot);
+		final JDFTreeModel treeModel = new JDFTreeModel(mRoot, true);
+		treeModel.addNodeAttributes(mRoot);
+		resTree.setModel(treeModel);
 
-        MouseAdapter mouseListener = new MouseAdapter()
-        {
-            @Override
-			public void mouseClicked(MouseEvent e)
-            {
-                final JTree tree = (JTree) e.getSource();
+		final MouseAdapter mouseListener = new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(final MouseEvent e)
+			{
+				final JTree tree = (JTree) e.getSource();
 
-                if (SwingUtilities.isLeftMouseButton(e) && !e.isControlDown())
-                {
-                    final JDFFrame m_frame=Editor.getFrame();
+				if (SwingUtilities.isLeftMouseButton(e) && !e.isControlDown())
+				{
+					final JDFFrame m_frame = Editor.getFrame();
 
-                    final TreePath path = tree.getSelectionPath();
-                    if (path != null)
-                        m_frame.m_treeArea.findNode((JDFTreeNode) path.getLastPathComponent());
-                }
-                else if (SwingUtilities.isRightMouseButton(e) || e.isControlDown())
-                {
-                    final TreePath path = tree.getPathForLocation(e.getX(), e.getY());
-                    if (path != null)
-                    {
-                        tree.setSelectionRow(tree.getRowForPath(path));
-                        final JDFTreeNode node = (JDFTreeNode) path.getLastPathComponent();
+					final TreePath path = tree.getSelectionPath();
+					if (path != null)
+					{
+						m_frame.m_treeArea.findNode((JDFTreeNode) path.getLastPathComponent());
+					}
+				}
+				else if (SwingUtilities.isRightMouseButton(e) || e.isControlDown())
+				{
+					final TreePath path = tree.getPathForLocation(e.getX(), e.getY());
+					if (path != null)
+					{
+						tree.setSelectionRow(tree.getRowForPath(path));
+						final JDFTreeNode node = (JDFTreeNode) path.getLastPathComponent();
 
-                        if (node.isElement())
-                        {
-                            final JDFFrame m_frame=Editor.getFrame();
+						if (node.isElement())
+						{
+							final JDFFrame m_frame = Editor.getFrame();
 
-                            m_frame.m_treeArea.findNode(node);
-                            clearInOutView();
-                            initInOutView(null);
-                        }
-                    }
-                }
-            }
-        };
-        resTree.addMouseListener(mouseListener);
-        ToolTipManager.sharedInstance().registerComponent(resTree);
-        resTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-        final JDFResourceRenderer resourceRenderer = new JDFResourceRenderer();
-        resTree.setCellRenderer(resourceRenderer);
-        resTree.setRowHeight(18);
-        resTree.setBackground(Color.white);
+							m_frame.m_treeArea.findNode(node);
+							clearInOutView();
+							initInOutView(null);
+						}
+					}
+				}
+			}
+		};
+		resTree.addMouseListener(mouseListener);
+		ToolTipManager.sharedInstance().registerComponent(resTree);
+		resTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		final JDFResourceRenderer resourceRenderer = new JDFResourceRenderer();
+		resTree.setCellRenderer(resourceRenderer);
+		resTree.setRowHeight(18);
+		resTree.setBackground(Color.white);
 
-        return resTree;
-    }
+		return resTree;
+	}
 
 }

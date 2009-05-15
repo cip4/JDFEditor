@@ -194,6 +194,8 @@ public class INIReader
 	private final String language = "General/@language";
 	private final String lookAndFeel = "General/@lookAndFeel";
 	private final String methodSendToDevice = "SendToDevice/@Method";
+	private final String packageAll = "SendToDevice/@PackageAll";
+
 	private final String incSendToDevice = "SendToDevice/@JobIncrement";
 	private final String urlSendToDevice = "SendToDevice/@URLSendTo";
 	private final String urlReturnToDevice = "SendToDevice/@URLReturnTo";
@@ -1093,6 +1095,9 @@ public class INIReader
 		return getAttribute(longID, "true").equalsIgnoreCase("true") ? true : false;
 	}
 
+	/**
+	 * @param b
+	 */
 	public void setLongID(final boolean b)
 	{
 		setAttribute(longID, b ? "true" : "false");
@@ -1225,6 +1230,22 @@ public class INIReader
 	public String toString()
 	{
 		return xDoc == null ? "null ini file " : "INUReader: " + xDoc.toString();
+	}
+
+	/**
+	 * @param b
+	 */
+	public void setPackageAll(final boolean b)
+	{
+		setAttribute(packageAll, b ? "true" : "false");
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean setPackageAll()
+	{
+		return getAttribute(packageAll, "true").equalsIgnoreCase("true") ? true : false;
 	}
 
 }

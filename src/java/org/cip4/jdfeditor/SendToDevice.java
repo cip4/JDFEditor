@@ -83,6 +83,7 @@ import java.util.ResourceBundle;
 import javax.mail.Multipart;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -97,6 +98,7 @@ import org.cip4.jdflib.elementwalker.AttributeReplacer;
 import org.cip4.jdflib.jmf.JDFCommand;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFQueueSubmissionParams;
+import org.cip4.jdflib.jmf.JDFReturnQueueEntryParams;
 import org.cip4.jdflib.jmf.JDFMessage.EnumType;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.util.MimeUtil;
@@ -124,6 +126,8 @@ public class SendToDevice extends JPanel implements ActionListener
 	private JTextField urlReturn;
 	private JRadioButton rbJMF;
 	private JRadioButton rbMIME;
+	private JRadioButton rbPackageAll;
+	private JCheckBox cbReturn;
 
 	// private JButton browse;
 
@@ -133,7 +137,7 @@ public class SendToDevice extends JPanel implements ActionListener
 	public SendToDevice()
 	{
 		super();
-		setLayout(new GridLayout(4, 1, 0, 5));
+		setLayout(new GridLayout(5, 1, 0, 5));
 		init();
 		setVisible(true);
 	}
@@ -160,6 +164,8 @@ public class SendToDevice extends JPanel implements ActionListener
 			// and URL or as a multipart/related MIME message
 			rbJMF = new JRadioButton(littleBundle.getString("sendMethodJMF"));
 			rbMIME = new JRadioButton(littleBundle.getString("sendMethodMIME"));
+			rbPackageAll = new JRadioButton(littleBundle.getString("PackageAll"));
+			cbReturn = new JCheckBox(littleBundle.getString("returnJMF"));
 			if (iniFile.getMethodSendToDevice().equals("MIME"))
 			{
 				rbMIME.setSelected(true);
@@ -170,9 +176,11 @@ public class SendToDevice extends JPanel implements ActionListener
 			}
 			rbMIME.addActionListener(this);
 			rbJMF.addActionListener(this);
+			rbPackageAll.addActionListener(this);
 			final ButtonGroup sendMethodGroup = new ButtonGroup();
 			sendMethodGroup.add(rbJMF);
 			sendMethodGroup.add(rbMIME);
+			sendMethodGroup.add(rbPackageAll);
 
 			final JLabel rbLabel = new JLabel(littleBundle.getString("sendMethod"));
 			final Box SendMethodBox = Box.createHorizontalBox();
@@ -180,7 +188,9 @@ public class SendToDevice extends JPanel implements ActionListener
 			SendMethodBox.add(rbLabel);
 			SendMethodBox.add(rbJMF);
 			SendMethodBox.add(rbMIME);
+			SendMethodBox.add(rbPackageAll);
 			add(SendMethodBox);
+			add(cbReturn);
 			urlReturn = initURL(littleBundle.getString("returnToURL"), iniFile.getURLReturnToDevice());
 		}
 		urlPath = initURL(littleBundle.getString("pathToURL"), iniFile.getURLSendToDevice());
@@ -216,9 +226,13 @@ public class SendToDevice extends JPanel implements ActionListener
 		{
 			ini.setMethodSendToDevice(rbJMF.isSelected() ? "JMF" : "MIME");
 		}
-		else
+		else if (eSrc == rbMIME)
 		{
 			ini.setMethodSendToDevice(rbMIME.isSelected() ? "MIME" : "JMF");
+		}
+		else if (eSrc == rbPackageAll)
+		{
+			ini.setPackageAll(rbPackageAll.isSelected());
 		}
 	}
 
@@ -230,7 +244,7 @@ public class SendToDevice extends JPanel implements ActionListener
 	 * @param returnURL
 	 * @return true if success
 	 */
-	public boolean sendJDF(final URL url, final boolean bMime, final URL returnURL)
+	private boolean sendJDF(final URL url, final boolean bMime, final URL returnURL, final boolean packageAll)
 	{
 
 		if (url == null)
@@ -246,16 +260,23 @@ public class SendToDevice extends JPanel implements ActionListener
 			return sendJMF(url);
 		}
 
-		return submitJDFToDevice(url, bMime, returnURL);
+		if (cbReturn.isSelected())
+		{
+			return returnJDFFromDevice(url, bMime, packageAll);
+		}
+		else
+		{
+			return submitJDFToDevice(url, bMime, returnURL, packageAll);
+		}
 	}
 
 	/**
 	 * @param url
 	 * @param bMime
 	 * @param returnURL
-	 * @return true iff success
+	 * @return true if success
 	 */
-	private boolean submitJDFToDevice(final URL url, final boolean bMime, final URL returnURL)
+	private boolean submitJDFToDevice(final URL url, final boolean bMime, final URL returnURL, final boolean packageAll)
 	{
 		boolean bSendTrue;
 		final JDFDoc jmfDoc = new JDFDoc("JMF");
@@ -286,12 +307,11 @@ public class SendToDevice extends JPanel implements ActionListener
 			if (bMime)
 			{
 				qsp.setURL("dummy");
-				final Multipart mp = MimeUtil.buildMimePackage(jmfDoc, theDoc, true);
+				final Multipart mp = MimeUtil.buildMimePackage(jmfDoc, theDoc, packageAll);
 				uc = MimeUtil.writeToURL(mp, url.toExternalForm());
 			}
 			else
 			{
-				// TODO set url, but which???
 				uc = jmfDoc.write2HTTPURL(url, null);
 			}
 			if (uc != null)
@@ -309,6 +329,65 @@ public class SendToDevice extends JPanel implements ActionListener
 		if (!bSendTrue)
 		{
 			EditorUtils.errorBox("ErrorSendDevice", "Bad reguest; rc= " + rc + " : " + message);
+		}
+
+		return bSendTrue;
+	}
+
+	/**
+	 * @param url
+	 * @param bMime
+	 * @param returnURL
+	 * @return true if success
+	 */
+	private boolean returnJDFFromDevice(final URL url, final boolean bMime, final boolean packageAll)
+	{
+		boolean bSendTrue;
+		final JDFDoc jmfDoc = new JDFDoc("JMF");
+		final JDFCommand command = jmfDoc.getJMFRoot().appendCommand(EnumType.ReturnQueueEntry);
+		final JDFReturnQueueEntryParams rqp = command.appendReturnQueueEntryParams();
+		int rc = -2;
+		String message = "Snafu";
+		final EditorDocument editorDoc = Editor.getEditorDoc();
+		if (editorDoc == null)
+		{
+			return false;
+		}
+		HttpURLConnection uc = null;
+		try
+		{
+			final JDFDoc theDoc = (JDFDoc) editorDoc.getJDFDoc().clone();
+
+			final JDFNode root = theDoc.getJDFRoot();
+			if (root == null)
+			{
+				return false;
+			}
+			if (bMime)
+			{
+				rqp.setURL("dummy");
+				final Multipart mp = MimeUtil.buildMimePackage(jmfDoc, theDoc, packageAll);
+				uc = MimeUtil.writeToURL(mp, url.toExternalForm());
+			}
+			else
+			{
+				uc = jmfDoc.write2HTTPURL(url, null);
+			}
+			if (uc != null)
+			{
+				rc = uc.getResponseCode();
+				message = uc.getResponseMessage();
+			}
+			bSendTrue = rc == 200;
+		}
+		catch (final Exception x)
+		{
+			bSendTrue = false;
+		}
+
+		if (!bSendTrue)
+		{
+			EditorUtils.errorBox("returnJDFFromDevice", "Bad reguest; rc= " + rc + " : " + message);
 		}
 
 		return bSendTrue;
@@ -426,7 +505,7 @@ public class SendToDevice extends JPanel implements ActionListener
 		{
 			// the send method depends on the settings in the Editor.ini file
 			url = getURL(false);
-			bSendTrue = sendJDF(url, isMime(), getURL(true));
+			bSendTrue = sendJDF(url, isMime(), getURL(true), rbPackageAll == null ? false : rbPackageAll.isSelected());
 		}
 
 		// show success in a popup window
@@ -434,7 +513,10 @@ public class SendToDevice extends JPanel implements ActionListener
 		if (bSendTrue && url != null)
 		{
 			sLabel += "\n" + url.toExternalForm();
+			final INIReader iniFile = Editor.getIniFile();
+			iniFile.writeINIFile();
 		}
+
 		JOptionPane.showMessageDialog(Editor.getFrame(), sLabel);
 	}
 
