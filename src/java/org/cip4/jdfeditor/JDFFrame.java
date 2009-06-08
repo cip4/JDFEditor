@@ -1,11 +1,9 @@
-package org.cip4.jdfeditor;
-
 /*
  *
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2008 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2009 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -70,6 +68,8 @@ package org.cip4.jdfeditor;
  *  
  * 
  */
+package org.cip4.jdfeditor;
+
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -135,8 +135,6 @@ import org.cip4.jdflib.goldenticket.MISCPGoldenTicket;
 import org.cip4.jdflib.goldenticket.MISPreGoldenTicket;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.node.JDFNode;
-import org.cip4.jdflib.pool.JDFAuditPool;
-import org.cip4.jdflib.resource.JDFModified;
 import org.cip4.jdflib.util.StringUtil;
 
 /**
@@ -1019,46 +1017,9 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			return;
 		}
 
-		try
-		{
-			final FixVersionDialog dialog = new FixVersionDialog(this, m_littleBundle);
-
-			// find the closest selectd JDF or JMF element and fix it
-			final TreePath path = m_treeArea.getSelectionPath();
-			final KElement element = EditorUtils.getElement(path);
-			if (element != null)
-			{
-				KElement n1 = element.getDeepParent(ElementName.JDF, 0);
-				if (n1 == null)
-				{
-					n1 = element.getDeepParent(ElementName.JMF, 0);
-				}
-				if (n1 != null && n1 instanceof JDFNode)
-				{
-					final JDFNode theRoot = (JDFNode) n1;
-					final JDFAuditPool ap = theRoot.getCreateAuditPool();
-					final JDFModified modi = ap.addModified(Editor.getEditor().getEditorName(), null);
-					modi.setDescriptiveName("update to version " + dialog.getVersion());
-				}
-			}
-
-			// mark our work in the audit pool
-
-			// the mother of all fixing routines
-			if (element instanceof JDFElement)
-			{
-				((JDFElement) element).fixVersion(dialog.getVersion());
-				element.eraseEmptyNodes(true);
-			}
-
-			refreshView(getEditorDoc(), path);
-		}
-		catch (final Exception e)
-		{
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("FixVersionErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle
-					.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
-		}
+		final FixVersionDialog dialog = new FixVersionDialog(m_littleBundle);
+		final TreePath path = m_treeArea.getSelectionPath();
+		dialog.fixIt(path);
 	}
 
 	/**
@@ -1076,7 +1037,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		try
 		{
 
-			// find the closest selectd JDF or JMF element and fix it
+			// find the closest selected JDF or JMF element and fix it
 			final TreePath path = m_treeArea.getSelectionPath();
 			final KElement element = EditorUtils.getElement(path);
 			if (element != null)

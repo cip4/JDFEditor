@@ -203,7 +203,6 @@ public class Editor
 		JDFAudit.setStaticAgentName(getEditorName());
 		JDFAudit.setStaticAgentVersion(getEditorVersion());
 		JDFElement.setLongID(m_iniFile.getLongID());
-		JDFElement.setFixVersionIDFix(true);
 		JDFElement.setDefaultJDFVersion(m_iniFile.getDefaultVersion());
 		JDFParser.m_searchStream = true;
 
@@ -318,7 +317,7 @@ public class Editor
 	 */
 	public String getEditorBuildDate()
 	{
-		return "Estimated Build Date - 28 March 2009";
+		return "Estimated Build Date - 03 June 2009";
 	}
 
 	/**
