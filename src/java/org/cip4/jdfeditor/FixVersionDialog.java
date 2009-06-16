@@ -70,8 +70,7 @@
  */
 package org.cip4.jdfeditor;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ResourceBundle;
@@ -79,6 +78,7 @@ import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -95,7 +95,7 @@ import org.cip4.jdflib.resource.JDFModified;
 
 /**
  * class to update the version of a jdf or jmf<br/>
- * also draws the ui dialof
+ * also draws the ui dialog
  * 
  * @author Dr. Rainer Prosi, Heidelberger Druckmaschinen AG
  * 
@@ -111,7 +111,11 @@ public class FixVersionDialog extends JPanel implements ActionListener
 	private final ResourceBundle littleBundle;
 	private boolean bVersionKeyChosen = false;
 	private JComboBox chooseVersion;
+	private JCheckBox cbFixICS;
+	private JCheckBox cbConvertLPP;
 	private EnumVersion version = EnumVersion.Version_1_3;
+	private boolean bFixICSVersion = true;
+	private boolean bConvertLPP = true;
 
 	/**
 	 * @param bundle
@@ -122,14 +126,17 @@ public class FixVersionDialog extends JPanel implements ActionListener
 		this.littleBundle = bundle;
 
 		init();
-
 		final String[] options = { littleBundle.getString("FixVersionKey"), littleBundle.getString("CancelKey") };
-
 		final int option = JOptionPane.showOptionDialog(Editor.getFrame(), this, "Fix Version in file", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
 		if (option == JOptionPane.OK_OPTION)
 		{
 			bVersionKeyChosen = true;
+			final INIReader ir = Editor.getIniFile();
+			ir.setConvertLPP(bConvertLPP);
+			ir.setFixICSVersion(bFixICSVersion);
+			ir.setDefaultVersion(version);
+			ir.writeINIFile();
 		}
 		else if (option == JOptionPane.CANCEL_OPTION)
 		{
@@ -143,16 +150,43 @@ public class FixVersionDialog extends JPanel implements ActionListener
 	 */
 	private void init()
 	{
-		final GridBagLayout outLayout = new GridBagLayout();
-		final GridBagConstraints outConstraints = new GridBagConstraints();
-		outConstraints.fill = GridBagConstraints.BOTH;
-
 		final JPanel panel = new JPanel();
-		outLayout.setConstraints(panel, outConstraints);
-		panel.setLayout(outLayout);
+		panel.setLayout(new GridLayout(2, 1, 0, 5));
 		final INIReader ir = Editor.getIniFile();
 		final EnumVersion defVersion = ir.getDefaultVersion();
+		bConvertLPP = ir.getConvertLPP();
+		bFixICSVersion = ir.getFixICSVersion();
 
+		addOptionPanel(panel);
+		addVersionPannel(panel, defVersion);
+
+		add(panel);
+		setVisible(true);
+
+	}
+
+	/**
+	 * @param panel
+	 */
+	private void addOptionPanel(final JPanel panel)
+	{
+		final JPanel optionPanel = new JPanel();
+		optionPanel.setLayout(new GridLayout(3, 1, 0, 5));
+		panel.add(optionPanel);
+		cbConvertLPP = new JCheckBox(littleBundle.getString("convertLPP"), bConvertLPP);
+		cbConvertLPP.addActionListener(this);
+		optionPanel.add(cbConvertLPP);
+		cbFixICS = new JCheckBox(littleBundle.getString("fixICSVersion"), bFixICSVersion);
+		cbFixICS.addActionListener(this);
+		optionPanel.add(cbFixICS);
+	}
+
+	/**
+	 * @param panel
+	 * @param defVersion
+	 */
+	private void addVersionPannel(final JPanel panel, final EnumVersion defVersion)
+	{
 		final JPanel versionPanel = new JPanel();
 		versionPanel.setBorder(BorderFactory.createTitledBorder("JDFVersion"));
 
@@ -169,13 +203,8 @@ public class FixVersionDialog extends JPanel implements ActionListener
 		versionPanel.add(Box.createHorizontalGlue());
 		versionPanel.add(chooseVersion);
 		versionPanel.add(Box.createHorizontalGlue());
-		outLayout.setConstraints(versionPanel, outConstraints);
 
 		panel.add(versionPanel);
-
-		add(panel);
-		setVisible(true);
-
 	}
 
 	/**
@@ -197,6 +226,14 @@ public class FixVersionDialog extends JPanel implements ActionListener
 				version = null;
 			}
 		}
+		else if (source == cbConvertLPP)
+		{
+			bConvertLPP = cbConvertLPP.isSelected();
+		}
+		else if (source == cbFixICS)
+		{
+			bFixICSVersion = cbFixICS.isSelected();
+		}
 	}
 
 	/**
@@ -208,19 +245,15 @@ public class FixVersionDialog extends JPanel implements ActionListener
 	}
 
 	/**
-	 * @return
-	 */
-	public boolean getValidationKeyChosen()
-	{
-		return bVersionKeyChosen;
-	}
-
-	/**
 	 * fix the version for the element specified in Path
 	 * @param path
 	 */
 	public void fixIt(final TreePath path)
 	{
+		if (!bVersionKeyChosen)
+		{
+			return; // cancel
+		}
 		try
 		{
 			final KElement element = EditorUtils.getElement(path);
@@ -248,6 +281,8 @@ public class FixVersionDialog extends JPanel implements ActionListener
 			{
 				final FixVersion fv = new FixVersion(getVersion());
 				fv.setFixVersionIDFix(true);
+				fv.setFixICSVersions(bFixICSVersion);
+				fv.setLayoutPrepToStripping(bConvertLPP);
 				fv.walkTree(element, null);
 				element.eraseEmptyNodes(true);
 			}

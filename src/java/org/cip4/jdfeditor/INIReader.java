@@ -222,6 +222,8 @@ public class INIReader
 	private final String ignoreDefault = "ValidEdit/@ignoreDefault";
 	private final String removeWhite = "ValidEdit/@removeWhite";
 	private final String checkURL = "ValidEdit/@checkURL";
+	private final String fixICSVersion = "ValidEdit/@fixICSVersion";
+	private final String convertLPP = "ValidEdit/@convertLPP";
 
 	private final String attribute = "TreeView/@attribute";
 	private final String inheritedAttr = "TreeView/@inheritedAttr";
@@ -281,33 +283,51 @@ public class INIReader
 		return xDoc.getRoot().getXPathAttribute(path, def);
 	}
 
+	/**
+	 * @return
+	 */
 	public String getLookAndFeel()
 	{
 
 		return getAttribute(lookAndFeel, UIManager.getSystemLookAndFeelClassName());
 	}
 
+	/**
+	 * @return
+	 */
 	public int getFontSize()
 	{
 		final String s = getAttribute(fontSize, "10");
 		return Integer.parseInt(s);
 	}
 
+	/**
+	 * @return
+	 */
 	public String getFontName()
 	{
 		return getAttribute(fontName, null);
 	}
 
+	/**
+	 * @param fs
+	 */
 	public void setFontSize(final int fs)
 	{
 		setAttribute(fontSize, String.valueOf(fs));
 	}
 
+	/**
+	 * @param _fontName
+	 */
 	public void setFontName(final String _fontName)
 	{
 		setAttribute(fontName, _fontName);
 	}
 
+	/**
+	 * @return
+	 */
 	public String getGenericAtts()
 	{
 		final String defaultGenerics = "ID Type JobID JobPartID ProductID CustomerID SpawnIDs" + " Class Status PartIDKeys xmlns xmlns:xsi xsi:Type" + " SettingsPolicy BestEffortExceptions"
@@ -317,6 +337,9 @@ public class INIReader
 		return s;
 	}
 
+	/**
+	 * @param s
+	 */
 	public void setGenericAtts(final VString s)
 	{
 		setAttribute(genericAtts, StringUtil.setvString(s, " ", null, null));
@@ -396,26 +419,73 @@ public class INIReader
 		return new File(s);
 	}
 
+	/**
+	 * @param schema
+	 */
 	public void setUseSchema(final boolean schema)
 	{
 		setAttribute(useSchema, schema ? "true" : "false");
 	}
 
+	/**
+	 * @return
+	 */
 	public boolean getUseSchema()
 	{
 		return getAttribute(useSchema, "false").equals("true");
 	}
 
+	/**
+	 * @param url
+	 */
 	public void setCheckURL(final boolean url)
 	{
 		setAttribute(checkURL, url ? "true" : "false");
 	}
 
+	/**
+	 * @return
+	 */
+	public boolean getFixICSVersion()
+	{
+		return getAttribute(fixICSVersion, "false").equals("true");
+	}
+
+	/**
+	 * @param ics
+	 */
+	public void setFixICSVersion(final boolean ics)
+	{
+		setAttribute(fixICSVersion, ics ? "true" : "false");
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean getConvertLPP()
+	{
+		return getAttribute(convertLPP, "false").equals("true");
+	}
+
+	/**
+	 * @param ics
+	 */
+	public void setConvertLPP(final boolean ics)
+	{
+		setAttribute(convertLPP, ics ? "true" : "false");
+	}
+
+	/**
+	 * @return
+	 */
 	public boolean getCheckURL()
 	{
 		return getAttribute(checkURL, "false").equals("true");
 	}
 
+	/**
+	 * @param rem
+	 */
 	public void setRemoveWhite(final boolean rem)
 	{
 		setAttribute(removeWhite, rem ? "true" : "false");

@@ -107,16 +107,35 @@ import org.cip4.jdflib.core.JDFElement.EnumVersion;
 import org.cip4.jdflib.core.KElement.EnumValidationLevel;
 import org.cip4.jdflib.util.StringUtil;
 
+/**
+ * @author Dr. Rainer Prosi, Heidelberger Druckmaschinen AG
+ * 
+ * Jun 8, 2009
+ */
 /*
  * PreferenceDialog.java
+ * 
  * @author SvenoniusI
  * 
- * History:
- * 20040906 MRE preferences for sending to device added
+ * History: 20040906 MRE preferences for sending to device added
  */
 
 public class PreferenceDialog extends JTabbedPane implements ActionListener
 {
+	// TODO subclass
+	private class ValidationTab
+	{
+
+		/**
+		 * 
+		 */
+		public void writeToIni()
+		{
+			// TODO Auto-generated method stub
+
+		}
+	}
+
 	/**
 	 * Comment for <code>serialVersionUID</code>
 	 */
@@ -208,10 +227,13 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	public EnumValidationLevel validationLevel = null;
 	public EnumVersion validationVersion = null;
 
+	private final ValidationTab validTab;
+
 	public PreferenceDialog()
 	{
 		super();
 		this.littleBundle = Editor.getBundle();
+		validTab = new ValidationTab();
 		init();
 	}
 
@@ -260,6 +282,9 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		this.currMethodSendToDevice = methodSendToDevice;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getMethodSendToDevice()
 	{
 		return this.currMethodSendToDevice;
@@ -393,7 +418,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		panels[n] = gen;
 	}
 
-	JPanel createGeneralPref()
+	private JPanel createGeneralPref()
 	{
 		final JPanel main = new JPanel(new BorderLayout());
 
@@ -1495,6 +1520,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	public void writeToIni()
 	{
 		final INIReader iniFile = Editor.getIniFile();
+		validTab.writeToIni();
 		iniFile.setUseSchema(useSchema);
 		iniFile.setSchemaURL(getSchemaURL());
 		iniFile.setFontSize(getFontSize());
