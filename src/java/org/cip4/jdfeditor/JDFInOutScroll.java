@@ -244,15 +244,20 @@ public class JDFInOutScroll extends JScrollPane
 	 * Searching after a string in the nextneigbour view, starting from the selected node.
 	 * @param inString - The String to search for
 	 * @param forwardDirection - Search forward or backward?
+	 * @param bIgnoreCase
 	 */
-	public void findStringInNeighbourTree(final String inString, final boolean forwardDirection)
+	public void findStringInNeighbourTree(final String inString, final boolean forwardDirection, final boolean bIgnoreCase)
 	{
 		Editor.setCursor(1, null);
 		final JDFFrame m_frame = Editor.getFrame();
 		if (m_frame.m_searchTree != null && m_searchInOutNode != null && inString != null && !inString.equals(JDFConstants.EMPTYSTRING))
 		{
 			boolean found = false;
-			final String searchString = inString.toUpperCase();
+			String searchString = inString;
+			if (bIgnoreCase)
+			{
+				searchString = searchString.toUpperCase();
+			}
 			final JPanel[] areaArray = { m_inOutAreaLeft, m_inOutAreaMiddle, m_inOutAreaRight };
 			JPanel areaPanel;
 			boolean finishedFirstSearch = false;
@@ -297,7 +302,11 @@ public class JDFInOutScroll extends JScrollPane
 								{
 									currNode = e.nextElement();
 									final JDFTreeNode checkNode = (JDFTreeNode) currNode;
-									final String tmpString = checkNode.toString().toUpperCase();
+									String tmpString = checkNode.toString();
+									if (bIgnoreCase)
+									{
+										tmpString = tmpString.toUpperCase();
+									}
 
 									if (tmpString.indexOf(searchString) != -1)
 									{
@@ -322,7 +331,11 @@ public class JDFInOutScroll extends JScrollPane
 								while (checkNode.getNextSibling() != null)
 								{
 									checkNode = (JDFTreeNode) checkNode.getNextSibling();
-									final String tmpString = checkNode.toString().toUpperCase();
+									String tmpString = checkNode.toString();
+									if (bIgnoreCase)
+									{
+										tmpString = tmpString.toUpperCase();
+									}
 									if (tmpString.indexOf(searchString) != -1)
 									{
 										lastSelectedTree.removeSelectionPath(lastSelectedTree.getSelectionPath());
@@ -411,7 +424,11 @@ public class JDFInOutScroll extends JScrollPane
 										while (!tmpStack.isEmpty())
 										{
 											checkNode = (JDFTreeNode) tmpStack.pop();
-											final String tmpString = checkNode.toString().toUpperCase();
+											String tmpString = checkNode.toString();
+											if (bIgnoreCase)
+											{
+												tmpString = tmpString.toUpperCase();
+											}
 
 											if (tmpString.indexOf(searchString) != -1)
 											{

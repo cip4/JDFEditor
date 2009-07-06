@@ -1107,8 +1107,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 */
 	private void findWhatDialog(final String searchComponent)
 	{
-		m_dialog = new SearchDialog(this);
-		m_dialog.setSearchComponent(searchComponent);
+		m_dialog = new SearchDialog(searchComponent);
 	}
 
 	/**

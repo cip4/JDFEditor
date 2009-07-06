@@ -75,6 +75,7 @@ import javax.swing.tree.TreeNode;
 
 import org.cip4.jdflib.auto.JDFAutoRefAnchor.EnumAnchor;
 import org.cip4.jdflib.core.AttributeName;
+import org.cip4.jdflib.core.JDFAudit;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFPartAmount;
 import org.cip4.jdflib.core.JDFRefElement;
@@ -102,11 +103,14 @@ import org.cip4.jdflib.resource.devicecapability.JDFAbstractState;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCap;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCaps;
 import org.cip4.jdflib.resource.process.JDFColor;
+import org.cip4.jdflib.resource.process.JDFComChannel;
 import org.cip4.jdflib.resource.process.JDFContentObject;
 import org.cip4.jdflib.resource.process.JDFGeneralID;
 import org.cip4.jdflib.resource.process.JDFMedia;
+import org.cip4.jdflib.resource.process.JDFPerson;
 import org.cip4.jdflib.resource.process.JDFSeparationSpec;
 import org.cip4.jdflib.span.JDFSpanBase;
+import org.cip4.jdflib.util.JDFDate;
 import org.cip4.jdflib.util.StringUtil;
 import org.w3c.dom.Attr;
 
@@ -438,6 +442,15 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		{
 			final KElement e = (KElement) o;
 			s = e.getNodeName();
+			if (e instanceof JDFAudit)
+			{
+				final JDFAudit a = (JDFAudit) e;
+				final JDFDate d = a.getTimeStampDate();
+				if (d != null)
+				{
+					s += d.getFormattedDateTime(" MMM dd yyyy - HH:mm");
+				}
+			}
 			if (e instanceof JDFRefElement)
 			{
 				final String ref = e.getAttribute("rRef", null, null);
@@ -597,6 +610,14 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 					s += "/" + att;
 				}
 			}
+			else if (e instanceof JDFNotification)
+			{
+				final String att = e.getAttribute(AttributeName.CLASS, null, null);
+				if (att != null)
+				{
+					s += " " + att;
+				}
+			}
 			else if (e instanceof JDFDeviceInfo)
 			{
 				final JDFDeviceInfo di = (JDFDeviceInfo) e;
@@ -653,6 +674,16 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 				final JDFGeneralID p = (JDFGeneralID) e;
 				s += " " + p.getIDUsage() + " = " + p.getIDValue();
 			}
+			else if (e instanceof JDFPerson)
+			{
+				final JDFPerson p = (JDFPerson) e;
+				s += " " + p.getDescriptiveName();
+			}
+			else if (e instanceof JDFComChannel)
+			{
+				final JDFComChannel p = (JDFComChannel) e;
+				s += " " + p.getLocator();
+			}
 			else if (e instanceof JDFRefAnchor)
 			{
 				final JDFRefAnchor p = (JDFRefAnchor) e;
@@ -691,6 +722,9 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 
 	// /////////////////////////////////////////////////////////////////////
 
+	/**
+	 * @return the attribute value
+	 */
 	public String getXPathAttr()
 	{
 		final KElement element = getElement();
