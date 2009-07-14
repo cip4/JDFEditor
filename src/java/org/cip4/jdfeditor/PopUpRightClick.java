@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2008 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2009 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -78,6 +78,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Enumeration;
 import java.util.ResourceBundle;
+import java.util.Vector;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -85,11 +86,19 @@ import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.tree.TreePath;
 
+import org.cip4.jdflib.core.ElementName;
+import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.extensions.XJDF20;
+import org.cip4.jdflib.jmf.JDFJMF;
+import org.cip4.jdflib.jmf.JDFMessage;
+import org.cip4.jdflib.jmf.JDFMessageService;
+import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
+import org.cip4.jdflib.jmf.JDFMessage.EnumType;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourceLinkPool;
+import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.jdflib.resource.devicecapability.JDFDeviceCap;
 
 /**
@@ -130,6 +139,88 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 	private JMenuItem m_nodeFromCaps = null;
 	private JMenuItem m_normalize = null;
 	private JMenuItem m_saveXJDFCaps = null;
+	private JMenuItem m_sendMessage = null;
+
+	private class MessageSender
+	{
+
+		JDFMessageService mService;
+
+		/**
+		 * @param ms
+		 */
+		public MessageSender(final JDFMessageService ms)
+		{
+			mService = ms;
+		}
+
+		/**
+		 * 
+		 */
+		public void sendJMF()
+		{
+			final boolean b = generateDoc();
+			if (b)
+			{
+				final SendToDevice sendTo = new SendToDevice();
+				sendTo.trySend();
+			}
+
+		}
+
+		/**
+		 * @return
+		 */
+		private boolean generateDoc()
+		{
+			final Vector<EnumFamily> vf = mService.getFamilies();
+			if (vf == null || vf.size() == 0)
+			{
+				return false;
+			}
+			EnumFamily f = vf.get(0);
+			if (vf.contains(EnumFamily.Command))
+			{
+				f = EnumFamily.Command;
+			}
+			final JDFDoc jmfDoc = new JDFDoc(ElementName.JMF);
+			jmfDoc.setOriginalFileName("Auto" + mService.getType() + ".jmf");
+			final JDFJMF jmf = jmfDoc.getJMFRoot();
+			final JDFMessage m = jmf.appendMessageElement(f, null);
+			m.setType(mService.getType());
+			extendMessage(m);
+			Editor.getFrame().setJDFDoc(jmfDoc, null);
+			Editor.getTreeArea().drawTreeView(Editor.getEditorDoc());
+
+			return true;
+		}
+
+		/**
+		 * @param m
+		 */
+		private void extendMessage(final JDFMessage m)
+		{
+			final EnumType t = m == null ? null : EnumType.getEnum(m.getType());
+			if (t == null || m == null)
+			{
+				return;
+			}
+			if (EnumType.AbortQueueEntry.equals(t))
+			{
+				m.appendQueueEntryDef();
+			}
+			else if (EnumType.HoldQueueEntry.equals(t))
+			{
+				m.appendQueueEntryDef();
+			}
+			else if (EnumType.RemoveQueueEntry.equals(t))
+			{
+				m.appendQueueEntryDef();
+			}
+
+		}
+
+	}
 
 	/**
 	 * Creates the popupmenu after a right mouse click on node in the Tree View.
@@ -151,7 +242,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		final JMenuItem xpath = new JMenuItem(node.getXPath());
 		xpath.setBackground(Color.YELLOW);
 		add(xpath);
-		final JMenuItem size = new JMenuItem("Size: " + elem.toString().length());
+		final JMenuItem size = new JMenuItem("Size: " + (elem == null ? node.toDisplayString().length() : elem.toString().length()));
 		add(size);
 		add(separator);
 
@@ -170,7 +261,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		add(insertPopupMenu);
 
 		final JMenu resMenu = new JMenu(m_littleBundle.getString("InsertResKey"));
-		resMenu.setEnabled(elem instanceof JDFNode || elem.getNodeName().equals("ResourcePool"));
+		resMenu.setEnabled((elem instanceof JDFNode) || (elem instanceof JDFResourcePool));
 
 		m_insertInResPopupItem = new JMenuItem(m_littleBundle.getString("InputResourceKey"));
 		m_insertInResPopupItem.addActionListener(this);
@@ -189,7 +280,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		add(resMenu);
 
 		final JMenu resLinkMenu = new JMenu(m_littleBundle.getString("InsertResLinkKey"));
-		resLinkMenu.setEnabled(elem instanceof JDFNode || elem.getNodeName().equals("ResourceLinkPool"));
+		resLinkMenu.setEnabled((elem instanceof JDFNode) || (elem instanceof JDFResourceLinkPool));
 
 		m_insertInResLinkPopupItem = new JMenuItem(m_littleBundle.getString("ResourceInLinkKey"));
 		m_insertInResLinkPopupItem.addActionListener(this);
@@ -247,7 +338,12 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 			m_nodeFromCaps = addMenuItem(m_littleBundle, "NodeFromCapsKey");
 			add(separator);
 		}
-		else if (elem.getNodeName().equals(XJDF20.rootName))
+		else if (elem instanceof JDFMessageService)
+		{
+			m_sendMessage = addMenuItem(m_littleBundle, "SendJMF");
+			add(separator);
+		}
+		else if (elem != null && elem.getNodeName().equals(XJDF20.rootName))
 		{
 			m_saveXJDFCaps = addMenuItem(m_littleBundle, "ExportToDevCapKey");
 		}
@@ -458,6 +554,10 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		{
 			Editor.getModel().saveAsXJDF(ta.getSelectionPath());
 		}
+		else if (eSrc == m_saveXJDF)
+		{
+			sendJMF(ta.getSelectionPath());
+		}
 		else if (eSrc == m_saveXJDFCaps)
 		{
 			Editor.getModel().saveAsXJDFCaps(ta.getSelectionPath());
@@ -470,7 +570,31 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		{
 			Editor.getModel().normalize(ta.getSelectionPath());
 		}
+		else if (eSrc == m_sendMessage)
+		{
+			sendJMF(ta.getSelectionPath());
+		}
 		Editor.setCursor(0, null);
+
+	}
+
+	/**
+	 * @param selectionPath
+	 */
+	private void sendJMF(final TreePath selectionPath)
+	{
+		final JDFTreeNode node = (JDFTreeNode) selectionPath.getLastPathComponent();
+		if (node == null)
+		{
+			return;
+		}
+		final KElement e = node.getElement();
+		if (!(e instanceof JDFMessageService))
+		{
+			return;
+		}
+		final JDFMessageService ms = (JDFMessageService) e;
+		new MessageSender(ms).sendJMF();
 
 	}
 

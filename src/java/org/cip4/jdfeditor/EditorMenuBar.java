@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2008 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2009 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -185,6 +185,9 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	private JRadioButtonMenuItem m_showInhAttrRadioItem;
 	private JRadioButtonMenuItem m_DispDefAttrRadioItem;
 
+	/**
+	 * 
+	 */
 	public EditorMenuBar()
 	{
 		super();
@@ -867,6 +870,9 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		}
 	}
 
+	/**
+	 * @param mode
+	 */
 	public void setEnableClose(final boolean mode)
 	{
 		m_cutItem.setEnabled(mode);
@@ -894,6 +900,9 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		m_sendToDeviceItem.setEnabled(mode);
 	}
 
+	/**
+	 * @param mode
+	 */
 	public void setEnableOpen(final boolean mode)
 	{
 		m_cutItem.setEnabled(mode);
@@ -991,8 +1000,9 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	}
 
 	// ///////////////////////////////////////////////////////////////////
-	/*
+	/**
 	 * WHERE the process begins when you select File->New from the JDFEditor menu.
+	 * @param e
 	 */
 	public void actionPerformed(final ActionEvent e)
 	{

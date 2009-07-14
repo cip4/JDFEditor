@@ -1034,10 +1034,26 @@ public class JDFTreeModel extends DefaultTreeModel
 		{
 			final String ns = getNSURI(element, selectedValue);
 
-			newAttrNode = setAttribute(node, selectedValue, JDFElement.getValueForNewAttribute(element, selectedValue), ns, false);
+			newAttrNode = setAttribute(node, selectedValue, getDefaultAttributeValue(element, selectedValue), ns, false);
 		}
 
 		return newAttrNode;
+	}
+
+	/**
+	 * @param element
+	 * @param selectedValue
+	 * @return
+	 */
+	private String getDefaultAttributeValue(final KElement element, final String selectedValue)
+	{
+		String s = JDFElement.getValueForNewAttribute(element, selectedValue);
+		if (AttributeName.SENDERID.equals(selectedValue))
+		{
+			s = "CIP4JDFEditor";
+		}
+
+		return s;
 	}
 
 	/**

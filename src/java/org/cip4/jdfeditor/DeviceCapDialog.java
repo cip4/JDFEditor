@@ -107,6 +107,7 @@ import org.cip4.jdflib.jmf.JDFResponse;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.resource.JDFDevice;
 import org.cip4.jdflib.resource.devicecapability.JDFDeviceCap;
+import org.cip4.jdflib.util.EnumUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
 
@@ -361,7 +362,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
         final JPanel validationPanel = new JPanel();
         validationPanel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("ValidationLevelKey")));
                 
-        final Vector allowedValues = StringUtil.getNamesVector(EnumValidationLevel.class);
+        final Vector allowedValues = EnumUtil.getNamesVector(EnumValidationLevel.class);
         allowedValues.removeElementAt(0);
         chooseValidLevel = new JComboBox(allowedValues);
         chooseValidLevel.setSelectedItem(KElement.EnumValidationLevel.RecursiveComplete.getName());

@@ -296,7 +296,7 @@ public class SendToDevice extends JPanel implements ActionListener
 		HttpURLConnection uc = null;
 		try
 		{
-			final JDFDoc theDoc = (JDFDoc) editorDoc.getJDFDoc().clone();
+			final JDFDoc theDoc = editorDoc.getJDFDoc().clone();
 
 			final JDFNode root = theDoc.getJDFRoot();
 			if (root == null)
@@ -356,7 +356,7 @@ public class SendToDevice extends JPanel implements ActionListener
 		HttpURLConnection uc = null;
 		try
 		{
-			final JDFDoc theDoc = (JDFDoc) editorDoc.getJDFDoc().clone();
+			final JDFDoc theDoc = editorDoc.getJDFDoc().clone();
 
 			final JDFNode root = theDoc.getJDFRoot();
 			if (root == null)

@@ -105,7 +105,9 @@ import org.cip4.jdflib.resource.devicecapability.JDFDevCaps;
 import org.cip4.jdflib.resource.process.JDFColor;
 import org.cip4.jdflib.resource.process.JDFComChannel;
 import org.cip4.jdflib.resource.process.JDFContentObject;
+import org.cip4.jdflib.resource.process.JDFFileSpec;
 import org.cip4.jdflib.resource.process.JDFGeneralID;
+import org.cip4.jdflib.resource.process.JDFLayoutElement;
 import org.cip4.jdflib.resource.process.JDFMedia;
 import org.cip4.jdflib.resource.process.JDFPerson;
 import org.cip4.jdflib.resource.process.JDFSeparationSpec;
@@ -582,6 +584,22 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 				if (att != null)
 				{
 					s += " DeviceID=" + att;
+				}
+			}
+			else if (e instanceof JDFLayoutElement)
+			{
+				final String att = e.getXPathAttribute("FileSpec/@URL", null);
+				if (att != null)
+				{
+					s += " URL=" + att;
+				}
+			}
+			else if (e instanceof JDFFileSpec)
+			{
+				final String att = e.getAttribute(AttributeName.URL, null, null);
+				if (att != null)
+				{
+					s += " URL=" + att;
 				}
 			}
 			else if (e instanceof JDFQueueEntry)

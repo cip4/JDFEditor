@@ -134,6 +134,8 @@ import org.cip4.jdflib.datatypes.VJDFAttributeMap;
 import org.cip4.jdflib.goldenticket.MISCPGoldenTicket;
 import org.cip4.jdflib.goldenticket.MISPreGoldenTicket;
 import org.cip4.jdflib.jmf.JDFJMF;
+import org.cip4.jdflib.jmf.JDFMessage;
+import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.util.StringUtil;
 
@@ -774,7 +776,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	/**
 	 * Method newJMF. creates a new JMF file
 	 */
-	private void newJMF()
+	private void newJMF(final EnumFamily f, String type)
 	{
 		clearViews();
 		try
@@ -782,6 +784,19 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			final JDFDoc jdfDoc = new JDFDoc("JMF");
 			final JDFJMF jmfRoot = jdfDoc.getJMFRoot();
 			jmfRoot.init();
+			if (f != null)
+			{
+				final JDFMessage m = jmfRoot.appendMessageElement(f, null);
+				if (type != null)
+				{
+					m.setType(type);
+				}
+			}
+
+			if (type == null)
+			{
+				type = "untitled";
+			}
 			final VString requiredAttributes = jmfRoot.getMissingAttributes(9999999);
 
 			for (int i = 0; i < requiredAttributes.size(); i++)
@@ -795,7 +810,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 			setJDFDoc(jdfDoc, null);
 			m_treeArea.drawTreeView(getEditorDoc());
-			jdfDoc.setOriginalFileName("Untitled.jmf");
+			jdfDoc.setOriginalFileName(type + ".jmf");
 			setTitle(getWindowTitle());
 
 		}
@@ -993,7 +1008,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			}
 			else if ((newFileChooser.getSelection()).equals("JMF"))
 			{
-				newJMF();
+				newJMF(EnumFamily.Query, "KnownMessages");
 			}
 			else
 			{
@@ -1882,6 +1897,10 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			{
 				m_DocPos = m_VjdfDocument.size() - 1;
 			}
+		}
+		if (m_DocPos >= 0)
+		{
+			setTitle(getEditorDoc().getOriginalFileName());
 		}
 		m_menuBar.updateWindowsMenu();
 
