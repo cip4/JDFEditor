@@ -1358,6 +1358,9 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		return ed;
 	}
 
+	/**
+	 * @param path
+	 */
 	public void updateViews(final TreePath path)
 	{
 		Editor.setCursor(1, null);
@@ -1365,8 +1368,10 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		final EditorDocument ed = getEditorDoc();
 		if (path != null && ed != null)
 		{
-			ed.getJDFTree().scrollPathToVisible(path);
-			ed.getJDFTree().setSelectionPath(path);
+			final JTree tree = ed.getJDFTree();
+			tree.getPreferredSize();
+			tree.scrollPathToVisible(path);
+			tree.setSelectionPath(path);
 		}
 		Editor.setCursor(0, null);
 	}

@@ -357,12 +357,6 @@ public class SendToDevice extends JPanel implements ActionListener
 		try
 		{
 			final JDFDoc theDoc = editorDoc.getJDFDoc().clone();
-
-			final JDFNode root = theDoc.getJDFRoot();
-			if (root == null)
-			{
-				return false;
-			}
 			if (bMime)
 			{
 				rqp.setURL("dummy");

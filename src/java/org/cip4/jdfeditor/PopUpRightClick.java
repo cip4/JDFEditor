@@ -136,6 +136,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 	private final JMenuItem m_deletePopupItem;
 	private final JMenuItem m_targetItem;
 	private JMenuItem m_saveXJDF = null;
+	private JMenuItem m_saveJDF = null;
 	private JMenuItem m_nodeFromCaps = null;
 	private JMenuItem m_normalize = null;
 	private JMenuItem m_saveXJDFCaps = null;
@@ -328,7 +329,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		{
 			if (ini.getEnableExtensions())
 			{
-				m_saveXJDF = addMenuItem(m_littleBundle, "SaveXJFDKey");
+				m_saveXJDF = addMenuItem(m_littleBundle, "SaveXJDFDKey");
 			}
 			m_normalize = addMenuItem(m_littleBundle, "NormalizeKey");
 			add(separator);
@@ -346,6 +347,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		else if (elem != null && elem.getNodeName().equals(XJDF20.rootName))
 		{
 			m_saveXJDFCaps = addMenuItem(m_littleBundle, "ExportToDevCapKey");
+			m_saveJDF = addMenuItem(m_littleBundle, "SaveJDFKey");
 		}
 
 		m_xpandPopupItem = addMenuItem(m_littleBundle, "ExpandKey");
@@ -554,9 +556,9 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		{
 			Editor.getModel().saveAsXJDF(ta.getSelectionPath());
 		}
-		else if (eSrc == m_saveXJDF)
+		else if (eSrc == m_saveJDF)
 		{
-			sendJMF(ta.getSelectionPath());
+			Editor.getModel().saveAsJDF(ta.getSelectionPath());
 		}
 		else if (eSrc == m_saveXJDFCaps)
 		{

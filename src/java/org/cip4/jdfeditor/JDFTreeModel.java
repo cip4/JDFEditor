@@ -98,6 +98,7 @@ import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.datatypes.JDFAttributeMap;
 import org.cip4.jdflib.datatypes.VJDFAttributeMap;
 import org.cip4.jdflib.extensions.XJDF20;
+import org.cip4.jdflib.extensions.xjdfwalker.XJDFToJDFConverter;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourceLinkPool;
 import org.cip4.jdflib.pool.JDFResourcePool;
@@ -340,7 +341,6 @@ public class JDFTreeModel extends DefaultTreeModel
 			{
 				setNodeValue(oldattr, attValue);
 				nOld.setUserObject(oldattr);
-
 			}
 			else
 			// this is an inherited node; must create a new attribute in the DOM tree and link it
@@ -349,6 +349,7 @@ public class JDFTreeModel extends DefaultTreeModel
 				final Attr newAttr = e.getDOMAttr(attName, attNS, false);
 				nOld.isInherited = false;
 				nOld.setUserObject(newAttr);
+
 				e.setDirty(true);
 			}
 			return nOld;
@@ -1106,6 +1107,35 @@ public class JDFTreeModel extends DefaultTreeModel
 			final String fnNew = StringUtil.newExtension(fn, XJDF20.getExtension());
 			d.write2File(fnNew, 2, false);
 			Editor.getFrame().readFile(new File(fnNew));
+		}
+	}
+
+	/**
+	 * @param selectionPath
+	 * @experimental
+	 */
+	public void saveAsJDF(final TreePath selectionPath)
+	{
+		final JDFTreeNode node = (JDFTreeNode) selectionPath.getLastPathComponent();
+		if (node == null)
+		{
+			return;
+		}
+		final KElement e = node.getElement();
+		final EditorDocument eDoc = Editor.getEditorDoc();
+		final String fn = eDoc.getOriginalFileName();
+		final XJDFToJDFConverter c = new XJDFToJDFConverter(null);
+		final JDFDoc d = c.convert(e);
+		if (d != null)
+		{
+			final String fnNew = StringUtil.newExtension(fn, ".xjdf.jdf");
+			d.write2File(fnNew, 2, false);
+			Editor.getFrame().readFile(new File(fnNew));
+		}
+		else
+		{
+			EditorUtils.errorBox("FixVersionErrorKey", "could not convert xjdf to jdf");
+
 		}
 	}
 
