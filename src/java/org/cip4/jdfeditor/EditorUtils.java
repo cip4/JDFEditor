@@ -1,10 +1,8 @@
-package org.cip4.jdfeditor;
-
 /*
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2007 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2009 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -68,6 +66,8 @@ package org.cip4.jdfeditor;
  * <http://www.cip4.org/>.
  *
  */
+package org.cip4.jdfeditor;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -455,7 +455,10 @@ public class EditorUtils
 					}
 					else
 					{
-						EditorUtils.errorBox("FileNotOpenKey", ": " + fts.getName());
+						if (i == 1)
+						{
+							EditorUtils.errorBox("FileNotOpenKey", ": " + fts.getName());
+						}
 						ediDocs = null;
 					}
 				}

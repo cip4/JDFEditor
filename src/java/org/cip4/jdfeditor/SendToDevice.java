@@ -420,13 +420,20 @@ public class SendToDevice extends JPanel implements ActionListener
 		try
 		{
 			bSendTrue = con != null && con.getResponseCode() == 200;
-			if (bSendTrue)
+			if (bSendTrue && con != null)
 			{
 				final JDFDoc d2 = new JDFParser().parseStream(con.getInputStream());
-				String newFileName = Editor.getEditorDoc().getOriginalFileName();
-				newFileName = StringUtil.newExtension(newFileName, ".resp.jmf");
-				d2.write2File(newFileName, 2, true);
-				Editor.getFrame().readFile(new File(newFileName));
+				if (d2 != null)
+				{
+					String newFileName = Editor.getEditorDoc().getOriginalFileName();
+					newFileName = StringUtil.newExtension(newFileName, ".resp.jmf");
+					d2.write2File(newFileName, 2, true);
+					Editor.getFrame().readFile(new File(newFileName));
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(Editor.getFrame(), "No Message Response recieved");
+				}
 			}
 		}
 		catch (final IOException x)
