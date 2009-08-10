@@ -8,6 +8,9 @@
 		<echo>Make sure you have the JAR files listed in lib/DEPENDENCIES.txt</echo>
 		<!-- Sets properties -->
 		<tstamp />
+		
+		<property name="ant.build.javac.target" value="1.5" />
+		
 		<property file="version.properties" description="Contains major/minor version info" />
 		<property name="src.dir" value="./src" />
 		<property name="java.src.dir" value="${src.dir}/java" />
@@ -187,11 +190,18 @@
 		<delete file="${win.dist.bin.dir}/JDFEditor.jsmooth" />
 	</target>
 	<!-- For special app bundle on the Mac -->
-	<target name="appledist" description="Assembles stand alone Macintosh Bundle. Must build on a Mac (>= 10.2).">
+	<target name="appledist" depends="-init" description="Assembles stand alone Macintosh Bundle. Must build on a Mac (>= 10.2).">
 		<echo>Building Mac OS X application bundle...</echo>
 		<echo>Loading JarBundler Ant tasks. Make sure you have installed http://informagen.com/JarBundler/ in ANT_HOME/lib</echo>
+		<echo>if you get  an error such as:
+			java.lang.NoClassDefFoundError: org/apache/xml/serialize/OutputFormat
+			you should add 'xercesimpl.jar' and 'xml-apis.jar' in ANT_HOME/lib.
+			If running from eclipse - also add it to the list of ant jars in window/preferences//ant/runtime//ClassPath/Ant home entries
+		</echo>	
 		<taskdef name="jarbundler" classname="net.sourceforge.jarbundler.JarBundler" />
-		<jarbundler dir="${dist.dir}" name="JDF Editor" mainclass="org.cip4.jdfeditor.Editor" bundleid="org.cip4.jdfeditor.Editor" jvmversion="1.5+" shortname="CIP4 JDF Editor" infostring="CIP4 JDF Editor" signature="JDFE" version="${major.version}.${minor.version}.${build.number}" icon="${src.dir}/bin/macosx/icons/JDFEditor.icns" vmoptions="-Xmx256m" stubfile="${src.dir}/bin/macosx/JavaApplicationStub">
+		<property name="mac.dist.bin.dir" value="${dist.dir}/${base.filename}-mac" />
+		<mkdir dir="${mac.dist.bin.dir}" />
+		<jarbundler dir="${dist.dir}" name="JDF Editor" mainclass="org.cip4.jdfeditor.Editor" bundleid="org.cip4.jdfeditor.Editor" jvmversion="1.5+" shortname="CIP4 JDF Editor" infostring="CIP4 JDF Editor" signature="JDFE" version="${major.version}.${minor.version}.${build.number}" icon="${src.dir}/bin/macosx/icons/JDFEditor.icns" vmoptions="-Xmx512m" stubfile="${src.dir}/bin/macosx/JavaApplicationStub">
 			<jarfileset dir="${lib.dir}">
 				<include name="*.jar" />
 			</jarfileset>
@@ -208,6 +218,7 @@
 			<zipfileset dir="${dist.dir}/JDF Editor.app" includes="Contents/MacOS/JavaApplicationStub" filemode="755" prefix="JDF Editor.app" />
 		</zip>
 	</target>
+	<!-- this looks like a creepy copy/paste bug
 	<target name="dmgappledist" depends="appledist" description="Creates Disk Image for Apple Dist. Must build on a Mac (>= 10.2).">
 		<echo>Package appledist</echo>
 		<exec executable="hdiutil" spawn="false">
@@ -219,4 +230,5 @@
 			<arg value="${dist.dir}/bin/Alces.dmg" />
 		</exec>
 	</target>
+	-->
 </project>
