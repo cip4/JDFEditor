@@ -224,19 +224,22 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 		m_cutItem = new JMenuItem(littleBundle.getString("CutKey"));
 		m_cutItem.addActionListener(frame);
-		m_cutItem.setAccelerator(KeyStroke.getKeyStroke('X', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
+		m_cutItem.setAccelerator(KeyStroke.getKeyStroke('X', java.awt.event.InputEvent.CTRL_MASK
+				+ java.awt.event.InputEvent.SHIFT_MASK));
 		m_cutItem.setEnabled(false);
 		m_editMenu.add(m_cutItem);
 
 		m_copyItem = new JMenuItem(littleBundle.getString("CopyKey"));
 		m_copyItem.addActionListener(frame);
-		m_copyItem.setAccelerator(KeyStroke.getKeyStroke('C', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
+		m_copyItem.setAccelerator(KeyStroke.getKeyStroke('C', java.awt.event.InputEvent.CTRL_MASK
+				+ java.awt.event.InputEvent.SHIFT_MASK));
 		m_copyItem.setEnabled(false);
 		m_editMenu.add(m_copyItem);
 
 		m_pasteItem = new JMenuItem(littleBundle.getString("PasteKey"));
 		m_pasteItem.addActionListener(frame);
-		m_pasteItem.setAccelerator(KeyStroke.getKeyStroke('V', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
+		m_pasteItem.setAccelerator(KeyStroke.getKeyStroke('V', java.awt.event.InputEvent.CTRL_MASK
+				+ java.awt.event.InputEvent.SHIFT_MASK));
 		m_pasteItem.setEnabled(false);
 		m_editMenu.add(m_pasteItem);
 
@@ -313,7 +316,8 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 		m_saveAsItem = new JMenuItem(m_littleBundle.getString("SaveAsKey"));
 		m_saveAsItem.addActionListener(m_frame);
-		m_saveAsItem.setAccelerator(KeyStroke.getKeyStroke('S', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
+		m_saveAsItem.setAccelerator(KeyStroke.getKeyStroke('S', java.awt.event.InputEvent.CTRL_MASK
+				+ java.awt.event.InputEvent.SHIFT_MASK));
 		m_fileMenu.add(m_saveAsItem);
 		m_fileMenu.add(new JSeparator());
 
@@ -539,19 +543,22 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 		m_spawnItem = new JMenuItem("Spawn...");
 		m_spawnItem.addActionListener(m_frame);
-		m_spawnItem.setAccelerator(KeyStroke.getKeyStroke('S', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.ALT_MASK));
+		m_spawnItem.setAccelerator(KeyStroke.getKeyStroke('S', java.awt.event.InputEvent.CTRL_MASK
+				+ java.awt.event.InputEvent.ALT_MASK));
 		m_spawnItem.setEnabled(false);
 		m_toolsMenu.add(m_spawnItem);
 
 		m_spawnInformItem = new JMenuItem("Spawn Informative...");
 		m_spawnInformItem.addActionListener(m_frame);
-		m_spawnInformItem.setAccelerator(KeyStroke.getKeyStroke('I', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.ALT_MASK));
+		m_spawnInformItem.setAccelerator(KeyStroke.getKeyStroke('I', java.awt.event.InputEvent.CTRL_MASK
+				+ java.awt.event.InputEvent.ALT_MASK));
 		m_spawnInformItem.setEnabled(false);
 		m_toolsMenu.add(m_spawnInformItem);
 
 		m_mergeItem = new JMenuItem("Merge...");
 		m_mergeItem.addActionListener(m_frame);
-		m_mergeItem.setAccelerator(KeyStroke.getKeyStroke('M', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.ALT_MASK));
+		m_mergeItem.setAccelerator(KeyStroke.getKeyStroke('M', java.awt.event.InputEvent.CTRL_MASK
+				+ java.awt.event.InputEvent.ALT_MASK));
 		m_mergeItem.setEnabled(false);
 		m_toolsMenu.add(m_mergeItem);
 		m_toolsMenu.add(new JSeparator());
@@ -841,7 +848,8 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 				m_insertOutResItem.setEnabled(true);
 				m_insertResItem.setEnabled(true);
 			}
-			else if ((kElement instanceof JDFResourceLinkPool) && EditorUtils.getResourcesAllowedToLink(((JDFResourceLinkPool) kElement).getParentJDF(), null) != null)
+			else if ((kElement instanceof JDFResourceLinkPool)
+					&& EditorUtils.getResourcesAllowedToLink(((JDFResourceLinkPool) kElement).getParentJDF(), null) != null)
 			{
 				m_insertInResItem.setEnabled(false);
 				m_insertOutResItem.setEnabled(false);
@@ -898,6 +906,8 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		m_undoItem.setEnabled(mode);
 		m_redoItem.setEnabled(mode);
 		m_sendToDeviceItem.setEnabled(mode);
+		m_devcapOpenMenu.setEnabled(Editor.getIniFile().getRecentDevCap() != null);
+
 	}
 
 	/**
@@ -924,6 +934,8 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		m_exportItem.setEnabled(true);
 		m_QuickValidateItem.setEnabled(true);
 		m_sendToDeviceItem.setEnabled(true);
+		m_devcapOpenMenu.setEnabled(Editor.getIniFile().getRecentDevCap() != null);
+
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////
@@ -1106,7 +1118,10 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		else if (eSrc == m_devcapOpenMenu)
 		{
 			final File f = iniFile.getRecentDevCap();
-			openRecentFile(f);
+			if (f != null)
+				openRecentFile(f);
+			else
+				EditorUtils.errorBox("OpenJDFErrorKey", "No Devcap File defined");
 
 		}
 

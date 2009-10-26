@@ -140,8 +140,11 @@ import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.util.StringUtil;
 
 /**
- * @author AnderssA ThunellE SvenoniusI Elena Skobchenko This is the junk dump all in class with gazillions of private members TODO clean up and move routines
- * to the model
+ * @author AnderssA ThunellE SvenoniusI Elena Skobchenko
+ * 
+ * This is the junk dump all in class with gazillions of private members
+ * 
+ * TODO clean up and move routines to the model
  */
 
 public class JDFFrame extends JFrame implements ActionListener, DropTargetListener, DragSourceListener, DragGestureListener, ClipboardOwner
@@ -153,7 +156,9 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	private static final long serialVersionUID = 626128726824503039L;
 
 	// TODO remove messy globals
-
+	/**
+	 * 
+	 */
 	public JDFTreeArea m_treeArea;
 
 	EditorTabbedPaneA m_topTabs;
@@ -161,12 +166,17 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	JTree m_searchTree;
 
-	// handles all copying and pasting
+	/**
+	 * handles all copying and pasting
+	 * 
+	 */
 	public JDFTreeCopyNode m_copyNode;
 
 	SearchDialog m_dialog = null;
 
-	// all settings are stored here
+	/**
+	 * all settings are stored here
+	 */
 	public ResourceBundle m_littleBundle;
 
 	// q&d hack for multi doc support
@@ -176,18 +186,22 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	// dragndrop support
 	private final DragSource m_source;
 
-	// munus and buttons
+	/**
+	 * munues and buttons
+	 */
 	public EditorMenuBar m_menuBar = null;
+	/**
+	 * munues and buttons
+	 */
 	public EditorButtonBar m_buttonBar = null;
 
-	// undo and redo support
+	/**
+	 * undo and redo support
+	 */
 	final MyUndoManager undomanager = new MyUndoManager();
 	final UndoableEditSupport undoSupport = new UndoableEditSupport();
 	public UndoAction undoAction = new UndoAction();
 	public RedoAction redoAction = new RedoAction();
-
-	public String[] l1 = { "1", "2" };
-	public String[] l2 = { "1", "2", "3" };
 
 	/**
 	 * constructor of the frame
