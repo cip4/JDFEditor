@@ -91,6 +91,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.core.KElement;
@@ -100,7 +101,6 @@ import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFQueueSubmissionParams;
 import org.cip4.jdflib.jmf.JDFReturnQueueEntryParams;
 import org.cip4.jdflib.jmf.JDFMessage.EnumType;
-import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.StringUtil;
 
@@ -298,7 +298,7 @@ public class SendToDevice extends JPanel implements ActionListener
 		{
 			final JDFDoc theDoc = editorDoc.getJDFDoc().clone();
 
-			final JDFNode root = theDoc.getJDFRoot();
+			final KElement root = theDoc.getRoot();
 			if (root == null)
 			{
 				return false;
@@ -390,13 +390,13 @@ public class SendToDevice extends JPanel implements ActionListener
 	/**
 	 * @param root
 	 */
-	private void updateJobID(final JDFNode root)
+	private void updateJobID(final KElement root)
 	{
 		final INIReader ir = Editor.getIniFile();
 		int inc = ir.getJobIncrement();
 		inc = ++inc % 10000;
 		ir.setJobIncrement(inc);
-		final String jobID = root.getJobID(true) + "." + inc;
+		final String jobID = root.getAttribute(AttributeName.JOBID) + "." + inc;
 		final AttributeReplacer ar = new AttributeReplacer("JobID", jobID, null);
 		ar.replace(root);
 	}
@@ -498,8 +498,7 @@ public class SendToDevice extends JPanel implements ActionListener
 		boolean bSendTrue = false;
 		final String[] options = { m_littleBundle.getString("OkKey"), m_littleBundle.getString("CancelKey") };
 
-		final int option = JOptionPane.showOptionDialog(Editor.getFrame(), this, m_littleBundle.getString("JDFSendToDevice"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
-				options[0]);
+		final int option = JOptionPane.showOptionDialog(Editor.getFrame(), this, m_littleBundle.getString("JDFSendToDevice"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
 		URL url = null;
 		if (option == JOptionPane.OK_OPTION)
