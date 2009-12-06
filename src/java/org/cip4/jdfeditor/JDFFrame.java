@@ -134,7 +134,7 @@ import org.cip4.jdflib.datatypes.VJDFAttributeMap;
 import org.cip4.jdflib.goldenticket.MISCPGoldenTicket;
 import org.cip4.jdflib.goldenticket.MISPreGoldenTicket;
 import org.cip4.jdflib.jmf.JDFJMF;
-import org.cip4.jdflib.jmf.JDFMessage;
+import org.cip4.jdflib.jmf.JMFBuilder;
 import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.util.StringUtil;
@@ -433,8 +433,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("SpawnErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle
-					.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, m_littleBundle.getString("SpawnErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -457,8 +456,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("MergeErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle
-					.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, m_littleBundle.getString("MergeErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -493,8 +491,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("DevcapExportErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""),
-					m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, m_littleBundle.getString("DevcapExportErrorKey") + e.getClass() + " \n"
+					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -517,8 +515,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("DevcapOpenErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle
-					.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, m_littleBundle.getString("DevcapOpenErrorKey") + e.getClass() + " \n"
+					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -681,8 +679,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			if (file.exists() && !file.equals(fileToSave))
 			{
 				final String[] options = { m_littleBundle.getString("YesKey"), m_littleBundle.getString("NoKey"), m_littleBundle.getString("CancelKey") };
-				newAnswer = JOptionPane.showOptionDialog(this, m_littleBundle.getString("FileExistsKey"), null, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options,
-						options[0]);
+				newAnswer = JOptionPane.showOptionDialog(this, m_littleBundle.getString("FileExistsKey"), null, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 
 			}
 			if (newAnswer == JOptionPane.YES_OPTION)
@@ -789,42 +786,34 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	/**
 	 * Method newJMF. creates a new JMF file
+	 * @param f 
+	 * @param type 
 	 */
 	private void newJMF(final EnumFamily f, String type)
 	{
 		clearViews();
 		try
 		{
-			final JDFDoc jdfDoc = new JDFDoc("JMF");
-			final JDFJMF jmfRoot = jdfDoc.getJMFRoot();
-			jmfRoot.init();
-			if (f != null)
+			JDFJMF jmf = new JMFBuilder().newJMF(f, type);
+			final VString requiredAttributes = jmf.getMissingAttributes(9999999);
+
+			for (int i = 0; i < requiredAttributes.size(); i++)
 			{
-				final JDFMessage m = jmfRoot.appendMessageElement(f, null);
-				if (type != null)
+				final String s = JDFElement.getValueForNewAttribute(jmf, requiredAttributes.stringAt(i));
+				if (!jmf.hasAttribute(requiredAttributes.stringAt(i)))
 				{
-					m.setType(type);
+					jmf.setAttribute(requiredAttributes.stringAt(i), s);
 				}
 			}
-
 			if (type == null)
 			{
 				type = "untitled";
 			}
-			final VString requiredAttributes = jmfRoot.getMissingAttributes(9999999);
 
-			for (int i = 0; i < requiredAttributes.size(); i++)
-			{
-				final String s = JDFElement.getValueForNewAttribute(jmfRoot, requiredAttributes.stringAt(i));
-				if (!jmfRoot.hasAttribute(requiredAttributes.stringAt(i)))
-				{
-					jmfRoot.setAttribute(requiredAttributes.stringAt(i), s);
-				}
-			}
-
-			setJDFDoc(jdfDoc, null);
+			JDFDoc jmfDoc = jmf.getOwnerDocument_JDFElement();
+			setJDFDoc(jmfDoc, null);
 			m_treeArea.drawTreeView(getEditorDoc());
-			jdfDoc.setOriginalFileName(type + ".jmf");
+			jmfDoc.setOriginalFileName(type + ".jmf");
 			setTitle(getWindowTitle());
 
 		}
@@ -913,8 +902,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("DevcapOpenErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle
-					.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, m_littleBundle.getString("DevcapOpenErrorKey") + e.getClass() + " \n"
+					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 
 	}
@@ -1011,8 +1000,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 		final NewFileChooser newFileChooser = new NewFileChooser();
 
-		final int option = JOptionPane.showOptionDialog(this, newFileChooser, m_littleBundle.getString("ChooseNewFileKey"), JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null, options,
-				options[0]);
+		final int option = JOptionPane.showOptionDialog(this, newFileChooser, m_littleBundle.getString("ChooseNewFileKey"), JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 
 		if (option == JOptionPane.OK_OPTION)
 		{
@@ -1092,8 +1080,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("FixVersionErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle
-					.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, m_littleBundle.getString("FixVersionErrorKey") + e.getClass() + " \n"
+					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -1125,8 +1113,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("FixVersionErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle
-					.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, m_littleBundle.getString("FixVersionErrorKey") + e.getClass() + " \n"
+					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -1198,8 +1186,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		else if (eSrc == m_menuBar.m_versionItem)
 		{
 			final Editor editor = Editor.getEditor();
-			JOptionPane.showMessageDialog(this, editor.getEditorName() + "\n" + editor.getEditorBuildDate() + "\nJDF 1.4 compatible version\n" + "Schema JDF_1.4.xsd\n" + editor.getEditorVersion(),
-					"Version", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(this, editor.getEditorName() + "\n" + editor.getEditorBuildDate() + "\nJDF 1.4 compatible version\n" + "Schema JDF_1.4.xsd\n"
+					+ editor.getEditorVersion(), "Version", JOptionPane.INFORMATION_MESSAGE);
 		}
 		else if (eSrc == m_menuBar.m_findItem)
 		{

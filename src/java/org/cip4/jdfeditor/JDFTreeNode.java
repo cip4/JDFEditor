@@ -453,7 +453,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 					s += d.getFormattedDateTime(" MMM dd yyyy - HH:mm");
 				}
 			}
-			if (e instanceof JDFRefElement)
+			else if (e instanceof JDFRefElement)
 			{
 				final String ref = e.getAttribute("rRef", null, null);
 				if (ref != null)
@@ -709,6 +709,14 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 				if (anchor != null)
 				{
 					s += " " + anchor.getName();
+				}
+			}
+			else if (s.endsWith("Set"))
+			{
+				String name = e.getAttribute("Name", null, null);
+				if (name != null)
+				{
+					s += " " + name;
 				}
 			}
 

@@ -1,4 +1,5 @@
 package org.cip4.jdfeditor;
+
 /*
 *
 * The CIP4 Software License, Version 1.0
@@ -88,228 +89,230 @@ import org.cip4.jdflib.node.JDFNode;
  */
 public class JDFTreeRenderer extends DefaultTreeCellRenderer
 {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1526856515806803255L;
-    protected Color colorSel;
-    protected boolean highlightFN;
-    protected Font standardFont=null;
-    private static VString warnMsgs=new VString("UnlinkedResource",null);
-    protected String toolString=null;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1526856515806803255L;
+	protected Color colorSel;
+	protected boolean highlightFN;
+	protected Font standardFont = null;
+	private static VString warnMsgs = new VString("UnlinkedResource", null);
+	protected String toolString = null;
 
-    public JDFTreeRenderer()
-    {
-        setOpaque(true);
-        colorSel = new Color(110, 200, 240);
+	public JDFTreeRenderer()
+	{
+		setOpaque(true);
+		colorSel = new Color(110, 200, 240);
 
-        //TODO actually do something with hilite...
-        final INIReader iniFile=Editor.getIniFile();
-        
-        highlightFN = iniFile.getHighlight();
-        standardFont=new Font(iniFile.getFontName(), Font.PLAIN, iniFile.getFontSize());
-    }
-    
-    @Override
-	public Component getTreeCellRendererComponent(
-            JTree jdfTree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean _hasFocus)
-    {
-        if((expanded!=_hasFocus)||(leaf==expanded)||(row==0)) // fool compiler
-        {
-            jdfTree.getClass();
-        }
-        
-        setBackground(sel ? colorSel : Color.white);
-        setForeground(Color.black);
-        setFont(standardFont);
-        
-        String s=null;
+		//TODO actually do something with hilite...
+		final INIReader iniFile = Editor.getIniFile();
 
-        JDFTreeNode treeNode=null;
-        if(value instanceof JDFTreeNode)
-        {
-            treeNode=(JDFTreeNode)value;
-            s=treeNode.toDisplayString();
-            toolString=s;
-            if (treeNode.isElement()){
-                KElement e=treeNode.getElement();
-                if (e instanceof JDFComment)
-                {
-                    JDFComment c = (JDFComment) e;
-                    toolString=c.getText();
-                }
-                String descName=e.getAttribute(AttributeName.DESCRIPTIVENAME,null,null);
-                if(descName!=null && toolString!=null)
-                    toolString+="\n "+descName;
-                
-            }
-            
-            JDFTreeModel mod=(JDFTreeModel) jdfTree.getModel();
-            if (mod.isValid(treeNode))
-            {
-                setForeground(Color.black);
-                if (!treeNode.isElement())
-                {
-                    final String attVal = treeNode.getValue();
-                    
-                    if (attVal.equals("new value"))
-                        setForeground(Color.magenta);
-                }
-            }
-            else
-            {
-                setForeground(Color.red);
-                if (treeNode.isElement())
-                {
-                    toolString="Invalid Element";
-                }
-                else
-                {
-                    toolString="Invalid Attribute";
-                }
-            }
-        }        
-        else // value no treenode
-        {
-            s=value.toString();
-            toolString=s;
-        }
-        setText(s);        
-        setToolTipText(toolString);
-        setNodeIcon(jdfTree,sel,treeNode);
-        return this;
-    }
-    
-    protected void setNodeIcon(JTree jdfTree,boolean sel, JDFTreeNode treeNode)
-    {
-        KElement elem = treeNode.getElement();
-         
-        JDFTreeModel mod=(JDFTreeModel) jdfTree.getModel();
-        final INIReader iniFile=Editor.getIniFile();
-        String erType=mod.getErrorType(treeNode);
-        if (erType==null)
-        {
-            if (treeNode.isElement())
-            {
-                if (elem instanceof JDFNode)
-                {
-                    if (sel)
-                        setIcon(iniFile.jdfElemIconS);
-                    else
-                        setIcon(iniFile.jdfElemIcon);
-                }
-                else if (elem != null && elem.hasAttribute("rRef", null, false))
-                {
-                    if (elem.getAttribute("Usage", null, "").equals("Input"))
-                    {
-                        if (sel)
-                            setIcon(iniFile.rRefInElemIconS);
-                        else
-                            setIcon(iniFile.rRefInElemIcon);
-                    }
-                    else if (elem.getAttribute("Usage", null, "").equals("Output"))
-                    {
-                        if (sel)
-                            setIcon(iniFile.rRefOutElemIconS);
-                        else
-                            setIcon(iniFile.rRefOutElemIcon);
-                    }
-                    else
-                    {
-                        if (sel)
-                            setIcon(iniFile.rRefElemIconS);
-                        else
-                            setIcon(iniFile.rRefElemIcon);
-                    }
-                }
-                else
-                {
-                    if (sel)
-                        setIcon(iniFile.elemIconS);
-                    else
-                        setIcon(iniFile.elemIcon);
-                }
-            }
-            else
-            {
-                final String attName = treeNode.getName();
-                if (treeNode.isInherited())
-                {
-                    if (attName.equals("PartIDKeys"))
-                    {
-                        if (sel)
-                            setIcon(iniFile.iPAttIconS);
-                        else
-                            setIcon(iniFile.iPAttIcon);
-                    }
-                    else
-                    {
-                        if (sel)
-                            setIcon(iniFile.iAttIconS);
-                        else
-                            setIcon(iniFile.iAttIcon);
-                    }
-                }
-                else
-                {
-                    if (attName.equals("PartIDKeys"))
-                    {
-                        if (sel)
-                            setIcon(iniFile.pAttIconS);
-                        else
-                            setIcon(iniFile.pAttIcon);
-                    }
-                    else if (attName.equals("rRef"))
-                    {
-                        if (sel)
-                            setIcon(iniFile.refAttIconS);
-                        else
-                            setIcon(iniFile.refAttIcon);
-                    }
-                    else
-                    {
-                        if (sel)
-                            setIcon(iniFile.attIconS);
-                        else
-                            setIcon(iniFile.attIcon);
-                    }
-                }
-            }
-        }
-        else if(warnMsgs.contains(erType))
-        {
-            if (treeNode.isElement())
-            {
-                if (sel)
-                    setIcon(iniFile.warnElemIconS);
-                else
-                    setIcon(iniFile.warnElemIcon);
-            }
-            else
-            {
-                if (sel)
-                    setIcon(iniFile.warnAttIconS);
-                else
-                    setIcon(iniFile.warnAttIcon);
-            }
-        }
-        else // not valid
-        {
-            if (treeNode.isElement())
-            {
-                if (sel)
-                    setIcon(iniFile.errElemIconS);
-                else
-                    setIcon(iniFile.errElemIcon);
-            }
-            else
-            {
-                if (sel)
-                    setIcon(iniFile.errAttIconS);
-                else
-                    setIcon(iniFile.errAttIcon);
-            }
-        }
-    }
-    
+		highlightFN = iniFile.getHighlight();
+		standardFont = new Font(iniFile.getFontName(), Font.PLAIN, iniFile.getFontSize());
+	}
+
+	@Override
+	public Component getTreeCellRendererComponent(JTree jdfTree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean _hasFocus)
+	{
+		if ((expanded != _hasFocus) || (leaf == expanded) || (row == 0)) // fool compiler
+		{
+			jdfTree.getClass();
+		}
+
+		setBackground(sel ? colorSel : Color.white);
+		setForeground(Color.black);
+		setFont(standardFont);
+
+		String s = null;
+
+		JDFTreeNode treeNode = null;
+		if (value instanceof JDFTreeNode)
+		{
+			treeNode = (JDFTreeNode) value;
+			s = treeNode.toDisplayString();
+			toolString = s;
+			if (treeNode.isElement())
+			{
+				KElement e = treeNode.getElement();
+				if (e instanceof JDFComment)
+				{
+					JDFComment c = (JDFComment) e;
+					toolString = c.getText();
+				}
+				String descName = e.getAttribute(AttributeName.DESCRIPTIVENAME, null, null);
+				if (descName != null && toolString != null)
+					toolString += "\n " + descName;
+
+			}
+
+			JDFTreeModel mod = (JDFTreeModel) jdfTree.getModel();
+			if (mod.isValid(treeNode))
+			{
+				setForeground(Color.black);
+				if (!treeNode.isElement())
+				{
+					final String attVal = treeNode.getValue();
+
+					if (attVal.equals("new value"))
+						setForeground(Color.magenta);
+				}
+			}
+			else
+			{
+				setForeground(Color.red);
+				if (treeNode.isElement())
+				{
+					toolString = "Invalid Element";
+				}
+				else
+				{
+					toolString = "Invalid Attribute";
+				}
+			}
+		}
+		else
+		// value no treenode
+		{
+			s = value.toString();
+			toolString = s;
+		}
+		setText(s);
+		setToolTipText(toolString);
+		setNodeIcon(jdfTree, sel, treeNode);
+		return this;
+	}
+
+	protected void setNodeIcon(JTree jdfTree, boolean sel, JDFTreeNode treeNode)
+	{
+		KElement elem = treeNode.getElement();
+
+		JDFTreeModel mod = (JDFTreeModel) jdfTree.getModel();
+		final INIReader iniFile = Editor.getIniFile();
+		String erType = mod.getErrorType(treeNode);
+		if (erType == null)
+		{
+			if (treeNode.isElement())
+			{
+				if (elem instanceof JDFNode)
+				{
+					if (sel)
+						setIcon(iniFile.jdfElemIconS);
+					else
+						setIcon(iniFile.jdfElemIcon);
+				}
+				else if (elem != null && elem.hasAttribute("Usage", null, false))
+				{
+					if (elem.getAttribute("Usage", null, "").equals("Input"))
+					{
+						if (sel)
+							setIcon(iniFile.rRefInElemIconS);
+						else
+							setIcon(iniFile.rRefInElemIcon);
+					}
+					else if (elem.getAttribute("Usage", null, "").equals("Output"))
+					{
+						if (sel)
+							setIcon(iniFile.rRefOutElemIconS);
+						else
+							setIcon(iniFile.rRefOutElemIcon);
+					}
+					else
+					{
+						if (sel)
+							setIcon(iniFile.rRefElemIconS);
+						else
+							setIcon(iniFile.rRefElemIcon);
+					}
+				}
+				else
+				{
+					if (sel)
+						setIcon(iniFile.elemIconS);
+					else
+						setIcon(iniFile.elemIcon);
+				}
+			}
+			else
+			{
+				final String attName = treeNode.getName();
+				if (treeNode.isInherited())
+				{
+					if (attName.equals("PartIDKeys"))
+					{
+						if (sel)
+							setIcon(iniFile.iPAttIconS);
+						else
+							setIcon(iniFile.iPAttIcon);
+					}
+					else
+					{
+						if (sel)
+							setIcon(iniFile.iAttIconS);
+						else
+							setIcon(iniFile.iAttIcon);
+					}
+				}
+				else
+				{
+					if (attName.equals("PartIDKeys"))
+					{
+						if (sel)
+							setIcon(iniFile.pAttIconS);
+						else
+							setIcon(iniFile.pAttIcon);
+					}
+					else if (attName.equals("rRef"))
+					{
+						if (sel)
+							setIcon(iniFile.refAttIconS);
+						else
+							setIcon(iniFile.refAttIcon);
+					}
+					else
+					{
+						if (sel)
+							setIcon(iniFile.attIconS);
+						else
+							setIcon(iniFile.attIcon);
+					}
+				}
+			}
+		}
+		else if (warnMsgs.contains(erType))
+		{
+			if (treeNode.isElement())
+			{
+				if (sel)
+					setIcon(iniFile.warnElemIconS);
+				else
+					setIcon(iniFile.warnElemIcon);
+			}
+			else
+			{
+				if (sel)
+					setIcon(iniFile.warnAttIconS);
+				else
+					setIcon(iniFile.warnAttIcon);
+			}
+		}
+		else
+		// not valid
+		{
+			if (treeNode.isElement())
+			{
+				if (sel)
+					setIcon(iniFile.errElemIconS);
+				else
+					setIcon(iniFile.errElemIcon);
+			}
+			else
+			{
+				if (sel)
+					setIcon(iniFile.errAttIconS);
+				else
+					setIcon(iniFile.errAttIcon);
+			}
+		}
+	}
+
 }
