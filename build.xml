@@ -64,7 +64,7 @@
 		<delete dir="${dist.dir}" />
 		<delete dir="${bin.dir}" />
 	</target>
-	<target name="dist" depends="srcdist,bindist" />
+	<target name="dist" depends="srcdist,bindist,appledist" />
 	<target name="bindist" depends="jar" description="Builds a binary distribution of
         JDFEditor.">
 		<echo>Building JDFEditor binary distribution...</echo>
