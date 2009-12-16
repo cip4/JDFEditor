@@ -294,7 +294,7 @@ public class Editor
 	{
 		final String about = getEditorName() + "\n" + getEditorVersion() + "\nInternational Cooperation for Integration of Processes in Prepress, Press and Postpress,\n"
 				+ "hereinafter referred to as CIP4. All Rights Reserved\n\n" + "Authors: Anna Andersson, Evelina Thunell, Ingemar Svenonius, Elena Skobchenko, Rainer Prosi\n\n"
-				+ "PRELIMINARY PRE-RELEASE VERSION\n\n" + "The APPLICATION is provided 'as is', without warranty of any kind, express, implied, or\n"
+				+ "The APPLICATION is provided 'as is', without warranty of any kind, express, implied, or\n"
 				+ "otherwise, including but not limited to the warranties of merchantability,fitness for a\n"
 				+ "particular purpose and noninfringement. In no event will CIP4 be liable, for any claim,\n"
 				+ "damages or other liability whether in an action of contract, tort or otherwise, arising\n"
@@ -317,7 +317,7 @@ public class Editor
 	 */
 	public String getEditorBuildDate()
 	{
-		return "Estimated Build Date - 23 July 2009";
+		return "Estimated Build Date - 16 December 2009";
 	}
 
 	/**
