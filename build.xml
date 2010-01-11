@@ -102,7 +102,7 @@
 			<zipfileset dir="bin" excludes="*.sh" />
 			<zipfileset dir="bin" includes="*.sh" filemode="755" />
 		</zip>
-	<!--	<antcall target="appledist" />-->
+	  <antcall target="appledist" />
 		<antcall target="windist" />
 	</target>
 	<target name="srcdist" depends="compile" description="Builds a source distribution of
