@@ -251,8 +251,7 @@ public class EditorUtils
 	public static String chooseElementName(final KElement parentElement)
 	{
 		final String validValues[] = EditorUtils.getElementOptions(parentElement);
-		String selectedElementName = (String) JOptionPane.showInputDialog(Editor.getFrame(), "Choose an element to insert", "Insert new element", JOptionPane.PLAIN_MESSAGE, null, validValues,
-				validValues[0]);
+		String selectedElementName = (String) JOptionPane.showInputDialog(Editor.getFrame(), "Choose an element to insert", "Insert new element", JOptionPane.PLAIN_MESSAGE, null, validValues, validValues[0]);
 
 		if (selectedElementName != null && selectedElementName.equals("Other.."))
 		{
@@ -375,7 +374,8 @@ public class EditorUtils
 			schemaloc = iniFile.getSchemaURL();
 			if (schemaloc != null)
 			{
-				p.m_SchemaLocation = UrlUtil.fileToUrl(schemaloc, true);
+				//p.m_SchemaLocation = UrlUtil.fileToUrl(schemaloc, true);
+				p.m_SchemaLocation = "http://www.CIP4.org/JDFSchema_1_1 " + UrlUtil.fileToUrl(schemaloc, true);
 			}
 		}
 		final JDFDoc jdfDoc = p.parseStream(inStream);

@@ -5,7 +5,7 @@ package org.cip4.jdfeditor;
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2009 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2010 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -106,7 +106,6 @@ import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.JDFElement.EnumVersion;
 import org.cip4.jdflib.core.KElement.EnumValidationLevel;
 import org.cip4.jdflib.util.EnumUtil;
-import org.cip4.jdflib.util.StringUtil;
 
 /**
  * @author Dr. Rainer Prosi, Heidelberger Druckmaschinen AG
@@ -794,6 +793,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		allValues.addElement(EnumVersion.Version_1_2.getName());
 		allValues.addElement(EnumVersion.Version_1_3.getName());
 		allValues.addElement(EnumVersion.Version_1_4.getName());
+		//		allValues.addElement("2.0");
 		final JPanel versionPanel = new JPanel();
 		versionPanel.setBorder(BorderFactory.createTitledBorder("JDFVersion"));
 
@@ -1516,8 +1516,8 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
 	// //////////////////////////////////////////////////////////
 	/**
-     * 
-     */
+	 * 
+	 */
 	public void writeToIni()
 	{
 		final INIReader iniFile = Editor.getIniFile();
