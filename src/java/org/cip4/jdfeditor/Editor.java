@@ -88,6 +88,7 @@ import org.cip4.jdflib.core.JDFAudit;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFParser;
+import org.cip4.jdflib.core.KElement;
 
 /**
  * @author AnderssA ThunellE
@@ -114,7 +115,7 @@ public class Editor
 	 */
 	static final String ICONS_PATH = "/org/cip4/jdfeditor/icons/";
 
-	static ImageIcon getImageIcon(final Class myClass, final String resString)
+	static ImageIcon getImageIcon(final Class<?> myClass, final String resString)
 	{
 		final URL url = myClass.getResource(resString);
 		ImageIcon imIc = null;
@@ -202,7 +203,7 @@ public class Editor
 		// read the initialization stuff
 		JDFAudit.setStaticAgentName(getEditorName());
 		JDFAudit.setStaticAgentVersion(getEditorVersion());
-		JDFElement.setLongID(m_iniFile.getLongID());
+		KElement.setLongID(m_iniFile.getLongID());
 		JDFElement.setDefaultJDFVersion(m_iniFile.getDefaultVersion());
 		JDFParser.m_searchStream = true;
 

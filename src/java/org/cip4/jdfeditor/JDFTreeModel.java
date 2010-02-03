@@ -105,6 +105,7 @@ import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.resource.devicecapability.JDFDeviceCap;
 import org.cip4.jdflib.util.ContainerUtil;
+import org.cip4.jdflib.util.JDFSpawn;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.jdflib.validate.JDFValidator;
@@ -116,6 +117,102 @@ import org.w3c.dom.Attr;
  */
 public class JDFTreeModel extends DefaultTreeModel
 {
+
+	/**
+	 * Spawn informative TODO correctly dump into multiple file
+	 * @param bSpawnInformative 
+	 */
+	void spawn(final boolean bSpawnInformative)
+	{
+		final EditorDocument ed = Editor.getEditorDoc();
+		if (ed == null)
+		{
+			return;
+		}
+		JDFFrame frame = Editor.getFrame();
+		try
+		{
+			final JDFTreeNode node = (JDFTreeNode) ed.getSelectionPath().getLastPathComponent();
+			final JDFNode selectedNode = (JDFNode) node.getElement();
+			final SpawnDialog spawnDialog = new SpawnDialog(selectedNode, bSpawnInformative);
+
+			if (spawnDialog.bOK)
+			{
+				frame.clearViews();
+
+				if (!bSpawnInformative)
+				{
+					frame.readFile(spawnDialog.newRootFile);
+				}
+
+				frame.readFile(spawnDialog.newPartFile);
+			}
+		}
+		catch (final Exception e)
+		{
+			e.printStackTrace();
+			ResourceBundle bundle = Editor.getBundle();
+			JOptionPane.showMessageDialog(frame, bundle.getString("SpawnErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), bundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	/**
+	 * undo spawn
+	 */
+	void unspawn()
+	{
+		final EditorDocument ed = Editor.getEditorDoc();
+		if (ed == null)
+		{
+			return;
+		}
+		JDFFrame frame = Editor.getFrame();
+		try
+		{
+			final JDFTreeNode node = (JDFTreeNode) ed.getSelectionPath().getLastPathComponent();
+			final JDFNode selectedNode = (JDFNode) node.getElement();
+
+			while (true)
+			{
+				JDFNode unspawned = new JDFSpawn(selectedNode).unSpawn(null);
+				if (unspawned == null)
+					break;
+			}
+
+			frame.refreshView(ed, null);
+
+		}
+		catch (final Exception e)
+		{
+			e.printStackTrace();
+			ResourceBundle bundle = Editor.getBundle();
+			JOptionPane.showMessageDialog(frame, bundle.getString("SpawnErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), bundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	/**
+	 * Merge
+	 */
+	void merge()
+	{
+		JDFFrame frame = Editor.getFrame();
+		try
+		{
+			final MergeDialog mergeResult = new MergeDialog(Editor.getJDFDoc().getJDFRoot());
+
+			final File f = mergeResult.getFileToSave();
+			if (f != null)
+			{
+				frame.refreshView(Editor.getEditorDoc(), null);
+			}
+		}
+		catch (final Exception e)
+		{
+			e.printStackTrace();
+			ResourceBundle bundle = Editor.getBundle();
+			JOptionPane.showMessageDialog(frame, bundle.getString("MergeErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), bundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+		}
+	}
 
 	/**
 	 * 
@@ -551,7 +648,8 @@ public class JDFTreeModel extends DefaultTreeModel
 		for (int i = 0; i < attSize; i++)
 		{
 			final String attName = vAttNames.stringAt(i);
-			if (!m_ignoreAttributes || attName.equals(AttributeName.TYPE) || attName.equals(AttributeName.TYPES) || attName.equals(AttributeName.DESCRIPTIVENAME) || attName.equals(AttributeName.ID))
+			if (!m_ignoreAttributes || attName.equals(AttributeName.TYPE) || attName.equals(AttributeName.TYPES) || attName.equals(AttributeName.DESCRIPTIVENAME)
+					|| attName.equals(AttributeName.ID))
 			{
 				final String attVal = elem.getAttribute(attName);
 				setAttribute(node, attName, attVal, null, false);
@@ -819,8 +917,7 @@ public class JDFTreeModel extends DefaultTreeModel
 			final String[] possibleValues = EditorUtils.getAttributeOptions(parent);
 
 			final ResourceBundle resourceBundle = Editor.getBundle();
-			selectedName = (String) JOptionPane.showInputDialog(m_frame, resourceBundle.getString("ChooseNewAttTypeKey"), resourceBundle.getString("RenameKey"), JOptionPane.PLAIN_MESSAGE, null,
-					possibleValues, possibleValues[0]);
+			selectedName = (String) JOptionPane.showInputDialog(m_frame, resourceBundle.getString("ChooseNewAttTypeKey"), resourceBundle.getString("RenameKey"), JOptionPane.PLAIN_MESSAGE, null, possibleValues, possibleValues[0]);
 
 			if (selectedName != null && selectedName.equals("Other.."))
 			{

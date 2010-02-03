@@ -1,4 +1,5 @@
 package org.cip4.jdfeditor;
+
 /*
  * The CIP4 Software License, Version 1.0
  *
@@ -99,214 +100,212 @@ import org.cip4.jdflib.util.JDFSpawn;
 public class SpawnDialog extends JPanel implements ActionListener
 {
 	private static final long serialVersionUID = -267165456151780440L;
-	
-	private JTextField idPath, rootPath; 
-    private JButton browse1, browse2; 
-    File originalFile;
 
-    File newPartFile;
+	private JTextField idPath, rootPath;
+	private JButton browse1, browse2;
+	File originalFile;
 
-    File newRootFile;
+	File newPartFile;
 
-    private JDFNode selectedJDF, originalJDF, spawnedPartJDF;
-    private ResourceBundle littleBundle;
-    private GridBagLayout layout;
-    private GridBagConstraints constraints;
-    private JDFFrame parFrame;
-    boolean bOK=false;
-        
-    public SpawnDialog(final JDFFrame parent, final ResourceBundle bundle, 
-    						final JDFNode selectJDF, boolean spawnInformative)
-    {
-        super();
-        this.selectedJDF = selectJDF;
-        this.originalFile = new File(selectJDF.getOwnerDocument_KElement().getOriginalFileName());
-        this.littleBundle = bundle;
-        this.parFrame = parent;
-                
-        final XMLDoc originalDoc = selectJDF.getOwnerDocument_KElement();
-        this.originalJDF = (JDFNode) originalDoc.getRoot();
-        
-        init();
-        
-        final String[] options = { littleBundle.getString("OkKey"), littleBundle.getString("CancelKey") };
-        
-        final int option = JOptionPane.showOptionDialog(parent, this, "Spawn",
-            JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+	File newRootFile;
 
-        if (option == JOptionPane.OK_OPTION)
-        {
-            bOK=true;
-            String path = idPath.getText();
-            if (path==null || path.equals(JDFConstants.EMPTYSTRING))
-                path = "SpawnedJDF.jdf";
-            
-            String rPath = rootPath.getText();
-            if (rPath==null || rPath.equals(JDFConstants.EMPTYSTRING))
-                rPath = "MainJDF.jdf";
-            
-            newPartFile = new File(path);
-            newRootFile = new File(rPath);
-            
-            if (newPartFile == null || newRootFile == null) 
-            {
-                JOptionPane.showMessageDialog(parent, littleBundle.getString("SpawningFailedKey"), "Error", JOptionPane.ERROR_MESSAGE);
-                bOK=false;
-            }
-            else
-            {
-                try
-                {
-                    if (spawnInformative)
-                    {
-                    	final JDFSpawn _spawn=new JDFSpawn(selectedJDF);
-                        spawnedPartJDF = _spawn.spawnInformative(originalFile.toURI().toString(), newPartFile.toURI().toString(), null, false, true, true, true);
-                    }
-                    else 
-                    {
-	                	final JDFSpawn spawn=new JDFSpawn(selectedJDF);
-                        spawnedPartJDF = spawn.spawn(originalFile.toURI().toString(),newPartFile.toURI().toString(),null,null,false,true,true,true);
-                    }
-                    spawnedPartJDF.eraseEmptyNodes(true);
-                    final XMLDoc outDoc_part1 = spawnedPartJDF.getOwnerDocument_KElement();
-                    outDoc_part1.write2File(newPartFile.getAbsolutePath(), 0, true);
-                    
-                    originalJDF.eraseEmptyNodes(true);
-                    originalDoc.write2File(newRootFile.getAbsolutePath(), 0, true);
-               
-                }
-                catch (Exception e) 
-                {
-                    bOK=false;
-                    e.printStackTrace();
-                    JOptionPane.showMessageDialog(parent,
-                            "An internal error occured: \n" + e.getClass() + " \n"
-                            + (e.getMessage()!=null ? ("\"" + e.getMessage() + "\"") : ""), 
-                            "Error", JOptionPane.ERROR_MESSAGE);
-                }   
-            }
-        }
-    }
-   
-    
-    /**
-     * Creates the fields and view for the Spawn Dialog and also the default
-     * file names for the jdfFile and partFile.
-     */
-    private void init()
-    {
-    	layout = new GridBagLayout(); 
-        setLayout(layout);
-        constraints = new GridBagConstraints();
-        constraints.fill = GridBagConstraints.HORIZONTAL;
-        constraints.insets = new Insets(3,5,3,5);
-        setBorder(BorderFactory.createTitledBorder(littleBundle.getString("SpawnedOutputKey")));
-        
-        final JLabel mergeLabel = new JLabel(EditorUtils.displayPathName(originalFile, littleBundle.getString("SpawnedOutputKey").length()));
-        constraints.gridwidth = GridBagConstraints.REMAINDER;
-        layout.setConstraints(mergeLabel, constraints);
-        add(mergeLabel);
-       
-        final JLabel idLabel = new JLabel(littleBundle.getString("SpawnedJDFKey"));
-        constraints.insets = new Insets(10,5,3,5);
-        layout.setConstraints(idLabel, constraints);
-        add(idLabel);
-  
-        final Box idBox = Box.createHorizontalBox();
-        
-        newPartFile = new File(createFileName(".ID_" + selectedJDF.getID()));
-        final String absolutePath = newPartFile.getAbsolutePath();
-        int col = absolutePath.length() < 35 ? absolutePath.length() : 35;
-        idPath = new JTextField(absolutePath, col);
-        
-        idBox.add(idPath);
-        idBox.add(Box.createHorizontalStrut(10));
-        
-        browse1 = new JButton(littleBundle.getString("BrowseKey"));
-        browse1.setPreferredSize(new Dimension(85,22));
-        browse1.addActionListener(this);
-        idBox.add(browse1);
-        
-        constraints.insets = new Insets(0,5,8,5);
-        layout.setConstraints(idBox, constraints);
-        add(idBox);
-        
-        
-        final JLabel rLabel = new JLabel(littleBundle.getString("MainJDFKey"));
-        constraints.insets = new Insets(10,5,3,5);
-        layout.setConstraints(rLabel, constraints);
-        add(rLabel);
-  
-        final Box idBox2 = Box.createHorizontalBox();
-        
-        newRootFile = new File(createFileName(".ID_" + originalJDF.getID()));
-        final String newRootAbsolutePath = newRootFile.getAbsolutePath();
-        int col2 = newRootAbsolutePath.length() < 35 ? newRootAbsolutePath.length() : 35;
-        rootPath = new JTextField(newRootAbsolutePath, col2);
-        
-        idBox2.add(rootPath);
-        idBox2.add(Box.createHorizontalStrut(10));
-        
-        browse2 = new JButton(littleBundle.getString("BrowseKey"));
-        browse2.setPreferredSize(new Dimension(85,22));
-        browse2.addActionListener(this);
-        idBox2.add(browse2);
-        
-        constraints.insets = new Insets(0,5,8,5);
-        layout.setConstraints(idBox2, constraints);
-        add(idBox2);
-        
-        setVisible(true);
- 
-    }
-    
-    
-    /**
-     * Create the default file name including its absolute path. The String addOn
-     * is added just ahead of the file's extension.
-     * @param addOn - The String to add to the original file name.
-     * @return The file name with the addon.
-     */
-    private String createFileName(String addOn)
-    {
-        int index = originalFile.getAbsolutePath().lastIndexOf('\\');
-        String path = originalFile.getAbsolutePath().substring(0, index + 1);
-        
-        index = originalFile.getName().lastIndexOf('.');
-        String name = originalFile.getName().substring(0, index);
-        String extension = originalFile.getName().substring(index, originalFile.getName().length());
-        
-        return path + name + addOn + extension;
-    }
-    public void actionPerformed(ActionEvent e)
-    {
-        if (e.getSource() == browse1 || e.getSource() == browse2)
-        {
-            File file= (e.getSource() == browse1) ? 
-                    newPartFile                   : 
-                    newRootFile;
-            
-            final EditorFileChooser files = new EditorFileChooser(file,"xml jdf");
-            final int option = files.showOpenDialog(parFrame);
-            
-            if (option == JFileChooser.APPROVE_OPTION)
-            {
-                if (e.getSource() == browse1)
-                {
-                    newPartFile = files.getSelectedFile();
-                    idPath.setText(files.getSelectedFile().getAbsolutePath());
-                }
-                else if (e.getSource() == browse2)
-                {
-                    newRootFile = files.getSelectedFile();
-                    rootPath.setText(files.getSelectedFile().getAbsolutePath());
-                }
-            }
-            else if (option == JFileChooser.ERROR_OPTION) 
-            {
-                JOptionPane.showMessageDialog(parFrame, "Spawn failed", 
-                        "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
+	private final JDFNode selectedJDF, originalJDF;
+
+	private JDFNode spawnedPartJDF;
+	private final ResourceBundle littleBundle;
+	private GridBagLayout layout;
+	private GridBagConstraints constraints;
+	private final JDFFrame parFrame;
+	boolean bOK = false;
+
+	/**
+	 * 
+	 * @param bundle
+	 * @param selectJDF
+	 * @param spawnInformative
+	 */
+	public SpawnDialog(final JDFNode selectJDF, boolean spawnInformative)
+	{
+		super();
+		this.selectedJDF = selectJDF;
+		this.originalFile = new File(selectJDF.getOwnerDocument_KElement().getOriginalFileName());
+		this.littleBundle = Editor.getBundle();
+		this.parFrame = Editor.getFrame();
+
+		final XMLDoc originalDoc = selectJDF.getOwnerDocument_KElement();
+		this.originalJDF = (JDFNode) originalDoc.getRoot();
+
+		init();
+
+		final String[] options = { littleBundle.getString("OkKey"), littleBundle.getString("CancelKey") };
+
+		final int option = JOptionPane.showOptionDialog(parFrame, this, "Spawn", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+
+		if (option == JOptionPane.OK_OPTION)
+		{
+			bOK = true;
+			String path = idPath.getText();
+			if (path == null || path.equals(JDFConstants.EMPTYSTRING))
+				path = "SpawnedJDF.jdf";
+
+			String rPath = rootPath.getText();
+			if (rPath == null || rPath.equals(JDFConstants.EMPTYSTRING))
+				rPath = "MainJDF.jdf";
+
+			newPartFile = new File(path);
+			newRootFile = new File(rPath);
+
+			if (newPartFile == null || newRootFile == null)
+			{
+				JOptionPane.showMessageDialog(parFrame, littleBundle.getString("SpawningFailedKey"), "Error", JOptionPane.ERROR_MESSAGE);
+				bOK = false;
+			}
+			else
+			{
+				try
+				{
+					if (spawnInformative)
+					{
+						final JDFSpawn _spawn = new JDFSpawn(selectedJDF);
+						spawnedPartJDF = _spawn.spawnInformative(originalFile.toURI().toString(), newPartFile.toURI().toString(), null, false, true, true, true);
+					}
+					else
+					{
+						final JDFSpawn spawn = new JDFSpawn(selectedJDF);
+						spawnedPartJDF = spawn.spawn(originalFile.toURI().toString(), newPartFile.toURI().toString(), null, null, false, true, true, true);
+					}
+					spawnedPartJDF.eraseEmptyNodes(true);
+					final XMLDoc outDoc_part1 = spawnedPartJDF.getOwnerDocument_KElement();
+					outDoc_part1.write2File(newPartFile.getAbsolutePath(), 0, true);
+
+					originalJDF.eraseEmptyNodes(true);
+					originalDoc.write2File(newRootFile.getAbsolutePath(), 0, true);
+
+				}
+				catch (Exception e)
+				{
+					bOK = false;
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(parFrame, "An internal error occured: \n" + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Creates the fields and view for the Spawn Dialog and also the default
+	 * file names for the jdfFile and partFile.
+	 */
+	private void init()
+	{
+		layout = new GridBagLayout();
+		setLayout(layout);
+		constraints = new GridBagConstraints();
+		constraints.fill = GridBagConstraints.HORIZONTAL;
+		constraints.insets = new Insets(3, 5, 3, 5);
+		setBorder(BorderFactory.createTitledBorder(littleBundle.getString("SpawnedOutputKey")));
+
+		final JLabel mergeLabel = new JLabel(EditorUtils.displayPathName(originalFile, littleBundle.getString("SpawnedOutputKey").length()));
+		constraints.gridwidth = GridBagConstraints.REMAINDER;
+		layout.setConstraints(mergeLabel, constraints);
+		add(mergeLabel);
+
+		final JLabel idLabel = new JLabel(littleBundle.getString("SpawnedJDFKey"));
+		constraints.insets = new Insets(10, 5, 3, 5);
+		layout.setConstraints(idLabel, constraints);
+		add(idLabel);
+
+		final Box idBox = Box.createHorizontalBox();
+
+		newPartFile = new File(createFileName(".ID_" + selectedJDF.getID()));
+		final String absolutePath = newPartFile.getAbsolutePath();
+		int col = absolutePath.length() < 35 ? absolutePath.length() : 35;
+		idPath = new JTextField(absolutePath, col);
+
+		idBox.add(idPath);
+		idBox.add(Box.createHorizontalStrut(10));
+
+		browse1 = new JButton(littleBundle.getString("BrowseKey"));
+		browse1.setPreferredSize(new Dimension(85, 22));
+		browse1.addActionListener(this);
+		idBox.add(browse1);
+
+		constraints.insets = new Insets(0, 5, 8, 5);
+		layout.setConstraints(idBox, constraints);
+		add(idBox);
+
+		final JLabel rLabel = new JLabel(littleBundle.getString("MainJDFKey"));
+		constraints.insets = new Insets(10, 5, 3, 5);
+		layout.setConstraints(rLabel, constraints);
+		add(rLabel);
+
+		final Box idBox2 = Box.createHorizontalBox();
+
+		newRootFile = new File(createFileName(".ID_" + originalJDF.getID()));
+		final String newRootAbsolutePath = newRootFile.getAbsolutePath();
+		int col2 = newRootAbsolutePath.length() < 35 ? newRootAbsolutePath.length() : 35;
+		rootPath = new JTextField(newRootAbsolutePath, col2);
+
+		idBox2.add(rootPath);
+		idBox2.add(Box.createHorizontalStrut(10));
+
+		browse2 = new JButton(littleBundle.getString("BrowseKey"));
+		browse2.setPreferredSize(new Dimension(85, 22));
+		browse2.addActionListener(this);
+		idBox2.add(browse2);
+
+		constraints.insets = new Insets(0, 5, 8, 5);
+		layout.setConstraints(idBox2, constraints);
+		add(idBox2);
+
+		setVisible(true);
+
+	}
+
+	/**
+	 * Create the default file name including its absolute path. The String addOn
+	 * is added just ahead of the file's extension.
+	 * @param addOn - The String to add to the original file name.
+	 * @return The file name with the addon.
+	 */
+	private String createFileName(String addOn)
+	{
+		int index = originalFile.getAbsolutePath().lastIndexOf('\\');
+		String path = originalFile.getAbsolutePath().substring(0, index + 1);
+
+		index = originalFile.getName().lastIndexOf('.');
+		String name = originalFile.getName().substring(0, index);
+		String extension = originalFile.getName().substring(index, originalFile.getName().length());
+
+		return path + name + addOn + extension;
+	}
+
+	public void actionPerformed(ActionEvent e)
+	{
+		if (e.getSource() == browse1 || e.getSource() == browse2)
+		{
+			File file = (e.getSource() == browse1) ? newPartFile : newRootFile;
+
+			final EditorFileChooser files = new EditorFileChooser(file, "xml jdf");
+			final int option = files.showOpenDialog(parFrame);
+
+			if (option == JFileChooser.APPROVE_OPTION)
+			{
+				if (e.getSource() == browse1)
+				{
+					newPartFile = files.getSelectedFile();
+					idPath.setText(files.getSelectedFile().getAbsolutePath());
+				}
+				else if (e.getSource() == browse2)
+				{
+					newRootFile = files.getSelectedFile();
+					rootPath.setText(files.getSelectedFile().getAbsolutePath());
+				}
+			}
+			else if (option == JFileChooser.ERROR_OPTION)
+			{
+				JOptionPane.showMessageDialog(parFrame, "Spawn failed", "Error", JOptionPane.ERROR_MESSAGE);
+			}
+		}
+	}
 }

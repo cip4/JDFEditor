@@ -5,7 +5,7 @@ package org.cip4.jdfeditor;
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2009 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2010 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -117,7 +117,6 @@ import org.cip4.jdflib.resource.devicecapability.JDFDevCaps;
 import org.cip4.jdflib.resource.devicecapability.JDFDeviceCap;
 import org.cip4.jdflib.resource.devicecapability.JDFDurationState;
 import org.cip4.jdflib.resource.devicecapability.JDFIntegerState;
-import org.cip4.jdflib.resource.devicecapability.JDFNameState;
 import org.cip4.jdflib.resource.devicecapability.JDFNumberState;
 import org.cip4.jdflib.resource.devicecapability.JDFShapeState;
 import org.cip4.jdflib.resource.devicecapability.JDFStringState;
@@ -275,7 +274,8 @@ public class JDFDeviceCapGenerator
 			for (int i = 0; i < vDevCaps.size(); i++)
 			{
 				devCaps = (JDFDevCaps) vDevCaps.elementAt(i);
-				if (!devCaps.hasAttribute("LinkUsage") || (devCaps.hasAttribute("LinkUsage") && devCaps.getLinkUsage().equals(linkUsage)) && (devCaps.getProcessUsage().equals(processUsage)))
+				if (!devCaps.hasAttribute("LinkUsage") || (devCaps.hasAttribute("LinkUsage") && devCaps.getLinkUsage().equals(linkUsage))
+						&& (devCaps.getProcessUsage().equals(processUsage)))
 				{
 					bFound = true;
 				}
@@ -599,7 +599,9 @@ public class JDFDeviceCapGenerator
 				if (stEl != null && stEl instanceof JDFAbstractState)
 				{
 					state = (JDFAbstractState) stEl;
-					if (eAttrType.equals(EnumAttributeType.string) || eAttrType.equals(EnumAttributeType.PDFPath) || eAttrType.equals(EnumAttributeType.matrix))
+					if (eAttrType.equals(EnumAttributeType.string) || eAttrType.equals(EnumAttributeType.shortString) || eAttrType.equals(EnumAttributeType.Any)
+							|| eAttrType.equals(EnumAttributeType.PDFPath) || eAttrType.equals(EnumAttributeType.matrix) || eAttrType.equals(EnumAttributeType.URI)
+							|| eAttrType.equals(EnumAttributeType.URL))
 					{
 						JDFValue stateValue = (JDFValue) state.getChildWithAttribute(ElementName.VALUE, AttributeName.ALLOWEDVALUE, null, value, 0, true);
 						if (stateValue == null)
@@ -647,16 +649,20 @@ public class JDFDeviceCapGenerator
 						dState.setAllowedValueList(durl);
 						state = dState;
 					}
-					else if (eAttrType.equals(EnumAttributeType.double_) || // Number
-							eAttrType.equals(EnumAttributeType.NumberList) || eAttrType.equals(EnumAttributeType.NumberRange) || eAttrType.equals(EnumAttributeType.NumberRangeList))
+					else if (eAttrType.equals(EnumAttributeType.double_)
+							|| // Number
+							eAttrType.equals(EnumAttributeType.NumberList) || eAttrType.equals(EnumAttributeType.NumberRange)
+							|| eAttrType.equals(EnumAttributeType.NumberRangeList))
 					{
 						final JDFNumberState nState = (JDFNumberState) dc.appendElement(ElementName.NUMBERSTATE);
 						nState.setAttribute(AttributeName.PRESENTVALUELIST, value);
 						nState.setAttribute(AttributeName.ALLOWEDVALUELIST, "-INF ~ INF");
 						state = nState;
 					}
-					else if (eAttrType.equals(EnumAttributeType.integer) || // Integer
-							eAttrType.equals(EnumAttributeType.IntegerList) || eAttrType.equals(EnumAttributeType.IntegerRange) || eAttrType.equals(EnumAttributeType.IntegerRangeList))
+					else if (eAttrType.equals(EnumAttributeType.integer)
+							|| // Integer
+							eAttrType.equals(EnumAttributeType.IntegerList) || eAttrType.equals(EnumAttributeType.IntegerRange)
+							|| eAttrType.equals(EnumAttributeType.IntegerRangeList))
 					{
 						final JDFIntegerState iState = (JDFIntegerState) dc.appendElement(ElementName.INTEGERSTATE);
 						iState.setAttribute(AttributeName.PRESENTVALUELIST, value);
@@ -714,9 +720,11 @@ public class JDFDeviceCapGenerator
 					else if (eAttrType.equals(EnumAttributeType.URI) || eAttrType.equals(EnumAttributeType.URL)) // uri
 					{
 						// TODO: regexp for uri
-						state = (JDFAbstractState) dc.appendElement(ElementName.NAMESTATE);
-						final JDFNameState ns = (JDFNameState) state;
-						ns.setAttribute(AttributeName.PRESENTVALUELIST, value);
+						state = (JDFAbstractState) dc.appendElement(ElementName.STRINGSTATE);
+						final JDFStringState ns = (JDFStringState) state;
+						final JDFValue stringStateValue = (JDFValue) state.appendElement(ElementName.VALUE);
+						stringStateValue.setAllowedValue(value);
+						stringStateValue.setValueUsage(EnumValueUsage.Present);
 						ns.setPresentRegExp("*");
 					}
 					else if (eAttrType.equals(EnumAttributeType.string) || eAttrType.equals(EnumAttributeType.shortString) || eAttrType.equals(EnumAttributeType.Any)) // String
@@ -814,8 +822,9 @@ public class JDFDeviceCapGenerator
 				{
 					listType = EnumListType.List;
 				}
-				else if (eAttrType.equals(EnumAttributeType.DateTimeRangeList) || eAttrType.equals(EnumAttributeType.DurationRangeList) || eAttrType.equals(EnumAttributeType.IntegerRangeList)
-						|| eAttrType.equals(EnumAttributeType.NameRangeList) || eAttrType.equals(EnumAttributeType.NumberRangeList))
+				else if (eAttrType.equals(EnumAttributeType.DateTimeRangeList) || eAttrType.equals(EnumAttributeType.DurationRangeList)
+						|| eAttrType.equals(EnumAttributeType.IntegerRangeList) || eAttrType.equals(EnumAttributeType.NameRangeList)
+						|| eAttrType.equals(EnumAttributeType.NumberRangeList))
 				{
 					listType = EnumListType.RangeList;
 				}

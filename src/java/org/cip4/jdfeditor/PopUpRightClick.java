@@ -112,6 +112,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 	 * 
 	 */
 	private static final long serialVersionUID = -8488973695389593826L;
+	private final ResourceBundle m_littleBundle;
 
 	private final JMenuItem m_copyPopupItem;
 	private final JMenuItem m_renamePopupItem;
@@ -141,6 +142,8 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 	private JMenuItem m_normalize = null;
 	private JMenuItem m_saveXJDFCaps = null;
 	private JMenuItem m_sendMessage = null;
+	private JMenuItem m_spawn = null;
+	private JMenuItem m_unspawn = null;
 
 	private class MessageSender
 	{
@@ -234,7 +237,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 
 		final JDFTreeNode node = (JDFTreeNode) path.getLastPathComponent();
 		final KElement elem = (node.isElement()) ? node.getElement() : null;
-		final ResourceBundle m_littleBundle = Editor.getBundle();
+		m_littleBundle = Editor.getBundle();
 		final INIReader ini = Editor.getIniFile();
 
 		final JMenu insertPopupMenu = new JMenu(m_littleBundle.getString("InsertElKey"));
@@ -303,25 +306,25 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 
 		add(separator);
 
-		m_cutPopupItem = addMenuItem(m_littleBundle, "CutKey");
+		m_cutPopupItem = addMenuItem("CutKey");
 		// m_cutPopupItem.setAccelerator(KeyStroke.getKeyStroke('X', menuKeyMask));
 
-		m_copyPopupItem = addMenuItem(m_littleBundle, "CopyKey");
+		m_copyPopupItem = addMenuItem("CopyKey");
 		// m_copyPopupItem.setAccelerator(KeyStroke.getKeyStroke('C', menuKeyMask));
 
-		m_pastePopupItem = addMenuItem(m_littleBundle, "PasteKey");
+		m_pastePopupItem = addMenuItem("PasteKey");
 		// m_pastePopupItem.setAccelerator(KeyStroke.getKeyStroke('P', menuKeyMask));
-		m_deletePopupItem = addMenuItem(m_littleBundle, "DeleteKey");
+		m_deletePopupItem = addMenuItem("DeleteKey");
 
 		add(separator);
 
-		m_renamePopupItem = addMenuItem(m_littleBundle, "RenameKey");
-		m_modifyAttrValuePopupItem = addMenuItem(m_littleBundle, "ModifyAttValueKey");
-		m_targetItem = addMenuItem(m_littleBundle, "GotoTargetKey");
+		m_renamePopupItem = addMenuItem("RenameKey");
+		m_modifyAttrValuePopupItem = addMenuItem("ModifyAttValueKey");
+		m_targetItem = addMenuItem("GotoTargetKey");
 		add(separator);
 
-		m_requiredAttrPopupItem = addMenuItem(m_littleBundle, "AddRequiredAttKey");
-		m_requiredElemPopupItem = addMenuItem(m_littleBundle, "AddRequiredElKey");
+		m_requiredAttrPopupItem = addMenuItem("AddRequiredAttKey");
+		m_requiredElemPopupItem = addMenuItem("AddRequiredElKey");
 		add(separator);
 
 		// TODO add spawn
@@ -329,36 +332,39 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		{
 			if (ini.getEnableExtensions())
 			{
-				m_saveXJDF = addMenuItem(m_littleBundle, "SaveXJDFKey");
+				m_saveXJDF = addMenuItem("SaveXJDFKey");
 			}
-			m_normalize = addMenuItem(m_littleBundle, "NormalizeKey");
+			m_normalize = addMenuItem("NormalizeKey");
+			m_spawn = addMenuItem("SpawnKey");
+			m_unspawn = addMenuItem("UnspawnKey");
+
 			add(separator);
 		}
 		else if (elem instanceof JDFDeviceCap)
 		{
-			m_nodeFromCaps = addMenuItem(m_littleBundle, "NodeFromCapsKey");
+			m_nodeFromCaps = addMenuItem("NodeFromCapsKey");
 			add(separator);
 		}
 		else if (elem instanceof JDFMessageService)
 		{
-			m_sendMessage = addMenuItem(m_littleBundle, "SendJMF");
+			m_sendMessage = addMenuItem("SendJMF");
 			add(separator);
 		}
 		else if (elem != null && elem.getNodeName().equals(XJDF20.rootName))
 		{
-			m_saveXJDFCaps = addMenuItem(m_littleBundle, "ExportToDevCapKey");
-			m_saveJDF = addMenuItem(m_littleBundle, "SaveJDFKey");
+			m_saveXJDFCaps = addMenuItem("ExportToDevCapKey");
+			m_saveJDF = addMenuItem("SaveJDFKey");
 		}
 
-		m_xpandPopupItem = addMenuItem(m_littleBundle, "ExpandKey");
-		m_collapsePopupItem = addMenuItem(m_littleBundle, "CollapseKey");
+		m_xpandPopupItem = addMenuItem("ExpandKey");
+		m_collapsePopupItem = addMenuItem("CollapseKey");
 
 		// 20040913 MRE
-		m_copyToClipBoardPopupItem = addMenuItem(m_littleBundle, "CopyNode");
+		m_copyToClipBoardPopupItem = addMenuItem("CopyNode");
 		setEnabledInMouseMenu(node, elem);
 	}
 
-	private JMenuItem addMenuItem(final ResourceBundle m_littleBundle, final String key)
+	private JMenuItem addMenuItem(final String key)
 	{
 		final JMenuItem item = new JMenuItem(m_littleBundle.getString(key));
 		item.addActionListener(this);
@@ -459,7 +465,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		final Object eSrc = e.getSource();
 		final INIReader iniFile = Editor.getIniFile();
 		final JDFFrame frame = Editor.getFrame();
-		final JDFTreeArea ta = frame.m_treeArea;
+		final JDFTreeArea treeArea = frame.m_treeArea;
 
 		if (!iniFile.getReadOnly())
 		{
@@ -473,39 +479,39 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 			}
 			else if (eSrc == m_insertElemBeforePopupItem)
 			{
-				ta.insertElementAtSelectedNode(-1);
+				treeArea.insertElementAtSelectedNode(-1);
 			}
 			else if (eSrc == m_insertElemAfterPopupItem)
 			{
-				ta.insertElementAtSelectedNode(1);
+				treeArea.insertElementAtSelectedNode(1);
 			}
 			else if (eSrc == m_insertElemIntoPopupItem)
 			{
-				ta.insertElementAtSelectedNode(0);
+				treeArea.insertElementAtSelectedNode(0);
 			}
 			else if (eSrc == m_insertInResPopupItem)
 			{
-				ta.insertResourceWithLink(true, true);
+				treeArea.insertResourceWithLink(true, true);
 			}
 			else if (eSrc == m_insertOutResPopupItem)
 			{
-				ta.insertResourceWithLink(true, false);
+				treeArea.insertResourceWithLink(true, false);
 			}
 			else if (eSrc == m_insertResPopupItem)
 			{
-				ta.insertResourceWithLink(false, false);
+				treeArea.insertResourceWithLink(false, false);
 			}
 			else if (eSrc == m_insertInResLinkPopupItem)
 			{
-				ta.insertResourceLink(EnumUsage.Input);
+				treeArea.insertResourceLink(EnumUsage.Input);
 			}
 			else if (eSrc == m_insertOutResLinkPopupItem)
 			{
-				ta.insertResourceLink(EnumUsage.Output);
+				treeArea.insertResourceLink(EnumUsage.Output);
 			}
 			else if (eSrc == m_insertAttrPopupItem)
 			{
-				ta.insertAttrItem();
+				treeArea.insertAttrItem();
 			}
 			else if (eSrc == m_renamePopupItem)
 			{
@@ -513,7 +519,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 			}
 			else if (eSrc == m_modifyAttrValuePopupItem)
 			{
-				ta.modifyAttribute();
+				treeArea.modifyAttribute();
 			}
 			else if (eSrc == m_insertTextPopupItem)
 			{
@@ -538,43 +544,51 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		}
 		if (eSrc == m_xpandPopupItem)
 		{
-			ta.xpand(null);
+			treeArea.xpand(null);
 		}
 		else if (eSrc == m_collapsePopupItem)
 		{
-			ta.collapse(null);
+			treeArea.collapse(null);
 		}
 		else if (eSrc == m_copyToClipBoardPopupItem)
 		{
-			copyToClipBoard(ta.getSelectionPath());
+			copyToClipBoard(treeArea.getSelectionPath());
 		}
 		else if (eSrc == m_targetItem)
 		{
-			ta.getPathTarget();
+			treeArea.getPathTarget();
 		}
 		else if (eSrc == m_saveXJDF)
 		{
-			Editor.getModel().saveAsXJDF(ta.getSelectionPath());
+			Editor.getModel().saveAsXJDF(treeArea.getSelectionPath());
 		}
 		else if (eSrc == m_saveJDF)
 		{
-			Editor.getModel().saveAsJDF(ta.getSelectionPath());
+			Editor.getModel().saveAsJDF(treeArea.getSelectionPath());
 		}
 		else if (eSrc == m_saveXJDFCaps)
 		{
-			Editor.getModel().saveAsXJDFCaps(ta.getSelectionPath());
+			Editor.getModel().saveAsXJDFCaps(treeArea.getSelectionPath());
+		}
+		else if (eSrc == m_spawn)
+		{
+			Editor.getModel().spawn(false);
+		}
+		else if (eSrc == m_unspawn)
+		{
+			Editor.getModel().unspawn();
 		}
 		else if (eSrc == m_nodeFromCaps)
 		{
-			Editor.getModel().createNodeFromCaps(ta.getSelectionPath());
+			Editor.getModel().createNodeFromCaps(treeArea.getSelectionPath());
 		}
 		else if (eSrc == m_normalize)
 		{
-			Editor.getModel().normalize(ta.getSelectionPath());
+			Editor.getModel().normalize(treeArea.getSelectionPath());
 		}
 		else if (eSrc == m_sendMessage)
 		{
-			sendJMF(ta.getSelectionPath());
+			sendJMF(treeArea.getSelectionPath());
 		}
 		Editor.setCursor(0, null);
 
@@ -604,6 +618,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 	 * copies the content of the marked node to the system clip board
 	 * @param p - The TreePath to collapse
 	 */
+	@SuppressWarnings("unchecked")
 	private void copyToClipBoard(final TreePath p)
 	{
 		final JDFTreeNode node = (JDFTreeNode) p.getLastPathComponent();

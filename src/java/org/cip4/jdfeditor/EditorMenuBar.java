@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2009 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2010 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -161,6 +161,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	private JMenuItem m_preferenceItem;
 
 	private JMenuItem m_sendToDeviceItem;
+	JMenuItem m_unspawnItem;
 	JMenuItem m_spawnItem;
 	JMenuItem m_spawnInformItem;
 	JMenuItem m_mergeItem;
@@ -224,22 +225,19 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 		m_cutItem = new JMenuItem(littleBundle.getString("CutKey"));
 		m_cutItem.addActionListener(frame);
-		m_cutItem.setAccelerator(KeyStroke.getKeyStroke('X', java.awt.event.InputEvent.CTRL_MASK
-				+ java.awt.event.InputEvent.SHIFT_MASK));
+		m_cutItem.setAccelerator(KeyStroke.getKeyStroke('X', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
 		m_cutItem.setEnabled(false);
 		m_editMenu.add(m_cutItem);
 
 		m_copyItem = new JMenuItem(littleBundle.getString("CopyKey"));
 		m_copyItem.addActionListener(frame);
-		m_copyItem.setAccelerator(KeyStroke.getKeyStroke('C', java.awt.event.InputEvent.CTRL_MASK
-				+ java.awt.event.InputEvent.SHIFT_MASK));
+		m_copyItem.setAccelerator(KeyStroke.getKeyStroke('C', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
 		m_copyItem.setEnabled(false);
 		m_editMenu.add(m_copyItem);
 
 		m_pasteItem = new JMenuItem(littleBundle.getString("PasteKey"));
 		m_pasteItem.addActionListener(frame);
-		m_pasteItem.setAccelerator(KeyStroke.getKeyStroke('V', java.awt.event.InputEvent.CTRL_MASK
-				+ java.awt.event.InputEvent.SHIFT_MASK));
+		m_pasteItem.setAccelerator(KeyStroke.getKeyStroke('V', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
 		m_pasteItem.setEnabled(false);
 		m_editMenu.add(m_pasteItem);
 
@@ -316,8 +314,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 		m_saveAsItem = new JMenuItem(m_littleBundle.getString("SaveAsKey"));
 		m_saveAsItem.addActionListener(m_frame);
-		m_saveAsItem.setAccelerator(KeyStroke.getKeyStroke('S', java.awt.event.InputEvent.CTRL_MASK
-				+ java.awt.event.InputEvent.SHIFT_MASK));
+		m_saveAsItem.setAccelerator(KeyStroke.getKeyStroke('S', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
 		m_fileMenu.add(m_saveAsItem);
 		m_fileMenu.add(new JSeparator());
 
@@ -541,27 +538,28 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		m_toolsMenu.setBorderPainted(false);
 		m_toolsMenu.addMouseListener(menuListener);
 
-		m_spawnItem = new JMenuItem("Spawn...");
-		m_spawnItem.addActionListener(m_frame);
-		m_spawnItem.setAccelerator(KeyStroke.getKeyStroke('S', java.awt.event.InputEvent.CTRL_MASK
-				+ java.awt.event.InputEvent.ALT_MASK));
+		m_spawnItem = new JMenuItem(m_littleBundle.getString("SpawnKey"));
+		m_spawnItem.addActionListener(this);
 		m_spawnItem.setEnabled(false);
+		m_spawnItem.setAccelerator(KeyStroke.getKeyStroke('S', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.ALT_MASK));
 		m_toolsMenu.add(m_spawnItem);
 
 		m_spawnInformItem = new JMenuItem("Spawn Informative...");
-		m_spawnInformItem.addActionListener(m_frame);
-		m_spawnInformItem.setAccelerator(KeyStroke.getKeyStroke('I', java.awt.event.InputEvent.CTRL_MASK
-				+ java.awt.event.InputEvent.ALT_MASK));
+		m_spawnInformItem.addActionListener(this);
+		m_spawnInformItem.setAccelerator(KeyStroke.getKeyStroke('I', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.ALT_MASK));
 		m_spawnInformItem.setEnabled(false);
 		m_toolsMenu.add(m_spawnInformItem);
 
 		m_mergeItem = new JMenuItem("Merge...");
-		m_mergeItem.addActionListener(m_frame);
-		m_mergeItem.setAccelerator(KeyStroke.getKeyStroke('M', java.awt.event.InputEvent.CTRL_MASK
-				+ java.awt.event.InputEvent.ALT_MASK));
+		m_mergeItem.addActionListener(this);
+		m_mergeItem.setAccelerator(KeyStroke.getKeyStroke('M', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.ALT_MASK));
 		m_mergeItem.setEnabled(false);
 		m_toolsMenu.add(m_mergeItem);
-		m_toolsMenu.add(new JSeparator());
+
+		m_unspawnItem = new JMenuItem(m_littleBundle.getString("UnspawnKey"));
+		m_unspawnItem.addActionListener(this);
+		m_unspawnItem.setEnabled(false);
+		m_toolsMenu.add(m_unspawnItem);
 
 		m_toolsMenu.add(new JSeparator());
 
@@ -792,6 +790,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		m_spawnItem.setEnabled(enable);
 		m_spawnInformItem.setEnabled(enable);
 		m_mergeItem.setEnabled(enable);
+		m_unspawnItem.setEnabled(enable);
 	}
 
 	protected void setEnabledInMenu(final TreePath path)
@@ -848,8 +847,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 				m_insertOutResItem.setEnabled(true);
 				m_insertResItem.setEnabled(true);
 			}
-			else if ((kElement instanceof JDFResourceLinkPool)
-					&& EditorUtils.getResourcesAllowedToLink(((JDFResourceLinkPool) kElement).getParentJDF(), null) != null)
+			else if ((kElement instanceof JDFResourceLinkPool) && EditorUtils.getResourcesAllowedToLink(((JDFResourceLinkPool) kElement).getParentJDF(), null) != null)
 			{
 				m_insertInResItem.setEnabled(false);
 				m_insertOutResItem.setEnabled(false);
@@ -1098,6 +1096,18 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		{
 			Editor.getFrame().m_treeArea.findXPathElem();
 		}
+		else if (eSrc == m_spawnItem)
+		{
+			Editor.getModel().spawn(false);
+		}
+		else if (eSrc == m_spawnInformItem)
+		{
+			Editor.getModel().spawn(true);
+		}
+		else if (eSrc == m_mergeItem)
+		{
+			Editor.getModel().merge();
+		}
 		else if (eSrc == m_aboutItem)
 		{
 			final ImageIcon imgCIP = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "CIP4.gif");
@@ -1183,7 +1193,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 	/**
 	 * Called if a file is opened from the recent files menu.
-	 * @param filePathToSave - Path to the file that is to be opened
+	 * @param fileToSave - Path to the file that is to be opened
 	 */
 	private void openRecentFile(final File fileToSave)
 	{

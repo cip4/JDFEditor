@@ -403,64 +403,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 * Spawn informative TODO correctly dump into multiple file
-	 */
-	void spawn(final boolean bSpawnInformative)
-	{
-		final EditorDocument ed = getEditorDoc();
-		if (ed == null)
-		{
-			return;
-		}
-		try
-		{
-			final JDFTreeNode node = (JDFTreeNode) ed.getSelectionPath().getLastPathComponent();
-			final JDFNode selectedNode = (JDFNode) node.getElement();
-			final SpawnDialog spawnDialog = new SpawnDialog(this, m_littleBundle, selectedNode, bSpawnInformative);
-
-			if (spawnDialog.bOK)
-			{
-				clearViews();
-
-				if (!bSpawnInformative)
-				{
-					readFile(spawnDialog.newRootFile);
-				}
-
-				readFile(spawnDialog.newPartFile);
-			}
-		}
-		catch (final Exception e)
-		{
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("SpawnErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
-		}
-	}
-
-	/**
-	 * Merge
-	 */
-	void merge()
-	{
-		try
-		{
-			final MergeDialog mergeResult = new MergeDialog(this, m_littleBundle, getJDFDoc().getJDFRoot());
-
-			final File f = mergeResult.getFileToSave();
-			if (f != null)
-			{
-				Editor.getFrame().refresh();
-				clearViews();
-			}
-		}
-		catch (final Exception e)
-		{
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("MergeErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
-		}
-	}
-
-	/**
 	 * Export to Device Capabilities File
 	 */
 	void exportToDevCap()
@@ -1231,19 +1173,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		else if (eSrc == m_buttonBar.m_zoomBestButton)
 		{
 			m_topTabs.m_pArea.zoom('b');
-		}
-
-		else if (eSrc == m_menuBar.m_spawnItem)
-		{
-			spawn(false);
-		}
-		else if (eSrc == m_menuBar.m_spawnInformItem)
-		{
-			spawn(true);
-		}
-		else if (eSrc == m_menuBar.m_mergeItem)
-		{
-			merge();
 		}
 		else if (eSrc == m_menuBar.m_devCapItem)
 		{

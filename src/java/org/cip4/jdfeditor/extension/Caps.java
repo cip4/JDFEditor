@@ -76,6 +76,7 @@
 package org.cip4.jdfeditor.extension;
 
 import java.util.HashSet;
+import java.util.Iterator;
 
 import org.cip4.jdfeditor.JDFDeviceCapGenerator;
 import org.cip4.jdflib.core.AttributeName;
@@ -182,7 +183,25 @@ public class Caps
 			}
 		}
 		// dcDummy.deleteNode();
+		cleanStates(rootCap);
 		return rootCap;
+	}
+
+	/**
+	 * @param rootCap 
+	 * 
+	 */
+	private static void cleanStates(KElement rootCap)
+	{
+		VElement v = rootCap.getChildElementVector(null, null);
+		Iterator<KElement> it = v.iterator();
+		while (it.hasNext())
+		{
+			KElement e = it.next();
+			if (e.getLocalName().endsWith("State"))
+				e.removeAttribute("Name");
+		}
+
 	}
 
 	// ///////////////////////////////////////////////////////////////////////////////////////
