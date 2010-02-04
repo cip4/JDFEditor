@@ -68,6 +68,7 @@
  *
  */
 package org.cip4.jdfeditor;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -230,7 +231,7 @@ public class ProcessPart extends JComponent
         }
         else if (style==RES_EXTERNAL)
         {
-            rawHeight = 55;
+            rawHeight = 75 /*55*/;
 
             String[] tmp = { 
                     elem.getNodeName(),
@@ -244,7 +245,7 @@ public class ProcessPart extends JComponent
         }
         else 
         {
-            rawHeight = 60;
+            rawHeight = 75 /*60*/;
 
             String[] tmp = { elem.getNodeName(),
                     elem.getAttribute("ID"),

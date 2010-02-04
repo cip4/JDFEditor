@@ -1,4 +1,5 @@
 package org.cip4.jdfeditor;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -48,15 +49,17 @@ public class ProcessPanel extends JPanel
         {
             if (SwingUtilities.isLeftMouseButton(e))
             {
-                if(e.getClickCount()>1)
+                if(e.getClickCount() == 2)
                 {
+//                    System.out.println("mouseClicked: = 2");
                     getProcessSearchNode(e.getSource());
                     final ProcessPart processPart = ((ProcessPart) e.getSource());
                     final KElement element = processPart.getElem();
                     drawNewRoot(element);
                 }
-                else
+                else if(e.getClickCount() == 1)
                 {
+//                    System.out.println("mouseClicked: 1");
                     setSelPart(e);
                 }
             }
@@ -237,7 +240,15 @@ public class ProcessPanel extends JPanel
             {
                 g.fillRect(part.getxPos(), part.getyPos(), part.rawWidth, part.rawHeight);
                 g.setColor(Color.black);
-                g.drawRect(part.getxPos(), part.getyPos(), part.rawWidth, part.rawHeight);
+//                g.drawRect(part.getxPos(), part.getyPos(), part.rawWidth, part.rawHeight);
+                
+                Graphics2D g2 = (Graphics2D) g;
+                if (part.isSelected) {
+                    g2.setStroke(new BasicStroke(3));
+                } else {
+                    g2.setStroke(new BasicStroke(1));
+                }
+                g2.drawRect(part.getxPos(), part.getyPos(), part.rawWidth, part.rawHeight);
             }
             final String[] s = part.getgString();
             final int xMarg = 15;
