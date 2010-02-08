@@ -51,7 +51,6 @@ public class ProcessPanel extends JPanel
             {
                 if(e.getClickCount() == 2)
                 {
-//                    System.out.println("mouseClicked: = 2");
                     getProcessSearchNode(e.getSource());
                     final ProcessPart processPart = ((ProcessPart) e.getSource());
                     final KElement element = processPart.getElem();
@@ -59,7 +58,6 @@ public class ProcessPanel extends JPanel
                 }
                 else if(e.getClickCount() == 1)
                 {
-//                    System.out.println("mouseClicked: 1");
                     setSelPart(e);
                 }
             }
@@ -78,7 +76,7 @@ public class ProcessPanel extends JPanel
     private final int esX = 50;
     private final int esY = 30; // The Empty Space between Nodes
     
-    protected Vector vParts = new Vector();
+    protected Vector<ProcessPart> vParts = new Vector<ProcessPart>();
     private ProcessPart parentPart = null;
 
     public ProcessPanel()
@@ -240,8 +238,6 @@ public class ProcessPanel extends JPanel
             {
                 g.fillRect(part.getxPos(), part.getyPos(), part.rawWidth, part.rawHeight);
                 g.setColor(Color.black);
-//                g.drawRect(part.getxPos(), part.getyPos(), part.rawWidth, part.rawHeight);
-                
                 Graphics2D g2 = (Graphics2D) g;
                 if (part.isSelected) {
                     g2.setStroke(new BasicStroke(3));
@@ -266,7 +262,6 @@ public class ProcessPanel extends JPanel
                 (int) (part.rawWidth * zoom),
                 (int) (part.rawHeight * zoom));
             add(part, 0);
-            
         }
     }
     /**
@@ -339,13 +334,23 @@ public class ProcessPanel extends JPanel
         return part;
     }
     
+    /**
+     * Set zoom.
+     * @param c - possible values are:
+     * <ol>
+     * <li>"+" to increase 10%,
+     * <li>"-" to decrease 10%,
+     * <li>"o" for original,
+     * <li>"b" for "best", aka "fit frame".
+     * </ol>
+     */
     public void zoom(char c)
     {
         final EditorDocument editorDoc = Editor.getEditorDoc();
-        if(editorDoc==null)
+        if(editorDoc == null)
             return;
-        double zoom=editorDoc.getZoom();
-        Dimension d=calcSize();
+        double zoom = editorDoc.getZoom();
+        Dimension d = calcSize();
         if (c == '+')
             zoom *= 1.1;
         else if (c == '-')
@@ -368,6 +373,7 @@ public class ProcessPanel extends JPanel
         setPreferredSize(d);
         repaint();
     }
+    
     public void clear()
     {
         vParts.clear();
@@ -376,6 +382,7 @@ public class ProcessPanel extends JPanel
         removeAll();
         setBackground(Color.white);
     }
+    
     /**
      * Method goUpOneLevelInProcessView.
      * takes the selected node in the m_jdfTree an goes up one level in the
@@ -419,13 +426,13 @@ public class ProcessPanel extends JPanel
         {
             removeAll();
             drawProcessView((JDFNode)element);
-            zoom('b');
             JDFTreeNode node = new JDFTreeNode(element);
             m_frame.m_treeArea.findNode(node);
         }        
         final JDFTreeNode rootNode = m_frame.getRootNode();
         m_frame.m_buttonBar.m_upOneLevelButton.setEnabled(!element.equals(rootNode==null ? null : ((JDFTreeNode) rootNode.getFirstChild()).getElement()));   
     }
+    
     /**
      * Initiate the Process View.
      */
