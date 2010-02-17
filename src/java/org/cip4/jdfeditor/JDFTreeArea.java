@@ -118,9 +118,11 @@ import org.cip4.jdflib.resource.devicecapability.JDFDevCap;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCaps;
 
 /**
- * 
- * @author prosirai This is a new dump for some of the JDFFrame classes that relate to the actual tree view TODO move some of the routines here into the model
+ * This is a new dump for some of the JDFFrame classes that relate to the actual tree view
+ * TODO move some of the routines here into the model
  * where they belong and reduce the dependencies with JDFFrame
+ * 
+ * @author prosirai
  * 
  */
 public class JDFTreeArea extends JTextArea
@@ -407,6 +409,7 @@ public class JDFTreeArea extends JTextArea
 				if ((selectedValue != null) && !(selectedValue.equals(oldVal)))
 				{
 					Editor.getModel().setAttribute((JDFTreeNode) attrNode.getParent(), attributeName, selectedValue, null, false);
+					Editor.getModel().nodeChanged(attrNode);
 				}
 			}
 
@@ -482,7 +485,7 @@ public class JDFTreeArea extends JTextArea
 	}
 
 	/**
-	 * Possiblity for user to choose ResourceName he wants to insert into the parentNode All resource names are the allowed resources for this parentNode + user
+	 * Possibility for user to choose ResourceName he wants to insert into the parentNode All resource names are the allowed resources for this parentNode + user
 	 * defined "Other.." choice
 	 * 
 	 * @param parentNode - parentNode we want to insert the resource into
