@@ -534,6 +534,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			this.setTitle(getWindowTitle());
 
 			m_errorTabbedPane.refreshView(path);
+			m_errorTabbedPane.refreshXmlEditor(eDoc.getJDFDoc().toXML());
 			if (path != null)
 			{
 				m_treeArea.goToPath(path);

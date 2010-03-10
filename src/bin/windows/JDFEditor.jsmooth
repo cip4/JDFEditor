@@ -6,17 +6,17 @@
 <JVMSearchPath>jdkpath</JVMSearchPath>
 <JVMSearchPath>exepath</JVMSearchPath>
 <JVMSearchPath>jview</JVMSearchPath>
-<arguments></arguments>
 <classPath>lib\activation-1.0.2.jar</classPath>
 <classPath>lib\commons-lang-2.1.jar</classPath>
 <classPath>lib\commons-io-1.1.jar</classPath>
 <classPath>lib\commons-logging-1.0.4.jar</classPath>
-<classPath>lib\JDFLibJ-2.1.4.jar</classPath>
+<classPath>lib\JDFLibJ-2.1.4a.jar</classPath>
 <classPath>lib\log4j-1.2.8.jar</classPath>
 <classPath>lib\mailapi.jar</classPath>
 <classPath>lib\xercesImpl.jar</classPath>
 <classPath>lib\xml-apis.jar</classPath>
 <classPath>lib\jdfeditor.jar</classPath>
+<classPath>lib\bounce-0.17.jar</classPath>
 <embeddedJar>false</embeddedJar>
 <executableName>JDF Editor.exe</executableName>
 <iconLocation>..\..\src\bin\windows\icons\JDFEditor.png</iconLocation>
@@ -36,6 +36,14 @@
 </skeletonProperties>
 <skeletonProperties>
 <key>SingleProcess</key>
+<value>0</value>
+</skeletonProperties>
+<skeletonProperties>
+<key>SingleInstance</key>
+<value>0</value>
+</skeletonProperties>
+<skeletonProperties>
+<key>JniSmooth</key>
 <value>0</value>
 </skeletonProperties>
 <skeletonProperties>

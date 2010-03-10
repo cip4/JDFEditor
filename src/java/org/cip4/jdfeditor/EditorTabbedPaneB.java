@@ -69,16 +69,26 @@ package org.cip4.jdfeditor;
  *  
  * 
  */
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
+import javax.swing.JEditorPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
+import org.bounce.text.LineNumberMargin;
+import org.bounce.text.ScrollableEditorPanel;
+import org.bounce.text.xml.XMLEditorKit;
+import org.bounce.text.xml.XMLFoldingMargin;
 import org.cip4.jdflib.core.KElement;
 
 
@@ -91,9 +101,14 @@ public class EditorTabbedPaneB extends JTabbedPane
     final public int m_VAL_ERRORS_INDEX = 0;
     final public int m_SCHEMA_ERRORS_INDEX = 1;
     final public int m_DC_ERRORS_INDEX = 2;
+    final public int m_XML_EDITOR_INDEX = 3;
+    
     public JDFDevCapErrScrollPane m_devCapErrScroll;
     public CheckJDFScrollPane m_validErrScroll;    
-    public SchemaScrollPane m_SchemaErrScroll;    
+    public SchemaScrollPane m_SchemaErrScroll;
+    
+//    Pane containing XML editor
+    private JEditorPane editor;
       
 
     public EditorTabbedPaneB(JDFFrame frame)
@@ -117,7 +132,29 @@ public class EditorTabbedPaneB extends JTabbedPane
         addTab(m_littleBundle.getString("DevCapOutputKey"), null,
                 m_devCapErrScroll, m_littleBundle.getString("DevCapOutputKey"));
         setComponentAt(m_DC_ERRORS_INDEX, m_devCapErrScroll);
+
+//        XML Editor tab
+        editor = new JEditorPane();
+        editor.setEditable(false);
         
+        XMLEditorKit kit = new XMLEditorKit();
+        editor.setEditorKit(kit);
+        editor.setFont(new Font("Courier", Font.PLAIN, 12)); 
+        
+        JPanel rowHeader = new JPanel(new BorderLayout());
+        try {
+            rowHeader.add(new XMLFoldingMargin(editor), BorderLayout.EAST);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        rowHeader.add(new LineNumberMargin(editor), BorderLayout.WEST);
+        
+        ScrollableEditorPanel editorPanel = new ScrollableEditorPanel(editor);
+        JScrollPane xmlEditorScrPane = new JScrollPane(editorPanel);
+        xmlEditorScrPane.setRowHeaderView(rowHeader);
+        
+        addTab("XML Editor", null, xmlEditorScrPane, "XML Editor");
+        setComponentAt(m_XML_EDITOR_INDEX, xmlEditorScrPane);
     }
 
     
@@ -131,6 +168,11 @@ public class EditorTabbedPaneB extends JTabbedPane
         {
             selectNodeWithXPath(path);                
         }
+    }
+    
+    public void refreshXmlEditor(String s)
+    {
+        editor.setText(s);
     }
 
 

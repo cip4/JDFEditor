@@ -13,5 +13,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JDFLibJ"/>
+	<classpathentry kind="lib" path="lib/bounce-0.17.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
