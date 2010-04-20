@@ -309,7 +309,7 @@ public class Editor
 	 */
 	public String getEditorName()
 	{
-		return "CIP4 JDF Editor -- Copyright (c) 2001-2009 CIP4";
+		return "CIP4 JDF Editor -- Copyright (c) 2001-2010 CIP4";
 	}
 
 	/**

@@ -113,7 +113,7 @@ public class FixVersionDialog extends JPanel implements ActionListener
 	private JComboBox chooseVersion;
 	private JCheckBox cbFixICS;
 	private JCheckBox cbConvertLPP;
-	private EnumVersion version = EnumVersion.Version_1_3;
+	private EnumVersion version;
 	private boolean bFixICSVersion = true;
 	private boolean bConvertLPP = true;
 
@@ -156,7 +156,7 @@ public class FixVersionDialog extends JPanel implements ActionListener
 		final EnumVersion defVersion = ir.getDefaultVersion();
 		bConvertLPP = ir.getConvertLPP();
 		bFixICSVersion = ir.getFixICSVersion();
-
+		version = defVersion;
 		addOptionPanel(panel);
 		addVersionPannel(panel, defVersion);
 
@@ -215,7 +215,6 @@ public class FixVersionDialog extends JPanel implements ActionListener
 		final Object source = e.getSource();
 		if (source == chooseVersion)
 		{
-
 			final String selectedItem = (String) chooseVersion.getSelectedItem();
 			if (!selectedItem.startsWith("Retain"))
 			{
@@ -292,8 +291,18 @@ public class FixVersionDialog extends JPanel implements ActionListener
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, littleBundle.getString("FixVersionErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), littleBundle
-					.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, littleBundle.getString("FixVersionErrorKey") + e.getClass() + " \n"
+					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
+	}
+
+	/**
+	 * @see java.awt.Component#toString()
+	 * @return
+	*/
+	@Override
+	public String toString()
+	{
+		return "FixVersionDialog: " + (version == null ? "Retain" : version.getName());
 	}
 }

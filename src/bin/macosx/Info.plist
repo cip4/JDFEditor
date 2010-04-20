@@ -28,11 +28,12 @@
 			<string>../lib/commons-lang-2.1.jar</string>
 			<string>../lib/commons-logging-1.0.4.jar</string>
 			<string>../lib/commons-io-1.1.jar</string>
-			<string>../lib/JDFLibJ.2.1.4.jar</string>
+			<string>../lib/JDFLibJ-2.1.4a.jar</string>
 			<string>../lib/log4j-1.2.8.jar</string>
 			<string>../lib/mailapi.jar</string>
 			<string>../lib/xercesImpl.jar</string>
 			<string>../lib/xml-apis.jar</string>
+			<string>../lib/bounce-0.17.jar</string>
 			<string>../conf</string>
 			<string>../classes</string>
 		</array>
