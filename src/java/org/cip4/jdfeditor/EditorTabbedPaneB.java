@@ -71,6 +71,7 @@ package org.cip4.jdfeditor;
  */
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Font;
 import java.io.IOException;
 import java.util.Enumeration;
@@ -90,6 +91,8 @@ import org.bounce.text.ScrollableEditorPanel;
 import org.bounce.text.xml.XMLEditorKit;
 import org.bounce.text.xml.XMLFoldingMargin;
 import org.cip4.jdflib.core.KElement;
+
+import tcpmon.MainWindow;
 
 
 public class EditorTabbedPaneB extends JTabbedPane
@@ -153,8 +156,13 @@ public class EditorTabbedPaneB extends JTabbedPane
         JScrollPane xmlEditorScrPane = new JScrollPane(editorPanel);
         xmlEditorScrPane.setRowHeaderView(rowHeader);
         
-        addTab("XML Editor", null, xmlEditorScrPane, "XML Editor");
-        setComponentAt(m_XML_EDITOR_INDEX, xmlEditorScrPane);
+        addTab(m_littleBundle.getString("XmlEditor"), null, xmlEditorScrPane, m_littleBundle.getString("XmlEditor"));
+        
+//        TCPMon tab
+        MainWindow mWindow = new MainWindow();
+        Container c = mWindow.getContentPane();
+        JScrollPane tcpMonScrPane = new JScrollPane(c);
+        addTab(m_littleBundle.getString("TCPMon"), null, tcpMonScrPane, m_littleBundle.getString("TCPMon"));
     }
 
     

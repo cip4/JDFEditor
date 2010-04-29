@@ -34,6 +34,8 @@
 			<string>../lib/xercesImpl.jar</string>
 			<string>../lib/xml-apis.jar</string>
 			<string>../lib/bounce-0.17.jar</string>
+			<string>../lib/tcpmon.jar</string>
+			<string>../lib/jhall.jar</string>
 			<string>../conf</string>
 			<string>../classes</string>
 		</array>
