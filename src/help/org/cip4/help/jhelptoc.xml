@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 1.0//EN" "http://java.sun.com/products/javahelp/toc_1_0.dtd">
+<toc version="1.0">
+  <tocitem target="id220952" text="JDF Editor users's manual">
+    <tocitem target="id314311" text="Getting Started"/>
+    <tocitem target="id284624" text="The Views"/>
+    <tocitem target="id284638" text="Edit"/>
+    <tocitem target="id284647" text="Validate and Certification"/>
+    <tocitem target="id284657" text="Development and Problems">
+      <tocitem target="id284665" text="Suggentions of Further Development"/>
+      <tocitem target="id284676" text="Trouble with Java VM"/>
+    </tocitem>
+  </tocitem>
+</toc>
