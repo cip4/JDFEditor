@@ -94,6 +94,7 @@ import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.XMLDoc;
+import org.cip4.jdflib.core.JDFElement.EnumNodeStatus;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.datatypes.JDFAttributeMap;
 import org.cip4.jdflib.datatypes.VJDFAttributeMap;
@@ -174,6 +175,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 			while (true)
 			{
+				selectedNode.setPartStatus((JDFAttributeMap) null, EnumNodeStatus.Waiting, null);
 				JDFNode unspawned = new JDFSpawn(selectedNode).unSpawn(null);
 				if (unspawned == null)
 					break;
@@ -233,6 +235,10 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public boolean validate()
 	{
 		Runtime.getRuntime().gc(); // clean up before validating
@@ -321,6 +327,8 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * inserts element before selected node
+	 * @param parentNode 
+	 * @param beforeNode 
 	 */
 	public void insertElementBefore(final JDFTreeNode parentNode, final JDFTreeNode beforeNode)
 	{
