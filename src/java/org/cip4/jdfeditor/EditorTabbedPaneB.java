@@ -1,4 +1,5 @@
 package org.cip4.jdfeditor;
+
 /*
  *
  * The CIP4 Software License, Version 1.0
@@ -94,193 +95,194 @@ import org.cip4.jdflib.core.KElement;
 
 import tcpmon.MainWindow;
 
-
 public class EditorTabbedPaneB extends JTabbedPane
 {
 
-    private static final long serialVersionUID = -6813043793787501763L;
-    protected JDFFrame m_frame;
-    private ResourceBundle m_littleBundle;
-    final public int m_VAL_ERRORS_INDEX = 0;
-    final public int m_SCHEMA_ERRORS_INDEX = 1;
-    final public int m_DC_ERRORS_INDEX = 2;
-    final public int m_XML_EDITOR_INDEX = 3;
-    
-    public JDFDevCapErrScrollPane m_devCapErrScroll;
-    public CheckJDFScrollPane m_validErrScroll;    
-    public SchemaScrollPane m_SchemaErrScroll;
-    
-//    Pane containing XML editor
-    private JEditorPane editor;
-      
+	private static final long serialVersionUID = -6813043793787501763L;
+	protected JDFFrame m_frame;
+	private final ResourceBundle m_littleBundle;
+	final public int m_VAL_ERRORS_INDEX = 0;
+	final public int m_SCHEMA_ERRORS_INDEX = 1;
+	final public int m_DC_ERRORS_INDEX = 2;
+	final public int m_XML_EDITOR_INDEX = 3;
 
-    public EditorTabbedPaneB(JDFFrame frame)
-    {
-        super();
-        m_frame=frame;
-        m_littleBundle=m_frame.m_littleBundle;
-        setBorder(BorderFactory.createLineBorder(Color.black));
-        
-        m_validErrScroll = new CheckJDFScrollPane(m_frame);
-        addTab(m_littleBundle.getString("ValidationResultKey"), null,
-                m_validErrScroll, m_littleBundle.getString("ValidationResultKey"));
-        setComponentAt(m_VAL_ERRORS_INDEX, m_validErrScroll);
-        
-        m_SchemaErrScroll = new SchemaScrollPane(m_frame);
-        addTab(m_littleBundle.getString("SchemaOutputKey"), null,
-                m_SchemaErrScroll, m_littleBundle.getString("SchemaOutputKey"));
-        setComponentAt(m_SCHEMA_ERRORS_INDEX, m_SchemaErrScroll);
-        
-        m_devCapErrScroll = new JDFDevCapErrScrollPane(m_frame);
-        addTab(m_littleBundle.getString("DevCapOutputKey"), null,
-                m_devCapErrScroll, m_littleBundle.getString("DevCapOutputKey"));
-        setComponentAt(m_DC_ERRORS_INDEX, m_devCapErrScroll);
+	public JDFDevCapErrScrollPane m_devCapErrScroll;
+	public CheckJDFScrollPane m_validErrScroll;
+	public SchemaScrollPane m_SchemaErrScroll;
 
-//        XML Editor tab
-        editor = new JEditorPane();
-        editor.setEditable(false);
-        
-        XMLEditorKit kit = new XMLEditorKit();
-        editor.setEditorKit(kit);
-        editor.setFont(new Font("Courier", Font.PLAIN, 12)); 
-        
-        JPanel rowHeader = new JPanel(new BorderLayout());
-        try {
-            rowHeader.add(new XMLFoldingMargin(editor), BorderLayout.EAST);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        rowHeader.add(new LineNumberMargin(editor), BorderLayout.WEST);
-        
-        ScrollableEditorPanel editorPanel = new ScrollableEditorPanel(editor);
-        JScrollPane xmlEditorScrPane = new JScrollPane(editorPanel);
-        xmlEditorScrPane.setRowHeaderView(rowHeader);
-        
-        addTab(m_littleBundle.getString("XmlEditor"), null, xmlEditorScrPane, m_littleBundle.getString("XmlEditor"));
-        
-//        TCPMon tab
-        MainWindow mWindow = new MainWindow();
-        Container c = mWindow.getContentPane();
-        JScrollPane tcpMonScrPane = new JScrollPane(c);
-        addTab(m_littleBundle.getString("TCPMon"), null, tcpMonScrPane, m_littleBundle.getString("TCPMon"));
-    }
+	//    Pane containing XML editor
+	private final JEditorPane editor;
 
-    
-    public void refreshView(TreePath path)
-    {
-        if(path==null)
-        {
-            clearViews();
-        }
-        else
-        {
-            selectNodeWithXPath(path);                
-        }
-    }
-    
-    public void refreshXmlEditor(String s)
-    {
-        editor.setText(s);
-    }
+	public EditorTabbedPaneB(JDFFrame frame)
+	{
+		super();
+		m_frame = frame;
+		m_littleBundle = m_frame.m_littleBundle;
+		setBorder(BorderFactory.createLineBorder(Color.black));
 
+		m_validErrScroll = new CheckJDFScrollPane(m_frame);
+		addTab(m_littleBundle.getString("ValidationResultKey"), null, m_validErrScroll, m_littleBundle.getString("ValidationResultKey"));
+		setComponentAt(m_VAL_ERRORS_INDEX, m_validErrScroll);
 
-    public void selectNodeWithXPath(TreePath path)
-    {
-        JDFTreeNode node=(JDFTreeNode)path.getLastPathComponent();
-        JDFTreeNode errNode=findNodeWithXPath(node.getXPath());
-        
-        JTree errTree=null;
-        TreeSelectionListener selLi=null;
-        if(getSelectedIndex()==m_SCHEMA_ERRORS_INDEX)
-        {
-            errTree=m_SchemaErrScroll.m_reportTree;
-            selLi=m_SchemaErrScroll.m_SelectionListener;
-        }
-        else if(getSelectedIndex()==m_VAL_ERRORS_INDEX)
-        {
-            errTree=m_validErrScroll.m_reportTree;
-            selLi=m_validErrScroll.m_SelectionListener;
-        }
-        else
-        {
-            errTree=m_devCapErrScroll.m_reportTree;
-            selLi=m_devCapErrScroll.m_SelectionListener;
-        }
-        if(errTree !=null)
-        {
-            errTree.removeTreeSelectionListener(selLi);
-            TreePath p=null;
-            if(errNode==null)
-            {
-                JDFTreeNode theRoot=(JDFTreeNode)errTree.getModel().getRoot();
-                p=new TreePath(theRoot.getPath());
-                errTree.collapsePath(p);
-                
-            }
-            else
-            {
-                p=new TreePath(errNode.getPath());
-                errTree.expandPath(p);
-            }
-            errTree.makeVisible(p);
-            final int row = errTree.getRowForPath(p);
-            errTree.setSelectionRow(row);
-            errTree.scrollRowToVisible(row);
-            errTree.addTreeSelectionListener(selLi);
-        }
-    }
-    
-    private JDFTreeNode findNodeWithXPath(String xpath)
-    {
-        JTree errTree=null;
-        if(this.getSelectedIndex()==m_VAL_ERRORS_INDEX)
-        {
-            //JDFTreeNode
-            errTree=m_validErrScroll.m_reportTree;
-        }
-        else
-        {
-            errTree=m_devCapErrScroll.m_reportTree;
-        }
-        if(errTree==null)
-            return null;
-            
-        JDFTreeNode theRoot=(JDFTreeNode)errTree.getModel().getRoot();
-        if(xpath==null)
-            return theRoot;
-        
-        if(theRoot==null)
-            return null;
-        
-        final Enumeration e = theRoot.depthFirstEnumeration();
-        while (e.hasMoreElements())
-        {
-            JDFTreeNode tn=(JDFTreeNode)e.nextElement();
-            if(tn.isElement())
-            {
-                KElement el=tn.getElement();
-                if(xpath.equals(el.getAttribute("XPath")))
-                    return tn;
-            }
-        }
-        return null;
-    }
+		m_SchemaErrScroll = new SchemaScrollPane(m_frame);
+		addTab(m_littleBundle.getString("SchemaOutputKey"), null, m_SchemaErrScroll, m_littleBundle.getString("SchemaOutputKey"));
+		setComponentAt(m_SCHEMA_ERRORS_INDEX, m_SchemaErrScroll);
 
+		m_devCapErrScroll = new JDFDevCapErrScrollPane(m_frame);
+		addTab(m_littleBundle.getString("DevCapOutputKey"), null, m_devCapErrScroll, m_littleBundle.getString("DevCapOutputKey"));
+		setComponentAt(m_DC_ERRORS_INDEX, m_devCapErrScroll);
 
-    /**
-     * Method clearViews.
-     * clear all views before opening a new file
-     */
-    void clearViews()
-    {
-        m_devCapErrScroll.clearReport();
-        m_validErrScroll.clearReport();
-        m_SchemaErrScroll.clearReport();
-    }
-    
-    public void clearAll()
-    {
-        clearViews();
-    }
-    
+		//        XML Editor tab
+		editor = new JEditorPane();
+		editor.setEditable(false);
+
+		XMLEditorKit kit = new XMLEditorKit();
+		editor.setEditorKit(kit);
+		editor.setFont(new Font("Courier", Font.PLAIN, 12));
+
+		JPanel rowHeader = new JPanel(new BorderLayout());
+		try
+		{
+			rowHeader.add(new XMLFoldingMargin(editor), BorderLayout.EAST);
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		rowHeader.add(new LineNumberMargin(editor), BorderLayout.WEST);
+
+		ScrollableEditorPanel editorPanel = new ScrollableEditorPanel(editor);
+		JScrollPane xmlEditorScrPane = new JScrollPane(editorPanel);
+		xmlEditorScrPane.setRowHeaderView(rowHeader);
+
+		addTab(m_littleBundle.getString("XmlEditor"), null, xmlEditorScrPane, m_littleBundle.getString("XmlEditor"));
+
+		//        TCPMon tab
+		MainWindow mWindow = new MainWindow();
+		Container c = mWindow.getContentPane();
+		JScrollPane tcpMonScrPane = new JScrollPane(c);
+		addTab(m_littleBundle.getString("TCPMon"), null, tcpMonScrPane, m_littleBundle.getString("TCPMon"));
+	}
+
+	public void refreshView(TreePath path)
+	{
+		if (path == null)
+		{
+			clearViews();
+		}
+		else
+		{
+			selectNodeWithXPath(path);
+		}
+	}
+
+	public void refreshXmlEditor(String s)
+	{
+		editor.setText(s);
+	}
+
+	public void selectNodeWithXPath(TreePath path)
+	{
+		JDFTreeNode node = (JDFTreeNode) path.getLastPathComponent();
+		JDFTreeNode errNode = findNodeWithXPath(node.getXPath());
+
+		JTree errTree = null;
+		TreeSelectionListener selLi = null;
+		if (getSelectedIndex() == m_SCHEMA_ERRORS_INDEX)
+		{
+			errTree = m_SchemaErrScroll.m_reportTree;
+			selLi = m_SchemaErrScroll.m_SelectionListener;
+		}
+		else if (getSelectedIndex() == m_VAL_ERRORS_INDEX)
+		{
+			errTree = m_validErrScroll.m_reportTree;
+			selLi = m_validErrScroll.m_SelectionListener;
+		}
+		else
+		{
+			errTree = m_devCapErrScroll.m_reportTree;
+			selLi = m_devCapErrScroll.m_SelectionListener;
+		}
+		if (errTree != null)
+		{
+			errTree.removeTreeSelectionListener(selLi);
+			TreePath p = null;
+			if (errNode == null)
+			{
+				JDFTreeNode theRoot = (JDFTreeNode) errTree.getModel().getRoot();
+				p = new TreePath(theRoot.getPath());
+				errTree.collapsePath(p);
+
+			}
+			else
+			{
+				p = new TreePath(errNode.getPath());
+				errTree.expandPath(p);
+			}
+			errTree.makeVisible(p);
+			final int row = errTree.getRowForPath(p);
+			errTree.setSelectionRow(row);
+			errTree.scrollRowToVisible(row);
+			errTree.addTreeSelectionListener(selLi);
+		}
+	}
+
+	/**
+	 * 
+	 * @param xpath
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private JDFTreeNode findNodeWithXPath(String xpath)
+	{
+		JTree errTree = null;
+		if (this.getSelectedIndex() == m_VAL_ERRORS_INDEX)
+		{
+			//JDFTreeNode
+			errTree = m_validErrScroll.m_reportTree;
+		}
+		else
+		{
+			errTree = m_devCapErrScroll.m_reportTree;
+		}
+		if (errTree == null)
+			return null;
+
+		JDFTreeNode theRoot = (JDFTreeNode) errTree.getModel().getRoot();
+		if (xpath == null)
+			return theRoot;
+
+		if (theRoot == null)
+			return null;
+
+		final Enumeration<JDFTreeNode> e = theRoot.depthFirstEnumeration();
+		while (e.hasMoreElements())
+		{
+			JDFTreeNode tn = e.nextElement();
+			if (tn.isElement())
+			{
+				KElement el = tn.getElement();
+				if (xpath.equals(el.getAttribute("XPath")))
+					return tn;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Method clearViews.
+	 * clear all views before opening a new file
+	 */
+	void clearViews()
+	{
+		m_devCapErrScroll.clearReport();
+		m_validErrScroll.clearReport();
+		m_SchemaErrScroll.clearReport();
+	}
+
+	public void clearAll()
+	{
+		clearViews();
+	}
+
 }

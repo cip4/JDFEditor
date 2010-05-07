@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2008 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2010 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -96,6 +96,11 @@ import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.UrlUtil;
 
+/**
+ * this class manipulates the xml file internals
+ * 
+  * @author Rainer Prosi, Heidelberger Druckmaschinen *
+ */
 public class EditorDocument
 {
 	/**
@@ -164,7 +169,7 @@ public class EditorDocument
 	 * @param vjdfDocument
 	 * @return
 	 */
-	public static int indexOfJDF(final JDFDoc doc, final Vector vjdfDocument)
+	public static int indexOfJDF(final JDFDoc doc, final Vector<EditorDocument> vjdfDocument)
 	{
 		if (vjdfDocument == null)
 		{
@@ -172,7 +177,7 @@ public class EditorDocument
 		}
 		for (int i = 0; i < vjdfDocument.size(); i++)
 		{
-			final EditorDocument ed = (EditorDocument) vjdfDocument.elementAt(i);
+			final EditorDocument ed = vjdfDocument.elementAt(i);
 			if (ed.getJDFDoc().equals(doc))
 			{
 				return i;
@@ -188,7 +193,7 @@ public class EditorDocument
 	 * @param vjdfDocument the vector to search in
 	 * @return int the index of the document in vjdfDocument
 	 */
-	static public int indexOfFile(final File file, final Vector vjdfDocument)
+	static public int indexOfFile(final File file, final Vector<EditorDocument> vjdfDocument)
 	{
 
 		if (file == null)
@@ -198,7 +203,7 @@ public class EditorDocument
 		final String filePath = file.getAbsolutePath();
 		for (int i = 0; i < vjdfDocument.size(); i++)
 		{
-			final EditorDocument d = (EditorDocument) vjdfDocument.elementAt(i);
+			final EditorDocument d = vjdfDocument.elementAt(i);
 			if (d != null)
 			{
 				if (filePath.equals(d.getOriginalFileName()))
@@ -212,6 +217,9 @@ public class EditorDocument
 
 	// ///////////////////////////////////////////////////////////////
 
+	/**
+	 * 
+	 */
 	@Override
 	public String toString()
 	{
@@ -224,6 +232,10 @@ public class EditorDocument
 
 	// //////////////////////////////////////////////////////////////////////////
 
+	/**
+	 * @return 
+	 * 
+	 */
 	public String getOriginalFileName()
 	{
 		if (m_jdfDoc == null)
@@ -233,17 +245,29 @@ public class EditorDocument
 		return m_jdfDoc.getOriginalFileName();
 	}
 
+	/**
+	 * 
+	 * @param model
+	 */
 	public void setModel(final JDFTreeModel model)
 	{
 		m_model = model;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public JDFTreeModel getModel()
 	{
 		return m_model;
 	}
 
-	// sets the selection path for this document
+	/**
+	 *  sets the selection path for this document
+	 * @param path
+	 * @param trackHistory
+	 */
 	public void setSelectionPath(final TreePath path, final boolean trackHistory)
 	{
 		if (m_JDFTree == null)
@@ -268,6 +292,10 @@ public class EditorDocument
 		}
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public TreePath getSelectionPath()
 	{
 		if (getJDFTree() == null)
@@ -277,6 +305,10 @@ public class EditorDocument
 		return getJDFTree().getSelectionPath();
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public TreePath[] getSelectionPaths()
 	{
 		if (getJDFTree() == null)
@@ -286,6 +318,10 @@ public class EditorDocument
 		return getJDFTree().getSelectionPaths();
 	}
 
+	/**
+	 * 
+	 * @param jdfTree
+	 */
 	public void setJDFTree(final JTree jdfTree)
 	{
 		this.m_JDFTree = jdfTree;
@@ -293,17 +329,28 @@ public class EditorDocument
 		m_JDFTree.addTreeSelectionListener(m_SelectionListener);
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public JTree getJDFTree()
 	{
 		return m_JDFTree;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public JDFTreeNode getRootNode()
 	{
 		final JDFTreeModel mod = getModel();
 		return mod == null ? null : mod.getRootNode();
 	}
 
+	/**
+	 * 
+	 */
 	public void setLastSelection()
 	{
 		JDFTreeNode selNode = null;
@@ -321,8 +368,9 @@ public class EditorDocument
 	}
 
 	/**
-	 * @param selNode
-	 * @param b
+	 * @param selNode 
+	 * @param trackHistory 
+	 * 
 	 */
 	private void setSelectionNode(final JDFTreeNode selNode, final boolean trackHistory)
 	{
@@ -337,6 +385,7 @@ public class EditorDocument
 	 * @param selNode
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	private TreePath getPathFromNode(final JDFTreeNode selNode)
 	{
 		final JDFTreeModel model = Editor.getModel();
@@ -345,7 +394,6 @@ public class EditorDocument
 			return null;
 		}
 		final JDFTreeNode theRoot = (JDFTreeNode) model.getRootNode().getFirstChild();
-		final Enumeration e = theRoot.depthFirstEnumeration();
 		TreePath path = null;
 		if (theRoot.equals(selNode))
 		{
@@ -353,24 +401,34 @@ public class EditorDocument
 		}
 		else
 		{
+			final Enumeration<JDFTreeNode> e = theRoot.depthFirstEnumeration();
 			while (e.hasMoreElements())
 			{
-				final JDFTreeNode node = (JDFTreeNode) e.nextElement();
+				final JDFTreeNode node = e.nextElement();
 				if (node.equals(selNode))
 				{
 					path = new TreePath(selNode.getPath());
+					break;
 				}
 			}
 		}
 		return path;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public TreePath getLastSelection()
 	{
 		final JDFTreeNode node = getLastTreeNode();
 		return getPathFromNode(node);
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public JDFTreeNode getLastTreeNode()
 	{
 		JDFTreeNode selNode = null;
@@ -387,6 +445,9 @@ public class EditorDocument
 
 	// ///////////////////////////////////////////////////////////////
 
+	/**
+	 * 
+	 */
 	public void setNextSelection()
 	{
 		if (m_HistoryPos >= 0)
@@ -415,7 +476,7 @@ public class EditorDocument
 
 	/**
 	 * Method createModel. create the treeModel
-	 * @param doc
+	 * @param root
 	 * @return TreeModel
 	 */
 	public JDFTreeModel createModel(final JDFTreeNode root)
@@ -595,7 +656,7 @@ public class EditorDocument
 
 	// ////////////////////////////////////////////////////////
 	/**
-	 * @param topTab the topTab to set
+	 * @param _topTab the topTab to set
 	 */
 	public void setTopTab(final int _topTab)
 	{
@@ -603,6 +664,10 @@ public class EditorDocument
 	}
 
 	// ////////////////////////////////////////////////////////
+	/**
+	 * @return 
+	 * 
+	 */
 	public boolean isDirty()
 	{
 		return m_jdfDoc == null ? false : m_jdfDoc.isDirty(null);
