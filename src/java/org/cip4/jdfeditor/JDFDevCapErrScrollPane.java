@@ -1,10 +1,11 @@
 package org.cip4.jdfeditor;
+
 /*
  *
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2006 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2010 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -69,8 +70,6 @@ package org.cip4.jdfeditor;
  *  
  * 
  */
-import java.util.Vector;
-
 import javax.swing.JTree;
 import javax.swing.ToolTipManager;
 import javax.swing.tree.TreePath;
@@ -89,114 +88,123 @@ import org.cip4.jdflib.core.XMLDoc;
 public class JDFDevCapErrScrollPane extends ValidationScrollPane
 {
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 2367868076065696718L;
-    DCOutputWrapper m_reportRoot = null;
-    //TODO put executable nodes into a different tabbed pane
-    DCOutputWrapper m_execRoot = null;
-    
-    public JDFDevCapErrScrollPane(JDFFrame frame)
-    {
-        super(frame);
-    }
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2367868076065696718L;
+	DCOutputWrapper m_reportRoot = null;
+	//TODO put executable nodes into a different tabbed pane
+	DCOutputWrapper m_execRoot = null;
 
-    
-    public void drawDevCapOutputTree (XMLDoc bugReport, VElement execNodes) 
-    {
-        if (bugReport==null && (execNodes==null|| execNodes.size()==0))
-            return;
-        KElement repRoot=new XMLDoc("Report",null).getRoot();
-        m_reportRoot = new DCOutputWrapper(repRoot);
-        m_reportTree = new JTree(m_reportRoot);
-        ToolTipManager.sharedInstance().registerComponent(m_reportTree);
-        m_reportTree.setModel(new JDFTreeModel(m_reportRoot,false));
+	/**
+	 * 
+	 * @param frame
+	 */
+	public JDFDevCapErrScrollPane(JDFFrame frame)
+	{
+		super(frame);
+	}
 
-        m_reportTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-        m_reportTree.setExpandsSelectedPaths(true);
-        m_reportTree.setEditable(false);
-        
-        DCOutputWrapper bugReportRoot = null;
-        
-        if (bugReport!=null) 
-        {
-            KElement bugRoot = bugReport.getRoot();
-            
-            bugReportRoot = new DCOutputWrapper(bugRoot);
-            m_reportRoot.add(bugReportRoot);
-            if("true".equals(bugRoot.getAttribute("IsValid",null,null)))
-            {
-                repRoot.setAttribute("IsValid", true,null);
-            }
-            
-            setDevCapOutputTree(bugReportRoot);            
-        }
-        
-        if (execNodes!=null && execNodes.size()>0) 
-        {
-            m_execRoot = new DCOutputWrapper(repRoot.appendElement("ExecutableNodes"));
-            m_reportRoot.add(m_execRoot);
-            
-            for (int i=0; i < execNodes.size(); i++)
-            {
-                KElement execNode = execNodes.elementAt(i);
-                m_execRoot.add(new DCOutputWrapper(execNode));
-            }            
-        }
-        
-        if (bugReportRoot != null)
-        {
-            m_reportTree.expandPath(new TreePath(bugReportRoot.getPath()));
-        }
-        if (m_execRoot != null)
-        {
-            m_reportTree.expandPath(new TreePath(m_execRoot.getPath()));
-        }
-        
-        m_SelectionListener = new ValidationSelectionListener();
-        m_reportTree.addTreeSelectionListener(m_SelectionListener);
-        
-        final ValidationPopupListener popupListener = new ValidationPopupListener();
-        m_reportTree.addMouseListener(popupListener);
-        
-        final DCOutputRenderer dcRenderer = new DCOutputRenderer();
-        m_reportTree.setCellRenderer(dcRenderer);
-        getViewport().setView(m_reportTree);
-    }
-    
-    private void setDevCapOutputTree(DCOutputWrapper bugReport)
-    {        
-        KElement repElem=bugReport.getElement();
-        // now add the individual attributes
-        VString vAtts=repElem.getAttributeVector();
-        for(int i=0;i<vAtts.size();i++){
-            final String stringAt = vAtts.stringAt(i);
-            if(stringAt.equals("ID"))
-                continue;
-            if(stringAt.equals("Name"))
-                continue;
-            if(stringAt.equals("Value"))
-                continue;
-            if(stringAt.equals("Message"))
-                continue;
-            if(stringAt.equals("IsValid"))
-                continue;
-            if(stringAt.equals("XPath"))
-                continue;
-            if(stringAt.equals("CapXPath"))
-                continue;
-            DCOutputWrapper next = new DCOutputWrapper(repElem.getAttributeNode(stringAt));
-            bugReport.add(next);
-        }
-        // recurse through children
-        Vector childVector = repElem.getChildElementVector(null, null, null, true, 0,false);
-        for (int i=0; i< childVector.size(); i++)
-        {
-            KElement kEl = (KElement) childVector.elementAt(i);
-            DCOutputWrapper next = new DCOutputWrapper(kEl);
-            setDevCapOutputTree(next);
-            bugReport.add(next);
-        }
-    }    
+	/**
+	 * 
+	 * @param bugReport
+	 * @param execNodes
+	 */
+	public void drawDevCapOutputTree(XMLDoc bugReport, VElement execNodes)
+	{
+		if (bugReport == null && (execNodes == null || execNodes.size() == 0))
+			return;
+		KElement repRoot = new XMLDoc("Report", null).getRoot();
+		m_reportRoot = new DCOutputWrapper(repRoot);
+		m_reportTree = new JTree(m_reportRoot);
+		ToolTipManager.sharedInstance().registerComponent(m_reportTree);
+		m_reportTree.setModel(new JDFTreeModel(m_reportRoot, false));
+
+		m_reportTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		m_reportTree.setExpandsSelectedPaths(true);
+		m_reportTree.setEditable(false);
+
+		DCOutputWrapper bugReportRoot = null;
+
+		if (bugReport != null)
+		{
+			KElement bugRoot = bugReport.getRoot();
+
+			bugReportRoot = new DCOutputWrapper(bugRoot);
+			m_reportRoot.add(bugReportRoot);
+			if ("true".equals(bugRoot.getAttribute("IsValid", null, null)))
+			{
+				repRoot.setAttribute("IsValid", true, null);
+			}
+
+			setDevCapOutputTree(bugReportRoot);
+		}
+
+		if (execNodes != null && execNodes.size() > 0)
+		{
+			m_execRoot = new DCOutputWrapper(repRoot.appendElement("ExecutableNodes"));
+			m_reportRoot.add(m_execRoot);
+
+			for (int i = 0; i < execNodes.size(); i++)
+			{
+				KElement execNode = execNodes.elementAt(i);
+				m_execRoot.add(new DCOutputWrapper(execNode));
+			}
+		}
+
+		if (bugReportRoot != null)
+		{
+			m_reportTree.expandPath(new TreePath(bugReportRoot.getPath()));
+		}
+		if (m_execRoot != null)
+		{
+			m_reportTree.expandPath(new TreePath(m_execRoot.getPath()));
+		}
+
+		m_SelectionListener = new ValidationSelectionListener();
+		m_reportTree.addTreeSelectionListener(m_SelectionListener);
+
+		final ValidationPopupListener popupListener = new ValidationPopupListener();
+		m_reportTree.addMouseListener(popupListener);
+
+		final DCOutputRenderer dcRenderer = new DCOutputRenderer();
+		m_reportTree.setCellRenderer(dcRenderer);
+		getViewport().setView(m_reportTree);
+	}
+
+	private void setDevCapOutputTree(DCOutputWrapper bugReport)
+	{
+		KElement repElem = bugReport.getElement();
+		// now add the individual attributes
+		VString vAtts = repElem.getAttributeVector();
+		for (int i = 0; i < vAtts.size(); i++)
+		{
+			final String stringAt = vAtts.stringAt(i);
+			if (stringAt.equals("ID"))
+				continue;
+			if (stringAt.equals("Name"))
+				continue;
+			if (stringAt.equals("Value"))
+				continue;
+			if (stringAt.equals("Message"))
+				continue;
+			if (stringAt.equals("IsValid"))
+				continue;
+			if (stringAt.equals("XPath"))
+				continue;
+			if (stringAt.equals("CapXPath"))
+				continue;
+			DCOutputWrapper next = new DCOutputWrapper(repElem.getAttributeNode(stringAt));
+			bugReport.add(next);
+		}
+		// recurse through children
+		VElement childVector = repElem.getChildElementVector(null, null, null, true, 0, false);
+		for (int i = 0; i < childVector.size(); i++)
+		{
+			KElement kEl = childVector.elementAt(i);
+			DCOutputWrapper next = new DCOutputWrapper(kEl);
+			setDevCapOutputTree(next);
+			bugReport.add(next);
+		}
+	}
 }

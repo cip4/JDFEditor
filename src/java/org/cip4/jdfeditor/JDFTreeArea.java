@@ -116,6 +116,7 @@ import org.cip4.jdflib.resource.JDFPart;
 import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCap;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCaps;
+import org.cip4.jdflib.util.StringUtil;
 
 /**
  * This is a new dump for some of the JDFFrame classes that relate to the actual tree view
@@ -130,12 +131,17 @@ public class JDFTreeArea extends JTextArea
 	TreeSelectionListener m_treeSelectionListener;
 	private static final long serialVersionUID = 2036935468347224324L;
 	private final JScrollPane m_treeScroll;
-	public JViewport m_treeView;
+	JViewport m_treeView;
 	private JDFTreeRenderer m_renderer;
-	public JDFFrame m_frame;
+	JDFFrame m_frame;
 	private final ResourceBundle m_littleBundle;
 	private static String lastPath = "/JDF";
 
+	/**
+	 * 
+	 * @param bundle
+	 * @param frame
+	 */
 	public JDFTreeArea(final ResourceBundle bundle, final JDFFrame frame)
 	{
 		super();
@@ -163,6 +169,7 @@ public class JDFTreeArea extends JTextArea
 	 * Expands the TreePath and all of its subelements.
 	 * @param p - The TreePath to expand
 	 */
+	@SuppressWarnings("unchecked")
 	public void xpand(TreePath p)
 	{
 		if (p == null)
@@ -171,11 +178,11 @@ public class JDFTreeArea extends JTextArea
 		}
 		final JDFTreeNode node = (JDFTreeNode) p.getLastPathComponent();
 		getJDFTree().expandPath(p);
-		final Enumeration e = node.preorderEnumeration();
+		final Enumeration<JDFTreeNode> e = node.preorderEnumeration();
 
 		while (e.hasMoreElements())
 		{
-			final JDFTreeNode treeNode = (JDFTreeNode) e.nextElement();
+			final JDFTreeNode treeNode = e.nextElement();
 
 			if (treeNode.isElement())
 			{
@@ -196,11 +203,11 @@ public class JDFTreeArea extends JTextArea
 		}
 
 		final JDFTreeNode node = (JDFTreeNode) p.getLastPathComponent();
-		final Enumeration e = node.postorderEnumeration();
+		final Enumeration<JDFTreeNode> e = node.postorderEnumeration();
 
 		while (e.hasMoreElements())
 		{
-			final JDFTreeNode treeNode = (JDFTreeNode) e.nextElement();
+			final JDFTreeNode treeNode = e.nextElement();
 
 			if (treeNode.isElement())
 			{
@@ -210,6 +217,10 @@ public class JDFTreeArea extends JTextArea
 		getJDFTree().collapsePath(p);
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public boolean jdfTreeIsNull()
 	{
 		if (getJDFTree() == null || m_treeView.getComponent(0).getClass().equals(JTextArea.class))
@@ -220,6 +231,10 @@ public class JDFTreeArea extends JTextArea
 		return false;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public JScrollPane getScrollPane()
 	{
 		return m_treeScroll;
@@ -227,7 +242,7 @@ public class JDFTreeArea extends JTextArea
 
 	/**
 	 * Method drawTreeView.
-	 * @param doc
+	 * @param eDoc
 	 */
 	public void drawTreeView(final EditorDocument eDoc)
 	{
@@ -395,8 +410,7 @@ public class JDFTreeArea extends JTextArea
 						defVal = oldVal;
 					}
 
-					selectedValue = (String) JOptionPane.showInputDialog(this, m_littleBundle.getString("ChooseAttValueKey"), m_littleBundle.getString("ModifyAttValueKey"),
-							JOptionPane.QUESTION_MESSAGE, null, vValues.toArray(), defVal);
+					selectedValue = (String) JOptionPane.showInputDialog(this, m_littleBundle.getString("ChooseAttValueKey"), m_littleBundle.getString("ModifyAttValueKey"), JOptionPane.QUESTION_MESSAGE, null, vValues.toArray(), defVal);
 				}
 				else
 				{
@@ -466,12 +480,12 @@ public class JDFTreeArea extends JTextArea
 				goToPath(new TreePath(theRoot.getPath()));
 				return;
 			}
-			final Enumeration e = theRoot.depthFirstEnumeration();
+			final Enumeration<JDFTreeNode> e = theRoot.depthFirstEnumeration();
 			int i = 0;
 			while (e.hasMoreElements())
 			{
 				i++;
-				final JDFTreeNode node = (JDFTreeNode) e.nextElement();
+				final JDFTreeNode node = e.nextElement();
 				if (node.matchesPath(path))
 				{
 					goToPath(new TreePath(node.getPath()));
@@ -541,8 +555,7 @@ public class JDFTreeArea extends JTextArea
 		String selectedResource = null;
 		if (resourceName_Id.length > 0)
 		{
-			selectedResource = (String) JOptionPane.showInputDialog(this, "Choose the resource you want to link", "Insert new resource link", JOptionPane.PLAIN_MESSAGE, null, resourceName_Id,
-					resourceName_Id[0]);
+			selectedResource = (String) JOptionPane.showInputDialog(this, "Choose the resource you want to link", "Insert new resource link", JOptionPane.PLAIN_MESSAGE, null, resourceName_Id, resourceName_Id[0]);
 		}
 
 		if (selectedResource != null && !selectedResource.equals(JDFConstants.EMPTYSTRING))
@@ -861,7 +874,8 @@ public class JDFTreeArea extends JTextArea
 		if (node.isElement())
 		{
 
-			if ((kElement instanceof JDFResourceLink) || (kElement instanceof JDFRefElement) || (kElement instanceof JDFPart) || (kElement instanceof JDFCreated) || (kElement instanceof JDFModified))
+			if ((kElement instanceof JDFResourceLink) || (kElement instanceof JDFRefElement) || (kElement instanceof JDFPart) || (kElement instanceof JDFCreated)
+					|| (kElement instanceof JDFModified))
 			{
 				kElementTarget = getLinkTarget(kElement);
 			}
@@ -879,9 +893,12 @@ public class JDFTreeArea extends JTextArea
 		// attribute
 		{
 			final String name = node.getName();
-			if (name.toLowerCase().endsWith("ref"))
+			String lowerCase = name.toLowerCase();
+			if (lowerCase.endsWith("ref") || lowerCase.endsWith("refs"))
 			{
-				kElementTarget = kElement.getTarget_KElement(node.getValue(), AttributeName.ID);
+				String value = node.getValue();
+				value = StringUtil.token(value, 0, " ");
+				kElementTarget = kElement.getTarget_KElement(value, AttributeName.ID);
 
 			}
 		}

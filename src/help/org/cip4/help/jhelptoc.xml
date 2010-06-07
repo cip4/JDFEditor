@@ -2,13 +2,22 @@
 <!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 1.0//EN" "http://java.sun.com/products/javahelp/toc_1_0.dtd">
 <toc version="1.0">
   <tocitem target="id220952" text="JDF Editor users's manual">
-    <tocitem target="id314311" text="Getting Started"/>
-    <tocitem target="id284624" text="The Views"/>
-    <tocitem target="id284638" text="Edit"/>
-    <tocitem target="id284647" text="Validate and Certification"/>
-    <tocitem target="id284657" text="Development and Problems">
-      <tocitem target="id284665" text="Suggentions of Further Development"/>
-      <tocitem target="id284676" text="Trouble with Java VM"/>
+    <tocitem target="id314284" text="Getting Started">
+      <tocitem target="id314306" text="The Application handles JDF and JMF Files"/>
+    </tocitem>
+    <tocitem target="id284785" text="The Views">
+      <tocitem target="id284791" text="Tree View"/>
+      <tocitem target="id284886" text="Error View"/>
+      <tocitem target="id284900" text="In- &amp; Output View"/>
+      <tocitem target="id284924" text="Process View"/>
+      <tocitem target="id284958" text="Comment View"/>
+    </tocitem>
+    <tocitem target="id284970" text="Edit"/>
+    <tocitem target="id285034" text="Validate and Certification"/>
+    <tocitem target="id285082" text="Development and Problems">
+      <tocitem target="id285087" text="Suggentions of Further Development"/>
+      <tocitem target="id285138" text="Trouble with Java VM"/>
+      <tocitem target="id283122" text="Building a .jar File"/>
     </tocitem>
   </tocitem>
 </toc>

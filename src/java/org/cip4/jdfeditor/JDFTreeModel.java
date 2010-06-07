@@ -72,6 +72,7 @@ package org.cip4.jdfeditor;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -98,6 +99,7 @@ import org.cip4.jdflib.core.JDFElement.EnumNodeStatus;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.datatypes.JDFAttributeMap;
 import org.cip4.jdflib.datatypes.VJDFAttributeMap;
+import org.cip4.jdflib.elementwalker.XPathWalker;
 import org.cip4.jdflib.extensions.XJDF20;
 import org.cip4.jdflib.extensions.xjdfwalker.XJDFToJDFConverter;
 import org.cip4.jdflib.node.JDFNode;
@@ -1192,7 +1194,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	 */
 	public void saveAsXJDF(final TreePath selectionPath)
 	{
-		final JDFTreeNode node = (JDFTreeNode) selectionPath.getLastPathComponent();
+		final JDFTreeNode node = selectionPath == null ? getRootNode() : (JDFTreeNode) selectionPath.getLastPathComponent();
 		if (node == null)
 		{
 			return;
@@ -1201,18 +1203,57 @@ public class JDFTreeModel extends DefaultTreeModel
 		final boolean bZip = e.hasChildElement(ElementName.JDF, null);
 		final EditorDocument eDoc = Editor.getEditorDoc();
 		final String fn = eDoc.getOriginalFileName();
-		if (bZip)
-		{
-			new XJDF20().saveZip(StringUtil.newExtension(fn, "zip"), (JDFNode) e, true);
-		}
+		XJDF20 xjdf20 = new XJDF20();
+		//		if (bZip)
+		//		{
+		//			xjdf20.saveZip(StringUtil.newExtension(fn, "zip"), (JDFNode) e, true);
+		//		}
+		//		else
+		//		{
+		xjdf20.bSingleNode = false;
+		final KElement xJDF = xjdf20.makeNewJDF((JDFNode) e, (VJDFAttributeMap) null);
+		final XMLDoc d = xJDF.getOwnerDocument_KElement();
+		final String fnNew = StringUtil.newExtension(fn, XJDF20.getExtension());
+		d.write2File(fnNew, 2, false);
+		Editor.getFrame().readFile(new File(fnNew));
+		//		}
+	}
+
+	/**
+	 * @param selectionPath
+	 * @experimental
+	 */
+	public void saveAsCSV(final TreePath selectionPath)
+	{
+		final JDFTreeNode node;
+		if (selectionPath == null)
+			node = (JDFTreeNode) getRootNode().getFirstChild();
 		else
+			node = (JDFTreeNode) selectionPath.getLastPathComponent();
+		if (node == null)
 		{
-			final KElement xJDF = new XJDF20().makeNewJDF((JDFNode) e, (VJDFAttributeMap) null);
-			final XMLDoc d = xJDF.getOwnerDocument_KElement();
-			final String fnNew = StringUtil.newExtension(fn, XJDF20.getExtension());
-			d.write2File(fnNew, 2, false);
-			Editor.getFrame().readFile(new File(fnNew));
+			return;
 		}
+		final EditorDocument eDoc = Editor.getEditorDoc();
+		String fn = eDoc.getOriginalFileName();
+		fn = StringUtil.newExtension(fn, "csv");
+
+		XPathWalker walker;
+		try
+		{
+			walker = new XPathWalker(new File(fn));
+		}
+		catch (FileNotFoundException x)
+		{
+			return;
+		}
+		walker.setMethod(0);
+		walker.setAttribute(true);
+		walker.setAttributeValue(true);
+		walker.setSeparator(",");
+		walker.setDatatype(true);
+		final KElement e = node.getElement();
+		walker.walkAll(e);
 	}
 
 	/**

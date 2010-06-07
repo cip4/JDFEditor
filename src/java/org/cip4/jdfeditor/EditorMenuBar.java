@@ -111,12 +111,10 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	 */
 	private static final long serialVersionUID = -8488973695389593826L;
 
-	private JMenu m_recentFilesMenu;
 	private JMenu m_insertElementMenu;
 	private JMenu m_resourceMenu;
 	private JMenu m_resourceLinkMenu;
 
-	protected JMenu m_fileMenu;
 	protected JMenu m_insertMenu;
 	protected JMenu m_toolsMenu;
 	protected JMenu m_editMenu;
@@ -124,10 +122,8 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	protected JMenu m_windowMenu;
 	protected JMenu m_helpMenu;
 
-	private JMenuItem m_newItem;
 	JMenuItem m_saveItem;
 	JMenuItem m_saveAsItem;
-	private JMenuItem m_openItem;
 	private JMenuItem m_nextItem;
 	JMenuItem m_quitItem;
 	JMenuItem m_exportItem;
@@ -137,9 +133,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	JMenuItem m_redoItem;
 	private JMenuItem m_helpItem;
 	private JMenuItem m_helpItem_2;
-	private JMenuItem m_closeItem;
-	private JMenuItem m_closeAllItem;
-
 	private JMenuItem m_QuickValidateItem;
 	JMenuItem m_fixVersionItem;
 	private JMenuItem m_fixCleanupItem;
@@ -168,9 +161,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	JMenuItem m_spawnInformItem;
 	JMenuItem m_mergeItem;
 	JMenuItem m_devCapItem;
-	private final JMenuItem[] m_subMenuItem = new JMenuItem[5];
-	private JMenuItem m_devcapOpenMenu;
-
 	// popup menues
 	JMenuItem m_insertElemBeforeItem;
 	JMenuItem m_insertElemAfterItem;
@@ -188,12 +178,242 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	private JRadioButtonMenuItem m_showInhAttrRadioItem;
 	private JRadioButtonMenuItem m_DispDefAttrRadioItem;
 
+	private final FileMenu fileMenu;
+
+	private class FileMenu implements ActionListener
+	{
+
+		private JMenu m_fileMenu;
+		private JMenuItem m_newItem;
+		private JMenuItem m_openItem;
+		private JMenuItem m_closeAllItem;
+		private JMenuItem m_closeItem;
+		private JMenuItem m_csvItem;
+		private JMenu m_recentFilesMenu;
+		private final JMenuItem[] m_subMenuItem = new JMenuItem[5];
+		private JMenuItem m_devcapOpenMenu;
+
+		/**
+		 * 
+		 */
+		protected FileMenu()
+		{
+			super();
+		}
+
+		/**
+		 * Called if a file is opened from the recent files menu.
+		 * @param fileToSave - Path to the file that is to be opened
+		 */
+		private void openRecentFile(final File fileToSave)
+		{
+			Editor.setCursor(1, null);
+			final boolean b = Editor.getFrame().readFile(fileToSave);
+
+			if (b)
+			{
+				final String s = fileToSave.getAbsolutePath();
+
+				final INIReader m_iniFile = Editor.getIniFile();
+				if (m_iniFile.nrOfRecentFiles() != 1)
+				{
+					m_iniFile.updateOrder(s, true);
+				}
+			}
+			else
+			{
+				EditorUtils.errorBox("OpenJDFErrorKey", fileToSave.getPath().toString());
+			}
+			Editor.setCursor(0, null);
+		}
+
+		/**
+		 * Updates the order in the Recent Files Menu. also updates all windows and the ini file - just in case
+		 * @param pathName - The path to the file
+		 */
+		protected void updateRecentFilesMenu(final String pathName)
+		{
+			final INIReader iniReader = Editor.getIniFile();
+			final boolean exist = iniReader.pathNameExists(pathName);
+
+			iniReader.updateOrder(pathName, exist);
+
+			if (iniReader.nrOfRecentFiles() != 0)
+			{
+				m_recentFilesMenu.setEnabled(true);
+				for (int i = 0; i < iniReader.nrOfRecentFiles(); i++)
+				{
+					if (m_subMenuItem[i] == null)
+					{
+						m_subMenuItem[i] = new JMenuItem(iniReader.getRecentFiles()[i]);
+						m_subMenuItem[i].addActionListener(this);
+						m_recentFilesMenu.add(m_subMenuItem[i]);
+					}
+					else
+					{
+						m_subMenuItem[i].setText(iniReader.getRecentFiles()[i]);
+					}
+				}
+			}
+			else
+			{
+				m_recentFilesMenu.setEnabled(false);
+			}
+		}
+
+		/**
+		 * WHERE the process begins when you select File->New from the JDFEditor menu.
+		 * @param e
+		 */
+		public void actionPerformed(final ActionEvent e)
+		{
+			Editor.setCursor(1, null);
+			final Object eSrc = e.getSource();
+			final INIReader iniFile = Editor.getIniFile();
+			final JDFFrame frame = Editor.getFrame();
+
+			/*
+			 * Action that is performed when select File->New
+			 */
+			if (eSrc == m_newItem)
+			{
+				frame.newFile();
+			}
+			else if (eSrc == m_openItem)
+			{
+				frame.openFile();
+			}
+			else if (eSrc == m_closeItem)
+			{
+				Editor.getFrame().closeFile(1);
+			}
+			else if (eSrc == m_closeAllItem)
+			{
+				Editor.getFrame().closeFile(99999);
+			}
+			else if (eSrc == m_csvItem)
+			{
+				Editor.getModel().saveAsCSV(null);
+			}
+			else if (eSrc == m_devcapOpenMenu)
+			{
+				final File f = iniFile.getRecentDevCap();
+				if (f != null)
+					openRecentFile(f);
+				else
+					EditorUtils.errorBox("OpenJDFErrorKey", "No Devcap File defined");
+
+			}
+
+			for (int i = 0; i < m_subMenuItem.length; i++)
+			{
+				if (eSrc == m_subMenuItem[i])
+				{
+					final String newFile = m_subMenuItem[i].getText();
+					openRecentFile(new File(newFile));
+				}
+			}
+			Editor.setCursor(0, null);
+		}
+
+		protected void setEnableOpen(final boolean mode)
+		{
+			m_newItem.setEnabled(mode);
+			m_closeItem.setEnabled(mode);
+			m_closeItem.setEnabled(true);
+			m_devcapOpenMenu.setEnabled(Editor.getIniFile().getRecentDevCap() != null);
+		}
+
+		/**
+		 * Creates the File menu.
+		 *  
+		 */
+		protected void drawFileMenu()
+		{
+			final Color menuColor = getBackground();
+			final JDFFrame m_frame = Editor.getFrame();
+			final ResourceBundle m_littleBundle = Editor.getBundle();
+			final Menu_MouseListener menuListener = new Menu_MouseListener();
+			final int menuKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+
+			m_fileMenu = new JMenu(m_littleBundle.getString("FileKey"));
+			m_fileMenu.setBorderPainted(false);
+			m_fileMenu.addMouseListener(menuListener);
+
+			m_newItem = new JMenuItem(m_littleBundle.getString("NewKey"));
+			m_newItem.addActionListener(this);
+			m_newItem.setAccelerator(KeyStroke.getKeyStroke('N', menuKeyMask));
+			m_fileMenu.add(m_newItem);
+
+			m_openItem = new JMenuItem(m_littleBundle.getString("OpenKey"));
+			m_openItem.addActionListener(this);
+			m_openItem.setAccelerator(KeyStroke.getKeyStroke('O', menuKeyMask));
+			m_fileMenu.add(m_openItem);
+
+			m_closeItem = new JMenuItem(m_littleBundle.getString("CloseKey"));
+			m_closeItem.addActionListener(this);
+			m_closeItem.setAccelerator(KeyStroke.getKeyStroke('W', menuKeyMask));
+			m_fileMenu.add(m_closeItem);
+
+			m_closeAllItem = new JMenuItem(m_littleBundle.getString("CloseAllKey"));
+			m_closeAllItem.addActionListener(this);
+			m_fileMenu.add(m_closeAllItem);
+
+			m_fileMenu.add(new JSeparator());
+
+			m_saveItem = new JMenuItem(m_littleBundle.getString("SaveKey"));
+			m_saveItem.addActionListener(m_frame);
+			m_saveItem.setAccelerator(KeyStroke.getKeyStroke('S', menuKeyMask));
+			m_fileMenu.add(m_saveItem);
+
+			m_saveAsItem = new JMenuItem(m_littleBundle.getString("SaveAsKey"));
+			m_saveAsItem.addActionListener(m_frame);
+			m_saveAsItem.setAccelerator(KeyStroke.getKeyStroke('S', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
+			m_fileMenu.add(m_saveAsItem);
+			m_fileMenu.add(new JSeparator());
+
+			m_recentFilesMenu = new JMenu(m_littleBundle.getString("OpenRecentFileKey"));
+			final String[] vRecentFiles = recentFiles();
+			m_recentFilesMenu.setEnabled(vRecentFiles.length > 0);
+			m_recentFilesMenu.setMnemonic('R');
+			for (int i = 0; i < vRecentFiles.length; i++)
+			{
+				m_subMenuItem[i] = new JMenuItem(vRecentFiles[i]);
+				m_subMenuItem[i].addActionListener(this);
+				m_subMenuItem[i].setAccelerator(KeyStroke.getKeyStroke('1' + i, menuKeyMask));
+				m_recentFilesMenu.add(m_subMenuItem[i]);
+			}
+			m_fileMenu.add(m_recentFilesMenu);
+			m_fileMenu.add(new JSeparator());
+
+			m_devcapOpenMenu = new JMenuItem(m_littleBundle.getString("DevCapFileOpenKey"));
+			m_fileMenu.add(m_devcapOpenMenu);
+			m_devcapOpenMenu.addActionListener(this);
+
+			m_csvItem = new JMenuItem(m_littleBundle.getString("CSVKey"));
+			m_csvItem.addActionListener(this);
+			m_fileMenu.add(m_csvItem);
+
+			m_fileMenu.add(new JSeparator());
+
+			m_quitItem = new JMenuItem(m_littleBundle.getString("ExitKey"));
+			m_quitItem.addActionListener(m_frame);
+			m_quitItem.setAccelerator(KeyStroke.getKeyStroke('Q', menuKeyMask));
+			m_fileMenu.add(m_quitItem);
+			m_fileMenu.setBackground(menuColor);
+			m_fileMenu.setMnemonic('F');
+			EditorMenuBar.this.add(m_fileMenu);
+
+		}
+	}
+
 	/**
 	 * 
 	 */
 	public EditorMenuBar()
 	{
 		super();
+		fileMenu = new FileMenu();
 	}
 
 	/**
@@ -274,80 +494,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	}
 
 	/**
-	 * Creates the File menu.
-	 * @return The File menu with the menu items.
-	 */
-	private JMenu drawFileMenu()
-	{
-		final JDFFrame m_frame = Editor.getFrame();
-		final ResourceBundle m_littleBundle = Editor.getBundle();
-		final Menu_MouseListener menuListener = new Menu_MouseListener();
-		final int menuKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
-
-		m_fileMenu = new JMenu(m_littleBundle.getString("FileKey"));
-		m_fileMenu.setBorderPainted(false);
-		m_fileMenu.addMouseListener(menuListener);
-
-		m_newItem = new JMenuItem(m_littleBundle.getString("NewKey"));
-		m_newItem.addActionListener(this);
-		m_newItem.setAccelerator(KeyStroke.getKeyStroke('N', menuKeyMask));
-		m_fileMenu.add(m_newItem);
-
-		m_openItem = new JMenuItem(m_littleBundle.getString("OpenKey"));
-		m_openItem.addActionListener(this);
-		m_openItem.setAccelerator(KeyStroke.getKeyStroke('O', menuKeyMask));
-		m_fileMenu.add(m_openItem);
-
-		m_closeItem = new JMenuItem(m_littleBundle.getString("CloseKey"));
-		m_closeItem.addActionListener(this);
-		m_closeItem.setAccelerator(KeyStroke.getKeyStroke('W', menuKeyMask));
-		m_fileMenu.add(m_closeItem);
-
-		m_closeAllItem = new JMenuItem(m_littleBundle.getString("CloseAllKey"));
-		m_closeAllItem.addActionListener(this);
-		m_fileMenu.add(m_closeAllItem);
-
-		m_fileMenu.add(new JSeparator());
-
-		m_saveItem = new JMenuItem(m_littleBundle.getString("SaveKey"));
-		m_saveItem.addActionListener(m_frame);
-		m_saveItem.setAccelerator(KeyStroke.getKeyStroke('S', menuKeyMask));
-		m_fileMenu.add(m_saveItem);
-
-		m_saveAsItem = new JMenuItem(m_littleBundle.getString("SaveAsKey"));
-		m_saveAsItem.addActionListener(m_frame);
-		m_saveAsItem.setAccelerator(KeyStroke.getKeyStroke('S', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
-		m_fileMenu.add(m_saveAsItem);
-		m_fileMenu.add(new JSeparator());
-
-		m_recentFilesMenu = new JMenu(m_littleBundle.getString("OpenRecentFileKey"));
-		final String[] vRecentFiles = recentFiles();
-		m_recentFilesMenu.setEnabled(vRecentFiles.length > 0);
-		m_recentFilesMenu.setMnemonic('R');
-		for (int i = 0; i < vRecentFiles.length; i++)
-		{
-			m_subMenuItem[i] = new JMenuItem(vRecentFiles[i]);
-			m_subMenuItem[i].addActionListener(this);
-			m_subMenuItem[i].setAccelerator(KeyStroke.getKeyStroke('1' + i, menuKeyMask));
-			m_recentFilesMenu.add(m_subMenuItem[i]);
-		}
-		m_fileMenu.add(m_recentFilesMenu);
-
-		m_devcapOpenMenu = new JMenuItem(m_littleBundle.getString("DevCapFileOpenKey"));
-		m_fileMenu.add(m_devcapOpenMenu);
-		m_devcapOpenMenu.addActionListener(this);
-
-		m_fileMenu.add(new JSeparator());
-
-		m_quitItem = new JMenuItem(m_littleBundle.getString("ExitKey"));
-		m_quitItem.addActionListener(m_frame);
-		m_quitItem.setAccelerator(KeyStroke.getKeyStroke('Q', menuKeyMask));
-		m_fileMenu.add(m_quitItem);
-
-		return m_fileMenu;
-	}
-
-	/**
 	 * Creates the Help menu.
 	 * @return The Help menu with the menu items.
 	 */
@@ -366,10 +512,10 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		m_helpItem.addActionListener(this);
 		m_helpItem.setAccelerator(KeyStroke.getKeyStroke('H', menuKeyMask));
 		m_helpMenu.add(m_helpItem);
-		
+
 		m_helpItem_2 = new JMenuItem("Help 2");
-        m_helpItem_2.addActionListener(this);
-        m_helpMenu.add(m_helpItem_2);
+		m_helpItem_2.addActionListener(this);
+		m_helpMenu.add(m_helpItem_2);
 
 		m_helpMenu.add(new JSeparator());
 
@@ -415,10 +561,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		setBackground(Color.lightGray);
 		final Color menuColor = getBackground();
 
-		final JMenu fileM = drawFileMenu();
-		fileM.setBackground(menuColor);
-		fileM.setMnemonic('F');
-		add(fileM);
+		fileMenu.drawFileMenu();
 
 		final JMenu editM = drawEditMenu();
 		editM.setMnemonic('E');
@@ -706,33 +849,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	 */
 	public void updateRecentFilesMenu(final String pathName)
 	{
-		final INIReader iniReader = Editor.getIniFile();
-		final boolean exist = iniReader.pathNameExists(pathName);
-
-		iniReader.updateOrder(pathName, exist);
-
-		if (iniReader.nrOfRecentFiles() != 0)
-		{
-			m_recentFilesMenu.setEnabled(true);
-			for (int i = 0; i < iniReader.nrOfRecentFiles(); i++)
-			{
-				if (m_subMenuItem[i] == null)
-				{
-					m_subMenuItem[i] = new JMenuItem(iniReader.getRecentFiles()[i]);
-					m_subMenuItem[i].addActionListener(this);
-					m_recentFilesMenu.add(m_subMenuItem[i]);
-				}
-				else
-				{
-					m_subMenuItem[i].setText(iniReader.getRecentFiles()[i]);
-				}
-			}
-		}
-		else
-		{
-			m_recentFilesMenu.setEnabled(false);
-		}
-
+		fileMenu.updateRecentFilesMenu(pathName);
 		updateWindowsMenu();
 	}
 
@@ -903,14 +1020,12 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		m_renameItem.setEnabled(mode);
 		m_findItem.setEnabled(mode);
 		m_findXPathItem.setEnabled(mode);
-		m_closeItem.setEnabled(mode);
 		m_devCapItem.setEnabled(mode);
 		m_exportItem.setEnabled(mode);
 		m_QuickValidateItem.setEnabled(mode);
 		m_undoItem.setEnabled(mode);
 		m_redoItem.setEnabled(mode);
 		m_sendToDeviceItem.setEnabled(mode);
-		m_devcapOpenMenu.setEnabled(Editor.getIniFile().getRecentDevCap() != null);
 
 	}
 
@@ -919,9 +1034,9 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	 */
 	public void setEnableOpen(final boolean mode)
 	{
+		fileMenu.setEnableOpen(mode);
 		m_cutItem.setEnabled(mode);
 		m_copyItem.setEnabled(mode);
-		m_newItem.setEnabled(mode);
 		m_deleteItem.setEnabled(mode);
 		m_insertElementMenu.setEnabled(mode);
 		m_resourceMenu.setEnabled(mode);
@@ -933,12 +1048,10 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		m_saveItem.setEnabled(mode);
 		m_findItem.setEnabled(true);
 		m_findXPathItem.setEnabled(true);
-		m_closeItem.setEnabled(true);
 		m_devCapItem.setEnabled(true);
 		m_exportItem.setEnabled(true);
 		m_QuickValidateItem.setEnabled(true);
 		m_sendToDeviceItem.setEnabled(true);
-		m_devcapOpenMenu.setEnabled(Editor.getIniFile().getRecentDevCap() != null);
 
 	}
 
@@ -950,68 +1063,16 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		public void mouseEntered(final MouseEvent e)
 		{
 			final Object source = e.getSource();
-			if (source == m_fileMenu)
-			{
-				m_fileMenu.setBorderPainted(true);
-			}
-			else if (source == m_insertMenu)
-			{
-				m_insertMenu.setBorderPainted(true);
-			}
-			else if (source == m_toolsMenu)
-			{
-				m_toolsMenu.setBorderPainted(true);
-			}
-			else if (source == m_editMenu)
-			{
-				m_editMenu.setBorderPainted(true);
-			}
-			else if (source == m_validateMenu)
-			{
-				m_validateMenu.setBorderPainted(true);
-			}
-			else if (source == m_helpMenu)
-			{
-				m_helpMenu.setBorderPainted(true);
-			}
-			else if (source == m_windowMenu)
-			{
-				m_windowMenu.setBorderPainted(true);
-			}
+			if (source instanceof JMenu)
+				((JMenu) source).setBorderPainted(true);
 		}
 
 		@Override
 		public void mouseExited(final MouseEvent e)
 		{
 			final Object source = e.getSource();
-			if (source == m_fileMenu)
-			{
-				m_fileMenu.setBorderPainted(false);
-			}
-			else if (source == m_insertMenu)
-			{
-				m_insertMenu.setBorderPainted(false);
-			}
-			else if (source == m_toolsMenu)
-			{
-				m_toolsMenu.setBorderPainted(false);
-			}
-			else if (source == m_editMenu)
-			{
-				m_editMenu.setBorderPainted(false);
-			}
-			else if (source == m_validateMenu)
-			{
-				m_validateMenu.setBorderPainted(false);
-			}
-			else if (source == m_windowMenu)
-			{
-				m_windowMenu.setBorderPainted(false);
-			}
-			else if (source == m_helpMenu)
-			{
-				m_helpMenu.setBorderPainted(false);
-			}
+			if (source instanceof JMenu)
+				((JMenu) source).setBorderPainted(true);
 		}
 	}
 
@@ -1066,14 +1127,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		/*
 		 * Action that is performed when select File->New
 		 */
-		else if (eSrc == m_newItem)
-		{
-			frame.newFile();
-		}
-		else if (eSrc == m_openItem)
-		{
-			frame.openFile();
-		}
 		else if (eSrc == m_QuickValidateItem && Editor.getModel() != null)
 		{
 			Editor.getModel().validate();
@@ -1081,14 +1134,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		else if (eSrc == m_deleteItem)
 		{
 			Editor.getModel().deleteSelectedNodes();
-		}
-		else if (eSrc == m_closeItem)
-		{
-			Editor.getFrame().closeFile(1);
-		}
-		else if (eSrc == m_closeAllItem)
-		{
-			Editor.getFrame().closeFile(99999);
 		}
 		else if (eSrc == m_fixCleanupItem)
 		{
@@ -1129,31 +1174,14 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		}
 		else if (eSrc == m_helpItem_2)
 		{
-		    HelpMenuItem i = new HelpMenuItem();
-		    i.init();
+			HelpMenuItem i = new HelpMenuItem();
+			i.init();
 		}
 		else if (eSrc == m_preferenceItem)
 		{
 			showPreferences();
 		}
-		else if (eSrc == m_devcapOpenMenu)
-		{
-			final File f = iniFile.getRecentDevCap();
-			if (f != null)
-				openRecentFile(f);
-			else
-				EditorUtils.errorBox("OpenJDFErrorKey", "No Devcap File defined");
 
-		}
-
-		for (int i = 0; i < m_subMenuItem.length; i++)
-		{
-			if (eSrc == m_subMenuItem[i])
-			{
-				final String newFile = m_subMenuItem[i].getText();
-				openRecentFile(new File(newFile));
-			}
-		}
 		// select
 		if (m_Windows != null)
 		{
@@ -1200,32 +1228,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		{
 			ta.drawTreeView(frame.getEditorDoc());
 		}
-	}
-
-	/**
-	 * Called if a file is opened from the recent files menu.
-	 * @param fileToSave - Path to the file that is to be opened
-	 */
-	private void openRecentFile(final File fileToSave)
-	{
-		Editor.setCursor(1, null);
-		final boolean b = Editor.getFrame().readFile(fileToSave);
-
-		if (b)
-		{
-			final String s = fileToSave.getAbsolutePath();
-
-			final INIReader m_iniFile = Editor.getIniFile();
-			if (m_iniFile.nrOfRecentFiles() != 1)
-			{
-				m_iniFile.updateOrder(s, true);
-			}
-		}
-		else
-		{
-			EditorUtils.errorBox("OpenJDFErrorKey", fileToSave.getPath().toString());
-		}
-		Editor.setCursor(0, null);
 	}
 
 	// //////////////////////////////////////////////////////////

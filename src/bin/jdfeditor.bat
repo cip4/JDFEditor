@@ -5,7 +5,7 @@
 goto end
 :gotJavaHome
 @REM Setup Environment variables for JDFEditor
-@REM Set any jars you want to appear at the beginning of the classpath here
+@REM Set any jars you want to appear at the begining of the classpath here
 @REM remember to terminate with a ;
 
 @SET PRE_JDFEDITOR_CLASSPATH=
@@ -27,6 +27,9 @@ goto end
 @SET CLASSPATH=%CLASSPATH%%LIB_DIR%/xercesImpl.jar;
 @SET CLASSPATH=%CLASSPATH%%LIB_DIR%/xml-apis.jar;
 @SET CLASSPATH=%CLASSPATH%%LIB_DIR%/bounce-0.17.jar;
+@SET CLASSPATH=%CLASSPATH%%LIB_DIR%/tcpmon.jar;
+@SET CLASSPATH=%CLASSPATH%%LIB_DIR%/jhall.jar;
+
 @SET CLASSPATH=%CLASSPATH%%LIB_DIR%/JDFLibJ-2.1.4a.jar;
 @SET CLASSPATH=%CLASSPATH%%LIB_DIR%/jdfeditor.jar;
 

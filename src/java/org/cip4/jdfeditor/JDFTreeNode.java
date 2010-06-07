@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2009 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2010 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -77,11 +77,13 @@ import org.cip4.jdflib.auto.JDFAutoRefAnchor.EnumAnchor;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFAudit;
 import org.cip4.jdflib.core.JDFElement;
+import org.cip4.jdflib.core.JDFNodeInfo;
 import org.cip4.jdflib.core.JDFPartAmount;
 import org.cip4.jdflib.core.JDFRefElement;
 import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VString;
+import org.cip4.jdflib.core.JDFElement.EnumNodeStatus;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.datatypes.JDFAttributeMap;
 import org.cip4.jdflib.jmf.JDFDeviceInfo;
@@ -104,9 +106,11 @@ import org.cip4.jdflib.resource.devicecapability.JDFDevCap;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCaps;
 import org.cip4.jdflib.resource.process.JDFColor;
 import org.cip4.jdflib.resource.process.JDFComChannel;
+import org.cip4.jdflib.resource.process.JDFCompany;
 import org.cip4.jdflib.resource.process.JDFContentObject;
 import org.cip4.jdflib.resource.process.JDFFileSpec;
 import org.cip4.jdflib.resource.process.JDFGeneralID;
+import org.cip4.jdflib.resource.process.JDFIdentical;
 import org.cip4.jdflib.resource.process.JDFLayoutElement;
 import org.cip4.jdflib.resource.process.JDFMedia;
 import org.cip4.jdflib.resource.process.JDFPerson;
@@ -423,7 +427,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 	public String toDisplayString()
 	{
 		final Object o = this.getUserObject();
-		String s = null;
+		String s;
 		if (o == null)
 		{
 			return null;
@@ -436,8 +440,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		}
 		else if (o instanceof String)
 		{
-			s = (String) o;
-			s = "#text=\"" + s + "\"";
+			s = "#text=\"" + (String) o + "\"";
 		}
 		else
 		// element
@@ -628,14 +631,6 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 					s += "/" + att;
 				}
 			}
-			else if (e instanceof JDFNotification)
-			{
-				final String att = e.getAttribute(AttributeName.CLASS, null, null);
-				if (att != null)
-				{
-					s += " " + att;
-				}
-			}
 			else if (e instanceof JDFDeviceInfo)
 			{
 				final JDFDeviceInfo di = (JDFDeviceInfo) e;
@@ -663,6 +658,12 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 				{
 					s += " " + att;
 				}
+				final String att2 = e.getAttribute(AttributeName.CLASS, null, null);
+				if (att2 != null)
+				{
+					s += " - " + att2;
+				}
+
 			}
 			else if (e instanceof JDFEvent)
 			{
@@ -677,15 +678,13 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 			{
 				final JDFPart p = (JDFPart) e;
 				final JDFAttributeMap map = p.getPartMap();
-				final VString keys = map.getKeys();
-				if (keys != null)
-				{
-					Collections.sort(keys);
-					for (int i = 0; i < keys.size(); i++)
-					{
-						s += " " + keys.elementAt(i) + "=" + map.get(keys.elementAt(i));
-					}
-				}
+				s = addPartMap(s, map);
+			}
+			else if (e instanceof JDFIdentical)
+			{
+				final JDFIdentical p = (JDFIdentical) e;
+				final JDFAttributeMap map = p.getPartMap();
+				s = addPartMap(s, map);
 			}
 			else if (e instanceof JDFGeneralID)
 			{
@@ -696,6 +695,11 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 			{
 				final JDFPerson p = (JDFPerson) e;
 				s += " " + p.getDescriptiveName();
+			}
+			else if (e instanceof JDFCompany)
+			{
+				final JDFCompany c = (JDFCompany) e;
+				s += " " + c.getOrganizationName();
 			}
 			else if (e instanceof JDFComChannel)
 			{
@@ -711,7 +715,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 					s += " " + anchor.getName();
 				}
 			}
-			else if (s.endsWith("Set"))
+			else if (s.endsWith("Set") || s.equals("Intent"))
 			{
 				String name = e.getAttribute("Name", null, null);
 				if (name != null)
@@ -734,6 +738,12 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 				{
 					s += "/" + e.getAttribute(AttributeName.MEDIATYPE);
 				}
+				else if (e instanceof JDFNodeInfo)
+				{
+					EnumNodeStatus nodeStatus = ((JDFNodeInfo) e).getNodeStatus();
+					if (nodeStatus != null)
+						s += " " + nodeStatus.getName();
+				}
 				final JDFResource r = (JDFResource) e;
 				final String partKey = r.getLocalPartitionKey();
 				if (partKey != null)
@@ -743,6 +753,25 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 			}
 		}
 
+		return s;
+	}
+
+	/**
+	 * @param s
+	 * @param map
+	 * @return
+	 */
+	private String addPartMap(String s, final JDFAttributeMap map)
+	{
+		final VString keys = map.getKeys();
+		if (keys != null)
+		{
+			Collections.sort(keys);
+			for (int i = 0; i < keys.size(); i++)
+			{
+				s += " " + keys.elementAt(i) + "=" + map.get(keys.elementAt(i));
+			}
+		}
 		return s;
 	}
 

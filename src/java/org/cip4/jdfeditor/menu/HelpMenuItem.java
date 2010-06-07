@@ -77,6 +77,7 @@ import javax.help.HelpSetException;
 
 public class HelpMenuItem {
     private HelpBroker broker;
+    private String INIT_ID = "id220952";
     
     public void init() {
         String helpset = "/org/cip4/help/jhelpset.hs";
@@ -87,7 +88,7 @@ public class HelpMenuItem {
         try {
             hs = new HelpSet(null, helpURL);
             broker = hs.createHelpBroker();
-            broker.setCurrentID("id220952");
+            broker.setCurrentID(INIT_ID);
             broker.setDisplayed(true);
         } catch (HelpSetException e) {
             e.printStackTrace();

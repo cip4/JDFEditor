@@ -73,25 +73,22 @@ package org.cip4.jdfeditor;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.Font;
-import java.io.IOException;
 import java.util.Enumeration;
 import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
-import javax.swing.JEditorPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
-import org.bounce.text.LineNumberMargin;
-import org.bounce.text.ScrollableEditorPanel;
-import org.bounce.text.xml.XMLEditorKit;
-import org.bounce.text.xml.XMLFoldingMargin;
 import org.cip4.jdflib.core.KElement;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rtextarea.RTextScrollPane;
 
 import tcpmon.MainWindow;
 
@@ -111,7 +108,7 @@ public class EditorTabbedPaneB extends JTabbedPane
 	public SchemaScrollPane m_SchemaErrScroll;
 
 	//    Pane containing XML editor
-	private final JEditorPane editor;
+	private RSyntaxTextArea xmlEditorTextArea;
 
 	public EditorTabbedPaneB(JDFFrame frame)
 	{
@@ -133,29 +130,13 @@ public class EditorTabbedPaneB extends JTabbedPane
 		setComponentAt(m_DC_ERRORS_INDEX, m_devCapErrScroll);
 
 		//        XML Editor tab
-		editor = new JEditorPane();
-		editor.setEditable(false);
-
-		XMLEditorKit kit = new XMLEditorKit();
-		editor.setEditorKit(kit);
-		editor.setFont(new Font("Courier", Font.PLAIN, 12));
-
-		JPanel rowHeader = new JPanel(new BorderLayout());
-		try
-		{
-			rowHeader.add(new XMLFoldingMargin(editor), BorderLayout.EAST);
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-		rowHeader.add(new LineNumberMargin(editor), BorderLayout.WEST);
-
-		ScrollableEditorPanel editorPanel = new ScrollableEditorPanel(editor);
-		JScrollPane xmlEditorScrPane = new JScrollPane(editorPanel);
-		xmlEditorScrPane.setRowHeaderView(rowHeader);
-
-		addTab(m_littleBundle.getString("XmlEditor"), null, xmlEditorScrPane, m_littleBundle.getString("XmlEditor"));
+		JPanel xmlEditorPanel = new JPanel(new BorderLayout());
+        xmlEditorTextArea = new RSyntaxTextArea();
+        xmlEditorTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_XML);
+        xmlEditorTextArea.setEditable(false);
+        RTextScrollPane sp = new RTextScrollPane(xmlEditorTextArea);
+        xmlEditorPanel.add(sp);
+        addTab(m_littleBundle.getString("XmlEditor"), null, xmlEditorPanel, m_littleBundle.getString("XmlEditor"));
 
 		//        TCPMon tab
 		MainWindow mWindow = new MainWindow();
@@ -178,7 +159,8 @@ public class EditorTabbedPaneB extends JTabbedPane
 
 	public void refreshXmlEditor(String s)
 	{
-		editor.setText(s);
+		xmlEditorTextArea.setText(s);
+		xmlEditorTextArea.setCaretPosition(0);
 	}
 
 	public void selectNodeWithXPath(TreePath path)
