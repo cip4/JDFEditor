@@ -1,4 +1,5 @@
 package org.cip4.jdfeditor;
+
 /*
  *
  * The CIP4 Software License, Version 1.0
@@ -86,338 +87,341 @@ import javax.swing.SwingUtilities;
 
 public class EditorButtonBar extends JToolBar implements ActionListener
 {
-    
-    JButton m_newButton;
-    JButton m_openButton;
-    JButton m_saveButton;
-    JButton m_undoButton;
-    JButton m_redoButton;
-    JButton m_cutButton;
-    JButton m_copyButton;
-    JButton m_pasteButton;
-    JButton m_validateButton;
-    JButton m_upOneLevelButton;
-    JButton m_NextButton;
-    JButton m_LastButton;
-    JButton m_printButton;
-    JButton m_zoomInButton;
-    JButton m_zoomOutButton;
-    JButton m_zoomOrigButton;
-    JButton m_zoomBestButton;
-    JButton m_refreshButton;
-    JButton m_closeButton;
-    HashSet m_allButtons;
-    
-    private ResourceBundle m_littleBundle;
-    private JDFFrame m_frame;
-    
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 2161156231007579898L;
-    
-    public EditorButtonBar(ResourceBundle littleBundle, JDFFrame frame)
-    {
-        super(SwingConstants.HORIZONTAL);
-        m_littleBundle=littleBundle;
-        m_frame=frame;
-        m_allButtons=new HashSet();
-    }
-    
-    /**
-     * Method drawButtonBar.
-     * Editor.java contains ICONS_PATH. This package can be found under JDFEditor/src/Java/org.cip4.jdfeditor.icons
-     * You can add icons to this packagae by putting your .gif files into the following folder. This folder comes from whereever you
-     * downloaded yoru code from SubVersion. My place (BIskey) is the reference point. You can make it whatever you like. 
-     *  C:\Subversion_Root\My_Root\JDFEditor\src\java\org\cip4\jdfeditor\icons
-     *  After adding the icons to this folder, you need to come here and refresh the package w/in your Java editing software.
-     */
-    public void drawButtonBar()
-    {
 
-    	final ImageIcon imgNew = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "NewButton.gif");
-        final ImageIcon imgOpen = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "OpenButton.gif");
-        final ImageIcon imgSave = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "SaveButton.gif");
-        final ImageIcon imgCut = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "CutButton.gif");
-        final ImageIcon imgCopy = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "CopyButton.gif");
-        final ImageIcon imgPaste = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "PasteButton.gif");
-        final ImageIcon imgUndo = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "UndoButton.gif");
-        final ImageIcon imgRedo = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "RedoButton.gif");
-        final ImageIcon imgReval = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "RevalidateButton.gif");
-        final ImageIcon imgUp = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "UpButton.gif");
-        final ImageIcon imgLast = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "LastButton.gif");
-        final ImageIcon imgNext = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "NextButton.gif");
-        final ImageIcon imgPrint = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "PrintButton.gif");
-        final ImageIcon imgZoomIn = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ZoomInButton.gif");
-        final ImageIcon imgZoomOut = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ZoomOutButton.gif");
-        final ImageIcon imgZoomOrig = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ZoomOrigButton.gif");
-        final ImageIcon imgZoomBest = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ZoomBestButton.gif");
-        final ImageIcon imgRefresh = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "RefreshButton.gif");
-        
-        
-        
-        final Dimension d = new Dimension(10, 30);
-        setFloatable(false);
-        
-        m_newButton = createDefaultButton(imgNew,m_littleBundle.getString("NewKey"),true,'|');
-        m_openButton = createDefaultButton(imgOpen,m_littleBundle.getString("OpenKey"),true,'|');
-        m_saveButton = createDefaultButton(imgSave,m_littleBundle.getString("SaveKey"),false,'|');
-        
-        addSeparator(d);
-        
-        m_printButton = createDefaultButton(imgPrint,m_littleBundle.getString("PrintKey"),false,'|');
-        m_refreshButton = createDefaultButton(imgRefresh,m_littleBundle.getString("RefreshKey"),false,'|');
-        
-        addSeparator(d);
-        
-        m_cutButton = createDefaultButton(imgCut,m_littleBundle.getString("CutKey"),false,'|');
-        m_copyButton = createDefaultButton(imgCopy,m_littleBundle.getString("CopyKey"),false,'|');
-        m_pasteButton = createDefaultButton(imgPaste,m_littleBundle.getString("PasteKey"),false,'|');
-        
-        addSeparator(d);
-        
-        m_undoButton = createDefaultButton(imgUndo,m_littleBundle.getString("UndoKey"),false,'|');
-        m_undoButton.addActionListener(m_frame.undoAction);        
-        m_redoButton = createDefaultButton(imgRedo,m_littleBundle.getString("RedoKey"),false,'|');
-        m_redoButton.addActionListener(m_frame.redoAction);
-        
-        addSeparator(d);
-        
-        m_validateButton = createDefaultButton(imgReval,m_littleBundle.getString("ValidateToolTipKey"),false,'A');
-        m_upOneLevelButton = createDefaultButton(imgUp,m_littleBundle.getString("GoUpInProcessViewKey"),false,'|');
-        m_LastButton = createDefaultButton(imgLast,m_littleBundle.getString("LastButtonKey"),false,'|');
-        m_NextButton = createDefaultButton(imgNext,m_littleBundle.getString("NextButtonKey"),false,'|');
-        
-        addSeparator(d);
-        
-        m_zoomInButton = createDefaultButton(imgZoomIn,m_littleBundle.getString("ZoomInKey"),false,'|');
-        m_zoomOutButton = createDefaultButton(imgZoomOut,m_littleBundle.getString("ZoomOutKey"),false,'|');
-        m_zoomOrigButton = createDefaultButton(imgZoomOrig,m_littleBundle.getString("ZoomOrigKey"),false,'|');
-        m_zoomBestButton = createDefaultButton(imgZoomBest,m_littleBundle.getString("ZoomFitKey"),false,'|');
-        
-        addSeparator(d);
-        final ImageIcon imgClose = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "CloseFile.GIF");
-        m_closeButton = createDefaultButton(imgClose,m_littleBundle.getString("CloseKey"),true,'|');
-        addSeparator(d);
-              
-        add(Box.createHorizontalGlue());
-        SwingUtilities.updateComponentTreeUI(this);
-    }
-    /**
-     * Creates a JButton with the default settings.
-     * @param iconStr - The Path to the image file
-     * @param tip     - The tool tip
-     * @param enabled - If the button is enabled or disabled initially
-     * @return The default JButton.
-     */
-    private JButton createDefaultButton(ImageIcon icon, String tip, boolean enabled, char mnemonic)
-    {
-        final JButton button = new JButton(icon);
-        
-        if (Editor.getIniFile().getLookAndFeel().equalsIgnoreCase("com.sun.java.swing.plaf.motif.MotifLookAndFeel"))
-            button.setPreferredSize(new Dimension(45, 45));
-        else
-            button.setPreferredSize(new Dimension(30, 30));
-        
-        button.addActionListener(this);
-        button.addMouseListener(new Button_MouseListener());
-        button.setBorderPainted(false);
-        button.setEnabled(enabled);
-        button.setToolTipText(tip);
-        if(mnemonic!='|')
-        {
-            button.setMnemonic(mnemonic);
-        }
-        m_allButtons.add(button);
-        add(button);
-        return button;
-    }
-    
-    /**
-     * enable or disable zoom buttons depending on the current zoom factor
-     * @param zoom the current zoom factor
-     */
-    public void setEnableZoom(double zoom)
-    {
-        if(Editor.getEditorDoc()==null)
-        {
-            m_zoomOutButton.setEnabled(false);
-            m_zoomInButton.setEnabled(false);       
-            m_zoomOrigButton.setEnabled(false);
-            m_zoomBestButton.setEnabled(false);
-            m_upOneLevelButton.setEnabled(false);
+	JButton m_newButton;
+	JButton m_openButton;
+	JButton m_saveButton;
+	JButton m_undoButton;
+	JButton m_redoButton;
+	JButton m_cutButton;
+	JButton m_copyButton;
+	JButton m_pasteButton;
+	JButton m_validateButton;
+	JButton m_upOneLevelButton;
+	JButton m_NextButton;
+	JButton m_LastButton;
+	JButton m_printButton;
+	JButton m_zoomInButton;
+	JButton m_zoomOutButton;
+	JButton m_zoomOrigButton;
+	JButton m_zoomBestButton;
+	JButton m_refreshButton;
+	JButton m_closeButton;
+	HashSet m_allButtons;
 
-        }
-        else
-        {
-            m_zoomOutButton.setEnabled(zoom > 0.2);
-            m_zoomInButton.setEnabled(zoom<2.5);       
-            m_zoomOrigButton.setEnabled(zoom!=1.0);
-            m_zoomBestButton.setEnabled(true);
-        }
-    }
-    
-    public void setEnableClose(boolean mode)
-    {
-        m_saveButton.setEnabled(mode);
-        m_cutButton.setEnabled(mode);
-        m_copyButton.setEnabled(mode);
-        m_pasteButton.setEnabled(mode);
-        m_undoButton.setEnabled(mode);
-        m_redoButton.setEnabled(mode);
-        m_upOneLevelButton.setEnabled(mode);
-        m_LastButton.setEnabled(mode);
-        m_NextButton.setEnabled(mode);
-        m_zoomInButton.setEnabled(mode);
-        m_zoomOutButton.setEnabled(mode);
-        m_zoomOrigButton.setEnabled(mode);
-        m_zoomBestButton.setEnabled(mode);
-    }
-    
-    public void setEnableOpen(boolean mode)
-    {
-        m_newButton.setEnabled(mode);
-        m_closeButton.setEnabled(mode);
-        m_saveButton.setEnabled(mode);
-        m_cutButton.setEnabled(mode);
-        m_copyButton.setEnabled(mode);
-        
-        m_redoButton.setEnabled(false);
-        m_undoButton.setEnabled(false);
-        m_LastButton.setEnabled(true);
-        m_NextButton.setEnabled(true);
-        
-        m_validateButton.setEnabled(true);
-        m_printButton.setEnabled(true);
-        EditorDocument eDoc=Editor.getEditorDoc();
-        m_refreshButton.setEnabled(eDoc==null ? true : eDoc.getMimePackage()==null);
-    }
-    
-///////////////////////////////////////////////////////////////
-    /**
-     * Mother of all action dispatchers
-     * @param e the event that gets checked
-     */
-    public void actionPerformed(ActionEvent e)
-    {
-        
-        final Object eSrc = e.getSource();
-        Editor.setCursor(1, null);
-        if (eSrc == m_newButton)
-        {
-            m_frame.newFile();
-        }
-        else if (eSrc == m_openButton)
-        {
-             m_frame.openFile();
-        }
-        else if (eSrc == m_saveButton)
-        {
-            if (m_frame.getTitle().equalsIgnoreCase("Untitled.jdf") || m_frame.getTitle().equalsIgnoreCase("Untitled.jmf"))
-            {
-                m_frame.saveAs();
-            }
-            else
-            {
-                m_frame.getJDFDoc().write2File((String)null, 2, false);
-                m_frame.getJDFDoc().clearDirtyIDs();
-            }
-        }
-        else if (eSrc == m_validateButton && m_frame.getModel()!=null)
-        {
-             m_frame.getModel().validate();
-        }
-        else if (eSrc == m_upOneLevelButton)
-        {
-             m_frame.m_topTabs.m_pArea.goUpOneLevelInProcessView();
-        }
-        
-        else if (eSrc == m_NextButton)
-        {
-            Editor.getEditorDoc().setNextSelection();
-        }
-        else if (eSrc == m_LastButton)
-        {
-            Editor.getEditorDoc().setLastSelection();
-        }
-        else if (eSrc == m_printButton)
-        {
-            m_frame.printWhat();
-        }
-        else if (eSrc == m_zoomInButton)
-        {
-            m_frame.m_topTabs.m_pArea.zoom('+');
-        }
-        else if (eSrc == m_zoomOutButton)
-        {
-            m_frame.m_topTabs.m_pArea.zoom('-');
-        }
-        else if (eSrc == m_zoomOrigButton)
-        {
-            m_frame.m_topTabs.m_pArea.zoom('o');
-        }
-        else if (eSrc == m_zoomBestButton)
-        {
-             m_frame.m_topTabs.m_pArea.zoom('b');
-        }
-        else if (eSrc == m_closeButton)
-        {
-            m_frame.closeFile(1);
-        }
-        else if (!Editor.getIniFile().getReadOnly())
-        {
-            if (eSrc == m_cutButton)
-            {
-                m_frame.cutSelectedNode();
-            }
-            else if (eSrc == m_copyButton)
-            {
-                m_frame.copySelectedNode();
-            }
-            else if (eSrc == m_pasteButton)
-            {
-                m_frame.pasteCopiedNode();
-            }
-            else if (eSrc == m_refreshButton)
-            {
-                m_frame.refresh();
-            }
-        }
-        // always clean up!
-        Editor.setCursor(0, null);
-    }
-    ///////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////
-    
-    class Button_MouseListener extends MouseAdapter
-    {
-        @Override
+	private final ResourceBundle m_littleBundle;
+	private final JDFFrame m_frame;
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2161156231007579898L;
+
+	public EditorButtonBar(ResourceBundle littleBundle, JDFFrame frame)
+	{
+		super(SwingConstants.HORIZONTAL);
+		m_littleBundle = littleBundle;
+		m_frame = frame;
+		m_allButtons = new HashSet();
+	}
+
+	/**
+	 * Method drawButtonBar.
+	 * Editor.java contains ICONS_PATH. This package can be found under JDFEditor/src/Java/org.cip4.jdfeditor.icons
+	 * You can add icons to this packagae by putting your .gif files into the following folder. This folder comes from whereever you
+	 * downloaded yoru code from SubVersion. My place (BIskey) is the reference point. You can make it whatever you like. 
+	 *  C:\Subversion_Root\My_Root\JDFEditor\src\java\org\cip4\jdfeditor\icons
+	 *  After adding the icons to this folder, you need to come here and refresh the package w/in your Java editing software.
+	 */
+	public void drawButtonBar()
+	{
+
+		final ImageIcon imgNew = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "NewButton.gif");
+		final ImageIcon imgOpen = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "OpenButton.gif");
+		final ImageIcon imgSave = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "SaveButton.gif");
+		final ImageIcon imgCut = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "CutButton.gif");
+		final ImageIcon imgCopy = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "CopyButton.gif");
+		final ImageIcon imgPaste = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "PasteButton.gif");
+		final ImageIcon imgUndo = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "UndoButton.gif");
+		final ImageIcon imgRedo = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "RedoButton.gif");
+		final ImageIcon imgReval = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "RevalidateButton.gif");
+		final ImageIcon imgUp = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "UpButton.gif");
+		final ImageIcon imgLast = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "LastButton.gif");
+		final ImageIcon imgNext = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "NextButton.gif");
+		final ImageIcon imgPrint = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "PrintButton.gif");
+		final ImageIcon imgZoomIn = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ZoomInButton.gif");
+		final ImageIcon imgZoomOut = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ZoomOutButton.gif");
+		final ImageIcon imgZoomOrig = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ZoomOrigButton.gif");
+		final ImageIcon imgZoomBest = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ZoomBestButton.gif");
+		final ImageIcon imgRefresh = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "RefreshButton.gif");
+
+		final Dimension d = new Dimension(10, 30);
+		setFloatable(false);
+
+		m_newButton = createDefaultButton(imgNew, m_littleBundle.getString("NewKey"), true, '|');
+		m_openButton = createDefaultButton(imgOpen, m_littleBundle.getString("OpenKey"), true, '|');
+		m_saveButton = createDefaultButton(imgSave, m_littleBundle.getString("SaveKey"), false, '|');
+
+		addSeparator(d);
+
+		m_printButton = createDefaultButton(imgPrint, m_littleBundle.getString("PrintKey"), false, '|');
+		m_refreshButton = createDefaultButton(imgRefresh, m_littleBundle.getString("RefreshKey"), false, '|');
+
+		addSeparator(d);
+
+		m_cutButton = createDefaultButton(imgCut, m_littleBundle.getString("CutKey"), false, '|');
+		m_copyButton = createDefaultButton(imgCopy, m_littleBundle.getString("CopyKey"), false, '|');
+		m_pasteButton = createDefaultButton(imgPaste, m_littleBundle.getString("PasteKey"), false, '|');
+
+		addSeparator(d);
+
+		m_undoButton = createDefaultButton(imgUndo, m_littleBundle.getString("UndoKey"), false, '|');
+		m_undoButton.addActionListener(m_frame.undoAction);
+		m_redoButton = createDefaultButton(imgRedo, m_littleBundle.getString("RedoKey"), false, '|');
+		m_redoButton.addActionListener(m_frame.redoAction);
+
+		addSeparator(d);
+
+		m_validateButton = createDefaultButton(imgReval, m_littleBundle.getString("ValidateToolTipKey"), false, 'A');
+		m_upOneLevelButton = createDefaultButton(imgUp, m_littleBundle.getString("GoUpInProcessViewKey"), false, '|');
+		m_LastButton = createDefaultButton(imgLast, m_littleBundle.getString("LastButtonKey"), false, '|');
+		m_NextButton = createDefaultButton(imgNext, m_littleBundle.getString("NextButtonKey"), false, '|');
+
+		addSeparator(d);
+
+		m_zoomInButton = createDefaultButton(imgZoomIn, m_littleBundle.getString("ZoomInKey"), false, '|');
+		m_zoomOutButton = createDefaultButton(imgZoomOut, m_littleBundle.getString("ZoomOutKey"), false, '|');
+		m_zoomOrigButton = createDefaultButton(imgZoomOrig, m_littleBundle.getString("ZoomOrigKey"), false, '|');
+		m_zoomBestButton = createDefaultButton(imgZoomBest, m_littleBundle.getString("ZoomFitKey"), false, '|');
+
+		addSeparator(d);
+		final ImageIcon imgClose = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "CloseFile.GIF");
+		m_closeButton = createDefaultButton(imgClose, m_littleBundle.getString("CloseKey"), true, '|');
+		addSeparator(d);
+
+		add(Box.createHorizontalGlue());
+		SwingUtilities.updateComponentTreeUI(this);
+	}
+
+	/**
+	 * Creates a JButton with the default settings.
+	 * @param iconStr - The Path to the image file
+	 * @param tip     - The tool tip
+	 * @param enabled - If the button is enabled or disabled initially
+	 * @return The default JButton.
+	 */
+	private JButton createDefaultButton(ImageIcon icon, String tip, boolean enabled, char mnemonic)
+	{
+		final JButton button = new JButton(icon);
+
+		if (Editor.getIniFile().getLookAndFeel().equalsIgnoreCase("com.sun.java.swing.plaf.motif.MotifLookAndFeel"))
+			button.setPreferredSize(new Dimension(45, 45));
+		else
+			button.setPreferredSize(new Dimension(30, 30));
+
+		button.addActionListener(this);
+		button.addMouseListener(new Button_MouseListener());
+		button.setBorderPainted(false);
+		button.setEnabled(enabled);
+		button.setToolTipText(tip);
+		if (mnemonic != '|')
+		{
+			button.setMnemonic(mnemonic);
+		}
+		m_allButtons.add(button);
+		add(button);
+		return button;
+	}
+
+	/**
+	 * enable or disable zoom buttons depending on the current zoom factor
+	 * @param zoom the current zoom factor
+	 */
+	public void setEnableZoom(double zoom)
+	{
+		if (Editor.getEditorDoc() == null)
+		{
+			m_zoomOutButton.setEnabled(false);
+			m_zoomInButton.setEnabled(false);
+			m_zoomOrigButton.setEnabled(false);
+			m_zoomBestButton.setEnabled(false);
+			m_upOneLevelButton.setEnabled(false);
+
+		}
+		else
+		{
+			m_zoomOutButton.setEnabled(zoom > 0.2);
+			m_zoomInButton.setEnabled(zoom < 2.5);
+			m_zoomOrigButton.setEnabled(zoom != 1.0);
+			m_zoomBestButton.setEnabled(true);
+		}
+	}
+
+	/**
+	 * 
+	 */
+	public void setEnableClose()
+	{
+		m_saveButton.setEnabled(false);
+		m_cutButton.setEnabled(false);
+		m_copyButton.setEnabled(false);
+		m_pasteButton.setEnabled(false);
+		m_undoButton.setEnabled(false);
+		m_redoButton.setEnabled(false);
+		m_upOneLevelButton.setEnabled(false);
+		m_LastButton.setEnabled(false);
+		m_NextButton.setEnabled(false);
+		m_zoomInButton.setEnabled(false);
+		m_zoomOutButton.setEnabled(false);
+		m_zoomOrigButton.setEnabled(false);
+		m_zoomBestButton.setEnabled(false);
+	}
+
+	public void setEnableOpen(boolean mode)
+	{
+		m_newButton.setEnabled(mode);
+		m_closeButton.setEnabled(mode);
+		m_saveButton.setEnabled(mode);
+		m_cutButton.setEnabled(mode);
+		m_copyButton.setEnabled(mode);
+
+		m_redoButton.setEnabled(false);
+		m_undoButton.setEnabled(false);
+		m_LastButton.setEnabled(true);
+		m_NextButton.setEnabled(true);
+
+		m_validateButton.setEnabled(true);
+		m_printButton.setEnabled(true);
+		EditorDocument eDoc = Editor.getEditorDoc();
+		m_refreshButton.setEnabled(eDoc == null ? true : eDoc.getMimePackage() == null);
+	}
+
+	///////////////////////////////////////////////////////////////
+	/**
+	 * Mother of all action dispatchers
+	 * @param e the event that gets checked
+	 */
+	public void actionPerformed(ActionEvent e)
+	{
+
+		final Object eSrc = e.getSource();
+		Editor.setCursor(1, null);
+		if (eSrc == m_newButton)
+		{
+			m_frame.newFile();
+		}
+		else if (eSrc == m_openButton)
+		{
+			m_frame.openFile();
+		}
+		else if (eSrc == m_saveButton)
+		{
+			if (m_frame.getTitle().equalsIgnoreCase("Untitled.jdf") || m_frame.getTitle().equalsIgnoreCase("Untitled.jmf"))
+			{
+				m_frame.saveAs();
+			}
+			else
+			{
+				m_frame.getJDFDoc().write2File((String) null, 2, false);
+				m_frame.getJDFDoc().clearDirtyIDs();
+			}
+		}
+		else if (eSrc == m_validateButton && m_frame.getModel() != null)
+		{
+			m_frame.getModel().validate();
+		}
+		else if (eSrc == m_upOneLevelButton)
+		{
+			m_frame.m_topTabs.m_pArea.goUpOneLevelInProcessView();
+		}
+
+		else if (eSrc == m_NextButton)
+		{
+			Editor.getEditorDoc().setNextSelection();
+		}
+		else if (eSrc == m_LastButton)
+		{
+			Editor.getEditorDoc().setLastSelection();
+		}
+		else if (eSrc == m_printButton)
+		{
+			m_frame.printWhat();
+		}
+		else if (eSrc == m_zoomInButton)
+		{
+			m_frame.m_topTabs.m_pArea.zoom('+');
+		}
+		else if (eSrc == m_zoomOutButton)
+		{
+			m_frame.m_topTabs.m_pArea.zoom('-');
+		}
+		else if (eSrc == m_zoomOrigButton)
+		{
+			m_frame.m_topTabs.m_pArea.zoom('o');
+		}
+		else if (eSrc == m_zoomBestButton)
+		{
+			m_frame.m_topTabs.m_pArea.zoom('b');
+		}
+		else if (eSrc == m_closeButton)
+		{
+			m_frame.closeFile(1);
+		}
+		else if (!Editor.getIniFile().getReadOnly())
+		{
+			if (eSrc == m_cutButton)
+			{
+				m_frame.cutSelectedNode();
+			}
+			else if (eSrc == m_copyButton)
+			{
+				m_frame.copySelectedNode();
+			}
+			else if (eSrc == m_pasteButton)
+			{
+				m_frame.pasteCopiedNode();
+			}
+			else if (eSrc == m_refreshButton)
+			{
+				m_frame.refresh();
+			}
+		}
+		// always clean up!
+		Editor.setCursor(0, null);
+	}
+
+	///////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////
+
+	class Button_MouseListener extends MouseAdapter
+	{
+		@Override
 		public void mouseEntered(MouseEvent e)
-        {
-            final Object source = e.getSource();
-            if(m_allButtons.contains(source))
-            {
-                JButton b=(JButton)source;
-                if(b.isEnabled())
-                    b.setBorderPainted(true);
-            }
-        }
-        
-///////////////////////////////////////////////////////////////
-        @Override
+		{
+			final Object source = e.getSource();
+			if (m_allButtons.contains(source))
+			{
+				JButton b = (JButton) source;
+				if (b.isEnabled())
+					b.setBorderPainted(true);
+			}
+		}
+
+		///////////////////////////////////////////////////////////////
+		@Override
 		public void mouseExited(MouseEvent e)
-        {
-            final Object source = e.getSource();
-            if(m_allButtons.contains(source))
-            {
-                JButton b=(JButton)source;
-                if(b.isEnabled())
-                    b.setBorderPainted(false);
-            }
-        }
-    }
-///////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////
-    
+		{
+			final Object source = e.getSource();
+			if (m_allButtons.contains(source))
+			{
+				JButton b = (JButton) source;
+				if (b.isEnabled())
+					b.setBorderPainted(false);
+			}
+		}
+	}
+	///////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////
+
 }

@@ -210,7 +210,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	public JDFFrame()
 	{
 		super("CIP4 JDF Editor");
-
+		// dirty hack to avoid npe
+		Editor.my_Frame = this;
 		m_source = DragSource.getDefaultDragSource();
 		m_source.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_COPY_OR_MOVE, this);
 		final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
@@ -246,7 +247,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		Editor.setCursor(1, null);
 		this.setJMenuBar(m_menuBar.drawMenu());
 		this.getContentPane().add(drawBoxContent());
-		this.setEnableClose(false);
+		this.setEnableClose();
 		this.setVisible(true);
 		Editor.setCursor(0, null);
 	}
@@ -920,7 +921,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 				if (!m_iniFile.getReadOnly())
 				{
-					setEnableClose(false);
+					setEnableClose();
 				}
 
 				m_treeArea.m_treeView.setView(textArea);
@@ -1078,41 +1079,11 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	{
 		Editor.setCursor(1, null);
 		final INIReader m_iniFile = Editor.getIniFile();
-		File fileToSave = null;
-
-		final EditorDocument doc = getEditorDoc();
-		if (doc != null)
-		{
-			final String originalFileName = doc.getSaveFileName();
-			if (originalFileName != null)
-			{
-				fileToSave = new File(originalFileName);
-			}
-		}
 
 		final Object eSrc = e.getSource();
-		if (eSrc == m_buttonBar.m_saveButton || eSrc == m_menuBar.m_saveItem)
+		if (eSrc == m_buttonBar.m_saveButton)
 		{
-			if (fileToSave != null)
-			{
-				if (getTitle().equalsIgnoreCase("Untitled.jdf") || getTitle().equalsIgnoreCase("Untitled.jmf"))
-				{
-					saveAs();
-					m_menuBar.updateRecentFilesMenu(fileToSave.toString());
-				}
-				else
-				{
-					doc.saveFile(fileToSave);
-				}
-			}
-			else
-			{
-				EditorUtils.errorBox("FileNotFoundKey", null);
-			}
-		}
-		else if (eSrc == m_menuBar.m_saveAsItem)
-		{
-			saveAs();
+			save();
 		}
 		else if (eSrc == m_menuBar.m_exportItem)
 		{
@@ -1138,17 +1109,11 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		}
 		else if (eSrc == m_buttonBar.m_validateButton)
 		{
-			if (fileToSave != null)
-			{
-				getModel().validate();
-			}
+			getModel().validate();
 		}
 		else if (eSrc == m_menuBar.m_fixVersionItem)
 		{
-			if (fileToSave != null)
-			{
-				fixVersion();
-			}
+			fixVersion();
 		}
 		else if (eSrc == m_buttonBar.m_upOneLevelButton)
 		{
@@ -1256,6 +1221,40 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			}
 		}
 		Editor.setCursor(0, null);
+	}
+
+	/**
+	 * 
+	 */
+	void save()
+	{
+		File fileToSave = null;
+
+		final EditorDocument doc = getEditorDoc();
+		if (doc != null)
+		{
+			final String originalFileName = doc.getSaveFileName();
+			if (originalFileName != null)
+			{
+				fileToSave = new File(originalFileName);
+			}
+		}
+		if (fileToSave != null)
+		{
+			if (getTitle().equalsIgnoreCase("Untitled.jdf") || getTitle().equalsIgnoreCase("Untitled.jmf"))
+			{
+				saveAs();
+				m_menuBar.updateRecentFilesMenu(fileToSave.toString());
+			}
+			else
+			{
+				doc.saveFile(fileToSave);
+			}
+		}
+		else
+		{
+			EditorUtils.errorBox("FileNotFoundKey", null);
+		}
 	}
 
 	// /////////////////////////////////////////////////////////////////
@@ -1571,10 +1570,10 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		}
 	}
 
-	private void setEnableClose(final boolean mode)
+	private void setEnableClose()
 	{
-		m_menuBar.setEnableClose(mode);
-		m_buttonBar.setEnableClose(mode);
+		m_menuBar.setEnableClose();
+		m_buttonBar.setEnableClose();
 	}
 
 	private void setEnableOpen(final boolean mode)

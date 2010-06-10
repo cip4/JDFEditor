@@ -122,8 +122,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	protected JMenu m_windowMenu;
 	protected JMenu m_helpMenu;
 
-	JMenuItem m_saveItem;
-	JMenuItem m_saveAsItem;
 	private JMenuItem m_nextItem;
 	JMenuItem m_quitItem;
 	JMenuItem m_exportItem;
@@ -180,15 +178,20 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 	private final FileMenu fileMenu;
 
-	private class FileMenu implements ActionListener
+	private class FileMenu extends JMenu implements ActionListener
 	{
 
-		private JMenu m_fileMenu;
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		private JMenuItem m_newItem;
 		private JMenuItem m_openItem;
 		private JMenuItem m_closeAllItem;
 		private JMenuItem m_closeItem;
 		private JMenuItem m_csvItem;
+		private JMenuItem m_saveItem;
+		private JMenuItem m_saveAsItem;
 		private JMenu m_recentFilesMenu;
 		private final JMenuItem[] m_subMenuItem = new JMenuItem[5];
 		private JMenuItem m_devcapOpenMenu;
@@ -198,7 +201,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		 */
 		protected FileMenu()
 		{
-			super();
+			super(Editor.getBundle().getString("FileKey"));
 		}
 
 		/**
@@ -291,6 +294,14 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 			{
 				Editor.getFrame().closeFile(99999);
 			}
+			else if (eSrc == m_saveAsItem)
+			{
+				Editor.getFrame().saveAs();
+			}
+			else if (eSrc == m_saveItem)
+			{
+				Editor.getFrame().save();
+			}
 			else if (eSrc == m_csvItem)
 			{
 				Editor.getModel().saveAsCSV(null);
@@ -318,10 +329,13 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 		protected void setEnableOpen(final boolean mode)
 		{
+			m_csvItem.setEnabled(true);
 			m_newItem.setEnabled(mode);
-			m_closeItem.setEnabled(mode);
 			m_closeItem.setEnabled(true);
+			m_closeAllItem.setEnabled(true);
 			m_devcapOpenMenu.setEnabled(Editor.getIniFile().getRecentDevCap() != null);
+			m_saveAsItem.setEnabled(mode);
+			m_saveItem.setEnabled(mode);
 		}
 
 		/**
@@ -336,41 +350,40 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 			final Menu_MouseListener menuListener = new Menu_MouseListener();
 			final int menuKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
-			m_fileMenu = new JMenu(m_littleBundle.getString("FileKey"));
-			m_fileMenu.setBorderPainted(false);
-			m_fileMenu.addMouseListener(menuListener);
+			setBorderPainted(false);
+			addMouseListener(menuListener);
 
 			m_newItem = new JMenuItem(m_littleBundle.getString("NewKey"));
 			m_newItem.addActionListener(this);
 			m_newItem.setAccelerator(KeyStroke.getKeyStroke('N', menuKeyMask));
-			m_fileMenu.add(m_newItem);
+			add(m_newItem);
 
 			m_openItem = new JMenuItem(m_littleBundle.getString("OpenKey"));
 			m_openItem.addActionListener(this);
 			m_openItem.setAccelerator(KeyStroke.getKeyStroke('O', menuKeyMask));
-			m_fileMenu.add(m_openItem);
+			add(m_openItem);
 
 			m_closeItem = new JMenuItem(m_littleBundle.getString("CloseKey"));
 			m_closeItem.addActionListener(this);
 			m_closeItem.setAccelerator(KeyStroke.getKeyStroke('W', menuKeyMask));
-			m_fileMenu.add(m_closeItem);
+			add(m_closeItem);
 
 			m_closeAllItem = new JMenuItem(m_littleBundle.getString("CloseAllKey"));
 			m_closeAllItem.addActionListener(this);
-			m_fileMenu.add(m_closeAllItem);
+			add(m_closeAllItem);
 
-			m_fileMenu.add(new JSeparator());
+			add(new JSeparator());
 
 			m_saveItem = new JMenuItem(m_littleBundle.getString("SaveKey"));
-			m_saveItem.addActionListener(m_frame);
+			m_saveItem.addActionListener(this);
 			m_saveItem.setAccelerator(KeyStroke.getKeyStroke('S', menuKeyMask));
-			m_fileMenu.add(m_saveItem);
+			add(m_saveItem);
 
 			m_saveAsItem = new JMenuItem(m_littleBundle.getString("SaveAsKey"));
 			m_saveAsItem.addActionListener(m_frame);
 			m_saveAsItem.setAccelerator(KeyStroke.getKeyStroke('S', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
-			m_fileMenu.add(m_saveAsItem);
-			m_fileMenu.add(new JSeparator());
+			add(m_saveAsItem);
+			add(new JSeparator());
 
 			m_recentFilesMenu = new JMenu(m_littleBundle.getString("OpenRecentFileKey"));
 			final String[] vRecentFiles = recentFiles();
@@ -383,27 +396,39 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 				m_subMenuItem[i].setAccelerator(KeyStroke.getKeyStroke('1' + i, menuKeyMask));
 				m_recentFilesMenu.add(m_subMenuItem[i]);
 			}
-			m_fileMenu.add(m_recentFilesMenu);
-			m_fileMenu.add(new JSeparator());
+			add(m_recentFilesMenu);
+			add(new JSeparator());
 
 			m_devcapOpenMenu = new JMenuItem(m_littleBundle.getString("DevCapFileOpenKey"));
-			m_fileMenu.add(m_devcapOpenMenu);
+			add(m_devcapOpenMenu);
 			m_devcapOpenMenu.addActionListener(this);
 
 			m_csvItem = new JMenuItem(m_littleBundle.getString("CSVKey"));
 			m_csvItem.addActionListener(this);
-			m_fileMenu.add(m_csvItem);
+			add(m_csvItem);
 
-			m_fileMenu.add(new JSeparator());
+			add(new JSeparator());
 
 			m_quitItem = new JMenuItem(m_littleBundle.getString("ExitKey"));
 			m_quitItem.addActionListener(m_frame);
 			m_quitItem.setAccelerator(KeyStroke.getKeyStroke('Q', menuKeyMask));
-			m_fileMenu.add(m_quitItem);
-			m_fileMenu.setBackground(menuColor);
-			m_fileMenu.setMnemonic('F');
-			EditorMenuBar.this.add(m_fileMenu);
+			add(m_quitItem);
+			setBackground(menuColor);
+			setMnemonic('F');
+			EditorMenuBar.this.add(this);
 
+		}
+
+		/**
+		 *  
+		 */
+		protected void setEnableClose()
+		{
+			m_saveAsItem.setEnabled(false);
+			m_saveItem.setEnabled(false);
+			m_csvItem.setEnabled(false);
+			m_closeItem.setEnabled(false);
+			m_closeAllItem.setEnabled(false);
 		}
 	}
 
@@ -1000,32 +1025,31 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	}
 
 	/**
-	 * @param mode
+	 *  
 	 */
-	public void setEnableClose(final boolean mode)
+	public void setEnableClose()
 	{
-		m_cutItem.setEnabled(mode);
-		m_copyItem.setEnabled(mode);
-		m_pasteItem.setEnabled(mode);
-		m_deleteItem.setEnabled(mode);
-		m_insertElementMenu.setEnabled(mode);
-		m_resourceMenu.setEnabled(mode);
-		m_resourceLinkMenu.setEnabled(mode);
-		m_insertAttrItem.setEnabled(mode);
-		m_requiredAttrItem.setEnabled(mode);
-		m_requiredElemItem.setEnabled(mode);
-		m_saveAsItem.setEnabled(mode);
-		m_saveItem.setEnabled(mode);
-		m_modifyAttrValueItem.setEnabled(mode);
-		m_renameItem.setEnabled(mode);
-		m_findItem.setEnabled(mode);
-		m_findXPathItem.setEnabled(mode);
-		m_devCapItem.setEnabled(mode);
-		m_exportItem.setEnabled(mode);
-		m_QuickValidateItem.setEnabled(mode);
-		m_undoItem.setEnabled(mode);
-		m_redoItem.setEnabled(mode);
-		m_sendToDeviceItem.setEnabled(mode);
+		fileMenu.setEnableClose();
+		m_cutItem.setEnabled(false);
+		m_copyItem.setEnabled(false);
+		m_pasteItem.setEnabled(false);
+		m_deleteItem.setEnabled(false);
+		m_insertElementMenu.setEnabled(false);
+		m_resourceMenu.setEnabled(false);
+		m_resourceLinkMenu.setEnabled(false);
+		m_insertAttrItem.setEnabled(false);
+		m_requiredAttrItem.setEnabled(false);
+		m_requiredElemItem.setEnabled(false);
+		m_modifyAttrValueItem.setEnabled(false);
+		m_renameItem.setEnabled(false);
+		m_findItem.setEnabled(false);
+		m_findXPathItem.setEnabled(false);
+		m_devCapItem.setEnabled(false);
+		m_exportItem.setEnabled(false);
+		m_QuickValidateItem.setEnabled(false);
+		m_undoItem.setEnabled(false);
+		m_redoItem.setEnabled(false);
+		m_sendToDeviceItem.setEnabled(false);
 
 	}
 
@@ -1044,8 +1068,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		m_insertAttrItem.setEnabled(mode);
 		m_requiredAttrItem.setEnabled(mode);
 		m_requiredElemItem.setEnabled(mode);
-		m_saveAsItem.setEnabled(mode);
-		m_saveItem.setEnabled(mode);
 		m_findItem.setEnabled(true);
 		m_findXPathItem.setEnabled(true);
 		m_devCapItem.setEnabled(true);
