@@ -33,7 +33,7 @@
 			<string>../lib/mailapi.jar</string>
 			<string>../lib/xercesImpl.jar</string>
 			<string>../lib/xml-apis.jar</string>
-			<string>../lib/bounce-0.17.jar</string>
+			<string>../lib/rsyntaxtextarea.jar</string>
 			<string>../lib/tcpmon.jar</string>
 			<string>../lib/jhall.jar</string>
 			<string>../conf</string>

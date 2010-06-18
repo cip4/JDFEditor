@@ -16,7 +16,7 @@
 <classPath>lib\xercesImpl.jar</classPath>
 <classPath>lib\xml-apis.jar</classPath>
 <classPath>lib\jdfeditor.jar</classPath>
-<classPath>lib\bounce-0.17.jar</classPath>
+<classPath>lib\rsyntaxtextarea.jar</classPath>
 <embeddedJar>false</embeddedJar>
 <executableName>JDF Editor.exe</executableName>
 <iconLocation>..\..\src\bin\windows\icons\JDFEditor.png</iconLocation>
