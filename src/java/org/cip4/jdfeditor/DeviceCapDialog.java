@@ -217,7 +217,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
                                     //Output BugReport to file. Location is the location of the DevCap file.
                                     String dcReport = null;
                                     final String dcr = doc.getOriginalFileName();
-                                    dcReport = StringUtil.newExtension(dcr, ".JDFDevCapReport.xml");
+                                    dcReport = UrlUtil.newExtension(dcr, ".JDFDevCapReport.xml");
                                     bugReport.write2File(dcReport, 2, true);
                                 }
                             }
@@ -243,7 +243,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
                                     //Output BugReport to file. Location is the location of the DevCap file.
                                     String dcReport = null;
                                     final String dcr = doc.getOriginalFileName();
-                                    dcReport = StringUtil.newExtension(dcr, ".JMFDevCapReport.xml");
+                                    dcReport = UrlUtil.newExtension(dcr, ".JMFDevCapReport.xml");
                                     bugReport.write2File(dcReport, 2, true);
                                 }
                             }

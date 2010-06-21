@@ -267,7 +267,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		final String fn = theDoc.getOriginalFileName();
 		if (iniFile.getExportValidation())
 		{
-			checkJDF.xmlOutputName = StringUtil.newExtension(fn, ".validate.xml");
+			checkJDF.xmlOutputName = UrlUtil.newExtension(fn, ".validate.xml");
 		}
 		else
 		{
@@ -1213,7 +1213,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		xjdf20.bSingleNode = false;
 		final KElement xJDF = xjdf20.makeNewJDF((JDFNode) e, (VJDFAttributeMap) null);
 		final XMLDoc d = xJDF.getOwnerDocument_KElement();
-		final String fnNew = StringUtil.newExtension(fn, XJDF20.getExtension());
+		final String fnNew = UrlUtil.newExtension(fn, XJDF20.getExtension());
 		d.write2File(fnNew, 2, false);
 		Editor.getFrame().readFile(new File(fnNew));
 		//		}
@@ -1236,7 +1236,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		}
 		final EditorDocument eDoc = Editor.getEditorDoc();
 		String fn = eDoc.getOriginalFileName();
-		fn = StringUtil.newExtension(fn, "csv");
+		fn = UrlUtil.newExtension(fn, "csv");
 
 		XPathWalker walker;
 		try
@@ -1274,7 +1274,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		final JDFDoc d = c.convert(e);
 		if (d != null)
 		{
-			final String fnNew = StringUtil.newExtension(fn, ".xjdf.jdf");
+			final String fnNew = UrlUtil.newExtension(fn, ".xjdf.jdf");
 			d.write2File(fnNew, 2, false);
 			Editor.getFrame().readFile(new File(fnNew));
 		}
@@ -1301,7 +1301,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		final String fn = eDoc.getOriginalFileName();
 		final KElement caps = Caps.createCaps(e, new VString(Editor.getIniFile().getGenericAtts(), " "));
 		final XMLDoc d = caps.getOwnerDocument_KElement();
-		final String fnNew = StringUtil.newExtension(fn, "cap");
+		final String fnNew = UrlUtil.newExtension(fn, "cap");
 		d.write2File(fnNew, 2, false);
 		// VString badCaps=Caps.getBadAttributes(d, e);
 		Editor.getFrame().readFile(new File(fnNew));
@@ -1324,7 +1324,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		final JDFDoc d = new JDFDoc("JDF");
 		final JDFNode n = d.getJDFRoot();
 		dc.setDefaultsFromCaps(n, true, Editor.getIniFile().getGenerateFull());
-		final String fnNew = StringUtil.newExtension(fn, ".generated.JDF");
+		final String fnNew = UrlUtil.newExtension(fn, ".generated.JDF");
 		d.write2File(fnNew, 2, false);
 		Editor.getFrame().readFile(new File(fnNew));
 	}

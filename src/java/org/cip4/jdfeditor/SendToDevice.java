@@ -103,6 +103,7 @@ import org.cip4.jdflib.jmf.JDFReturnQueueEntryParams;
 import org.cip4.jdflib.jmf.JDFMessage.EnumType;
 import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.StringUtil;
+import org.cip4.jdflib.util.UrlUtil;
 
 /*
  * Created on 12.07.2004
@@ -447,7 +448,7 @@ public class SendToDevice extends JPanel implements ActionListener
 			if (d2 != null)
 			{
 				String newFileName = Editor.getEditorDoc().getOriginalFileName();
-				newFileName = StringUtil.newExtension(newFileName, ".resp.jmf");
+				newFileName = UrlUtil.newExtension(newFileName, ".resp.jmf");
 				d2.write2File(newFileName, 2, true);
 				Editor.getFrame().readFile(new File(newFileName));
 			}
