@@ -86,6 +86,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.tree.TreePath;
 
+import org.cip4.jdfeditor.dialog.SaveAsXJDFDialog;
 import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.KElement;
@@ -560,7 +561,10 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		}
 		else if (eSrc == m_saveXJDF)
 		{
-			Editor.getModel().saveAsXJDF(treeArea.getSelectionPath());
+			SaveAsXJDFDialog d = new SaveAsXJDFDialog();
+			if (d.getChoosedButton() == SaveAsXJDFDialog.BUTTON_OK) {
+				Editor.getModel().saveAsXJDF(treeArea.getSelectionPath());
+			}
 		}
 		else if (eSrc == m_saveJDF)
 		{
