@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2008 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2010 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -109,7 +109,6 @@ import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.resource.devicecapability.JDFDeviceCap;
 import org.cip4.jdflib.util.ContainerUtil;
 import org.cip4.jdflib.util.JDFSpawn;
-import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.jdflib.validate.JDFValidator;
 import org.w3c.dom.Attr;
@@ -1069,7 +1068,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	}
 
 	/**
-	 * return the rrorotype associated with a given tree node
+	 * return the errortype associated with a given tree node
 	 * @param treeNode
 	 * @return
 	 */
@@ -1087,12 +1086,17 @@ public class JDFTreeModel extends DefaultTreeModel
 
 		final String xPath = treeNode.getXPath();
 		final JDFAttributeMap map = new JDFAttributeMap("XPath", xPath);
-		map.put("ErrorType", null);
+		map.put("ErrorType", (String) null);
 		final KElement e = validationResult.getRoot().getChildByTagName(null, null, 0, map, false, true);
 
 		return e == null ? null : e.getAttribute("ErrorType");
 	}
 
+	/**
+	 * 
+	 * @param treeNode
+	 * @return
+	 */
 	public boolean isValid(final JDFTreeNode treeNode)
 	{
 		return getErrorType(treeNode) == null;

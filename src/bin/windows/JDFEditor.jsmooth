@@ -17,6 +17,7 @@
 <classPath>lib\xml-apis.jar</classPath>
 <classPath>lib\jdfeditor.jar</classPath>
 <classPath>lib\rsyntaxtextarea.jar</classPath>
+<classPath>lib\tcpmon.jar</classPath>
 <embeddedJar>false</embeddedJar>
 <executableName>JDF Editor.exe</executableName>
 <iconLocation>..\..\src\bin\windows\icons\JDFEditor.png</iconLocation>
