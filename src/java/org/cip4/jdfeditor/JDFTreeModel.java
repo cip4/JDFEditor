@@ -74,7 +74,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Enumeration;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
@@ -90,13 +89,13 @@ import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFConstants;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
+import org.cip4.jdflib.core.JDFElement.EnumNodeStatus;
 import org.cip4.jdflib.core.JDFException;
 import org.cip4.jdflib.core.JDFResourceLink;
+import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.XMLDoc;
-import org.cip4.jdflib.core.JDFElement.EnumNodeStatus;
-import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.datatypes.JDFAttributeMap;
 import org.cip4.jdflib.datatypes.VJDFAttributeMap;
 import org.cip4.jdflib.elementwalker.XPathWalker;
@@ -539,11 +538,11 @@ public class JDFTreeModel extends DefaultTreeModel
 	 * @param newNode
 	 */
 
-	public Vector addRequiredAttributes(final JDFTreeNode newNode)
+	public Vector<JDFTreeNode> addRequiredAttributes(final JDFTreeNode newNode)
 	{
 		final KElement kElement = newNode.getElement();
 
-		final Vector addedAttributeNodesVector = new Vector();
+		final Vector<JDFTreeNode> addedAttributeNodesVector = new Vector<JDFTreeNode>();
 		final VString requiredAttributes = kElement.getMissingAttributes(9999999);
 		if (kElement instanceof JDFNode)
 		{
@@ -596,11 +595,11 @@ public class JDFTreeModel extends DefaultTreeModel
 	 * Method addRequiredElements. adds the required elements to an element
 	 * @param newNode
 	 */
-	public Vector addRequiredElements(final JDFTreeNode node)
+	public Vector<JDFTreeNode> addRequiredElements(final JDFTreeNode node)
 	{
 		final KElement kElement = node.getElement();
 
-		final Vector addedElementNodesVector = new Vector();
+		final Vector<JDFTreeNode> addedElementNodesVector = new Vector<JDFTreeNode>();
 		final VString requiredElements = kElement.getMissingElements(9999999);
 		final String[] abstractElems = { ElementName.RESOURCELINK, "ResourceRef" };
 		for (int i = 0; i < requiredElements.size(); i++)
@@ -709,13 +708,13 @@ public class JDFTreeModel extends DefaultTreeModel
 		// remove defaults if any
 		if (!showDefaultAtts)
 		{
-			final Map defMap = elem.getDefaultAttributeMap();
+			final JDFAttributeMap defMap = elem.getDefaultAttributeMap();
 			if (defMap != null)
 			{
 				for (int d = attSize - 1; d >= 0; d--)
 				{
 					final String key = vAttNames.stringAt(d);
-					final String defValue = (String) defMap.get(key);
+					final String defValue = defMap.get(key);
 					if (defValue != null && elem.getAttribute(key).equals(defValue))
 					{
 						vAttNames.remove(d);
@@ -1196,7 +1195,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	 * @param selectionPath
 	 * @experimental
 	 */
-	public void saveAsXJDF(final TreePath selectionPath)
+	public void saveAsXJDF(final TreePath selectionPath, XJDF20 xjdf20)
 	{
 		final JDFTreeNode node = selectionPath == null ? getRootNode() : (JDFTreeNode) selectionPath.getLastPathComponent();
 		if (node == null)
@@ -1207,14 +1206,12 @@ public class JDFTreeModel extends DefaultTreeModel
 		final boolean bZip = e.hasChildElement(ElementName.JDF, null);
 		final EditorDocument eDoc = Editor.getEditorDoc();
 		final String fn = eDoc.getOriginalFileName();
-		XJDF20 xjdf20 = new XJDF20();
 		//		if (bZip)
 		//		{
 		//			xjdf20.saveZip(StringUtil.newExtension(fn, "zip"), (JDFNode) e, true);
 		//		}
 		//		else
 		//		{
-		xjdf20.bSingleNode = false;
 		final KElement xJDF = xjdf20.makeNewJDF((JDFNode) e, (VJDFAttributeMap) null);
 		final XMLDoc d = xJDF.getOwnerDocument_KElement();
 		final String fnNew = UrlUtil.newExtension(fn, XJDF20.getExtension());

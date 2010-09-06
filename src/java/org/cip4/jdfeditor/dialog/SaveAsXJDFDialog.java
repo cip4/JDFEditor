@@ -83,74 +83,102 @@ import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
+import org.cip4.jdflib.extensions.XJDF20;
+
 /**
  * Class that implements a "Save as XJDF..." dialog.
  *
  */
-public class SaveAsXJDFDialog extends JDialog implements ActionListener {
-    public static final int BUTTON_CANCEL = 0;
-    public static final int BUTTON_OK = 1;
-    
-    private JButton bOK;
-    private JButton bCancel;
-    
-    private int choosedButton = BUTTON_CANCEL;
-    
-    
-    public SaveAsXJDFDialog() {
-        setTitle("Save as XJDF...");
-        setModal(true);
-        setLayout(new BorderLayout());
-        
-        JPanel checkboxesPanel = new JPanel();
-        checkboxesPanel.setLayout(new BoxLayout(checkboxesPanel, BoxLayout.Y_AXIS));
-        
-        JCheckBox cbExt1 = new JCheckBox("ext1");
-        JCheckBox cbExt2 = new JCheckBox("ext2");
-        JCheckBox cbExt3 = new JCheckBox("ext3");
-        
-        checkboxesPanel.add(cbExt1);
-        checkboxesPanel.add(cbExt2);
-        checkboxesPanel.add(cbExt3);
-        
-        JPanel buttonsPanel = new JPanel();
-        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
-        buttonsPanel.add(Box.createHorizontalGlue());
-        
-        bOK = new JButton("OK");
-        bOK.addActionListener(this);
-        bCancel = new JButton("Cancel");
-        bCancel.addActionListener(this);
-        
-        buttonsPanel.add(bOK);
-        buttonsPanel.add(bCancel);
-        
-        getContentPane().add(checkboxesPanel, BorderLayout.CENTER);
-        getContentPane().add(buttonsPanel, BorderLayout.SOUTH);
-        
-        Toolkit tk = Toolkit.getDefaultToolkit();
-        Dimension screenSize = tk.getScreenSize();
-        int screenHeight = screenSize.height;
-        int screenWidth = screenSize.width;
-        
-        setSize(screenWidth / 4, screenHeight / 4);
-        setLocation(screenWidth / 4, screenHeight / 4);
-        
-        setVisible(true);
-    }
-    
-    public int getChoosedButton() {
-        return choosedButton;
-    }
+public class SaveAsXJDFDialog extends JDialog implements ActionListener
+{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	public static final int BUTTON_CANCEL = 0;
+	public static final int BUTTON_OK = 1;
 
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == bOK) {
-            choosedButton = BUTTON_OK;
-            dispose();
-        } else if (e.getSource() == bCancel) {
-            choosedButton = BUTTON_CANCEL;
-            dispose();
-        }
-    }
+	private final JButton bOK;
+	private final JButton bCancel;
+
+	JCheckBox cbExt1;
+	JCheckBox cbExt2;
+	JCheckBox cbExt3;
+	JCheckBox cbExt4;
+	private int choosedButton = BUTTON_CANCEL;
+
+	public SaveAsXJDFDialog()
+	{
+		setTitle("Save as XJDF...");
+		setModal(true);
+		setLayout(new BorderLayout());
+
+		JPanel checkboxesPanel = new JPanel();
+		checkboxesPanel.setLayout(new BoxLayout(checkboxesPanel, BoxLayout.Y_AXIS));
+
+		cbExt1 = new JCheckBox("single node");
+		cbExt2 = new JCheckBox("convert stripping to layout");
+		cbExt3 = new JCheckBox("Span elements as attributes");
+		cbExt4 = new JCheckBox("Merge RunList and LayoutElement");
+
+		checkboxesPanel.add(cbExt1);
+		checkboxesPanel.add(cbExt2);
+		checkboxesPanel.add(cbExt3);
+		checkboxesPanel.add(cbExt4);
+
+		JPanel buttonsPanel = new JPanel();
+		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
+		buttonsPanel.add(Box.createHorizontalGlue());
+
+		bOK = new JButton("OK");
+		bOK.addActionListener(this);
+		bCancel = new JButton("Cancel");
+		bCancel.addActionListener(this);
+
+		buttonsPanel.add(bOK);
+		buttonsPanel.add(bCancel);
+
+		getContentPane().add(checkboxesPanel, BorderLayout.CENTER);
+		getContentPane().add(buttonsPanel, BorderLayout.SOUTH);
+
+		Toolkit tk = Toolkit.getDefaultToolkit();
+		Dimension screenSize = tk.getScreenSize();
+		int screenHeight = screenSize.height;
+		int screenWidth = screenSize.width;
+
+		setSize(screenWidth / 4, screenHeight / 4);
+		setLocation(screenWidth / 4, screenHeight / 4);
+
+		setVisible(true);
+	}
+
+	public int getChoosedButton()
+	{
+		return choosedButton;
+	}
+
+	public void actionPerformed(ActionEvent e)
+	{
+		if (e.getSource() == bOK)
+		{
+			choosedButton = BUTTON_OK;
+			dispose();
+		}
+		else if (e.getSource() == bCancel)
+		{
+			choosedButton = BUTTON_CANCEL;
+			dispose();
+		}
+	}
+
+	public XJDF20 getXJDFConverter()
+	{
+		XJDF20 xjdf20 = new XJDF20();
+		xjdf20.bSingleNode = cbExt1.isSelected();
+		xjdf20.bMergeLayout = cbExt2.isSelected();
+		xjdf20.bSpanAsAttribute = cbExt3.isSelected();
+		xjdf20.bMergeRunList = cbExt4.isSelected();
+		return xjdf20;
+	}
 
 }

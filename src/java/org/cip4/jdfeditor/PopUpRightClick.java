@@ -89,14 +89,14 @@ import javax.swing.tree.TreePath;
 import org.cip4.jdfeditor.dialog.SaveAsXJDFDialog;
 import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFDoc;
-import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
+import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.extensions.XJDF20;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFMessage;
-import org.cip4.jdflib.jmf.JDFMessageService;
 import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
 import org.cip4.jdflib.jmf.JDFMessage.EnumType;
+import org.cip4.jdflib.jmf.JDFMessageService;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourceLinkPool;
 import org.cip4.jdflib.pool.JDFResourcePool;
@@ -562,8 +562,9 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		else if (eSrc == m_saveXJDF)
 		{
 			SaveAsXJDFDialog d = new SaveAsXJDFDialog();
-			if (d.getChoosedButton() == SaveAsXJDFDialog.BUTTON_OK) {
-				Editor.getModel().saveAsXJDF(treeArea.getSelectionPath());
+			if (d.getChoosedButton() == SaveAsXJDFDialog.BUTTON_OK)
+			{
+				Editor.getModel().saveAsXJDF(treeArea.getSelectionPath(), d.getXJDFConverter());
 			}
 		}
 		else if (eSrc == m_saveJDF)
