@@ -81,6 +81,7 @@ public class HelpFrame extends JFrame
 
     /**
      * Constructor for HelpFrame.
+     * @deprecated Replaced by JavaHelp.
      */
     public HelpFrame()
     {
@@ -527,6 +528,7 @@ public class HelpFrame extends JFrame
     }
     /**
      * @return
+     * @deprecated Replaced by JavaHelp.
      */
     public static HelpFrame getHelp()
     {

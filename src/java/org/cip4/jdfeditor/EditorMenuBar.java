@@ -130,7 +130,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	JMenuItem m_undoItem;
 	JMenuItem m_redoItem;
 	private JMenuItem m_helpItem;
-	private JMenuItem m_helpItem_2;
 	private JMenuItem m_QuickValidateItem;
 	JMenuItem m_fixVersionItem;
 	private JMenuItem m_fixCleanupItem;
@@ -537,10 +536,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		m_helpItem.addActionListener(this);
 		m_helpItem.setAccelerator(KeyStroke.getKeyStroke('H', menuKeyMask));
 		m_helpMenu.add(m_helpItem);
-
-		m_helpItem_2 = new JMenuItem("Help 2");
-		m_helpItem_2.addActionListener(this);
-		m_helpMenu.add(m_helpItem_2);
 
 		m_helpMenu.add(new JSeparator());
 
@@ -1190,14 +1185,8 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		}
 		else if (eSrc == m_helpItem)
 		{
-			final HelpFrame h = HelpFrame.getHelp();
-			h.setVisible(true);
-			h.toFront();
-		}
-		else if (eSrc == m_helpItem_2)
-		{
-			HelpMenuItem i = new HelpMenuItem();
-			i.init();
+		    HelpMenuItem i = new HelpMenuItem();
+            i.init();
 		}
 		else if (eSrc == m_preferenceItem)
 		{
