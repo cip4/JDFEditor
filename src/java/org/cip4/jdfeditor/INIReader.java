@@ -205,6 +205,10 @@ public class INIReader
 	private final String normalizeOpen = "General/@NormalizeOpen";
 
 	private final String enableExtensions = "Extension/@enableExtensions";
+	private final String xjdfSingleNode = "Extension/XJDF/@SingleNode";
+	private final String xjdfConvertStripping = "Extension/XJDF/@ConvertStripping";
+	private final String xjdfSpanAsAttribute = "Extension/XJDF/@SpanAsAttribute";
+	private final String xjdfMergeRunList = "Extension/XJDF/@MergeRunList";
 
 	private final String[] recentFiles = new String[5];
 	private final String recentDevCap = "RecentFiles/@recentDevCap";
@@ -1316,6 +1320,46 @@ public class INIReader
 	public boolean setPackageAll()
 	{
 		return getAttribute(packageAll, "true").equalsIgnoreCase("true") ? true : false;
+	}
+
+	public boolean getXjdfSingleNode()
+	{
+		return getAttribute(xjdfSingleNode, "false").equalsIgnoreCase("true") ? true : false;
+	}
+
+	public void setXjdfSingleNode(final boolean b)
+	{
+		setAttribute(xjdfSingleNode, b ? "true" : "false");
+	}
+
+	public boolean getXjdfConvertStripping()
+	{
+		return getAttribute(xjdfConvertStripping, "false").equalsIgnoreCase("true") ? true : false;
+	}
+	
+	public void setXjdfConvertStripping(final boolean b)
+	{
+		setAttribute(xjdfConvertStripping, b ? "true" : "false");
+	}
+
+	public boolean getXjdfSpanAsAttribute()
+	{
+		return getAttribute(xjdfSpanAsAttribute, "false").equalsIgnoreCase("true") ? true : false;
+	}
+
+	public void setXjdfSpanAsAttribute(final boolean b)
+	{
+		setAttribute(xjdfSpanAsAttribute, b ? "true" : "false");
+	}
+
+	public boolean getXjdfMergeRunList()
+	{
+		return getAttribute(xjdfMergeRunList, "false").equalsIgnoreCase("true") ? true : false;
+    }
+	
+	public void setXjdfMergeRunList(final boolean b)
+	{
+		setAttribute(xjdfMergeRunList, b ? "true" : "false");
 	}
 
 }

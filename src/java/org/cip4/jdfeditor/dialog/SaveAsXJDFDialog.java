@@ -75,6 +75,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ResourceBundle;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -83,6 +84,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
+import org.cip4.jdfeditor.Editor;
+import org.cip4.jdfeditor.INIReader;
 import org.cip4.jdflib.extensions.XJDF20;
 
 /**
@@ -101,25 +104,28 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 	private final JButton bOK;
 	private final JButton bCancel;
 
-	JCheckBox cbExt1;
-	JCheckBox cbExt2;
-	JCheckBox cbExt3;
-	JCheckBox cbExt4;
+	private JCheckBox cbExt1;
+	private JCheckBox cbExt2;
+	private JCheckBox cbExt3;
+	private JCheckBox cbExt4;
 	private int choosedButton = BUTTON_CANCEL;
+	
+	private static ResourceBundle bundle = Editor.getBundle();
+	private static INIReader conf = Editor.getIniFile();
 
 	public SaveAsXJDFDialog()
 	{
-		setTitle("Save as XJDF...");
+		setTitle(bundle.getString("SaveAsXJDFKey"));
 		setModal(true);
 		setLayout(new BorderLayout());
 
 		JPanel checkboxesPanel = new JPanel();
 		checkboxesPanel.setLayout(new BoxLayout(checkboxesPanel, BoxLayout.Y_AXIS));
-
-		cbExt1 = new JCheckBox("single node");
-		cbExt2 = new JCheckBox("convert stripping to layout");
-		cbExt3 = new JCheckBox("Span elements as attributes");
-		cbExt4 = new JCheckBox("Merge RunList and LayoutElement");
+		
+		cbExt1 = new JCheckBox(bundle.getString("SingleNodeKey"));
+		cbExt2 = new JCheckBox(bundle.getString("ConvertStrippingKey"));
+		cbExt3 = new JCheckBox(bundle.getString("SpanAsAttributeKey"));
+		cbExt4 = new JCheckBox(bundle.getString("MergeRunListKey"));
 
 		checkboxesPanel.add(cbExt1);
 		checkboxesPanel.add(cbExt2);
@@ -132,7 +138,7 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 
 		bOK = new JButton("OK");
 		bOK.addActionListener(this);
-		bCancel = new JButton("Cancel");
+		bCancel = new JButton(bundle.getString("CancelKey"));
 		bCancel.addActionListener(this);
 
 		buttonsPanel.add(bOK);
@@ -148,6 +154,11 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 
 		setSize(screenWidth / 4, screenHeight / 4);
 		setLocation(screenWidth / 4, screenHeight / 4);
+		
+		cbExt1.setSelected(conf.getXjdfSingleNode());
+		cbExt2.setSelected(conf.getXjdfConvertStripping());
+		cbExt3.setSelected(conf.getXjdfSpanAsAttribute());
+		cbExt4.setSelected(conf.getXjdfMergeRunList());
 
 		setVisible(true);
 	}
@@ -161,6 +172,11 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 	{
 		if (e.getSource() == bOK)
 		{
+			conf.setXjdfSingleNode(cbExt1.isSelected());
+			conf.setXjdfConvertStripping(cbExt2.isSelected());
+			conf.setXjdfSpanAsAttribute(cbExt3.isSelected());
+			conf.setXjdfMergeRunList(cbExt4.isSelected());
+		    
 			choosedButton = BUTTON_OK;
 			dispose();
 		}
