@@ -131,6 +131,8 @@ import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.core.XMLDocUserData.EnumDirtyPolicy;
 import org.cip4.jdflib.datatypes.VJDFAttributeMap;
+import org.cip4.jdflib.goldenticket.BaseGoldenTicket;
+import org.cip4.jdflib.goldenticket.IDPGoldenTicket;
 import org.cip4.jdflib.goldenticket.MISCPGoldenTicket;
 import org.cip4.jdflib.goldenticket.MISPreGoldenTicket;
 import org.cip4.jdflib.jmf.JDFJMF;
@@ -786,24 +788,37 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			mis = gt.getMISLevel();
 			jmf = gt.getJMFLevel();
 			gt1 = gt.getGTLevel();
+			BaseGoldenTicket theGT = null;
+			final VJDFAttributeMap vPartMap1 = new VJDFAttributeMap();
 
-			if (gtselect == "MIS to Conventional Printing ICS")
+			if (gtselect == "MISCP")
+			{
+				theGT = new MISCPGoldenTicket(gt1, null, jmf, mis, true, vPartMap1);
+			}
+			else if (gtselect == "MISPre")
+			{
+				theGT = new MISPreGoldenTicket(gt1, null, jmf, mis, vPartMap1);
+			}
+			else if (gtselect == "IDP")
+			{
+				theGT = new IDPGoldenTicket(gt1);
+			}
+
+			if (theGT != null)
 			{
 				try
 				{
-					final VJDFAttributeMap vPartMap1 = new VJDFAttributeMap();
 
-					final MISCPGoldenTicket jdfmiscp = new MISCPGoldenTicket(gt1, null, jmf, mis, true, vPartMap1);
-					jdfmiscp.assign(null);
+					theGT.assign(null);
 
 					// assigns the newly created JDF node to jdfcproot
-					final JDFNode jdfcproot = jdfmiscp.getNode();
-					final JDFDoc jdfmiscpDoc = jdfcproot.getOwnerDocument_JDFElement();
-					setJDFDoc(jdfmiscpDoc, null);
+					final JDFNode root = theGT.getNode();
+					final JDFDoc doc = root.getOwnerDocument_JDFElement();
+					setJDFDoc(doc, null);
 
 					// display the result.
 					m_treeArea.drawTreeView(getEditorDoc());
-					jdfmiscpDoc.setOriginalFileName("MISCPICSGoldenTicket.jdf");
+					doc.setOriginalFileName(gtselect + "_GoldenTicket.jdf");
 					setTitle(getWindowTitle());
 				}
 				catch (final Exception s)
@@ -812,36 +827,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 					JOptionPane.showMessageDialog(this, m_littleBundle.getString("FileNotOpenKey"), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 				}
 
-			}// end of MISCPS Golden Ticket Creation
-
-			else if (gtselect == "MIS to Prepress ICS")
-			{
-				/* System.out.println("In JDFFRame MISPRE W: " + gtselect + " " + mis + " " + jmf + " " + gt1); */
-				try
-				{
-					final VJDFAttributeMap vPreMap1 = new VJDFAttributeMap();
-
-					final MISPreGoldenTicket jdfmispre = new MISPreGoldenTicket(gt1, null, jmf, mis, vPreMap1);
-					jdfmispre.assign(null);
-
-					// assigns the newly created JDF node to jdfcproot
-					final JDFNode jdfpreroot = jdfmispre.getNode();
-					final JDFDoc jdfmispreDoc = jdfpreroot.getOwnerDocument_JDFElement();
-					setJDFDoc(jdfmispreDoc, null);
-
-					// display the result.
-					m_treeArea.drawTreeView(getEditorDoc());
-					jdfmispreDoc.setOriginalFileName("MISPreICSGoldenTicket.jdf");
-					setTitle(getWindowTitle());
-				}
-				catch (final Exception s)
-				{
-					s.printStackTrace();
-					JOptionPane.showMessageDialog(this, m_littleBundle.getString("FileNotOpenKey"), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
-				}
-
-			}// end of MISPre Golden Ticket Creation
-
+			}
 		}
 		catch (final Exception e)
 		{

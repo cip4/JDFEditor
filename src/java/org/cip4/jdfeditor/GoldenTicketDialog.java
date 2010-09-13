@@ -1,4 +1,5 @@
 package org.cip4.jdfeditor;
+
 /*
  *
  * The CIP4 Software License, Version 1.0
@@ -76,6 +77,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
@@ -93,194 +95,213 @@ import javax.swing.JTextField;
 
 public class GoldenTicketDialog extends JPanel implements ActionListener
 {
-    /**
-     * Comment for <code>serialVersionUID</code>
-     */
-    private static final long serialVersionUID = -267165456151780040L;
-    
-    private JTextField idPath;
-    private JButton browse; 
-    private File idFile;
-    private final GridBagLayout outLayout = new GridBagLayout(); 
-    private final GridBagConstraints outConstraints = new GridBagConstraints();
-    
-    private JComboBox goldenTicketLevel;
-    private JComboBox MISICSLevel1;
-    private JComboBox JMFICSLevel1;
-    private JComboBox gtICSLevel1;
-    
-    private String gtSelected = "MIS to Conventional Printing ICS";
-    private String misSelected = "1";
-    private String jmfSelected = "1";
-    private String gtLevelSelected = "1";
-    
-	private int MISSelectLevel = 1;
-	private int JMFSelectLevel = 1;
-	private int GTSelectLevel = 1;
+	/**
+	 * Comment for <code>serialVersionUID</code>
+	 */
+	private static final long serialVersionUID = -267165456151780040L;
 
-    
+	private JTextField idPath;
+	private JButton browse;
+	private File idFile;
+	private final GridBagLayout outLayout = new GridBagLayout();
+	private final GridBagConstraints outConstraints = new GridBagConstraints();
+
+	private JComboBox goldenTicketLabel;
+	private JComboBox misICSLevel1;
+	private JComboBox jmfICSLevel1;
+	private JComboBox gtICSLevel;
+
+	private String gtSelected = "MISCP";
+	private String misSelected = "1";
+	private String jmfSelected = "1";
+	private String gtLevelSelected = "1";
+
+	private int misSelectLevel = 1;
+	private int jmfSelectLevel = 1;
+	private int gtSelectLevel = 1;
+	private HashMap<String, String> labelMap;
+
 	public String[] l1 = { "1", "2" };
 	public String[] l2 = { "1", "2", "3" };
-    
 
 	public GoldenTicketDialog()
-    {
-        super();
-        JDFFrame parent=Editor.getFrame();
-        final ResourceBundle littleBundle=Editor.getBundle();
+	{
+		super();
+		JDFFrame parent = Editor.getFrame();
+		final ResourceBundle littleBundle = Editor.getBundle();
 
-        
-        init();
-        final String[] options = { littleBundle.getString("OkKey"), littleBundle.getString("CancelKey") };
-        
-        final int option = JOptionPane.showOptionDialog(parent, this, "Golden Ticket File Creation",
-            JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
-            
-        if (option == JOptionPane.OK_OPTION)//will create the Golden Ticket
-        {
-        	/*String tmpGTfile = gtSelected;*/
-        	String tmpMISfile = misSelected;
-        	String tmpJMFfile = jmfSelected;
-        	String tmpGTlevel = gtLevelSelected;
-        	
-        	MISSelectLevel = Integer.parseInt(tmpMISfile);
-        	JMFSelectLevel = Integer.parseInt(tmpJMFfile);
-        	GTSelectLevel = Integer.parseInt(tmpGTlevel);
-        }
-        else 
-            {
-//             	
-            }           
+		init();
+		final String[] options = { littleBundle.getString("OkKey"), littleBundle.getString("CancelKey") };
 
-    }
-    
+		final int option = JOptionPane.showOptionDialog(parent, this, "Golden Ticket File Creation", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+
+		if (option == JOptionPane.OK_OPTION)//will create the Golden Ticket
+		{
+			/*String tmpGTfile = gtSelected;*/
+			String tmpMISfile = misSelected;
+			String tmpJMFfile = jmfSelected;
+			String tmpGTlevel = gtLevelSelected;
+
+			misSelectLevel = Integer.parseInt(tmpMISfile);
+			jmfSelectLevel = Integer.parseInt(tmpJMFfile);
+			gtSelectLevel = Integer.parseInt(tmpGTlevel);
+		}
+		else
+		{
+			//             	
+		}
+
+	}
+
 	/**
-     * Creates the fields and view for the Merge Dialog.
-     */
-    private void init()
-    {
-        final JPanel panel = new JPanel();
-        final ResourceBundle littleBundle=Editor.getBundle();
-        outConstraints.fill = GridBagConstraints.BOTH;
-        outConstraints.insets = new Insets(0,0,10,0);
-        outLayout.setConstraints(panel, outConstraints);
-        setLayout(outLayout);
-        final GridBagLayout inLayout = new GridBagLayout();    	   	
-        panel.setLayout(new GridLayout(4,1));
-        panel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("GTInputKey")));
-        
-        //Golden Ticket Chooser
-        JPanel gtChooser = new JPanel();
-        gtChooser.setLayout(inLayout);
-        gtChooser.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("GTFileKey")));
-        outLayout.setConstraints(gtChooser, outConstraints);
-        
-        //Add Golden Tickets as they become available.
-        final String[] gt = { "MIS to Conventional Printing ICS", "MIS to Prepress ICS" };
-        goldenTicketLevel = new JComboBox(gt);
-        goldenTicketLevel.addActionListener(this);
-        
-        gtChooser.add(goldenTicketLevel);
-        panel.add(gtChooser);
-        
-        //MIS Level
-        JPanel MISLevel = new JPanel();
-        MISLevel.setLayout(inLayout);
-        MISLevel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("MISLevelKey")));
-        outLayout.setConstraints(MISLevel, outConstraints);
-        
-        MISICSLevel1 = new JComboBox(l2);
-        MISICSLevel1.addActionListener(this);
-        
-        MISLevel.add(MISICSLevel1);
-        panel.add(MISLevel);
-      
-      //JMF Level
-        JPanel JMFLevel = new JPanel();
-        JMFLevel.setLayout(inLayout);
-        JMFLevel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("JMFLevelKey")));
-        outLayout.setConstraints(JMFLevel, outConstraints);
-        
-        JMFICSLevel1 = new JComboBox(l1);
-        JMFICSLevel1.addActionListener(this);
-        
-        JMFLevel.add(JMFICSLevel1);
-        panel.add(JMFLevel);
-      
-      //GT Level
-        JPanel GTLevel = new JPanel();
-        GTLevel.setLayout(inLayout);
-        GTLevel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("GTLevelKey")));
-        outLayout.setConstraints(GTLevel, outConstraints);
-        
-        gtICSLevel1 = new JComboBox(l1);
-        gtICSLevel1.addActionListener(this);
-        
-        GTLevel.add(gtICSLevel1);
-        panel.add(GTLevel);
-        
-        add(panel);
-        setVisible(true);
-    }
-    
-         
-    public void actionPerformed(ActionEvent e)
-    {
-        final Object source = e.getSource();
-        JDFFrame parent=Editor.getFrame();
-        if (source == browse)
-        {
-            final EditorFileChooser files = new EditorFileChooser(idFile,"xml jdf");
-            final int option = files.showOpenDialog(parent);
-            
-            if (option == JFileChooser.APPROVE_OPTION)
-            {
-                idPath.setText(files.getSelectedFile().getAbsolutePath());
-            }
-            else if (option == JFileChooser.ERROR_OPTION) 
-            {
-                JOptionPane.showMessageDialog(parent, "File is not accepted", 
-                        "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-        else if (source == goldenTicketLevel)
-        {
-        	gtSelected = (String) goldenTicketLevel.getSelectedItem();
-        }
-        else if (source == MISICSLevel1)
-        {
-        	misSelected = (String) MISICSLevel1.getSelectedItem();
-        }
-        else if (source == JMFICSLevel1)
-        {
-        	jmfSelected = (String) JMFICSLevel1.getSelectedItem();
-        }
-        else if (source == gtICSLevel1)
-        {
-        	gtLevelSelected = (String) gtICSLevel1.getSelectedItem();
-        }
-    }
-    
-    /*
-     * Methods to return the Levels and which golden ticket to create.
-     */
-    public String getGoldenTicket() 
-    {
-        return gtSelected;
-    }
-    
-    public int getMISLevel() 
-    {
-        return MISSelectLevel;
-    }
-    
-    public int getJMFLevel() 
-    {
-        return JMFSelectLevel;
-    }
-    
-    public int getGTLevel() 
-    {
-        return GTSelectLevel;
-    }
+	 * Creates the fields and view for the Merge Dialog.
+	 */
+	private void init()
+	{
+		final JPanel panel = new JPanel();
+		final ResourceBundle littleBundle = Editor.getBundle();
+		outConstraints.fill = GridBagConstraints.BOTH;
+		outConstraints.insets = new Insets(0, 0, 10, 0);
+		outLayout.setConstraints(panel, outConstraints);
+		setLayout(outLayout);
+		final GridBagLayout inLayout = new GridBagLayout();
+		panel.setLayout(new GridLayout(4, 1));
+		panel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("GTInputKey")));
+
+		//Golden Ticket Chooser
+		JPanel gtChooser = new JPanel();
+		gtChooser.setLayout(inLayout);
+		gtChooser.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("GTFileKey")));
+		outLayout.setConstraints(gtChooser, outConstraints);
+
+		initGTLabels(panel, gtChooser);
+
+		//MIS Level
+		JPanel MISLevel = new JPanel();
+		MISLevel.setLayout(inLayout);
+		MISLevel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("MISLevelKey")));
+		outLayout.setConstraints(MISLevel, outConstraints);
+
+		misICSLevel1 = new JComboBox(l2);
+		misICSLevel1.addActionListener(this);
+
+		MISLevel.add(misICSLevel1);
+		panel.add(MISLevel);
+
+		//JMF Level
+		JPanel JMFLevel = new JPanel();
+		JMFLevel.setLayout(inLayout);
+		JMFLevel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("JMFLevelKey")));
+		outLayout.setConstraints(JMFLevel, outConstraints);
+
+		jmfICSLevel1 = new JComboBox(l1);
+		jmfICSLevel1.addActionListener(this);
+
+		JMFLevel.add(jmfICSLevel1);
+		panel.add(JMFLevel);
+
+		//GT Level
+		JPanel GTLevel = new JPanel();
+		GTLevel.setLayout(inLayout);
+		GTLevel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("GTLevelKey")));
+		outLayout.setConstraints(GTLevel, outConstraints);
+
+		gtICSLevel = new JComboBox(l1);
+		gtICSLevel.addActionListener(this);
+
+		GTLevel.add(gtICSLevel);
+		panel.add(GTLevel);
+
+		add(panel);
+		setVisible(true);
+	}
+
+	private void initGTLabels(final JPanel panel, JPanel gtChooser)
+	{
+		final ResourceBundle littleBundle = Editor.getBundle();
+		//Add Golden Tickets as they become available.
+		final String[] gt = { "MISCP", "MISPre", "IDP" };
+		String[] gtDisplay = new String[gt.length];
+		labelMap = new HashMap<String, String>();
+		for (int i = 0; i < gt.length; i++)
+		{
+			gtDisplay[i] = littleBundle.getString(gt[i]);
+			labelMap.put(gtDisplay[i], gt[i]);
+		}
+		goldenTicketLabel = new JComboBox(gtDisplay);
+		goldenTicketLabel.addActionListener(this);
+
+		gtChooser.add(goldenTicketLabel);
+		panel.add(gtChooser);
+	}
+
+	public void actionPerformed(ActionEvent e)
+	{
+		final Object source = e.getSource();
+		JDFFrame parent = Editor.getFrame();
+		if (source == browse)
+		{
+			final EditorFileChooser files = new EditorFileChooser(idFile, "xml jdf");
+			final int option = files.showOpenDialog(parent);
+
+			if (option == JFileChooser.APPROVE_OPTION)
+			{
+				idPath.setText(files.getSelectedFile().getAbsolutePath());
+			}
+			else if (option == JFileChooser.ERROR_OPTION)
+			{
+				JOptionPane.showMessageDialog(parent, "File is not accepted", "Error", JOptionPane.ERROR_MESSAGE);
+			}
+		}
+		else if (source == goldenTicketLabel)
+		{
+			gtSelected = getGTLabel();
+		}
+		else if (source == misICSLevel1)
+		{
+			misSelected = (String) misICSLevel1.getSelectedItem();
+		}
+		else if (source == jmfICSLevel1)
+		{
+			jmfSelected = (String) jmfICSLevel1.getSelectedItem();
+		}
+		else if (source == gtICSLevel)
+		{
+			getGTLevelSelected();
+		}
+	}
+
+	private String getGTLabel()
+	{
+		String s = (String) goldenTicketLabel.getSelectedItem();
+		return labelMap.get(s);
+	}
+
+	private void getGTLevelSelected()
+	{
+		gtLevelSelected = (String) gtICSLevel.getSelectedItem();
+	}
+
+	/*
+	 * Methods to return the Levels and which golden ticket to create.
+	 */
+	public String getGoldenTicket()
+	{
+		return gtSelected;
+	}
+
+	public int getMISLevel()
+	{
+		return misSelectLevel;
+	}
+
+	public int getJMFLevel()
+	{
+		return jmfSelectLevel;
+	}
+
+	public int getGTLevel()
+	{
+		return gtSelectLevel;
+	}
 }
