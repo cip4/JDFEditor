@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2009 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2010 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -75,7 +75,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.ResourceBundle;
-import java.util.Vector;
 
 import javax.mail.BodyPart;
 import javax.mail.MessagingException;
@@ -87,10 +86,10 @@ import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFParser;
+import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.VString;
-import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.jdflib.resource.JDFResource;
@@ -105,23 +104,6 @@ import org.cip4.jdflib.util.UrlUtil;
  */
 public class EditorUtils
 {
-	/**
-	 * Adds the indexes to the Vector vInvalidAt.
-	 * @param vInvalidAt - The Vector with the invalid indexes
-	 * @param names - The Vector with the invalid names
-	 * @param nStr - The attribute name
-	 * @param index - The position in the loop
-	 */
-	public static void setInvalidVec(final Vector vInvalidAt, final Vector names, final String nStr, final int index)
-	{
-		for (int i = 0; i < names.size(); i++)
-		{
-			if (names.elementAt(i).equals(nStr))
-			{
-				vInvalidAt.add(Integer.toString(index));
-			}
-		}
-	}
 
 	/**
 	 * Check if a KElement is valid or not.
@@ -269,7 +251,7 @@ public class EditorUtils
 	{
 		final VString validAttributesVector = element.knownAttributes();
 
-		Vector existingAttributes = element.getAttributeVector();
+		VString existingAttributes = element.getAttributeVector();
 		if (element instanceof JDFResource)
 		{
 			final JDFResource re = (JDFResource) element;

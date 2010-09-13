@@ -794,13 +794,11 @@ public class JDFTreeModel extends DefaultTreeModel
 			}
 			else
 			{
-				final Enumeration e = node.breadthFirstEnumeration();
-				Object currNode;
+				final Enumeration<JDFTreeNode> e = node.breadthFirstEnumeration();
 
 				while (e.hasMoreElements() && !bFound)
 				{
-					currNode = e.nextElement();
-					final JDFTreeNode treeNode = (JDFTreeNode) currNode;
+					final JDFTreeNode treeNode = e.nextElement();
 					if (xpath.equals(treeNode.getXPath()))
 					{
 						rPool = treeNode;
@@ -857,13 +855,11 @@ public class JDFTreeModel extends DefaultTreeModel
 		else
 		{
 			final String xpath = rLinkPoolElm.buildXPath(null, 1);
-			final Enumeration e = node.breadthFirstEnumeration();
-			Object currNode;
+			final Enumeration<JDFTreeNode> e = node.breadthFirstEnumeration();
 
 			while (e.hasMoreElements() && !bFound)
 			{
-				currNode = e.nextElement();
-				final JDFTreeNode treeNode = (JDFTreeNode) currNode;
+				final JDFTreeNode treeNode = e.nextElement();
 				if (xpath.equals(treeNode.getXPath()))
 				{
 					rLinkPool = treeNode;

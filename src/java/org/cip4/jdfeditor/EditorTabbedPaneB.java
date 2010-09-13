@@ -5,7 +5,7 @@ package org.cip4.jdfeditor;
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2006 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2010 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -78,7 +78,6 @@ import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTree;
@@ -108,7 +107,7 @@ public class EditorTabbedPaneB extends JTabbedPane
 	public SchemaScrollPane m_SchemaErrScroll;
 
 	//    Pane containing XML editor
-	private RSyntaxTextArea xmlEditorTextArea;
+	private final RSyntaxTextArea xmlEditorTextArea;
 
 	public EditorTabbedPaneB(JDFFrame frame)
 	{
@@ -131,12 +130,12 @@ public class EditorTabbedPaneB extends JTabbedPane
 
 		//        XML Editor tab
 		JPanel xmlEditorPanel = new JPanel(new BorderLayout());
-        xmlEditorTextArea = new RSyntaxTextArea();
-        xmlEditorTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_XML);
-        xmlEditorTextArea.setEditable(false);
-        RTextScrollPane sp = new RTextScrollPane(xmlEditorTextArea);
-        xmlEditorPanel.add(sp);
-        addTab(m_littleBundle.getString("XmlEditor"), null, xmlEditorPanel, m_littleBundle.getString("XmlEditor"));
+		xmlEditorTextArea = new RSyntaxTextArea();
+		xmlEditorTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_XML);
+		xmlEditorTextArea.setEditable(false);
+		RTextScrollPane sp = new RTextScrollPane(xmlEditorTextArea);
+		xmlEditorPanel.add(sp);
+		addTab(m_littleBundle.getString("XmlEditor"), null, xmlEditorPanel, m_littleBundle.getString("XmlEditor"));
 
 		//        TCPMon tab
 		MainWindow mWindow = new MainWindow();

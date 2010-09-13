@@ -124,18 +124,18 @@ import javax.swing.undo.UndoableEditSupport;
 import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
+import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.XMLDoc;
-import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.core.XMLDocUserData.EnumDirtyPolicy;
 import org.cip4.jdflib.datatypes.VJDFAttributeMap;
 import org.cip4.jdflib.goldenticket.MISCPGoldenTicket;
 import org.cip4.jdflib.goldenticket.MISPreGoldenTicket;
 import org.cip4.jdflib.jmf.JDFJMF;
-import org.cip4.jdflib.jmf.JMFBuilder;
 import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
+import org.cip4.jdflib.jmf.JMFBuilder;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.util.StringUtil;
 
@@ -1390,7 +1390,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				intoNode = (JDFTreeNode) path.getParentPath().getLastPathComponent();
 			}
 
-			final Vector addedVector = getModel().addRequiredElements(intoNode);
+			final Vector<JDFTreeNode> addedVector = getModel().addRequiredElements(intoNode);
 
 			if (addedVector.size() > 0)
 			{
@@ -1422,7 +1422,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				intoNode = (JDFTreeNode) path.getParentPath().getLastPathComponent();
 			}
 
-			final Vector addedVector = getModel().addRequiredAttributes(intoNode);
+			final Vector<JDFTreeNode> addedVector = getModel().addRequiredAttributes(intoNode);
 
 			if (addedVector.size() > 0)
 			{
@@ -1744,12 +1744,13 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			if (flavor.isDataFlavorSupported(DataFlavor.javaFileListFlavor))
 			{
 				e.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
-				final java.util.List fileList = (java.util.List) flavor.getTransferData(DataFlavor.javaFileListFlavor);
-				final Iterator files = fileList.iterator();
+				@SuppressWarnings("unchecked")
+				final java.util.List<File> fileList = (java.util.List<File>) flavor.getTransferData(DataFlavor.javaFileListFlavor);
+				final Iterator<File> files = fileList.iterator();
 
 				if (files.hasNext())
 				{
-					readFile((File) files.next());
+					readFile(files.next());
 				}
 				e.getDropTargetContext().dropComplete(true);
 			}

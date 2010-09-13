@@ -107,7 +107,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 	JButton m_zoomBestButton;
 	JButton m_refreshButton;
 	JButton m_closeButton;
-	HashSet m_allButtons;
+	HashSet<JButton> m_allButtons;
 
 	private final ResourceBundle m_littleBundle;
 	private final JDFFrame m_frame;
@@ -122,7 +122,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		super(SwingConstants.HORIZONTAL);
 		m_littleBundle = littleBundle;
 		m_frame = frame;
-		m_allButtons = new HashSet();
+		m_allButtons = new HashSet<JButton>();
 	}
 
 	/**

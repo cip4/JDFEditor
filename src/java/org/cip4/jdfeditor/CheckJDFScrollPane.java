@@ -1,4 +1,5 @@
 package org.cip4.jdfeditor;
+
 /*
  *
  * The CIP4 Software License, Version 1.0
@@ -69,14 +70,13 @@ package org.cip4.jdfeditor;
  *  
  * 
  */
-import java.util.Vector;
-
 import javax.swing.JTree;
 import javax.swing.ToolTipManager;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.XMLDoc;
 
@@ -87,97 +87,92 @@ import org.cip4.jdflib.core.XMLDoc;
  */
 public class CheckJDFScrollPane extends ValidationScrollPane
 {
-    private CheckJDFOutputWrapper checkJDFRoot = null;
-    
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 2367868076065696719L;
-    
-     
-    public CheckJDFScrollPane(JDFFrame frame)
-    {
-        super(frame);
-    }
-    
-    
-    public void drawCheckJDFOutputTree (XMLDoc bugReport) 
-    {
-        if (bugReport==null)
-            return;
-        KElement repRoot=bugReport.getRoot().getChildByTagName("CheckJDFOutput",null,0,null,false,true);
-        if(repRoot==null)
-            return;
-        checkJDFRoot =new CheckJDFOutputWrapper(repRoot);
-        m_reportTree = new JTree(checkJDFRoot);
-        m_reportTree.setModel(new JDFTreeModel(checkJDFRoot,false));
-        m_reportTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-        m_reportTree.setExpandsSelectedPaths(true);
-        m_reportTree.setEditable(false);
-        ToolTipManager.sharedInstance().registerComponent(m_reportTree);
-        
-        //DCOutputWrapper bugReportRoot = null;
+	private CheckJDFOutputWrapper checkJDFRoot = null;
 
-        setCheckJDFOutputTree(checkJDFRoot);            
-//        m_reportTree.expandPath(new TreePath(bugReportRoot.getPath()));
-        m_reportTree.expandPath(new TreePath(checkJDFRoot.getPath()));
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2367868076065696719L;
 
-        m_SelectionListener = new ValidationSelectionListener();
-        m_reportTree.addTreeSelectionListener(m_SelectionListener);
-        
-        final ValidationPopupListener popupListener = new ValidationPopupListener();
-        m_reportTree.addMouseListener(popupListener);
-        
-        final CheckJDFOutputRenderer dcRenderer = new CheckJDFOutputRenderer();
-        m_reportTree.setCellRenderer(dcRenderer);
-        getViewport().setView(m_reportTree);
-    }
-    
-    
-    
-    
-    
-    private void setCheckJDFOutputTree(CheckJDFOutputWrapper bugReport)
-    {        
-        KElement repElem=bugReport.getElement();
-        // now add the individual attributes
-        VString vAtts=repElem.getAttributeVector();
-        for(int i=0;i<vAtts.size();i++){
-            final String stringAt = vAtts.stringAt(i);
-            if(stringAt.equals("ID"))
-                continue;
-            if(stringAt.equals("rRef"))
-                continue;
-            if(stringAt.equals("ErrorType"))
-                continue;
-            if(stringAt.equals("NodeName"))
-                continue;
-            if(stringAt.equals("Value"))
-                continue;
-            if(stringAt.equals("IsValid"))
-                continue;
-            if(stringAt.equals("Message"))
-                continue;
-            if(stringAt.equals("XPath"))
-                continue;
-            if(stringAt.endsWith("Elements"))
-                continue;
-            if(stringAt.endsWith("Attributes"))
-                continue;
-            if(stringAt.equals("Separation"))
-                continue;
-            CheckJDFOutputWrapper next = new CheckJDFOutputWrapper(repElem.getAttributeNode(stringAt));
-            bugReport.add(next);
-        }
-        // recurse through children
-        Vector childVector = repElem.getChildElementVector(null, null, null, true, 0,false);
-        for (int i=0; i< childVector.size(); i++)
-        {
-            KElement kEl = (KElement) childVector.elementAt(i);
-            CheckJDFOutputWrapper next = new CheckJDFOutputWrapper(kEl);
-            setCheckJDFOutputTree(next);
-            bugReport.add(next);
-        }
-    }    
-    
+	public CheckJDFScrollPane(JDFFrame frame)
+	{
+		super(frame);
+	}
+
+	public void drawCheckJDFOutputTree(XMLDoc bugReport)
+	{
+		if (bugReport == null)
+			return;
+		KElement repRoot = bugReport.getRoot().getChildByTagName("CheckJDFOutput", null, 0, null, false, true);
+		if (repRoot == null)
+			return;
+		checkJDFRoot = new CheckJDFOutputWrapper(repRoot);
+		m_reportTree = new JTree(checkJDFRoot);
+		m_reportTree.setModel(new JDFTreeModel(checkJDFRoot, false));
+		m_reportTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		m_reportTree.setExpandsSelectedPaths(true);
+		m_reportTree.setEditable(false);
+		ToolTipManager.sharedInstance().registerComponent(m_reportTree);
+
+		//DCOutputWrapper bugReportRoot = null;
+
+		setCheckJDFOutputTree(checkJDFRoot);
+		//        m_reportTree.expandPath(new TreePath(bugReportRoot.getPath()));
+		m_reportTree.expandPath(new TreePath(checkJDFRoot.getPath()));
+
+		m_SelectionListener = new ValidationSelectionListener();
+		m_reportTree.addTreeSelectionListener(m_SelectionListener);
+
+		final ValidationPopupListener popupListener = new ValidationPopupListener();
+		m_reportTree.addMouseListener(popupListener);
+
+		final CheckJDFOutputRenderer dcRenderer = new CheckJDFOutputRenderer();
+		m_reportTree.setCellRenderer(dcRenderer);
+		getViewport().setView(m_reportTree);
+	}
+
+	private void setCheckJDFOutputTree(CheckJDFOutputWrapper bugReport)
+	{
+		KElement repElem = bugReport.getElement();
+		// now add the individual attributes
+		VString vAtts = repElem.getAttributeVector();
+		for (int i = 0; i < vAtts.size(); i++)
+		{
+			final String stringAt = vAtts.stringAt(i);
+			if (stringAt.equals("ID"))
+				continue;
+			if (stringAt.equals("rRef"))
+				continue;
+			if (stringAt.equals("ErrorType"))
+				continue;
+			if (stringAt.equals("NodeName"))
+				continue;
+			if (stringAt.equals("Value"))
+				continue;
+			if (stringAt.equals("IsValid"))
+				continue;
+			if (stringAt.equals("Message"))
+				continue;
+			if (stringAt.equals("XPath"))
+				continue;
+			if (stringAt.endsWith("Elements"))
+				continue;
+			if (stringAt.endsWith("Attributes"))
+				continue;
+			if (stringAt.equals("Separation"))
+				continue;
+			CheckJDFOutputWrapper next = new CheckJDFOutputWrapper(repElem.getAttributeNode(stringAt));
+			bugReport.add(next);
+		}
+		// recurse through children
+		VElement childVector = repElem.getChildElementVector(null, null, null, true, 0, false);
+		for (int i = 0; i < childVector.size(); i++)
+		{
+			KElement kEl = childVector.elementAt(i);
+			CheckJDFOutputWrapper next = new CheckJDFOutputWrapper(kEl);
+			setCheckJDFOutputTree(next);
+			bugReport.add(next);
+		}
+	}
+
 }

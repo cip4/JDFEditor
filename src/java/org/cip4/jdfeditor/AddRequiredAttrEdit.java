@@ -3,7 +3,7 @@
 * The CIP4 Software License, Version 1.0
 *
 *
-* Copyright (c) 2001-2006 The International Cooperation for the Integration of 
+* Copyright (c) 2001-2010 The International Cooperation for the Integration of 
 * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
 * reserved.
 *
@@ -70,7 +70,6 @@
 */
 package org.cip4.jdfeditor;
 
-
 import java.util.Vector;
 
 import javax.swing.tree.TreePath;
@@ -82,66 +81,66 @@ import javax.swing.undo.CannotUndoException;
  * @author Elena Skobchenko
  */
 
-public class AddRequiredAttrEdit extends EditorUndoableEdit 
+public class AddRequiredAttrEdit extends EditorUndoableEdit
 {
-    private static final long serialVersionUID = -2778264565816334345L;
-    
-    private TreePath path;
-    private JDFTreeNode intoNode;
-    private Vector addedVector;
-    
-    public AddRequiredAttrEdit(final TreePath treePath,final JDFTreeNode intoNod, final Vector addedVect ) 
-    {
-         super();
-         path = treePath;
-         canUndo=addedVect.size()>0;
-                           
-         this.intoNode = intoNod;
-         this.addedVector = addedVect;
-         Editor.getFrame().updateViews(path);
-    }
+	private static final long serialVersionUID = -2778264565816334345L;
 
-    @Override
-	public void undo() throws CannotUndoException 
-    { 
-         for (int i=0; i < addedVector.size(); i++)
-         {
-         	JDFTreeNode attrNode = (JDFTreeNode) addedVector.elementAt(i);
-            Editor.getModel().deleteNode(attrNode,null);         	
-         }
-         Editor.getFrame().updateViews(path);
-         super.undo();
-    }
+	private final TreePath path;
+	private final JDFTreeNode intoNode;
+	private final Vector<JDFTreeNode> addedVector;
 
-    @Override
-	public void redo() throws CannotRedoException 
-    {
-    	for (int i=0; i < addedVector.size(); i++)
-        {
-        	JDFTreeNode attrNode = (JDFTreeNode) addedVector.elementAt(i);
-            attrNode= Editor.getModel().setAttribute(intoNode,attrNode.getName(),attrNode.getValue(),null,false);
-            addedVector.setElementAt(attrNode,i);
-        }
-        Editor.getFrame().updateViews(path);
-        super.redo();
-    }
+	public AddRequiredAttrEdit(final TreePath treePath, final JDFTreeNode intoNod, final Vector<JDFTreeNode> addedVect)
+	{
+		super();
+		path = treePath;
+		canUndo = addedVect.size() > 0;
 
-    @Override
-	public boolean canUndo() 
-    {
-         return super.canUndo() && addedVector.size()>0;
-    }
+		this.intoNode = intoNod;
+		this.addedVector = addedVect;
+		Editor.getFrame().updateViews(path);
+	}
 
-    @Override
-	public boolean canRedo() 
-    {
-        return super.canRedo() && addedVector.size()>0;
-    }
+	@Override
+	public void undo() throws CannotUndoException
+	{
+		for (int i = 0; i < addedVector.size(); i++)
+		{
+			JDFTreeNode attrNode = addedVector.elementAt(i);
+			Editor.getModel().deleteNode(attrNode, null);
+		}
+		Editor.getFrame().updateViews(path);
+		super.undo();
+	}
 
-    @Override
-	public String getPresentationName() 
-    {
-         return "AddRequiredAttributes";
-    }
+	@Override
+	public void redo() throws CannotRedoException
+	{
+		for (int i = 0; i < addedVector.size(); i++)
+		{
+			JDFTreeNode attrNode = addedVector.elementAt(i);
+			attrNode = Editor.getModel().setAttribute(intoNode, attrNode.getName(), attrNode.getValue(), null, false);
+			addedVector.setElementAt(attrNode, i);
+		}
+		Editor.getFrame().updateViews(path);
+		super.redo();
+	}
+
+	@Override
+	public boolean canUndo()
+	{
+		return super.canUndo() && addedVector.size() > 0;
+	}
+
+	@Override
+	public boolean canRedo()
+	{
+		return super.canRedo() && addedVector.size() > 0;
+	}
+
+	@Override
+	public String getPresentationName()
+	{
+		return "AddRequiredAttributes";
+	}
 
 }

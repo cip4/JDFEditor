@@ -92,7 +92,8 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.tree.TreePath;
 
-import org.cip4.jdflib.core.JDFConstants;
+import org.cip4.jdflib.util.ContainerUtil;
+import org.cip4.jdflib.util.StringUtil;
 
 /**
  * @author ThunellE
@@ -123,8 +124,10 @@ public class SearchDialog extends JDialog implements ActionListener
 	private final JRadioButton m_forwardRadioButton;
 	private final JRadioButton m_backwardRadioButton;
 	private final JCheckBox m_IgnoreCase;
-	private final Vector m_vGlobalSearch = new Vector();
+	private final JCheckBox m_Wrap;
 	private static String lastSearch = null;
+	private Vector<JDFTreeNode> m_LastResults = null;
+	private int lastPos;
 
 	/**
 	 * Constructor for SearchDialog.
@@ -183,8 +186,11 @@ public class SearchDialog extends JDialog implements ActionListener
 
 		middleBox.add(new JSeparator());
 		m_IgnoreCase = new JCheckBox(frame.m_littleBundle.getString("ignoreCase"), true);
-		m_IgnoreCase.setAlignmentX(Component.RIGHT_ALIGNMENT); // I'm confused why right???
+		m_IgnoreCase.setAlignmentX(Component.LEFT_ALIGNMENT); // I'm confused why right???
+		m_Wrap = new JCheckBox(frame.m_littleBundle.getString("wrap"), true);
+		m_Wrap.setAlignmentX(Component.LEFT_ALIGNMENT); // I'm confused why right???
 		middleBox.add(m_IgnoreCase);
+		middleBox.add(m_Wrap);
 		middleBox.add(new JSeparator());
 
 		middleBox.add(Box.createVerticalStrut(25));
@@ -208,6 +214,7 @@ public class SearchDialog extends JDialog implements ActionListener
 		pack();
 		getRootPane().setDefaultButton(m_findNextButton);
 
+		lastPos = -1;
 		setVisible(true);
 
 	}
@@ -233,108 +240,96 @@ public class SearchDialog extends JDialog implements ActionListener
 	private void findNext()
 	{
 		final boolean forwardDirection = m_forwardRadioButton.isSelected();
-		final JDFFrame frame = Editor.getFrame();
+		final boolean wrap = m_Wrap.isSelected();
+		final boolean ignoreCase = m_IgnoreCase.isSelected();
+
 		if (searchComponent.equals("JDFTree"))
 		{
-			if (!forwardDirection)
+			String currentSearch = m_searchTextField.getText();
+			if (m_LastResults == null || !ContainerUtil.equals(lastSearch, currentSearch))
 			{
-				if (m_vGlobalSearch.size() == 0 || frame.isDirty())
-				{
-					m_vGlobalSearch.clear();
-					final Enumeration enumer = ((JDFTreeNode) frame.getRootNode().getFirstChild()).preorderEnumeration();
-					while (enumer.hasMoreElements())
-					{
-						m_vGlobalSearch.add(0, enumer.nextElement());
-					}
-				}
+				lastSearch = currentSearch;
+				fillResults();
 			}
-			// lastSearch = ((JTextField) ((Box) ((Box) getContentPane().getComponent(1)).getComponent(1)).getComponent(1)).getText();
-			lastSearch = m_searchTextField.getText();
-			findStringInTree(lastSearch, forwardDirection);
-		}
-
-		else if (searchComponent.equals("NeighbourTree"))
-		{
-			frame.m_topTabs.m_inOutScrollPane.findStringInNeighbourTree(lastSearch, forwardDirection, m_IgnoreCase.isSelected());
-		}
-	}
-
-	/**
-	 * Method findStringInTree. search a string in the main tree view
-	 * @param inString
-	 * @param forwardDirection
-	 */
-	private void findStringInTree(final String inString, final boolean forwardDirection)
-	{
-		final JDFFrame frame = Editor.getFrame();
-		final boolean ignoreCase = m_IgnoreCase.isSelected();
-		if (inString != null && !inString.equals(JDFConstants.EMPTYSTRING))
-		{
-			Editor.setCursor(1, null);
-			String searchString = inString;
-			if (ignoreCase)
+			JDFTreeNode node = null;
+			int nextPos = -1;
+			if (m_LastResults.size() > 0)
 			{
-				searchString = searchString.toUpperCase();
-			}
-			final TreePath selectionPath = frame.m_treeArea.getSelectionPath();
-			final JDFTreeNode searchNode = selectionPath == null ? null : (JDFTreeNode) selectionPath.getLastPathComponent();
-			TreePath path = null;
+				int next = forwardDirection ? 1 : -1;
+				nextPos = getNext(wrap, lastPos, next);
+				if (lastPos < 0)
+					lastPos = 0;
+				if (lastPos >= m_LastResults.size())
+					lastPos = m_LastResults.size() - 1;
+				while (node == null && nextPos != lastPos && nextPos >= 0)
+				{
+					JDFTreeNode tmpNode = m_LastResults.get(nextPos);
 
-			if (forwardDirection)
-			{
-				final Enumeration tmpEnumeration = ((JDFTreeNode) frame.getRootNode().getFirstChild()).preorderEnumeration();
-				while (tmpEnumeration.hasMoreElements() && !(tmpEnumeration.nextElement().equals(searchNode)))
-				{
-					// eat up to here
-				}
-				while (tmpEnumeration.hasMoreElements())
-				{
-					final JDFTreeNode checkNode = (JDFTreeNode) tmpEnumeration.nextElement();
-					String tmpString = checkNode.toString();
 					if (ignoreCase)
+						node = tmpNode;
+					else
 					{
-						tmpString = tmpString.toUpperCase();
-					}
-					if (tmpString.indexOf(searchString) != -1)
-					{
-						path = new TreePath(checkNode.getPath());
-						break;
-					}
-				}
-			}
-			else
-			// backward
-			{
-				int j = 0;
-				for (j = 0; j < m_vGlobalSearch.size() && !m_vGlobalSearch.elementAt(j).equals(searchNode); j++)
-				{
-					// eat
-				}
-				for (j = j + 1; j < m_vGlobalSearch.size(); j++)
-				{
-					final JDFTreeNode checkNode = (JDFTreeNode) m_vGlobalSearch.elementAt(j);
-					String tmpString = checkNode.toString();
-					if (ignoreCase)
-					{
-						tmpString = tmpString.toUpperCase();
-					}
-
-					if (tmpString.indexOf(searchString) != -1)
-					{
-						path = new TreePath(checkNode.getPath());
-						break;
+						if (tmpNode.toString().indexOf(lastSearch) < 0)
+							nextPos = getNext(wrap, nextPos, next);
+						else
+							node = tmpNode;
 					}
 				}
 			}
+			TreePath path = node == null ? null : new TreePath(node.getPath());
 			if (path != null)
 			{
+				lastPos = nextPos;
 				Editor.getEditorDoc().setSelectionPath(path, true);
 			}
 			else
 			{
-				EditorUtils.errorBox("StringNotFoundKey", searchString);
+				EditorUtils.errorBox("StringNotFoundKey", lastSearch);
 			}
 		}
-		Editor.setCursor(0, null);
+		else if (searchComponent.equals("NeighbourTree"))
+		{
+			Editor.getFrame().m_topTabs.m_inOutScrollPane.findStringInNeighbourTree(lastSearch, forwardDirection, m_IgnoreCase.isSelected());
+		}
+	}
+
+	private int getNext(final boolean wrap, int pos, int next)
+	{
+		int nextPos = pos + next;
+		if (nextPos >= m_LastResults.size())
+			nextPos = wrap ? 0 : -1;
+		if (nextPos < 0)
+			nextPos = wrap ? m_LastResults.size() - 1 : -1;
+		return nextPos;
+	}
+
+	private void fillResults()
+	{
+		m_LastResults = new Vector<JDFTreeNode>();
+		final boolean bForward = m_forwardRadioButton.isSelected();
+		final TreePath selectionPath = Editor.getFrame().m_treeArea.getSelectionPath();
+		final JDFTreeNode currentNode = selectionPath == null ? null : (JDFTreeNode) selectionPath.getLastPathComponent();
+		if (StringUtil.getNonEmpty(lastSearch) != null)
+		{
+			@SuppressWarnings("unchecked")
+			final Enumeration<JDFTreeNode> tmpEnumeration = ((JDFTreeNode) Editor.getModel().getRootNode().getFirstChild()).preorderEnumeration();
+			final String upSearch = lastSearch.toUpperCase();
+			while (tmpEnumeration.hasMoreElements())
+			{
+				final JDFTreeNode checkNode = tmpEnumeration.nextElement();
+				String tmpString = checkNode.toString().toUpperCase();
+				// calculate search position of current node in results vector
+				if (checkNode.equals(currentNode))
+				{
+					lastPos = m_LastResults.size() - 1;
+					if (!bForward)
+						lastPos++;
+				}
+				if (tmpString.indexOf(upSearch) != -1)
+				{
+					m_LastResults.add(checkNode);
+				}
+			}
+		}
 	}
 }

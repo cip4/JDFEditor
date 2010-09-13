@@ -105,8 +105,8 @@ public class JDFInOutScroll extends JScrollPane
 {
 
 	/**
-     * 
-     */
+	 * 
+	 */
 	private static final long serialVersionUID = 8635330186484361532L;
 	JPanel m_inOutArea;
 	private final JPanel m_inOutAreaLeft;
@@ -290,8 +290,7 @@ public class JDFInOutScroll extends JScrollPane
 						{
 							if (((JDFTreeNode) (tmpTree.getPathForRow(0)).getLastPathComponent()).equals(m_searchInOutNode))
 							{
-								final Enumeration e = m_searchInOutNode.preorderEnumeration();
-								Object currNode;
+								final Enumeration<JDFTreeNode> e = m_searchInOutNode.preorderEnumeration();
 
 								if (!finishedFirstSearch)
 								{
@@ -300,8 +299,7 @@ public class JDFInOutScroll extends JScrollPane
 
 								while (e.hasMoreElements())
 								{
-									currNode = e.nextElement();
-									final JDFTreeNode checkNode = (JDFTreeNode) currNode;
+									final JDFTreeNode checkNode = e.nextElement();
 									String tmpString = checkNode.toString();
 									if (bIgnoreCase)
 									{
@@ -402,8 +400,8 @@ public class JDFInOutScroll extends JScrollPane
 						{
 							if (!((JDFTreeNode) (tmpTree.getPathForRow(0)).getLastPathComponent()).equals(m_searchInOutNode))
 							{
-								final Enumeration e = ((JDFTreeNode) (tmpTree.getPathForRow(0)).getLastPathComponent()).preorderEnumeration();
-								final Stack tmpStack = new Stack();
+								final Enumeration<JDFTreeNode> e = ((JDFTreeNode) (tmpTree.getPathForRow(0)).getLastPathComponent()).preorderEnumeration();
+								final Stack<JDFTreeNode> tmpStack = new Stack<JDFTreeNode>();
 
 								while (e.hasMoreElements())
 								{
@@ -416,14 +414,14 @@ public class JDFInOutScroll extends JScrollPane
 
 									if (!lastWasRoot)
 									{
-										checkNode = (JDFTreeNode) tmpStack.pop();
+										checkNode = tmpStack.pop();
 									}
 
 									if (checkNode.equals(m_searchInOutNode))
 									{
 										while (!tmpStack.isEmpty())
 										{
-											checkNode = (JDFTreeNode) tmpStack.pop();
+											checkNode = tmpStack.pop();
 											String tmpString = checkNode.toString();
 											if (bIgnoreCase)
 											{

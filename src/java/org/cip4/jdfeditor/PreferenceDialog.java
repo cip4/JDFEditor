@@ -101,10 +101,10 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 
-import org.cip4.jdflib.core.KElement;
-import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.JDFElement.EnumVersion;
+import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.KElement.EnumValidationLevel;
+import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.util.EnumUtil;
 
 /**
@@ -525,7 +525,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
 		int y = 30;
 
-		final Vector sizes = new Vector();
+		final VString sizes = new VString();
 		sizes.add("10");
 		sizes.add("12");
 		sizes.add("14");
@@ -773,7 +773,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		panel.add(boxExportValidation);
 
 		y += d.height + 3;
-		final Vector allowedValues = EnumUtil.getNamesVector(EnumValidationLevel.class);
+		final VString allowedValues = EnumUtil.getNamesVector(EnumValidationLevel.class);
 		chooseValidLevel = new JComboBox(allowedValues);
 		chooseValidLevel.setSelectedItem(validationLevel.getName());
 		chooseValidLevel.addActionListener(this);
@@ -842,11 +842,11 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		panel.add(fieldMISURL);
 		y += d.height + 3;
 
-		final Vector level1 = new Vector();
+		final VString level1 = new VString();
 		level1.add("1");
 		level1.add("2");
 
-		final Vector level2 = new Vector();
+		final VString level2 = new VString();
 		level2.add("1");
 		level2.add("2");
 		level2.add("3");
