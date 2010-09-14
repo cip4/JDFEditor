@@ -61,11 +61,11 @@ public class JDFTreeCopyNode
         JDFTreeNode parentNode = (JDFTreeNode) path.getLastPathComponent();
         JDFTreeNode newNode = null;
         KElement parentElement = parentNode.getElement();
-        final JDFFrame m_frame=Editor.getFrame();
+        final JDFFrame m_frame = Editor.getFrame();
         final JDFTreeModel model = m_frame.getModel();
         if (treeNode.isElement())
         {
-            final KElement newChild =  treeNode.getElement();
+            final KElement newChild = treeNode.getElement();
             try
             {
                 final KElement copiedElement = parentElement.copyElement(newChild, null);
@@ -97,4 +97,39 @@ public class JDFTreeCopyNode
         }
         return newNode;
     }
+    
+	public JDFTreeNode pasteRawNode(TreePath path)
+	{
+		JDFTreeNode parentNode = (JDFTreeNode) path.getLastPathComponent();
+		JDFTreeNode newNode = null;
+		KElement parentElement = parentNode.getElement();
+		final JDFFrame m_frame = Editor.getFrame();
+		final JDFTreeModel model = m_frame.getModel();
+		if (treeNode.isElement())
+		{
+			final KElement newChild = treeNode.getElement();
+			try
+			{
+				final KElement copiedElement = parentElement.copyElement(newChild, null);
+
+				newNode = model.createNewNode(copiedElement);
+				model.insertNodeInto(newNode, parentNode, parentNode.getChildCount());
+
+				getChildrenForCopiedNode(newNode);
+				if (Editor.getIniFile().getAutoVal())
+					model.validate();
+			} catch (Exception s)
+			{
+				s.printStackTrace();
+				JOptionPane.showMessageDialog(m_frame, m_frame.m_littleBundle.getString("NodeInsertErrorKey"), m_frame.m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			}
+		}
+		else
+		{
+			final String attributeName = treeNode.getName();
+			final String attributeValue = treeNode.getValue();
+			newNode = model.setAttribute(parentNode, attributeName, attributeValue, null, false);
+		}
+		return newNode;
+	}
 }

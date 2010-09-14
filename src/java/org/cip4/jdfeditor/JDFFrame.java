@@ -1451,6 +1451,24 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			}
 		}
 	}
+	
+	/**
+	 * Pastes raw copied node
+	 */
+	public void pasteRawCopiedNode()
+	{
+		final TreePath path = m_treeArea.getSelectionPath();
+		if (path != null && m_copyNode != null)
+		{
+			final JDFTreeNode intoNode = (JDFTreeNode) path.getLastPathComponent();
+			final JDFTreeNode pasteNode = m_copyNode.pasteRawNode(path);
+			if (pasteNode != null)
+			{
+				final PasteItemEdit edit = new PasteItemEdit(path, intoNode, pasteNode);
+				undoSupport.postEdit(edit);
+			}
+		}
+	}
 
 	/**
 	 * Determine where the search is to be done

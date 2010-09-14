@@ -135,6 +135,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 	private final JMenuItem m_insertAttrPopupItem;
 	private final JMenuItem m_cutPopupItem;
 	private final JMenuItem m_pastePopupItem;
+	private final JMenuItem m_pasteRawPopupItem;
 	private final JMenuItem m_deletePopupItem;
 	private final JMenuItem m_targetItem;
 	private JMenuItem m_saveXJDF = null;
@@ -314,6 +315,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		// m_copyPopupItem.setAccelerator(KeyStroke.getKeyStroke('C', menuKeyMask));
 
 		m_pastePopupItem = addMenuItem("PasteKey");
+		m_pasteRawPopupItem = addMenuItem("PasteRawKey");
 		// m_pastePopupItem.setAccelerator(KeyStroke.getKeyStroke('P', menuKeyMask));
 		m_deletePopupItem = addMenuItem("DeleteKey");
 
@@ -537,6 +539,10 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 			else if (eSrc == m_pastePopupItem)
 			{
 				frame.pasteCopiedNode();
+			}
+			else if (eSrc == m_pasteRawPopupItem)
+			{
+				frame.pasteRawCopiedNode();
 			}
 			else if (eSrc == m_deletePopupItem)
 			{
