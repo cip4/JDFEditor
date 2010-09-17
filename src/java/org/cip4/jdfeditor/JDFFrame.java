@@ -1000,7 +1000,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				}
 				else
 				{
-					element.eraseDefaultAttributes(true);
+					if (element instanceof JDFElement)
+						((JDFElement) element).eraseDefaultAttributes(true);
 					element.eraseEmptyAttributes(true);
 					element.eraseEmptyNodes(true);
 				}

@@ -85,6 +85,7 @@ import javax.swing.tree.TreePath;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
+import org.cip4.jdflib.core.JDFElement.EnumValidationLevel;
 import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.core.KElement;
@@ -116,7 +117,7 @@ public class EditorUtils
 		{
 			return true;
 		}
-		return elem.isValid(KElement.EnumValidationLevel.Complete);
+		return ((JDFElement) elem).isValid(EnumValidationLevel.Complete);
 	}
 
 	/**
@@ -200,17 +201,22 @@ public class EditorUtils
 	 */
 	public static String[] getElementOptions(final KElement parentElement)
 	{
-		final VString validElementsVector = parentElement.knownElements();
-		final VString uniqueElementsVector = parentElement.uniqueElements();
-
-		final VString existingElementsVector = parentElement.getElementNameVector();
-		for (int i = 0; i < existingElementsVector.size(); i++)
+		VString validElementsVector = new VString();
+		if (parentElement instanceof JDFElement)
 		{
-			final String existingElementName = existingElementsVector.stringAt(i);
-			if (uniqueElementsVector.contains(existingElementName))
+			JDFElement jParent = (JDFElement) parentElement;
+			validElementsVector = jParent.knownElements();
+			final VString uniqueElementsVector = jParent.uniqueElements();
+
+			final VString existingElementsVector = parentElement.getElementNameVector();
+			for (int i = 0; i < existingElementsVector.size(); i++)
 			{
-				// if element is unique and already in a parentElement - remove it from a valid list
-				validElementsVector.remove(existingElementName);
+				final String existingElementName = existingElementsVector.stringAt(i);
+				if (uniqueElementsVector.contains(existingElementName))
+				{
+					// if element is unique and already in a parentElement - remove it from a valid list
+					validElementsVector.remove(existingElementName);
+				}
 			}
 		}
 		final int size = validElementsVector.size();
@@ -249,7 +255,7 @@ public class EditorUtils
 	 */
 	public static String[] getAttributeOptions(final KElement element)
 	{
-		final VString validAttributesVector = element.knownAttributes();
+		final VString validAttributesVector = (element instanceof JDFElement) ? ((JDFElement) element).knownAttributes() : new VString();
 
 		VString existingAttributes = element.getAttributeVector();
 		if (element instanceof JDFResource)
@@ -356,8 +362,7 @@ public class EditorUtils
 			schemaloc = iniFile.getSchemaURL();
 			if (schemaloc != null)
 			{
-				//p.m_SchemaLocation = UrlUtil.fileToUrl(schemaloc, true);
-				p.m_SchemaLocation = "http://www.CIP4.org/JDFSchema_1_1 " + UrlUtil.fileToUrl(schemaloc, true);
+				p.setJDFSchemaLocation(schemaloc);
 			}
 		}
 		final JDFDoc jdfDoc = p.parseStream(inStream);

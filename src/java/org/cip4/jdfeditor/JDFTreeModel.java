@@ -543,20 +543,23 @@ public class JDFTreeModel extends DefaultTreeModel
 		final KElement kElement = newNode.getElement();
 
 		final Vector<JDFTreeNode> addedAttributeNodesVector = new Vector<JDFTreeNode>();
-		final VString requiredAttributes = kElement.getMissingAttributes(9999999);
-		if (kElement instanceof JDFNode)
+		if (kElement instanceof JDFElement)
 		{
-			if (!kElement.hasAttribute(AttributeName.JOBPARTID))
+			final VString requiredAttributes = ((JDFElement) kElement).getMissingAttributes(9999999);
+			if (kElement instanceof JDFNode)
 			{
-				requiredAttributes.add(AttributeName.JOBPARTID);
+				if (!kElement.hasAttribute(AttributeName.JOBPARTID))
+				{
+					requiredAttributes.add(AttributeName.JOBPARTID);
+				}
 			}
-		}
 
-		for (int i = 0; i < requiredAttributes.size(); i++)
-		{
-			final String attValue = JDFElement.getValueForNewAttribute(kElement, requiredAttributes.stringAt(i));
-			final JDFTreeNode attrNode = setAttribute(newNode, requiredAttributes.stringAt(i), attValue, null, false);
-			addedAttributeNodesVector.add(attrNode);
+			for (int i = 0; i < requiredAttributes.size(); i++)
+			{
+				final String attValue = JDFElement.getValueForNewAttribute(kElement, requiredAttributes.stringAt(i));
+				final JDFTreeNode attrNode = setAttribute(newNode, requiredAttributes.stringAt(i), attValue, null, false);
+				addedAttributeNodesVector.add(attrNode);
+			}
 		}
 		return addedAttributeNodesVector;
 	}
@@ -598,21 +601,23 @@ public class JDFTreeModel extends DefaultTreeModel
 	public Vector<JDFTreeNode> addRequiredElements(final JDFTreeNode node)
 	{
 		final KElement kElement = node.getElement();
-
 		final Vector<JDFTreeNode> addedElementNodesVector = new Vector<JDFTreeNode>();
-		final VString requiredElements = kElement.getMissingElements(9999999);
-		final String[] abstractElems = { ElementName.RESOURCELINK, "ResourceRef" };
-		for (int i = 0; i < requiredElements.size(); i++)
+		if (kElement instanceof JDFElement)
 		{
-			final String elName = requiredElements.stringAt(i);
-			if (ArrayUtils.contains(abstractElems, elName))
+			final VString requiredElements = ((JDFElement) kElement).getMissingElements(9999999);
+			final String[] abstractElems = { ElementName.RESOURCELINK, "ResourceRef" };
+			for (int i = 0; i < requiredElements.size(); i++)
 			{
-				continue;
+				final String elName = requiredElements.stringAt(i);
+				if (ArrayUtils.contains(abstractElems, elName))
+				{
+					continue;
+				}
+				final KElement newElement = kElement.appendElement(elName);
+				final JDFTreeNode newNode = createNewNode(newElement);
+				insertInto(newNode, node, -1);
+				addedElementNodesVector.add(newNode);
 			}
-			final KElement newElement = kElement.appendElement(elName);
-			final JDFTreeNode newNode = createNewNode(newElement);
-			insertInto(newNode, node, -1);
-			addedElementNodesVector.add(newNode);
 		}
 		autoValidate();
 		return addedElementNodesVector;
@@ -706,9 +711,9 @@ public class JDFTreeModel extends DefaultTreeModel
 		final int attSize = vAttNames.size();
 
 		// remove defaults if any
-		if (!showDefaultAtts)
+		if (!showDefaultAtts && (elem instanceof JDFElement))
 		{
-			final JDFAttributeMap defMap = elem.getDefaultAttributeMap();
+			final JDFAttributeMap defMap = ((JDFElement) elem).getDefaultAttributeMap();
 			if (defMap != null)
 			{
 				for (int d = attSize - 1; d >= 0; d--)

@@ -77,6 +77,7 @@ import org.cip4.jdflib.auto.JDFAutoDevCaps.EnumContext;
 import org.cip4.jdflib.auto.JDFAutoDeviceCap.EnumCombinedMethod;
 import org.cip4.jdflib.auto.JDFAutoDeviceInfo.EnumDeviceStatus;
 import org.cip4.jdflib.auto.JDFAutoValue.EnumValueUsage;
+import org.cip4.jdflib.core.AttributeInfo.EnumAttributeType;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFConstants;
@@ -84,11 +85,10 @@ import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFException;
 import org.cip4.jdflib.core.JDFResourceLink;
+import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.VString;
-import org.cip4.jdflib.core.AttributeInfo.EnumAttributeType;
-import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.datatypes.JDFAttributeMap;
 import org.cip4.jdflib.datatypes.JDFDateTimeRange;
 import org.cip4.jdflib.datatypes.JDFDateTimeRangeList;
@@ -458,13 +458,14 @@ public class JDFDeviceCapGenerator
 			return;
 		}
 		final KElement parentElem = dcElem.getParentNode_KElement();
-		if (parentElem == null)
+		if (!(parentElem instanceof JDFElement))
 		{
 			return;
 		}
+		JDFElement jP = (JDFElement) parentElem;
 		final String elementName = dcElem.getLocalName();
 
-		if (parentElem.requiredElements().contains(elementName))
+		if (jP.requiredElements().contains(elementName))
 		{
 			dc.setMinOccurs(1);
 		}
@@ -474,7 +475,7 @@ public class JDFDeviceCapGenerator
 			dc.setMinOccurs(0);
 		}
 
-		if (parentElem.uniqueElements().contains(elementName))
+		if (jP.uniqueElements().contains(elementName))
 		{
 			dc.setMaxOccurs(1);
 		}
@@ -579,7 +580,7 @@ public class JDFDeviceCapGenerator
 			final String key = vAttrMapKeys.elementAt(at);
 			final String value = attrmap.get(key);
 
-			EnumAttributeType eAttrType = parElem.getAtrType(key);
+			EnumAttributeType eAttrType = (parElem instanceof JDFElement) ? ((JDFElement) parElem).getAtrType(key) : null;
 			if (eAttrType == null)
 			{
 				eAttrType = EnumAttributeType.string;
@@ -807,7 +808,7 @@ public class JDFDeviceCapGenerator
 					vStates.add(state);
 				}
 
-				final boolean bRequired = parElem.requiredAttributes().contains(key);
+				final boolean bRequired = (parElem instanceof JDFElement) ? ((JDFElement) parElem).requiredAttributes().contains(key) : false;
 				state.setRequired(bRequired);
 
 				EnumListType listType = EnumListType.SingleValue;

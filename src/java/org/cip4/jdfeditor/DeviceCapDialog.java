@@ -96,9 +96,9 @@ import javax.swing.JTextField;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFDoc;
+import org.cip4.jdflib.core.JDFElement.EnumValidationLevel;
 import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.core.KElement;
-import org.cip4.jdflib.core.KElement.EnumValidationLevel;
 import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.XMLDoc;
@@ -136,7 +136,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 
 	private JComboBox chooseValidLevel;
 	EnumFitsValue testlists = EnumFitsValue.Allowed;
-	private EnumValidationLevel validationLevel = KElement.EnumValidationLevel.RecursiveComplete;
+	private EnumValidationLevel validationLevel = EnumValidationLevel.RecursiveComplete;
 
 	public DeviceCapDialog(final JDFDoc doc)
 	{
@@ -351,7 +351,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 		final VString allowedValues = EnumUtil.getNamesVector(EnumValidationLevel.class);
 		allowedValues.removeElementAt(0);
 		chooseValidLevel = new JComboBox(allowedValues);
-		chooseValidLevel.setSelectedItem(KElement.EnumValidationLevel.RecursiveComplete.getName());
+		chooseValidLevel.setSelectedItem(EnumValidationLevel.RecursiveComplete.getName());
 		chooseValidLevel.addActionListener(this);
 		validationPanel.add(chooseValidLevel);
 		outLayout.setConstraints(validationPanel, outConstraints);

@@ -104,10 +104,10 @@ import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFException;
 import org.cip4.jdflib.core.JDFRefElement;
 import org.cip4.jdflib.core.JDFResourceLink;
+import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.VString;
-import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.resource.JDFCreated;
 import org.cip4.jdflib.resource.JDFDeleted;
@@ -393,7 +393,7 @@ public class JDFTreeArea extends JTextArea
 			{
 				final KElement element = attrNode.getElement();
 
-				final VString vValues = element.getNamesVector(attributeName);
+				final VString vValues = (element instanceof JDFElement) ? ((JDFElement) element).getNamesVector(attributeName) : null;
 				String selectedValue = null;
 
 				if (vValues != null && !vValues.isEmpty())
@@ -882,7 +882,7 @@ public class JDFTreeArea extends JTextArea
 
 			else if (kElement instanceof JDFDevCaps && kElement.hasAttribute(AttributeName.DEVCAPREF))
 			{
-				kElementTarget = kElement.getTarget_KElement(kElement.getAttribute(AttributeName.DEVCAPREF), AttributeName.ID);
+				kElementTarget = ((JDFElement) kElement).getTarget_JDFElement(kElement.getAttribute(AttributeName.DEVCAPREF), AttributeName.ID);
 			}
 			else if (kElement instanceof JDFDevCap && kElement.hasAttribute(AttributeName.DEVCAPREFS))
 			{

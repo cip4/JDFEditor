@@ -92,6 +92,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
 import org.cip4.jdflib.core.JDFDoc;
+import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.UrlUtil;
@@ -577,9 +578,9 @@ public class EditorDocument
 		final INIReader ini = Editor.getIniFile();
 
 		final KElement e = m_jdfDoc.getRoot();
-		if (ini.getRemoveDefault())
+		if (ini.getRemoveDefault() && (e instanceof JDFElement))
 		{
-			e.eraseDefaultAttributes(true);
+			((JDFElement) e).eraseDefaultAttributes(true);
 		}
 		if (ini.getRemoveWhite())
 		{
