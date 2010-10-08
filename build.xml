@@ -218,17 +218,19 @@
 			<zipfileset dir="${dist.dir}/JDF Editor.app" includes="Contents/MacOS/JavaApplicationStub" filemode="755" prefix="JDF Editor.app" />
 		</zip>
 	</target>
-	<!-- this looks like a creepy copy/paste bug
 	<target name="dmgappledist" depends="appledist" description="Creates Disk Image for Apple Dist. Must build on a Mac (>= 10.2).">
+		<echo>
+		this ONLY works from a mac - in case you get errors on windows: duh
+		</echo>	
 		<echo>Package appledist</echo>
 		<exec executable="hdiutil" spawn="false">
 			<arg value="create" />
 			<arg value="-srcfolder" />
-			<arg value="${bundle.dir}" />
+			<arg value="${dist.dir}/JDF Editor.app" />
 			<arg value="-volname" />
-			<arg value="Alces" />
-			<arg value="${dist.dir}/bin/Alces.dmg" />
+			<arg value="JDF Editor" />
+			<arg value="${dist.dir}/JDF Editor.dmg" />
 		</exec>
 	</target>
-	-->
+
 </project>
