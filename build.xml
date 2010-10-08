@@ -8,6 +8,9 @@
 		<echo>Make sure you have the JAR files listed in lib/DEPENDENCIES.txt</echo>
 		<!-- Sets properties -->
 		<tstamp />
+		<condition property="isMacOs">
+			<os family="mac" />
+		</condition>
 		
 		<property name="ant.build.javac.target" value="1.5" />
 		
@@ -218,10 +221,12 @@
 			<zipfileset dir="${dist.dir}/JDF Editor.app" includes="Contents/MacOS/JavaApplicationStub" filemode="755" prefix="JDF Editor.app" />
 		</zip>
 	</target>
-	<target name="dmgappledist" depends="appledist" description="Creates Disk Image for Apple Dist. Must build on a Mac (>= 10.2).">
+
+	<target name="dmgappledist" depends="appledist" description="Creates Disk Image for Apple Dist. Must build on a Mac (>= 10.2)." if="isMacOs">
 		<echo>
 		this ONLY works from a mac - in case you get errors on windows: duh
 		</echo>	
+		<delete file="${dist.dir}/JDF Editor.dmg"/>
 		<echo>Package appledist</echo>
 		<exec executable="hdiutil" spawn="false">
 			<arg value="create" />
