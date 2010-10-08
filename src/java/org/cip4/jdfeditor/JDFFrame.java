@@ -1060,6 +1060,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	/**
 	 * Mother of all action dispatchers
+	 * TODO remove and distribute over the relevant classes
 	 * @param e the event that gets checked
 	 */
 	public void actionPerformed(final ActionEvent e)
@@ -1068,11 +1069,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		final INIReader m_iniFile = Editor.getIniFile();
 
 		final Object eSrc = e.getSource();
-		if (eSrc == m_buttonBar.m_saveButton)
-		{
-			save();
-		}
-		else if (eSrc == m_menuBar.m_exportItem)
+		if (eSrc == m_menuBar.m_exportItem)
 		{
 			exportToDevCap();
 		}
@@ -1452,7 +1449,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			}
 		}
 	}
-	
+
 	/**
 	 * Pastes raw copied node
 	 */

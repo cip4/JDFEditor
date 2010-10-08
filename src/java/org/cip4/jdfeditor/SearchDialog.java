@@ -261,8 +261,10 @@ public class SearchDialog extends JDialog implements ActionListener
 					lastPos = 0;
 				if (lastPos >= m_LastResults.size())
 					lastPos = m_LastResults.size() - 1;
-				while (node == null && nextPos != lastPos && nextPos >= 0)
+				boolean bFirst = false; // always search at least once
+				while (bFirst || (node == null && nextPos != lastPos && nextPos >= 0))
 				{
+					bFirst = false;
 					JDFTreeNode tmpNode = m_LastResults.get(nextPos);
 
 					if (ignoreCase)

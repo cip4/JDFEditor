@@ -379,7 +379,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 			add(m_saveItem);
 
 			m_saveAsItem = new JMenuItem(m_littleBundle.getString("SaveAsKey"));
-			m_saveAsItem.addActionListener(m_frame);
+			m_saveAsItem.addActionListener(this);
 			m_saveAsItem.setAccelerator(KeyStroke.getKeyStroke('S', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
 			add(m_saveAsItem);
 			add(new JSeparator());
@@ -1185,8 +1185,8 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		}
 		else if (eSrc == m_helpItem)
 		{
-		    HelpMenuItem i = new HelpMenuItem();
-            i.init();
+			HelpMenuItem i = new HelpMenuItem();
+			i.init();
 		}
 		else if (eSrc == m_preferenceItem)
 		{

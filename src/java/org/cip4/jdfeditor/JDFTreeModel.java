@@ -905,7 +905,7 @@ public class JDFTreeModel extends DefaultTreeModel
 				{
 					if (originalElement instanceof JDFResource && parentElement instanceof JDFResourcePool)
 					{
-						final JDFNode parentResourceNode = ((JDFNode) originalElement).getJDFRoot();
+						final JDFNode parentResourceNode = ((JDFResource) originalElement).getJDFRoot();
 						selectedName = m_frame.m_treeArea.chooseResourceName(parentResourceNode);
 					}
 					else

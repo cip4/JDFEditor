@@ -183,12 +183,13 @@ public class INIReader
 	// ImageIcon unkElemIconS;
 	// ImageIcon unkAttIconS;
 
-	String iconStrings[] = { "Attribute with Error=default", "Attribute with Error (selected)=default", "Element with Error=default", "Element with Error (selected)=default", "Attribute=default",
-			"Attribute (selected)=default", "Inherited Attribute=default", "Inherited Attribute (selected)=default", "PartID Key Attribute=default", "PartID Key Attribute (selected)=default",
-			"Inherited PartID Key Attribute=default", "Inherited PartID Key Attribute (selected)=default", "rRef Attribute=default", "rRef Attriubte (selected)=default", "Element=default",
-			"Element (selected)=default", "JDF Element=default", "JDF Element (selected)=default", "Input rRef Element=default", "Input rRef Element (selected)=default",
-			"Output rRef Element=default", "Output rRef Element (selected)=default", "rRef Element=default", "rRef Element (selected)=default", "Attribute with Warning=default",
-			"Attribute with Warning (selected)=default", "Element with Warning=default", "Element with Warning (selected)=default",
+	String iconStrings[] = { "Attribute with Error=default", "Attribute with Error (selected)=default", "Element with Error=default", "Element with Error (selected)=default",
+			"Attribute=default", "Attribute (selected)=default", "Inherited Attribute=default", "Inherited Attribute (selected)=default", "PartID Key Attribute=default",
+			"PartID Key Attribute (selected)=default", "Inherited PartID Key Attribute=default", "Inherited PartID Key Attribute (selected)=default", "rRef Attribute=default",
+			"rRef Attriubte (selected)=default", "Element=default", "Element (selected)=default", "JDF Element=default", "JDF Element (selected)=default",
+			"Input rRef Element=default", "Input rRef Element (selected)=default", "Output rRef Element=default", "Output rRef Element (selected)=default", "rRef Element=default",
+			"rRef Element (selected)=default", "Attribute with Warning=default", "Attribute with Warning (selected)=default", "Element with Warning=default",
+			"Element with Warning (selected)=default",
 	// "JDF Folder=default"
 	};
 	private final String language = "General/@language";
@@ -209,6 +210,7 @@ public class INIReader
 	private final String xjdfConvertStripping = "Extension/XJDF/@ConvertStripping";
 	private final String xjdfSpanAsAttribute = "Extension/XJDF/@SpanAsAttribute";
 	private final String xjdfMergeRunList = "Extension/XJDF/@MergeRunList";
+	private final String xjdfConvertLayoutPrep = "Extension/XJDF/@ConvertLayoutPrep";
 
 	private final String[] recentFiles = new String[5];
 	private final String recentDevCap = "RecentFiles/@recentDevCap";
@@ -334,8 +336,8 @@ public class INIReader
 	 */
 	public String getGenericAtts()
 	{
-		final String defaultGenerics = "ID Type JobID JobPartID ProductID CustomerID SpawnIDs" + " Class Status PartIDKeys xmlns xmlns:xsi xsi:Type" + " SettingsPolicy BestEffortExceptions"
-				+ " OperatorInterventionExceptions" + " MustHonorExceptions" + " DocIndex Locked DescriptiveName Brand";
+		final String defaultGenerics = "ID Type JobID JobPartID ProductID CustomerID SpawnIDs" + " Class Status PartIDKeys xmlns xmlns:xsi xsi:Type"
+				+ " SettingsPolicy BestEffortExceptions" + " OperatorInterventionExceptions" + " MustHonorExceptions" + " DocIndex Locked DescriptiveName Brand";
 
 		final String s = getAttribute(genericAtts, defaultGenerics);
 		return s;
@@ -1336,7 +1338,7 @@ public class INIReader
 	{
 		return getAttribute(xjdfConvertStripping, "false").equalsIgnoreCase("true") ? true : false;
 	}
-	
+
 	public void setXjdfConvertStripping(final boolean b)
 	{
 		setAttribute(xjdfConvertStripping, b ? "true" : "false");
@@ -1355,11 +1357,27 @@ public class INIReader
 	public boolean getXjdfMergeRunList()
 	{
 		return getAttribute(xjdfMergeRunList, "false").equalsIgnoreCase("true") ? true : false;
-    }
-	
+	}
+
 	public void setXjdfMergeRunList(final boolean b)
 	{
 		setAttribute(xjdfMergeRunList, b ? "true" : "false");
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean getXjdfConvertLOPrep()
+	{
+		return getAttribute(xjdfConvertLayoutPrep, "false").equalsIgnoreCase("true") ? true : false;
+	}
+
+	/**
+	 * @return
+	 */
+	public void setXjdfConvertLOPrep(final boolean b)
+	{
+		setAttribute(xjdfConvertLayoutPrep, b ? "true" : "false");
 	}
 
 }

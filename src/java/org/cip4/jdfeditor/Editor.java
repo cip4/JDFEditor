@@ -152,6 +152,23 @@ public class Editor
 		}
 		my_Editor = new Editor();
 		my_Editor.init(file);
+		/*
+		File log = new File("/share/data/editor.log");
+		try
+		{
+			PrintWriter w = new PrintWriter(log);
+			w.println("Args: " + args.length);
+			for (String arg : args)
+				w.println("Arg1: " + arg);
+			w.flush();
+			w.close();
+		}
+		catch (FileNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		*/
 	}
 
 	// ////////////////////////////////////////////////////////////////
@@ -289,7 +306,7 @@ public class Editor
 	}
 
 	/**
-	 * @return
+	 * @return the about text
 	 */
 	public String getAboutText()
 	{
@@ -305,7 +322,7 @@ public class Editor
 
 	/**
 	 * 
-	 * @return
+	 * @return the name of the editor
 	 */
 	public String getEditorName()
 	{
@@ -318,7 +335,7 @@ public class Editor
 	 */
 	public String getEditorBuildDate()
 	{
-		return "Estimated Build Date - 7 May 2010";
+		return "Estimated Build Date - 7 October 2010";
 	}
 
 	/**
@@ -332,7 +349,7 @@ public class Editor
 
 	/**
 	 * get the model associated with the currently displayed document
-	 * @return
+	 * @return the data model
 	 */
 	public static JDFTreeModel getModel()
 	{
