@@ -26,7 +26,6 @@
 		<array>
 			<string>../lib/activation-1.0.2.jar</string>
 			<string>../lib/commons-lang-2.1.jar</string>
-			<string>../lib/commons-logging-1.0.4.jar</string>
 			<string>../lib/commons-io-1.1.jar</string>
 			<string>../lib/JDFLibJ-2.1.4a.jar</string>
 			<string>../lib/log4j-1.2.8.jar</string>
