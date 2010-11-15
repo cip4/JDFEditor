@@ -87,7 +87,6 @@ import javax.swing.JSeparator;
 import javax.swing.tree.TreePath;
 
 import org.cip4.jdfeditor.dialog.SaveAsXJDFDialog;
-import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.core.KElement;
@@ -189,13 +188,13 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 			{
 				f = EnumFamily.Command;
 			}
-			final JDFDoc jmfDoc = new JDFDoc(ElementName.JMF);
-			jmfDoc.setOriginalFileName("Auto" + mService.getType() + ".jmf");
-			final JDFJMF jmf = jmfDoc.getJMFRoot();
-			final JDFMessage m = jmf.appendMessageElement(f, null);
-			m.setType(mService.getType());
+
+			final JDFJMF jmf = Editor.getEditor().getJMFBuilder().newJMF(f, mService.getType());
+			JDFDoc doc = jmf.getOwnerDocument_JDFElement();
+			doc.setOriginalFileName("Auto" + mService.getType() + ".jmf");
+			final JDFMessage m = jmf.getMessageElement(f, EnumType.getEnum(mService.getType()), 0);
 			extendMessage(m);
-			Editor.getFrame().setJDFDoc(jmfDoc, null);
+			Editor.getFrame().setJDFDoc(doc, null);
 			Editor.getTreeArea().drawTreeView(Editor.getEditorDoc());
 
 			return true;
@@ -351,6 +350,15 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		else if (elem instanceof JDFMessageService)
 		{
 			m_sendMessage = addMenuItem("SendJMF");
+			add(separator);
+		}
+		else if (elem instanceof JDFJMF)
+		{
+			m_sendMessage = addMenuItem("SendJMF");
+			if (ini.getEnableExtensions())
+			{
+				m_saveXJDF = addMenuItem("SaveXJDFKey");
+			}
 			add(separator);
 		}
 		else if (elem != null && elem.getNodeName().equals(XJDF20.rootName))

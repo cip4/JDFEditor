@@ -101,6 +101,7 @@ import org.cip4.jdflib.datatypes.VJDFAttributeMap;
 import org.cip4.jdflib.elementwalker.XPathWalker;
 import org.cip4.jdflib.extensions.XJDF20;
 import org.cip4.jdflib.extensions.xjdfwalker.XJDFToJDFConverter;
+import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourceLinkPool;
 import org.cip4.jdflib.pool.JDFResourcePool;
@@ -1207,18 +1208,22 @@ public class JDFTreeModel extends DefaultTreeModel
 		final boolean bZip = e.hasChildElement(ElementName.JDF, null);
 		final EditorDocument eDoc = Editor.getEditorDoc();
 		final String fn = eDoc.getOriginalFileName();
-		//		if (bZip)
-		//		{
-		//			xjdf20.saveZip(StringUtil.newExtension(fn, "zip"), (JDFNode) e, true);
-		//		}
-		//		else
-		//		{
-		final KElement xJDF = xjdf20.makeNewJDF((JDFNode) e, (VJDFAttributeMap) null);
-		final XMLDoc d = xJDF.getOwnerDocument_KElement();
-		final String fnNew = UrlUtil.newExtension(fn, XJDF20.getExtension());
-		d.write2File(fnNew, 2, false);
-		Editor.getFrame().readFile(new File(fnNew));
-		//		}
+		KElement xJDF = null;
+		if (e instanceof JDFNode)
+		{
+			xJDF = xjdf20.makeNewJDF((JDFNode) e, (VJDFAttributeMap) null);
+		}
+		else if (e instanceof JDFJMF)
+		{
+			xJDF = xjdf20.makeNewJMF((JDFJMF) e);
+		}
+		if (xJDF != null)
+		{
+			final XMLDoc d = xJDF.getOwnerDocument_KElement();
+			final String fnNew = UrlUtil.newExtension(fn, XJDF20.getExtension());
+			d.write2File(fnNew, 2, false);
+			Editor.getFrame().readFile(new File(fnNew));
+		}
 	}
 
 	/**

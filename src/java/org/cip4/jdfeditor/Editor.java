@@ -89,6 +89,7 @@ import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.jmf.JMFBuilder;
 
 /**
  * @author AnderssA ThunellE
@@ -335,7 +336,7 @@ public class Editor
 	 */
 	public String getEditorBuildDate()
 	{
-		return "Estimated Build Date - 7 October 2010";
+		return "Estimated Build Date - 7 November 2010";
 	}
 
 	/**
@@ -345,6 +346,14 @@ public class Editor
 	public String getEditorVersion()
 	{
 		return "Build version " + JDFAudit.software();
+	}
+
+	JMFBuilder getJMFBuilder()
+	{
+		JMFBuilder b = new JMFBuilder();
+		b.setSenderID("JDFEditor");
+
+		return b;
 	}
 
 	/**

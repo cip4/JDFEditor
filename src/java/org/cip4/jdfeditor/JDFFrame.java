@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2009 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2010 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -130,14 +130,12 @@ import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.core.XMLDocUserData.EnumDirtyPolicy;
-import org.cip4.jdflib.datatypes.VJDFAttributeMap;
 import org.cip4.jdflib.goldenticket.BaseGoldenTicket;
 import org.cip4.jdflib.goldenticket.IDPGoldenTicket;
 import org.cip4.jdflib.goldenticket.MISCPGoldenTicket;
 import org.cip4.jdflib.goldenticket.MISPreGoldenTicket;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
-import org.cip4.jdflib.jmf.JMFBuilder;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.util.StringUtil;
 
@@ -165,7 +163,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	EditorTabbedPaneA m_topTabs;
 	EditorTabbedPaneB m_errorTabbedPane;
-
 	JTree m_searchTree;
 
 	/**
@@ -202,8 +199,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 */
 	final MyUndoManager undomanager = new MyUndoManager();
 	final UndoableEditSupport undoSupport = new UndoableEditSupport();
-	public UndoAction undoAction = new UndoAction();
-	public RedoAction redoAction = new RedoAction();
+	UndoAction undoAction = new UndoAction();
+	RedoAction redoAction = new RedoAction();
 
 	/**
 	 * constructor of the frame
@@ -333,6 +330,11 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		}
 	}
 
+	/**
+	 * 
+	 * TODO Please insert comment!
+	 * @param pd
+	 */
 	public void applyLookAndFeel(final PreferenceDialog pd)
 	{
 		try
@@ -735,12 +737,12 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 * @param f 
 	 * @param type 
 	 */
-	private void newJMF(final EnumFamily f, String type)
+	void newJMF(final EnumFamily f, String type)
 	{
 		clearViews();
 		try
 		{
-			JDFJMF jmf = new JMFBuilder().newJMF(f, type);
+			JDFJMF jmf = Editor.getEditor().getJMFBuilder().newJMF(f, type);
 			final VString requiredAttributes = jmf.getMissingAttributes(9999999);
 
 			for (int i = 0; i < requiredAttributes.size(); i++)
@@ -789,15 +791,17 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			jmf = gt.getJMFLevel();
 			gt1 = gt.getGTLevel();
 			BaseGoldenTicket theGT = null;
-			final VJDFAttributeMap vPartMap1 = new VJDFAttributeMap();
 
 			if (gtselect == "MISCP")
 			{
-				theGT = new MISCPGoldenTicket(gt1, null, jmf, mis, true, vPartMap1);
+
+				theGT = new MISCPGoldenTicket(gt1, null, jmf, mis, true, BaseGoldenTicket.createSheetMap(1));
+				theGT.nCols = new int[] { 4, 4 };
 			}
 			else if (gtselect == "MISPre")
 			{
-				theGT = new MISPreGoldenTicket(gt1, null, jmf, mis, vPartMap1);
+				theGT = new MISPreGoldenTicket(gt1, null, jmf, mis, BaseGoldenTicket.createSheetMap(1));
+				theGT.nCols = new int[] { 4, 4 };
 			}
 			else if (gtselect == "IDP")
 			{
