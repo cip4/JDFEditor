@@ -109,7 +109,7 @@
 		<antcall target="windist" />
 	</target>
 	<target name="srcdist" depends="compile" description="Builds a source distribution of
-		        Alces.">
+		        JDFEditor.">
 		<echo>Building JDFEditor source distribution...</echo>
 		<!-- Create dist directories -->
 		<mkdir dir="${dist.src.dir}" />
