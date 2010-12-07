@@ -211,6 +211,12 @@ public class INIReader
 	private final String xjdfSpanAsAttribute = "Extension/XJDF/@SpanAsAttribute";
 	private final String xjdfMergeRunList = "Extension/XJDF/@MergeRunList";
 	private final String xjdfConvertLayoutPrep = "Extension/XJDF/@ConvertLayoutPrep";
+	
+//	HTTP server settings
+	private final String httpIsStarted = "HTTPserver/@IsStarted";
+	private final String httpIpAddress = "HTTPserver/@IpAddress";
+	private final String httpPort = "HTTPserver/@Port";
+	private final String httpStorePath = "HTTPserver/@StorePath";
 
 	private final String[] recentFiles = new String[5];
 	private final String recentDevCap = "RecentFiles/@recentDevCap";
@@ -1379,5 +1385,15 @@ public class INIReader
 	{
 		setAttribute(xjdfConvertLayoutPrep, b ? "true" : "false");
 	}
+
+	public boolean getHttpIsStarted()
+	{
+		return getAttribute(httpIsStarted, "false").equalsIgnoreCase("true") ? true : false;
+	}
+	
+	public void setHttpIsStarted(final boolean b)
+	{
+		setAttribute(httpIsStarted, b ? "true": "false");
+	} 
 
 }
