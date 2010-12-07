@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry excluding="**/.svn/**" kind="src" path="src/java"/>
+	<classpathentry kind="src" path="src/conf"/>
 	<classpathentry kind="src" path="src/help"/>
-	<classpathentry excluding="**/.svn/**" kind="src" path="src/test"/>
+	<classpathentry excluding="**/.svn/**" kind="src" path="src/test/java"/>
 	<classpathentry kind="lib" path="lib/activation-1.0.2.jar"/>
-	<classpathentry kind="lib" path="lib/commons-io-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.0.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang-2.1.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.8.jar"/>
 	<classpathentry kind="lib" path="lib/mailapi.jar"/>
@@ -16,5 +17,8 @@
 	<classpathentry kind="lib" path="lib/tcpmon.jar"/>
 	<classpathentry kind="lib" path="lib/jhall.jar"/>
 	<classpathentry kind="lib" path="lib/rsyntaxtextarea.jar"/>
+	<classpathentry kind="lib" path="lib/org.mortbay.jetty.jar"/>
+	<classpathentry kind="lib" path="lib/javax.servlet.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.0.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
