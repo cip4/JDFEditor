@@ -77,6 +77,7 @@ import java.util.Enumeration;
 import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -84,6 +85,7 @@ import javax.swing.JTree;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
+import org.cip4.jdfeditor.pane.HttpServerPane;
 import org.cip4.jdflib.core.KElement;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
@@ -142,6 +144,10 @@ public class EditorTabbedPaneB extends JTabbedPane
 		Container c = mWindow.getContentPane();
 		JScrollPane tcpMonScrPane = new JScrollPane(c);
 		addTab(m_littleBundle.getString("TCPMon"), null, tcpMonScrPane, m_littleBundle.getString("TCPMon"));
+		
+//		HTTP server tab
+		HttpServerPane httpPanel = new HttpServerPane();
+		addTab(m_littleBundle.getString("HTTPserver"), null, httpPanel.createPane(), m_littleBundle.getString("HTTPserver"));
 	}
 
 	public void refreshView(TreePath path)

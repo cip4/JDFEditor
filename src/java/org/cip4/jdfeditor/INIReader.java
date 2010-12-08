@@ -1394,6 +1394,16 @@ public class INIReader
 	public void setHttpIsStarted(final boolean b)
 	{
 		setAttribute(httpIsStarted, b ? "true": "false");
-	} 
+	}
+	
+	public String getHttpStorePath()
+	{
+		return getAttribute(httpStorePath, "/var/tmp/JDFEditor/ReceivedMessages/");
+	}
+	
+	public void setHttpStorePath(final String p)
+	{
+		setAttribute(httpStorePath, p);
+	}
 
 }
