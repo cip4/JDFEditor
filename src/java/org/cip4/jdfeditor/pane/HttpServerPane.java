@@ -75,11 +75,16 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.ResourceBundle;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -151,16 +156,17 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 		settingsLayout.putConstraint(SpringLayout.WEST, ipLabel, 5, SpringLayout.WEST, settingsPanel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, ipLabel, 10, SpringLayout.NORTH, settingsPanel);
 		
-		JLabel ipValueLabel = new JLabel("127.0.0.1");
-		settingsLayout.putConstraint(SpringLayout.WEST, ipValueLabel, 5, SpringLayout.EAST, ipLabel);
-		settingsLayout.putConstraint(SpringLayout.NORTH, ipValueLabel, 10, SpringLayout.NORTH, settingsPanel);
+		JComboBox ipComboBox = new JComboBox();
+		fillWithIPAddresses(ipComboBox);
+		settingsLayout.putConstraint(SpringLayout.WEST, ipComboBox, 5, SpringLayout.EAST, ipLabel);
+		settingsLayout.putConstraint(SpringLayout.NORTH, ipComboBox, 10, SpringLayout.NORTH, settingsPanel);
 		
 		JLabel portLabel = new JLabel(bundle.getString("Port") + ":");
 		settingsLayout.putConstraint(SpringLayout.WEST, portLabel, 5, SpringLayout.WEST, settingsPanel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, portLabel, 10, SpringLayout.SOUTH, ipLabel);
 		
 		portValueLabel = new JTextField("8080", 5);
-		settingsLayout.putConstraint(SpringLayout.WEST, portValueLabel, 0, SpringLayout.WEST, ipValueLabel);
+		settingsLayout.putConstraint(SpringLayout.WEST, portValueLabel, 0, SpringLayout.WEST, ipComboBox);
 		settingsLayout.putConstraint(SpringLayout.NORTH, portValueLabel, 10, SpringLayout.SOUTH, ipLabel);
 		
 		JLabel statusLabel = new JLabel("Status:");
@@ -172,7 +178,7 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 		settingsLayout.putConstraint(SpringLayout.NORTH, statusValueLabel, 10, SpringLayout.SOUTH, portLabel);
 		
 		settingsPanel.add(ipLabel);
-		settingsPanel.add(ipValueLabel);
+		settingsPanel.add(ipComboBox);
 		settingsPanel.add(portLabel);
 		settingsPanel.add(portValueLabel);
 		settingsPanel.add(statusLabel);
@@ -228,6 +234,27 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 		httpPanel.add(splitPane);
 		
 		return httpPanel;
+	}
+	
+	private void fillWithIPAddresses(JComboBox ipComboBox) {
+	    ipComboBox.removeAllItems();
+        ipComboBox.setEditable(false);
+	    try {
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            while(interfaces.hasMoreElements()) {
+                NetworkInterface ni = interfaces.nextElement();
+                Enumeration<InetAddress> inetAddress = ni.getInetAddresses();
+                while (inetAddress.hasMoreElements()) {
+                    InetAddress address = inetAddress.nextElement();
+                    if (address.isLoopbackAddress()) continue;
+                    log.info("address: " + address.getHostAddress());
+                    ipComboBox.addItem(address.getHostAddress());
+                }
+                log.info("------- next interface");
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
 	}
 
 	public void onDirectoryChange(File f)

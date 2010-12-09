@@ -124,9 +124,9 @@ public class JMFServlet extends HttpServlet {
 		log.debug(msg);
 		// Build incoming Message
 		final String messageBody = toString(req.getInputStream());
-		log.info("Incoming message body: " + messageBody);
-//		String contentType = req.getHeader("Content-type");
-//		log.info("contentType: " + contentType);
+		log.debug("Incoming message body: " + messageBody);
+		String contentType = req.getHeader("Content-type");
+		log.debug("contentType: " + contentType);
 		
 		Date today = Calendar.getInstance().getTime();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss-SSS");
