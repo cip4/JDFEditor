@@ -72,6 +72,8 @@ package org.cip4.jdfeditor.pane;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -94,16 +96,21 @@ import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.apache.log4j.Logger;
 import org.cip4.jdfeditor.Editor;
 import org.cip4.jdfeditor.INIReader;
+import org.cip4.jdfeditor.transport.HttpReceiver;
 
 /**
  * Class that implements a "HTTP server" tab/panel.
  *
  */
-public class HttpServerPane implements FileAlterationListener {
+public class HttpServerPane implements FileAlterationListener, ActionListener {
 	private static final Logger log = Logger.getLogger(HttpServerPane.class);
 	private static ResourceBundle bundle = Editor.getBundle();
 	private static INIReader conf = Editor.getIniFile();
 	
+	private JTextField portValueLabel;
+	private JLabel statusValueLabel;
+	private JButton buttonStart;
+	private JButton buttonStop;
 	private MessageTableModel tableModel = new MessageTableModel();
 	
 	
@@ -135,7 +142,7 @@ public class HttpServerPane implements FileAlterationListener {
 		settingsLayout.putConstraint(SpringLayout.WEST, ipLabel, 5, SpringLayout.WEST, settingsPanel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, ipLabel, 10, SpringLayout.NORTH, settingsPanel);
 		
-		JLabel ipValueLabel = new JLabel("192.168.0.1");
+		JLabel ipValueLabel = new JLabel("127.0.0.1");
 		settingsLayout.putConstraint(SpringLayout.WEST, ipValueLabel, 5, SpringLayout.EAST, ipLabel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, ipValueLabel, 10, SpringLayout.NORTH, settingsPanel);
 		
@@ -143,7 +150,7 @@ public class HttpServerPane implements FileAlterationListener {
 		settingsLayout.putConstraint(SpringLayout.WEST, portLabel, 5, SpringLayout.WEST, settingsPanel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, portLabel, 10, SpringLayout.SOUTH, ipLabel);
 		
-		JTextField portValueLabel = new JTextField("80", 5);
+		portValueLabel = new JTextField("8080", 5);
 		settingsLayout.putConstraint(SpringLayout.WEST, portValueLabel, 0, SpringLayout.WEST, ipValueLabel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, portValueLabel, 10, SpringLayout.SOUTH, ipLabel);
 		
@@ -151,7 +158,7 @@ public class HttpServerPane implements FileAlterationListener {
 		settingsLayout.putConstraint(SpringLayout.WEST, statusLabel, 5, SpringLayout.WEST, settingsPanel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, statusLabel, 10, SpringLayout.SOUTH, portLabel);
 		
-		JLabel statusValueLabel = new JLabel("---");
+		statusValueLabel = new JLabel(bundle.getString("Stopped"));
 		settingsLayout.putConstraint(SpringLayout.WEST, statusValueLabel, 0, SpringLayout.WEST, portValueLabel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, statusValueLabel, 10, SpringLayout.SOUTH, portLabel);
 		
@@ -165,8 +172,12 @@ public class HttpServerPane implements FileAlterationListener {
 		leftPanel.add(settingsPanel, BorderLayout.CENTER);
 		
 		JPanel buttonsPanel = new JPanel();
-		buttonsPanel.add(new JButton("Start"));
-		buttonsPanel.add(new JButton("Stop"));
+		buttonStart = new JButton(bundle.getString("Start"));
+		buttonStart.addActionListener(this);
+		buttonStop = new JButton(bundle.getString("Stop"));
+		buttonStop.addActionListener(this);
+		buttonsPanel.add(buttonStart);
+		buttonsPanel.add(buttonStop);
 		
 		leftPanel.add(buttonsPanel, BorderLayout.SOUTH);
 		
@@ -258,6 +269,21 @@ public class HttpServerPane implements FileAlterationListener {
 	public void onStop(FileAlterationObserver fao)
 	{
 		// TODO Auto-generated method stub
+	}
+
+	public void actionPerformed(ActionEvent e)
+	{
+		if (e.getSource() == buttonStart) {
+			try {
+				HttpReceiver.getInstance().startServer(Integer.parseInt(portValueLabel.getText()));
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+			statusValueLabel.setText(bundle.getString("Started"));
+		} else if (e.getSource() == buttonStop) {
+			HttpReceiver.getInstance().stopServer();
+			statusValueLabel.setText(bundle.getString("Stopped"));
+		}
 	}
 
 }

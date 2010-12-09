@@ -213,7 +213,6 @@ public class INIReader
 	private final String xjdfConvertLayoutPrep = "Extension/XJDF/@ConvertLayoutPrep";
 	
 //	HTTP server settings
-	private final String httpIsStarted = "HTTPserver/@IsStarted";
 	private final String httpIpAddress = "HTTPserver/@IpAddress";
 	private final String httpPort = "HTTPserver/@Port";
 	private final String httpStorePath = "HTTPserver/@StorePath";
@@ -1384,16 +1383,6 @@ public class INIReader
 	public void setXjdfConvertLOPrep(final boolean b)
 	{
 		setAttribute(xjdfConvertLayoutPrep, b ? "true" : "false");
-	}
-
-	public boolean getHttpIsStarted()
-	{
-		return getAttribute(httpIsStarted, "false").equalsIgnoreCase("true") ? true : false;
-	}
-	
-	public void setHttpIsStarted(final boolean b)
-	{
-		setAttribute(httpIsStarted, b ? "true": "false");
 	}
 	
 	public String getHttpStorePath()
