@@ -118,5 +118,9 @@ public class MessageTableModel extends AbstractTableModel {
 		data.add(msg);
 		fireTableDataChanged();
 	}
+	
+	public MessageBean getItem(int i) {
+		return data.get(i);
+	}
 
 }

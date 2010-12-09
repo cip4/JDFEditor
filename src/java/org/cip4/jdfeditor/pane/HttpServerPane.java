@@ -74,6 +74,8 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -103,6 +105,7 @@ import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.apache.log4j.Logger;
 import org.cip4.jdfeditor.Editor;
 import org.cip4.jdfeditor.INIReader;
+import org.cip4.jdfeditor.JDFFrame;
 import org.cip4.jdfeditor.transport.HttpReceiver;
 
 /**
@@ -114,7 +117,7 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 	private static ResourceBundle bundle = Editor.getBundle();
 	private static INIReader conf = Editor.getIniFile();
 	
-	private JFrame frame;
+	private JDFFrame frame;
 	
 	private JTextField portValueLabel;
 	private JLabel statusValueLabel;
@@ -126,7 +129,7 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 	private MessageTableModel tableModel = new MessageTableModel();
 	
 	
-	public HttpServerPane(JFrame frame) {
+	public HttpServerPane(JDFFrame frame) {
 		this.frame = frame;
 		
 		File directory = new File(conf.getHttpStorePath());
@@ -191,6 +194,7 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 		buttonStart.addActionListener(this);
 		buttonStop = new JButton(bundle.getString("Stop"));
 		buttonStop.addActionListener(this);
+		buttonStop.setEnabled(false);
 		buttonsPanel.add(buttonStart);
 		buttonsPanel.add(buttonStop);
 		
@@ -203,6 +207,20 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane scrollPane = new JScrollPane(table);
 		table.setFillsViewportHeight(true);
+		table.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					JTable target = (JTable) e.getSource();
+					int row = target.getSelectedRow();
+					log.debug("row: " + row);
+					if (row == -1) return;
+					MessageBean msg = tableModel.getItem(row);
+					log.debug("file to load: " + msg.getFilePathName());
+					File f = new File(msg.getFilePathName());
+					frame.readFile(f);
+				}
+			}
+		});
 		
 		rightTopPanel.add(scrollPane, BorderLayout.CENTER);
 
@@ -282,6 +300,7 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 		log.debug("file created: " + f.getAbsolutePath());
 		
 		MessageBean msg = new MessageBean();
+		msg.setFilePathName(f.getAbsolutePath());
 		msg.setMessageType("---");
 		msg.setSenderId("Sender-ID");
 		msg.setSize(FileUtils.byteCountToDisplaySize(f.length()));
@@ -319,9 +338,13 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 				ex.printStackTrace();
 			}
 			statusValueLabel.setText(bundle.getString("Started"));
+			buttonStart.setEnabled(false);
+			buttonStop.setEnabled(true);
 		} else if (e.getSource() == buttonStop) {
 			HttpReceiver.getInstance().stopServer();
 			statusValueLabel.setText(bundle.getString("Stopped"));
+			buttonStart.setEnabled(true);
+			buttonStop.setEnabled(false);
 		} else if (e.getSource() == buttonSelectPath) {
 			JFileChooser chooser = new JFileChooser(); 
 			chooser.setCurrentDirectory(new File(conf.getHttpStorePath()));

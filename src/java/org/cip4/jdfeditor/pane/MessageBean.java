@@ -1,6 +1,7 @@
 package org.cip4.jdfeditor.pane;
 
 public class MessageBean {
+	private String filePathName;
 	private String senderId;
 	private String messageType;
 	private String timeReceived;
@@ -8,6 +9,16 @@ public class MessageBean {
 	
 	
 	public MessageBean() {
+	}
+	
+	public String getFilePathName()
+	{
+		return filePathName;
+	}
+	
+	public void setFilePathName(String filePathName)
+	{
+		this.filePathName = filePathName;
 	}
 	
 	public String getSenderId() {
