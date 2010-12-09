@@ -116,6 +116,7 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 	private JButton buttonStart;
 	private JButton buttonStop;
 	private JButton buttonSelectPath;
+	private JLabel labelStorePath;
 	
 	private MessageTableModel tableModel = new MessageTableModel();
 	
@@ -211,7 +212,8 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 		buttonSelectPath = new JButton("...");
 		buttonSelectPath.addActionListener(this);
 		pathPanel.add(buttonSelectPath);
-		pathPanel.add(new JLabel(conf.getHttpStorePath()));
+		labelStorePath = new JLabel(conf.getHttpStorePath());
+		pathPanel.add(labelStorePath);
 		rightBottomPanel.add(pathPanel, BorderLayout.SOUTH);
 		
 		rightPanel.add(rightTopPanel, BorderLayout.CENTER);
@@ -299,7 +301,9 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			chooser.setAcceptAllFileFilterUsed(false);
 			if (chooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) { 
-				System.out.println("getSelectedFile(): " +  chooser.getSelectedFile());
+				log.debug("getSelectedFile(): " +  chooser.getSelectedFile());
+				conf.setHttpStorePath(chooser.getSelectedFile().getAbsolutePath());
+				labelStorePath.setText(chooser.getSelectedFile().getAbsolutePath());
 			}
 		}
 	}
