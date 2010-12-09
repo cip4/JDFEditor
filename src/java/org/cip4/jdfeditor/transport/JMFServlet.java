@@ -70,6 +70,7 @@
  */
 package org.cip4.jdfeditor.transport;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -84,11 +85,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.cip4.jdfeditor.Editor;
+import org.cip4.jdfeditor.INIReader;
 
 
 public class JMFServlet extends HttpServlet {
 	private static final Logger log = Logger.getLogger(JMFServlet.class);
+	private static INIReader conf = Editor.getIniFile();
 	
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
@@ -128,6 +133,12 @@ public class JMFServlet extends HttpServlet {
 		String fileName = formatter.format(today);
 		fileName += "-[MessageType].jmf";
 		log.info("Save message to file: " + fileName);
+		
+		String fullPathFile = conf.getHttpStorePath() + File.separator + fileName;
+		File f = new File(fullPathFile);
+		
+		FileUtils.writeStringToFile(f, messageBody);
+		log.info("Message saved as: " + fullPathFile);
 	}
 	
 	public static String toString(InputStream input) throws IOException {
