@@ -81,8 +81,10 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javax.swing.JButton;
@@ -96,7 +98,10 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.SpringLayout;
+import javax.swing.table.TableRowSorter;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.monitor.FileAlterationListener;
@@ -214,13 +219,21 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 					int row = target.getSelectedRow();
 					log.debug("row: " + row);
 					if (row == -1) return;
-					MessageBean msg = tableModel.getItem(row);
+					int modelRow = target.convertRowIndexToModel(row);
+					log.debug("modelRow: " + modelRow);
+					MessageBean msg = tableModel.getItem(modelRow);
 					log.debug("file to load: " + msg.getFilePathName());
 					File f = new File(msg.getFilePathName());
 					frame.readFile(f);
 				}
 			}
 		});
+		TableRowSorter<MessageTableModel> sorter = new TableRowSorter<MessageTableModel>((MessageTableModel)table.getModel());
+		table.setRowSorter(sorter);
+		List<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
+		sortKeys.add(new RowSorter.SortKey(2, SortOrder.DESCENDING));
+		sorter.setSortKeys(sortKeys);
+
 		
 		rightTopPanel.add(scrollPane, BorderLayout.CENTER);
 
