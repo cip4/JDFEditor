@@ -80,6 +80,8 @@ import java.util.Date;
 import java.util.ResourceBundle;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -107,14 +109,20 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 	private static ResourceBundle bundle = Editor.getBundle();
 	private static INIReader conf = Editor.getIniFile();
 	
+	private JFrame frame;
+	
 	private JTextField portValueLabel;
 	private JLabel statusValueLabel;
 	private JButton buttonStart;
 	private JButton buttonStop;
+	private JButton buttonSelectPath;
+	
 	private MessageTableModel tableModel = new MessageTableModel();
 	
 	
-	public HttpServerPane() {
+	public HttpServerPane(JFrame frame) {
+		this.frame = frame;
+		
 		File directory = new File(conf.getHttpStorePath());
 		FileAlterationObserver observer = new FileAlterationObserver(directory);
 		observer.addListener(this);
@@ -200,7 +208,9 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 		rightBottomPanel.add(new JLabel(bundle.getString("PathMessages") + ":"), BorderLayout.NORTH);
 		JPanel pathPanel = new JPanel();
 		pathPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-		pathPanel.add(new JButton("..."));
+		buttonSelectPath = new JButton("...");
+		buttonSelectPath.addActionListener(this);
+		pathPanel.add(buttonSelectPath);
 		pathPanel.add(new JLabel(conf.getHttpStorePath()));
 		rightBottomPanel.add(pathPanel, BorderLayout.SOUTH);
 		
@@ -283,6 +293,14 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 		} else if (e.getSource() == buttonStop) {
 			HttpReceiver.getInstance().stopServer();
 			statusValueLabel.setText(bundle.getString("Stopped"));
+		} else if (e.getSource() == buttonSelectPath) {
+			JFileChooser chooser = new JFileChooser(); 
+			chooser.setCurrentDirectory(new File(conf.getHttpStorePath()));
+			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			chooser.setAcceptAllFileFilterUsed(false);
+			if (chooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) { 
+				System.out.println("getSelectedFile(): " +  chooser.getSelectedFile());
+			}
 		}
 	}
 

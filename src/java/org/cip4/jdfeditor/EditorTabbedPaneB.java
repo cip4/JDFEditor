@@ -146,7 +146,7 @@ public class EditorTabbedPaneB extends JTabbedPane
 		addTab(m_littleBundle.getString("TCPMon"), null, tcpMonScrPane, m_littleBundle.getString("TCPMon"));
 		
 //		HTTP server tab
-		HttpServerPane httpPanel = new HttpServerPane();
+		HttpServerPane httpPanel = new HttpServerPane(m_frame);
 		addTab(m_littleBundle.getString("HTTPserver"), null, httpPanel.createPane(), m_littleBundle.getString("HTTPserver"));
 	}
 
