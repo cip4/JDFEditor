@@ -124,6 +124,7 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 	
 	private JDFFrame frame;
 	
+	private JComboBox ipComboBox;
 	private JTextField portValueLabel;
 	private JLabel statusValueLabel;
 	private JButton buttonStart;
@@ -164,7 +165,7 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 		settingsLayout.putConstraint(SpringLayout.WEST, ipLabel, 5, SpringLayout.WEST, settingsPanel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, ipLabel, 10, SpringLayout.NORTH, settingsPanel);
 		
-		JComboBox ipComboBox = new JComboBox();
+		ipComboBox = new JComboBox();
 		fillWithIPAddresses(ipComboBox);
 		settingsLayout.putConstraint(SpringLayout.WEST, ipComboBox, 5, SpringLayout.EAST, ipLabel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, ipComboBox, 10, SpringLayout.NORTH, settingsPanel);
@@ -278,7 +279,7 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
                 while (inetAddress.hasMoreElements()) {
                     InetAddress address = inetAddress.nextElement();
                     if (address.isLoopbackAddress()) continue;
-                    log.info("address: " + address.getHostAddress());
+                    log.info("host address: " + address.getHostAddress());
                     ipComboBox.addItem(address.getHostAddress());
                 }
                 log.info("------- next interface");
@@ -346,7 +347,7 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 	{
 		if (e.getSource() == buttonStart) {
 			try {
-				HttpReceiver.getInstance().startServer(Integer.parseInt(portValueLabel.getText()));
+				HttpReceiver.getInstance().startServer((String) ipComboBox.getSelectedItem(), Integer.parseInt(portValueLabel.getText()));
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
