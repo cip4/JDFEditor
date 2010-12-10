@@ -119,6 +119,11 @@ public class MessageTableModel extends AbstractTableModel {
 		fireTableDataChanged();
 	}
 	
+	public void clearAll() {
+		data.clear();
+		fireTableDataChanged();
+	}
+	
 	public MessageBean getItem(int i) {
 		return data.get(i);
 	}

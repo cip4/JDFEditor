@@ -129,6 +129,7 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 	private JLabel statusValueLabel;
 	private JButton buttonStart;
 	private JButton buttonStop;
+	private JButton buttonClear;
 	private JButton buttonSelectPath;
 	private JLabel labelStorePath;
 	
@@ -238,8 +239,9 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 		
 		rightTopPanel.add(scrollPane, BorderLayout.CENTER);
 
-		
-		rightTopPanel.add(new JButton(bundle.getString("ClearAll")), BorderLayout.SOUTH);
+		buttonClear = new JButton(bundle.getString("ClearAll"));
+		buttonClear.addActionListener(this);
+		rightTopPanel.add(buttonClear, BorderLayout.SOUTH);
 		
 		JPanel rightPanel = new JPanel(new BorderLayout());
 		
@@ -359,6 +361,8 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 			statusValueLabel.setText(bundle.getString("Stopped"));
 			buttonStart.setEnabled(true);
 			buttonStop.setEnabled(false);
+		} else if (e.getSource() == buttonClear) {
+			tableModel.clearAll();
 		} else if (e.getSource() == buttonSelectPath) {
 			JFileChooser chooser = new JFileChooser(); 
 			chooser.setCurrentDirectory(new File(conf.getHttpStorePath()));
