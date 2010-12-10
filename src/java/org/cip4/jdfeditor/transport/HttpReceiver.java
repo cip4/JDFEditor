@@ -106,7 +106,7 @@ public class HttpReceiver {
 	
 	public synchronized void startServer(String host, int port, 
 			String jmfContextPath) throws Exception {
-		log.debug("Starting HTTP server on " + host + ":" + port + jmfContextPath);
+		log.info("Starting HTTP server on " + host + ":" + port + jmfContextPath);
 		
 		server = new Server();
 		SocketListener listener = new SocketListener();
@@ -124,7 +124,7 @@ public class HttpReceiver {
         context.addHandler(servlets);
         
         server.start();
-        log.debug("Started HTTP server.");
+        log.info("HTTP server started.");
 	}
 	
 	public synchronized void stopServer() {
