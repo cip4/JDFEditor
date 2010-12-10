@@ -21,7 +21,7 @@ goto end
 @SET CLASSPATH=%CLASSPATH%%LIB_DIR%/activation-1.0.2.jar;
 @SET CLASSPATH=%CLASSPATH%%LIB_DIR%/commons-lang-2.1.jar;
 @SET CLASSPATH=%CLASSPATH%%LIB_DIR%/commons-logging-1.0.4.jar;
-@SET CLASSPATH=%CLASSPATH%%LIB_DIR%/commons-io-1.1.jar;
+@SET CLASSPATH=%CLASSPATH%%LIB_DIR%/commons-io-2.0.jar;
 @SET CLASSPATH=%CLASSPATH%%LIB_DIR%/log4j-1.2.8.jar;
 @SET CLASSPATH=%CLASSPATH%%LIB_DIR%/mailapi.jar;
 @SET CLASSPATH=%CLASSPATH%%LIB_DIR%/xercesImpl.jar;
@@ -29,6 +29,8 @@ goto end
 @SET CLASSPATH=%CLASSPATH%%LIB_DIR%/rsyntaxtextarea.jar;
 @SET CLASSPATH=%CLASSPATH%%LIB_DIR%/tcpmon.jar;
 @SET CLASSPATH=%CLASSPATH%%LIB_DIR%/jhall.jar;
+@SET CLASSPATH=%CLASSPATH%%LIB_DIR%/javax.servlet.jar;
+@SET CLASSPATH=%CLASSPATH%%LIB_DIR%/org.mortbay.jetty.jar;
 
 @SET CLASSPATH=%CLASSPATH%%LIB_DIR%/JDFLibJ-2.1.4a.jar;
 

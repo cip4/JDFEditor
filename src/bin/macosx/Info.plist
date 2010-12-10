@@ -26,7 +26,8 @@
 		<array>
 			<string>../lib/activation-1.0.2.jar</string>
 			<string>../lib/commons-lang-2.1.jar</string>
-			<string>../lib/commons-io-1.1.jar</string>
+			<string>../lib/commons-logging-1.0.4.jar</string>
+			<string>../lib/commons-io-2.0.jar</string>
 			<string>../lib/JDFLibJ-2.1.4a.jar</string>
 			<string>../lib/log4j-1.2.8.jar</string>
 			<string>../lib/mailapi.jar</string>
@@ -35,6 +36,8 @@
 			<string>../lib/rsyntaxtextarea.jar</string>
 			<string>../lib/tcpmon.jar</string>
 			<string>../lib/jhall.jar</string>
+			<string>../lib/javax.servlet.jar</string>
+			<string>../lib/org.mortbay.jetty.jar</string>
 			<string>../conf</string>
 			<string>../classes</string>
 		</array>
