@@ -295,6 +295,13 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
             e.printStackTrace();
         }
 	}
+	
+	private void updateControls(boolean enabled) {
+		buttonStart.setEnabled(enabled);
+		buttonStop.setEnabled(!enabled);
+		ipComboBox.setEnabled(enabled);
+		portValueLabel.setEnabled(enabled);
+	}
 
 	public void onDirectoryChange(File f)
 	{
@@ -372,13 +379,11 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 				ex.printStackTrace();
 			}
 			statusValueLabel.setText(bundle.getString("Started"));
-			buttonStart.setEnabled(false);
-			buttonStop.setEnabled(true);
+			updateControls(false);
 		} else if (e.getSource() == buttonStop) {
 			HttpReceiver.getInstance().stopServer();
 			statusValueLabel.setText(bundle.getString("Stopped"));
-			buttonStart.setEnabled(true);
-			buttonStop.setEnabled(false);
+			updateControls(true);
 		} else if (e.getSource() == buttonClear) {
 			tableModel.clearAll();
 		} else if (e.getSource() == buttonSelectPath) {
