@@ -77,6 +77,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -112,6 +113,10 @@ import org.cip4.jdfeditor.Editor;
 import org.cip4.jdfeditor.INIReader;
 import org.cip4.jdfeditor.JDFFrame;
 import org.cip4.jdfeditor.transport.HttpReceiver;
+import org.cip4.jdflib.core.JDFParser;
+import org.cip4.jdflib.jmf.JDFJMF;
+import org.cip4.jdflib.jmf.JDFMessage;
+import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
 
 /**
  * Class that implements a "HTTP server" tab/panel.
@@ -315,10 +320,23 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 	{
 		log.debug("file created: " + f.getAbsolutePath());
 		
+		String senderId = "none";
+		String type = "---";
+		try {
+			String messageBody = FileUtils.readFileToString(f);
+			JDFJMF jmf = new JDFParser().parseString(messageBody).getJMFRoot();
+			senderId = jmf.getSenderID();
+			
+			JDFMessage m = jmf.getMessageElement(null /*EnumFamily.Query*/, null, 0);
+			type = m.getType();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		MessageBean msg = new MessageBean();
 		msg.setFilePathName(f.getAbsolutePath());
-		msg.setMessageType("---");
-		msg.setSenderId("Sender-ID");
+		msg.setMessageType(type);
+		msg.setSenderId(senderId);
 		msg.setSize(FileUtils.byteCountToDisplaySize(f.length()));
 		
 		Date d = new Date(f.lastModified());

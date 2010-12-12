@@ -89,6 +89,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.cip4.jdfeditor.Editor;
 import org.cip4.jdfeditor.INIReader;
+import org.cip4.jdflib.core.JDFParser;
+import org.cip4.jdflib.jmf.JDFJMF;
+import org.cip4.jdflib.jmf.JDFMessage;
+import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
+import org.cip4.jdflib.jmf.JDFMessage.EnumType;
 
 
 public class JMFServlet extends HttpServlet {
@@ -128,10 +133,22 @@ public class JMFServlet extends HttpServlet {
 		String contentType = req.getHeader("Content-type");
 		log.debug("contentType: " + contentType);
 		
+		JDFJMF jmf = new JDFParser().parseString(messageBody).getJMFRoot();
+		JDFMessage m = jmf.getMessageElement(null/*EnumFamily.Query*/, null, 0);
+//		JDFMessage m = jmf.getMessageElement(EnumFamily.Command, null, 0);
+//		String senderId = m.getSenderID();
+		
+		String type = m.getType();
+		log.debug("type: " + type);
+		
 		Date today = Calendar.getInstance().getTime();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss-SSS");
 		String fileName = formatter.format(today);
-		fileName += "-[MessageType].jmf";
+		if (type == null || type.equals("")) {
+			fileName += "-UnknownType.jmf";
+		} else {
+			fileName += "-" + type + ".jmf";
+		}
 		log.info("Save message to file: " + fileName);
 		
 		String fullPathFile = conf.getHttpStorePath() + File.separator + fileName;
