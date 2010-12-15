@@ -90,15 +90,20 @@ import org.apache.log4j.Logger;
 import org.cip4.jdfeditor.Editor;
 import org.cip4.jdfeditor.INIReader;
 import org.cip4.jdflib.core.JDFParser;
+import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFMessage;
 import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
 import org.cip4.jdflib.jmf.JDFMessage.EnumType;
+import org.w3c.dom.Node;
 
 
 public class JMFServlet extends HttpServlet {
 	private static final Logger log = Logger.getLogger(JMFServlet.class);
 	private static INIReader conf = Editor.getIniFile();
+	private static String TIMESTAMP_PATTERN = "yyyy-MM-dd_hh-mm-ss-SSS";
+	private static int INDENT = 2;
 	
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
@@ -127,35 +132,45 @@ public class JMFServlet extends HttpServlet {
 				+ " @ " + req.getRemoteHost() + " (" + req.getRemoteAddr()
 				+ ")...";
 		log.debug(msg);
-		// Build incoming Message
+//		Build incoming Message
 		final String messageBody = toString(req.getInputStream());
-		log.debug("Incoming message body: " + messageBody);
+		log.debug("Incoming message body: \n" + messageBody);
 		String contentType = req.getHeader("Content-type");
 		log.debug("contentType: " + contentType);
 		
 		JDFJMF jmf = new JDFParser().parseString(messageBody).getJMFRoot();
-		JDFMessage m = jmf.getMessageElement(null/*EnumFamily.Query*/, null, 0);
-//		JDFMessage m = jmf.getMessageElement(EnumFamily.Command, null, 0);
-//		String senderId = m.getSenderID();
+		VElement e = jmf.getMessageVector(null, null);
+		log.debug("e.size: " + e.size());
 		
-		String type = m.getType();
-		log.debug("type: " + type);
-		
-		Date today = Calendar.getInstance().getTime();
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss-SSS");
-		String fileName = formatter.format(today);
-		if (type == null || type.equals("")) {
-			fileName += "-UnknownType.jmf";
-		} else {
-			fileName += "-" + type + ".jmf";
+		for (int i = 0; i < e.size(); i++) {
+			JDFMessage currMessage = jmf.getMessageElement(null, null, i);
+			String type = currMessage.getType();
+			log.debug("currMessage type: " + type);
+			
+			JDFJMF tempRequestMessage = (JDFJMF) jmf.clone();
+			JDFMessage tempMessageFamily = (JDFMessage) currMessage.clone();
+			
+			tempRequestMessage.removeChildren(null, null, null); // remove all children
+			tempRequestMessage.appendChild(tempMessageFamily);
+			log.debug("tempRequestMessage: \n" + tempRequestMessage.toDisplayXML(INDENT));
+			
+			Date today = Calendar.getInstance().getTime();
+			SimpleDateFormat formatter = new SimpleDateFormat(TIMESTAMP_PATTERN);
+			String fileName = formatter.format(today);
+			if (type == null || type.equals("")) {
+				fileName += "-UnknownType.jmf";
+			} else {
+				fileName += "-" + type + ".jmf";
+			}
+			log.info("Save message to file: " + fileName);
+			
+			String fullPathFile = conf.getHttpStorePath() + File.separator + fileName;
+			File f = new File(fullPathFile);
+			
+			FileUtils.writeStringToFile(f, tempRequestMessage.toDisplayXML(INDENT));
+			log.info("Message saved as: " + fullPathFile);
 		}
-		log.info("Save message to file: " + fileName);
 		
-		String fullPathFile = conf.getHttpStorePath() + File.separator + fileName;
-		File f = new File(fullPathFile);
-		
-		FileUtils.writeStringToFile(f, messageBody);
-		log.info("Message saved as: " + fullPathFile);
 	}
 	
 	public static String toString(InputStream input) throws IOException {
