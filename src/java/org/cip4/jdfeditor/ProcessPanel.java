@@ -22,7 +22,9 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
+import javax.swing.tree.TreePath;
 
+import org.apache.log4j.Logger;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFException;
@@ -42,6 +44,8 @@ import org.cip4.jdflib.resource.JDFResource;
 
 public class ProcessPanel extends JPanel
 {
+	private static final Logger log = Logger.getLogger(ProcessPanel.class);
+	
     class PartListener extends MouseAdapter
     {
         @Override
@@ -443,20 +447,27 @@ public class ProcessPanel extends JPanel
         EditorDocument ed=Editor.getEditorDoc();
         if(ed==null)
             return;
+        
+        EditorDocument eDoc = Editor.getEditorDoc();
 
         KElement kElement;
 
         JTree m_jdfTree = ed.getJDFTree();
+        JDFTreeNode node = null;
         if (m_jdfTree != null && ed.getJDFDoc() != null)
         {
             if (m_jdfTree.getSelectionPath() == null)
             {
+            	node = (JDFTreeNode) m_frame.getRootNode().getFirstChild();
                 kElement = ((JDFTreeNode) m_frame.getRootNode().getFirstChild()).getElement();
             }
             else
             {
+            	node = (JDFTreeNode) m_jdfTree.getSelectionPath().getLastPathComponent();
                 kElement = ((JDFTreeNode) m_jdfTree.getSelectionPath().getLastPathComponent()).getElement();
             }
+            
+            eDoc.setSelectionPath(new TreePath(node.getPath()), true);
 
             if (!(kElement instanceof JDFNode))
             {
