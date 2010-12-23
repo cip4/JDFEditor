@@ -93,6 +93,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -132,6 +133,7 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 	private JComboBox ipComboBox;
 	private JTextField portValueLabel;
 	private JLabel statusValueLabel;
+	private JLabel gatewayValueLabel;
 	private JButton buttonStart;
 	private JButton buttonStop;
 	private JButton buttonClear;
@@ -180,11 +182,11 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 		settingsLayout.putConstraint(SpringLayout.WEST, portLabel, 5, SpringLayout.WEST, settingsPanel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, portLabel, 10, SpringLayout.SOUTH, ipLabel);
 		
-		portValueLabel = new JTextField("8080", 5);
+		portValueLabel = new JTextField("8280", 5);
 		settingsLayout.putConstraint(SpringLayout.WEST, portValueLabel, 0, SpringLayout.WEST, ipComboBox);
 		settingsLayout.putConstraint(SpringLayout.NORTH, portValueLabel, 10, SpringLayout.SOUTH, ipLabel);
 		
-		JLabel statusLabel = new JLabel("Status:");
+		JLabel statusLabel = new JLabel(bundle.getString("Status") + ":");
 		settingsLayout.putConstraint(SpringLayout.WEST, statusLabel, 5, SpringLayout.WEST, settingsPanel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, statusLabel, 10, SpringLayout.SOUTH, portLabel);
 		
@@ -192,12 +194,18 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 		settingsLayout.putConstraint(SpringLayout.WEST, statusValueLabel, 0, SpringLayout.WEST, portValueLabel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, statusValueLabel, 10, SpringLayout.SOUTH, portLabel);
 		
+		gatewayValueLabel = new JLabel(HttpReceiver.DEF_PROTOCOL + "://localhost:" + portValueLabel.getText() + HttpReceiver.DEF_PATH);
+		gatewayValueLabel.setEnabled(false);
+		settingsLayout.putConstraint(SpringLayout.WEST, gatewayValueLabel, 5, SpringLayout.WEST, settingsPanel);
+		settingsLayout.putConstraint(SpringLayout.NORTH, gatewayValueLabel, 10, SpringLayout.SOUTH, statusLabel);
+		
 		settingsPanel.add(ipLabel);
 		settingsPanel.add(ipComboBox);
 		settingsPanel.add(portLabel);
 		settingsPanel.add(portValueLabel);
 		settingsPanel.add(statusLabel);
 		settingsPanel.add(statusValueLabel);
+		settingsPanel.add(gatewayValueLabel);
 		
 		leftPanel.add(settingsPanel, BorderLayout.CENTER);
 		
@@ -285,7 +293,7 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
                 Enumeration<InetAddress> inetAddress = ni.getInetAddresses();
                 while (inetAddress.hasMoreElements()) {
                     InetAddress address = inetAddress.nextElement();
-                    if (address.isLoopbackAddress()) continue;
+//                    if (address.isLoopbackAddress()) continue;
                     log.info("host address: " + address.getHostAddress());
                     ipComboBox.addItem(address.getHostAddress());
                 }
@@ -301,6 +309,7 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 		buttonStop.setEnabled(!enabled);
 		ipComboBox.setEnabled(enabled);
 		portValueLabel.setEnabled(enabled);
+		gatewayValueLabel.setEnabled(!enabled);
 	}
 
 	public void onDirectoryChange(File f)
@@ -375,11 +384,13 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 		if (e.getSource() == buttonStart) {
 			try {
 				HttpReceiver.getInstance().startServer((String) ipComboBox.getSelectedItem(), Integer.parseInt(portValueLabel.getText()));
+				statusValueLabel.setText(bundle.getString("Started"));
+				gatewayValueLabel.setText(HttpReceiver.DEF_PROTOCOL + "://" + (String) ipComboBox.getSelectedItem() + ":" + portValueLabel.getText() + HttpReceiver.DEF_PATH);
+				updateControls(false);
 			} catch (Exception ex) {
 				ex.printStackTrace();
+				JOptionPane.showMessageDialog(frame, "Could not start server", "Error", JOptionPane.ERROR_MESSAGE);
 			}
-			statusValueLabel.setText(bundle.getString("Started"));
-			updateControls(false);
 		} else if (e.getSource() == buttonStop) {
 			HttpReceiver.getInstance().stopServer();
 			statusValueLabel.setText(bundle.getString("Stopped"));

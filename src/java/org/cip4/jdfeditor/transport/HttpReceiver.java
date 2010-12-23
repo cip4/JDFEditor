@@ -85,6 +85,9 @@ public class HttpReceiver {
 	
 	private static HttpReceiver instance;
 	
+	public static final String DEF_PROTOCOL = "http";
+	public static final String DEF_PATH = "/jmf/*";
+	
 	
 	private HttpReceiver() {
 	}
@@ -101,7 +104,7 @@ public class HttpReceiver {
     }
 	
 	public void startServer(String host, int port) throws Exception {
-        startServer(host, port, "/jmf/*");
+        startServer(host, port, DEF_PATH);
     }
 	
 	public synchronized void startServer(String host, int port, 
