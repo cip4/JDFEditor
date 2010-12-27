@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2009 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2011 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -71,11 +71,15 @@
 package org.cip4.jdfeditor;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.cip4.jdflib.core.JDFConstants;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFElement.EnumValidationLevel;
@@ -104,6 +108,8 @@ import org.cip4.jdflib.util.StringUtil;
 public class INIReader
 {
 
+	private static final Logger log = Logger.getLogger(INIReader.class);
+	
 	final ImageIcon defaultErrAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ErrorAttIcon.gif");
 	final ImageIcon defaultErrAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ErrorAttIconSelected.gif");
 	final ImageIcon defaultErrElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ErrorElemIcon.gif");
@@ -216,6 +222,11 @@ public class INIReader
 	private final String httpIpAddress = "HTTPserver/@IpAddress";
 	private final String httpPort = "HTTPserver/@Port";
 	private final String httpStorePath = "HTTPserver/@StorePath";
+	
+//	Find dialog
+	private final String findPattern = "Find/@Pattern-";
+	private final String findCaseSensitive = "Find/@CaseSensitive";
+	private final String findWrap = "Find/@Wrap";
 
 	private final String[] recentFiles = new String[5];
 	private final String recentDevCap = "RecentFiles/@recentDevCap";
@@ -1393,6 +1404,44 @@ public class INIReader
 	public void setHttpStorePath(final String p)
 	{
 		setAttribute(httpStorePath, p);
+	}
+	
+	public boolean getFindCaseSensitive()
+	{
+		return getAttribute(findCaseSensitive, "true").equalsIgnoreCase("true") ? true : false;
+	}
+	
+	public void setFindCaseSensitive(final boolean p)
+	{
+		setAttribute(findCaseSensitive, p ? "true" : "false");
+	}
+	
+	public boolean getFindWrap()
+	{
+		return getAttribute(findWrap, "true").equalsIgnoreCase("true") ? true : false;
+	}
+	
+	public void setFindWrap(final boolean p)
+	{
+		setAttribute(findWrap, p ? "true" : "false");
+	}
+	
+	public List<String> getFindPattern()
+	{
+		List<String> res = new ArrayList<String>();
+		for (int i = 0; i < SearchDialog.MAX_ELEMENTS; i++) {
+			String pattern = getAttribute(findPattern + i, "");
+			if (StringUtils.isNotBlank(pattern)) {
+				res.add(pattern);
+			}
+		}
+		return res;
+	}
+	
+	public void setFindPattern(List<String> patternList) {
+		for (int i = 0; i < patternList.size(); i++) {
+			setAttribute(findPattern + i, patternList.get(i));
+		}
 	}
 
 }
