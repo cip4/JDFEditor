@@ -25,7 +25,7 @@
 		<key>ClassPath</key>
 		<array>
 			<string>../lib/activation-1.0.2.jar</string>
-			<string>../lib/commons-lang-2.1.jar</string>
+			<string>../lib/commons-lang-2.5.jar</string>
 			<string>../lib/commons-logging-1.1.1.jar</string>
 			<string>../lib/commons-io-2.0.jar</string>
 			<string>../lib/JDFLibJ-2.1.4a.jar</string>
