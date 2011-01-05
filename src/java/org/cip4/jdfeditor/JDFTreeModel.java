@@ -1293,10 +1293,11 @@ public class JDFTreeModel extends DefaultTreeModel
 	}
 
 	/**
-	 * @param selectionPath
+	 * @param selectionPath the selection path to convert
+	 * @param structuredCaps if true, create a slightly more structured version of caps
 	 * @experimental
 	 */
-	public void saveAsXJDFCaps(final TreePath selectionPath)
+	public void saveAsXJDFCaps(final TreePath selectionPath, boolean structuredCaps)
 	{
 		final JDFTreeNode node = (JDFTreeNode) selectionPath.getLastPathComponent();
 		if (node == null)
@@ -1306,7 +1307,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		final KElement e = node.getElement();
 		final EditorDocument eDoc = Editor.getEditorDoc();
 		final String fn = eDoc.getOriginalFileName();
-		final KElement caps = Caps.createCaps(e, new VString(Editor.getIniFile().getGenericAtts(), " "));
+		final KElement caps = new Caps(e).createCaps(structuredCaps);
 		final XMLDoc d = caps.getOwnerDocument_KElement();
 		final String fnNew = UrlUtil.newExtension(fn, "cap");
 		d.write2File(fnNew, 2, false);

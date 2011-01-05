@@ -94,6 +94,7 @@ import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.jdflib.resource.JDFResource;
+import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
@@ -250,7 +251,7 @@ public class EditorUtils
 
 	/**
 	 * Method getAttributeOptions
-	 * @param w
+	 * @param element 
 	 * @return
 	 */
 	public static String[] getAttributeOptions(final KElement element)
@@ -479,7 +480,7 @@ public class EditorUtils
 	private static EditorDocument[] unpackMIME(final File fts, final String packageName) throws FileNotFoundException, MessagingException, IOException
 	{
 		EditorDocument[] ediDocs;
-		FileInputStream fileStream = new FileInputStream(fts);
+		InputStream fileStream = FileUtil.getBufferedInputStream(fts);
 
 		// in case of spurious email header lines, skipem
 		final byte b[] = new byte[1000];

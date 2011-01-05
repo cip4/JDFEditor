@@ -805,8 +805,8 @@ public class JDFDeviceCapGenerator
 					final String sID = "S_" + Integer.toString(stID);
 					state.setID(sID);
 					stID++;
-					vStates.add(state);
 				}
+				vStates.add(state);
 
 				final boolean bRequired = (parElem instanceof JDFElement) ? ((JDFElement) parElem).requiredAttributes().contains(key) : false;
 				state.setRequired(bRequired);

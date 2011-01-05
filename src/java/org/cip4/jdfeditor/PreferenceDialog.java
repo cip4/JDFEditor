@@ -164,6 +164,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private JCheckBox boxRemDefault;
 	private JCheckBox boxDispDefault;
 	private JCheckBox boxEnableExtension;
+	private JCheckBox boxStructuredCaps;
 	private JCheckBox boxLongID;
 	private JCheckBox boxRemWhite;
 	private JCheckBox boxCheckURL;
@@ -206,6 +207,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private boolean normalizeOpen;
 	private boolean longID;
 	private boolean enableExtensions;
+	private boolean structuredCaps;
 	private boolean generateFull;
 	private boolean ignoreDefaults;
 	private boolean exportValidation;
@@ -349,6 +351,8 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		currDispDefault = iniFile.getDisplayDefault();
 		checkURL = iniFile.getCheckURL();
 		enableExtensions = iniFile.getEnableExtensions();
+		structuredCaps = iniFile.getStructuredCaps();
+
 		genericStrings = iniFile.getGenericAtts();
 		generateFull = iniFile.getGenerateFull();
 		normalizeOpen = iniFile.getNormalizeOpen();
@@ -704,12 +708,19 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		final JPanel panel = new JPanel(null);
 		panel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("ExtOptionsKey")));
 
-		final int y = 30;
+		int y = 30;
 		boxEnableExtension = new JCheckBox(littleBundle.getString("EnableExtensionKey"), enableExtensions);
-		final Dimension d = boxEnableExtension.getPreferredSize();
+		Dimension d = boxEnableExtension.getPreferredSize();
 		boxEnableExtension.setBounds(10, y, d.width, d.height);
 		boxEnableExtension.addActionListener(this);
 		panel.add(boxEnableExtension);
+
+		y += 100;
+		boxStructuredCaps = new JCheckBox(littleBundle.getString("StructuredCapsKey"), structuredCaps);
+		d = boxStructuredCaps.getPreferredSize();
+		boxStructuredCaps.setBounds(10, y, d.width, d.height);
+		boxStructuredCaps.addActionListener(this);
+		panel.add(boxStructuredCaps);
 
 		main.add(panel, BorderLayout.CENTER);
 		return main;
@@ -1434,6 +1445,10 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		{
 			enableExtensions = boxEnableExtension.isSelected();
 		}
+		else if (source == boxStructuredCaps)
+		{
+			structuredCaps = boxStructuredCaps.isSelected();
+		}
 		else if (source == boxIgnoreDefaults)
 		{
 			ignoreDefaults = boxIgnoreDefaults.isSelected();
@@ -1543,6 +1558,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		iniFile.setCheckURL(checkURL);
 		iniFile.setLongID(longID);
 		iniFile.setEnableExtensions(enableExtensions);
+		iniFile.setStructuredCaps(structuredCaps);
 		iniFile.setGenerateFull(generateFull);
 		iniFile.setNormalizeOpen(normalizeOpen);
 		iniFile.setIgnoreDefault(ignoreDefaults);

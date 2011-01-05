@@ -212,6 +212,7 @@ public class INIReader
 	private final String normalizeOpen = "General/@NormalizeOpen";
 
 	private final String enableExtensions = "Extension/@enableExtensions";
+	private final String structuredCaps = "Extension/@StructuredCaps";
 	private final String xjdfSingleNode = "Extension/XJDF/@SingleNode";
 	private final String xjdfConvertStripping = "Extension/XJDF/@ConvertStripping";
 	private final String xjdfSpanAsAttribute = "Extension/XJDF/@SpanAsAttribute";
@@ -553,11 +554,6 @@ public class INIReader
 		return this.iconStrings;
 	}
 
-	public boolean getEnableExtensions()
-	{
-		return getAttribute(enableExtensions, "false").equalsIgnoreCase("true") ? true : false;
-	}
-
 	public boolean getHighlight()
 	{
 		return getAttribute(highlightFN, "").equalsIgnoreCase("on") ? true : false;
@@ -568,9 +564,24 @@ public class INIReader
 		setAttribute(highlightFN, b ? "on" : "off");
 	}
 
+	public boolean getEnableExtensions()
+	{
+		return getAttribute(enableExtensions, "false").equalsIgnoreCase("true") ? true : false;
+	}
+
 	public void setEnableExtensions(final boolean b)
 	{
 		setAttribute(enableExtensions, b ? "true" : "false");
+	}
+
+	public boolean getStructuredCaps()
+	{
+		return getAttribute(structuredCaps, "false").equalsIgnoreCase("true") ? true : false;
+	}
+
+	public void setStructuredCaps(final boolean b)
+	{
+		setAttribute(structuredCaps, b ? "true" : "false");
 	}
 
 	public boolean getReadOnly()
