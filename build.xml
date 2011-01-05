@@ -56,7 +56,7 @@
 		<jar destfile="${dist.dir}/${jar.filename}" basedir="${bin.dir}">
 			<manifest>
 				<attribute name="Main-Class" value="org.cip4.jdfeditor.Editor" />
-				<attribute name="Bundle-Name" value="JDF Editor ${major.version}.${minor.version}.${build.number}" />
+				<attribute name="Bundle-Name" value="JDF Editor ${major.version}.${minor.version}" />
 				<attribute name="Bundle-Vendor" value="CIP4" />
 			</manifest>
 		</jar>
@@ -208,7 +208,7 @@
 			<jarfileset dir="${lib.dir}">
 				<include name="*.jar" />
 			</jarfileset>
-			<jarfileset dir="${dist.dir}/">
+			<jarfileset dir="${dist.dir}">
 				<include name="${jar.filename}" />
 			</jarfileset>
 			<javaproperty name="apple.laf.useScreenMenuBar" value="true" />
