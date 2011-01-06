@@ -71,10 +71,16 @@
 
 package org.cip4.jdfeditor.swtui;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
+import org.cip4.jdfeditor.EditorDocument;
+import org.cip4.jdfeditor.EditorUtils;
 import org.cip4.jdfeditor.INIReader;
 
 import org.eclipse.swt.SWT;
@@ -94,6 +100,7 @@ import org.eclipse.swt.widgets.CoolBar;
 import org.eclipse.swt.widgets.CoolItem;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
@@ -112,6 +119,9 @@ public class EditorSwtMain {
 	private static ResourceBundle bundle;
 	
 	private static final String ICONS_PATH = "icons-nuvola/org/cip4/jdfeditor/icons-nuvola/";
+	
+//	Vector<EditorDocument> m_VjdfDocument = new Vector<EditorDocument>();
+	List<String> documentsList = new ArrayList<String>();
 
 	public EditorSwtMain() {
 	}
@@ -138,7 +148,7 @@ public class EditorSwtMain {
 		shell.setMenuBar(menuBar);
 	}
 	
-	public void createToolBar(Shell shell) {
+	public void createToolBar(final Shell shell) {
 		Composite c = new Composite(shell, SWT.NONE);
 		c.setLayout(new RowLayout(SWT.HORIZONTAL));
 		
@@ -149,10 +159,49 @@ public class EditorSwtMain {
 		
 		Listener listener = new Listener() {
 			public void handleEvent(Event event) {
-				log.debug("event: " + event);
+//				log.debug("event: " + event);
 				ToolItem item = (ToolItem) event.widget;
 				String string = item.getToolTipText();
 				log.debug("string: " + string);
+				
+				if (string.equals(bundle.getString("NewKey"))) {
+//					TODO: show dialog
+				} else if (string.equals(bundle.getString("OpenKey"))) {
+					FileDialog dialog = new FileDialog(shell, SWT.OPEN);
+					dialog.setFilterNames(new String[] { "All accepted files (.xml, .jdf, .jmf, .mim, .mjm, .mjd)",
+							"XML files (.xml)", "JDF files (.jdf)", "JMF files (.jmf)",
+							"MIM files (.mim)", "MJM files (.mjm)", "MJD files (.mjd)",
+							"All Files" });
+					dialog.setFilterExtensions(new String[] { "*.xml;*.jdf;*.jmf;*.mim;*.mjm;*.mjd",
+							"*.xml", "*.jdf", "*.jmf",
+							"*.mim", "*.mjm", "*.mjd",
+							"*.*" });
+					String result = dialog.open();
+					log.debug("selected file: " + result);
+					if (result == null) {
+						return;
+					}
+					
+					if (documentsList.contains(result)) {
+						log.debug("file already opened: " + result);
+//						TODO: switch to open Editor
+					} else {
+						documentsList.add(result);
+						
+						File fts = new File(result);
+						EditorDocument[] eDoc = EditorUtils.getEditorDocuments(fts);
+					}
+					
+					/*File fts = new File(result);
+					int docIndex = EditorDocument.indexOfFile(fts, m_VjdfDocument);
+					log.debug("docIndex: " + docIndex);
+					
+					if (docIndex >= 0) {
+						
+					} else if (fts.exists()) {
+						EditorDocument[] eDoc = EditorUtils.getEditorDocuments(fts);
+					}*/
+				}
 			}
 		};
 		
@@ -166,6 +215,7 @@ public class EditorSwtMain {
 		ToolItem fileOpenToolItem = new ToolItem(tb, SWT.NONE);
 		fileOpenToolItem.setImage(iconOpen);
 		fileOpenToolItem.setToolTipText(bundle.getString("OpenKey"));
+		fileOpenToolItem.addListener(SWT.Selection, listener);
 		
 		Point p = tb.computeSize(SWT.DEFAULT, SWT.DEFAULT);
 		tb.setSize(p);
