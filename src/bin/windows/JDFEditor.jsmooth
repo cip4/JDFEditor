@@ -26,7 +26,7 @@
 <iconLocation>..\..\src\bin\windows\icons\JDFEditor.png</iconLocation>
 <initialMemoryHeap>-1</initialMemoryHeap>
 <mainClassName>org.cip4.jdfeditor.Editor</mainClassName>
-<maximumMemoryHeap>-1</maximumMemoryHeap>
+<maximumMemoryHeap>512M</maximumMemoryHeap>
 <maximumVersion></maximumVersion>
 <minimumVersion>1.5</minimumVersion>
 <skeletonName>Windowed Wrapper</skeletonName>
