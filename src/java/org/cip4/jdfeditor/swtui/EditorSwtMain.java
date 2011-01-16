@@ -72,6 +72,8 @@
 package org.cip4.jdfeditor.swtui;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -82,7 +84,9 @@ import org.apache.log4j.Logger;
 import org.cip4.jdfeditor.EditorDocument;
 import org.cip4.jdfeditor.EditorUtils;
 import org.cip4.jdfeditor.INIReader;
+import org.cip4.jdflib.core.JDFDoc;
 
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionListener;
@@ -108,12 +112,15 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 
 /**
  * Class with main method to run JDFEditor in SWT UI.
  *
  */
-public class EditorSwtMain {
+public class EditorSwtMain
+{
 	private static final Logger log = Logger.getLogger(EditorSwtMain.class);
 	
 	private static ResourceBundle bundle;
@@ -122,11 +129,16 @@ public class EditorSwtMain {
 	
 //	Vector<EditorDocument> m_VjdfDocument = new Vector<EditorDocument>();
 	List<String> documentsList = new ArrayList<String>();
+	
+	private Tree jdfTree;
+	private TreeViewer treeViewer;
 
-	public EditorSwtMain() {
+	public EditorSwtMain()
+	{
 	}
 	
-	public void createMenuBar(Shell shell) {
+	public void createMenuBar(Shell shell)
+	{
 		Menu menuBar = new Menu(shell, SWT.BAR);
 
 		MenuItem menuItemFile = new MenuItem(menuBar, SWT.CASCADE);
@@ -148,7 +160,8 @@ public class EditorSwtMain {
 		shell.setMenuBar(menuBar);
 	}
 	
-	public void createToolBar(final Shell shell) {
+	public void createToolBar(final Shell shell)
+	{
 		Composite c = new Composite(shell, SWT.NONE);
 		c.setLayout(new RowLayout(SWT.HORIZONTAL));
 		
@@ -157,16 +170,20 @@ public class EditorSwtMain {
 		
 		CoolBar coolBar = new CoolBar(c, SWT.HORIZONTAL);
 		
-		Listener listener = new Listener() {
-			public void handleEvent(Event event) {
+		Listener listener = new Listener()
+		{
+			public void handleEvent(Event event)
+			{
 //				log.debug("event: " + event);
 				ToolItem item = (ToolItem) event.widget;
 				String string = item.getToolTipText();
 				log.debug("string: " + string);
 				
-				if (string.equals(bundle.getString("NewKey"))) {
+				if (string.equals(bundle.getString("NewKey")))
+				{
 //					TODO: show dialog
-				} else if (string.equals(bundle.getString("OpenKey"))) {
+				} else if (string.equals(bundle.getString("OpenKey")))
+				{
 					FileDialog dialog = new FileDialog(shell, SWT.OPEN);
 					dialog.setFilterNames(new String[] { "All accepted files (.xml, .jdf, .jmf, .mim, .mjm, .mjd)",
 							"XML files (.xml)", "JDF files (.jdf)", "JMF files (.jmf)",
@@ -178,18 +195,33 @@ public class EditorSwtMain {
 							"*.*" });
 					String result = dialog.open();
 					log.debug("selected file: " + result);
-					if (result == null) {
+					if (result == null)
+					{
 						return;
 					}
 					
-					if (documentsList.contains(result)) {
+					if (documentsList.contains(result))
+					{
 						log.debug("file already opened: " + result);
-//						TODO: switch to open Editor
-					} else {
+//						TODO: switch to existing Editor
+					} else
+					{
 						documentsList.add(result);
 						
 						File fts = new File(result);
-						EditorDocument[] eDoc = EditorUtils.getEditorDocuments(fts);
+//						EditorDocument[] eDoc = EditorUtils.getEditorDocuments(fts);
+//						System.out.println("eDoc: " + eDoc);
+						
+						try {
+							FileInputStream inStream = new FileInputStream(fts);
+							JDFDoc jdfDoc = EditorUtils.parseInStream(inStream, false);
+							
+							System.out.println("jdfDoc: " + jdfDoc);
+//							jdfTree.setInput(jdfDoc);
+							treeViewer.setInput(jdfDoc);
+						} catch (FileNotFoundException e) {
+							e.printStackTrace();
+						}
 					}
 					
 					/*File fts = new File(result);
@@ -224,7 +256,8 @@ public class EditorSwtMain {
 		item.setSize(p2);
 	}
 	
-	public void createMainUI(Composite c) {
+	public void createMainUI(Composite c)
+	{
 		SashForm sashForm = new SashForm(c, SWT.HORIZONTAL);
 		sashForm.setLayout(new GridLayout(2, false));
 		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -233,7 +266,12 @@ public class EditorSwtMain {
 		Composite child1 = new Composite(sashForm, SWT.NONE);
 		child1.setLayout(new GridLayout(1, false));
 		child1.setLayoutData(gd);
-		new Label(child1, SWT.NONE).setText("Label in pane 1");
+//		new Label(child1, SWT.NONE).setText("Label in pane 1");
+		
+		treeViewer = new TreeViewer(child1, SWT.BORDER);
+		treeViewer.getTree().setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL));
+		treeViewer.setContentProvider(new JDFTreeContentProvider());
+		treeViewer.setLabelProvider(new JDFTreeLabelProvider());
 
 		Composite child2 = new Composite(sashForm, SWT.NONE);
 		child2.setLayout(new FillLayout());
@@ -242,7 +280,8 @@ public class EditorSwtMain {
 		sashForm.setWeights(new int[] {20, 80});
 	}
 	
-	public void createUI() {
+	public void createUI()
+	{
 		Display display = new Display();
 		Shell shell = new Shell(display);
 		shell.setMaximized(true);
@@ -271,7 +310,8 @@ public class EditorSwtMain {
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args)
+	{
 		INIReader iniFile = new INIReader();
 		final String language = iniFile.getLanguage();
 		final Locale currentLocale = new Locale(language, language.toUpperCase());
