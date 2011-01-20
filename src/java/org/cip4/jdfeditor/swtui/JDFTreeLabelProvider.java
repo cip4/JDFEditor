@@ -74,9 +74,11 @@ import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFAuditPool;
+import org.cip4.jdflib.resource.JDFCreated;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
+import org.w3c.dom.Node;
 
 public class JDFTreeLabelProvider implements ILabelProvider
 {
@@ -103,6 +105,18 @@ public class JDFTreeLabelProvider implements ILabelProvider
 		{
 		    JDFAuditPool n = (JDFAuditPool) o;
 		    return n.getNodeName();
+		} else if (o instanceof JDFCreated)
+		{
+			JDFCreated n = (JDFCreated) o;
+			return n.getNodeName() + " "
+//			TODO: add timestamp
+				+ ", " + n.getID();
+		} else if (o instanceof Node)
+		{
+			Node n = (Node) o;
+			return n.getNodeName() + "=\"" + n.getNodeValue() + "\"";
+		} else {
+		    System.out.println("getText o: " + o);
 		}
 //		KElement e = (KElement) o;
 //		return e.getNodeName();

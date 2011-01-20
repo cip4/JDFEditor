@@ -75,8 +75,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
@@ -128,7 +130,7 @@ public class EditorSwtMain
 	private static final String ICONS_PATH = "icons-nuvola/org/cip4/jdfeditor/icons-nuvola/";
 	
 //	Vector<EditorDocument> m_VjdfDocument = new Vector<EditorDocument>();
-	List<String> documentsList = new ArrayList<String>();
+	Map<String, JDFDoc> documentsMap = new HashMap<String, JDFDoc>();
 	
 	private Tree jdfTree;
 	private TreeViewer treeViewer;
@@ -200,14 +202,13 @@ public class EditorSwtMain
 						return;
 					}
 					
-					if (documentsList.contains(result))
+					if (documentsMap.containsKey(result))
 					{
 						log.debug("file already opened: " + result);
-//						TODO: switch to existing Editor
+						JDFDoc jdfDoc = documentsMap.get(result);
+						treeViewer.setInput(jdfDoc);
 					} else
 					{
-						documentsList.add(result);
-						
 						File fts = new File(result);
 //						EditorDocument[] eDoc = EditorUtils.getEditorDocuments(fts);
 //						System.out.println("eDoc: " + eDoc);
@@ -219,6 +220,8 @@ public class EditorSwtMain
 							System.out.println("jdfDoc: " + jdfDoc);
 //							jdfTree.setInput(jdfDoc);
 							treeViewer.setInput(jdfDoc);
+							
+							documentsMap.put(result, jdfDoc);
 						} catch (FileNotFoundException e) {
 							e.printStackTrace();
 						}
@@ -277,7 +280,7 @@ public class EditorSwtMain
 		child2.setLayout(new FillLayout());
 		new Button(child2, SWT.PUSH).setText("Button in pane2");
 		
-		sashForm.setWeights(new int[] {20, 80});
+		sashForm.setWeights(new int[] {25, 75});
 	}
 	
 	public void createUI()
@@ -289,7 +292,6 @@ public class EditorSwtMain
 		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
 		shell.setLayoutData(gd);
 		shell.setText(bundle.getString("TitleKey"));
-		shell.open();
 		
 		createMenuBar(shell);
 		createToolBar(shell);
@@ -299,6 +301,8 @@ public class EditorSwtMain
 		c.setLayoutData(gd);
 		
 		createMainUI(c);
+		
+		shell.open();
 		
 		while (! shell.isDisposed()) {
 			if (! display.readAndDispatch())

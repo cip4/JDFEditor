@@ -70,6 +70,10 @@
  */
 package org.cip4.jdfeditor.swtui;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFAudit;
 import org.cip4.jdflib.core.JDFDoc;
@@ -78,8 +82,10 @@ import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFAuditPool;
+import org.cip4.jdflib.resource.JDFCreated;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -101,7 +107,13 @@ public class JDFTreeContentProvider implements ITreeContentProvider
 	public boolean hasChildren(Object element)
 	{
 		System.out.println("hasChildren element: " + element);
-		if (element instanceof KElement)
+		if (element instanceof JDFCreated)
+		{
+		    JDFCreated e = (JDFCreated) element;
+//		    KElement e = (KElement) element;
+//		    e.getAttributeMap();
+		    return e.getAttributes().getLength() > 0 ? true : false;
+		} else if (element instanceof KElement)
 		{
 			KElement e = (KElement) element;
 //			System.out.println("hasChildren e.getNodeName(): " + e.getNodeName() + ", xsi:type: " + e.getXSIType());
@@ -124,35 +136,96 @@ public class JDFTreeContentProvider implements ITreeContentProvider
 //		VElement elements = e.getChildElementVector(null, null);
 //		elements.toArray();
 
-		NodeList nl = null;
-		Object[] resultArray = null;
+		NodeList nlChildNodes = null;
+		Object[] resultArray = new Object[0];
 		if (o instanceof JDFDoc) {
 		    JDFDoc jdfDoc = (JDFDoc) o;
-		    nl = jdfDoc.getChildNodes();
-		    System.out.println("getElements nl.getLength(): " + nl.getLength());
-		    resultArray = new Object[nl.getLength()];
+		    nlChildNodes = jdfDoc.getChildNodes();
+		    
+//		    NamedNodeMap nnmAttr = jdfDoc.getAttributes();
+//		    System.out.println("nnmAttr: " + nnmAttr);
+		    
+//		    System.out.println("getElements nlChildNodes.getLength(): " + nlChildNodes.getLength());
+//		    resultArray = new Object[nlChildNodes.getLength()];
+		} else if (o instanceof JDFJMF) {
+		    JDFJMF jdfJmf = (JDFJMF) o;
+            nlChildNodes = jdfJmf.getChildNodes();
 		} else if (o instanceof JDFNode) {
-		    JDFNode jdfNode = (JDFNode) o;
-		    nl = jdfNode.getChildNodes();
-		    resultArray = new Object[nl.getLength()];
+			List<Object> resultList = new ArrayList<Object>();
+			
+			JDFNode jdfNode = (JDFNode) o;
+			nlChildNodes = jdfNode.getChildNodes();
+		    
+			NamedNodeMap nnmAttr = jdfNode.getAttributes();
+//			System.out.println("nnm: " + nnm);
+			for (int i = 0; i < nnmAttr.getLength(); i++)
+			{
+				Node n = nnmAttr.item(i);
+				System.out.println("attribute: " + n.getNodeName() +
+						", value: " + n.getNodeValue());
+				resultList.add(n);
+			}
+		    
+		    resultArray = resultList.toArray();
 		} else if (o instanceof JDFAuditPool) {
 		    JDFAuditPool jdfAudit = (JDFAuditPool) o;
-            nl = jdfAudit.getChildNodes();
-            resultArray = new Object[nl.getLength()];
+            nlChildNodes = jdfAudit.getChildNodes();
+//            int l = nlChildNodes.getLength();
+//            System.out.println("l: " + l);
+//            resultArray = new Object[l];
+            
+            List<Object> resultList = new ArrayList<Object>();
+            resultArray = resultList.toArray();
+		} else if (o instanceof JDFCreated) {
+		    List<Object> resultList = new ArrayList<Object>();
+		    JDFCreated jdfCreated = (JDFCreated) o;
+		    nlChildNodes = jdfCreated.getChildNodes();
+		    
+		    NamedNodeMap nnmAttr = jdfCreated.getAttributes();
+		    for (int i = 0; i < nnmAttr.getLength(); i++)
+            {
+		        Node n = nnmAttr.item(i);
+		        resultList.add(n);
+            }
+		    resultArray = resultList.toArray();
 		}
 		
-		for (int i = 0; i < nl.getLength(); i++)
+		for (int i = 0; i < nlChildNodes.getLength(); i++)
 		{
-			if (nl.item(i) instanceof JDFNode) {
-				JDFNode n = (JDFNode) nl.item(i);
-				resultArray[i] = n;
-			} else if (nl.item(i) instanceof JDFJMF) {
-				JDFJMF n = (JDFJMF) nl.item(i);
-			} if (nl.item(i) instanceof JDFAuditPool) {
-			    JDFAuditPool n = (JDFAuditPool) nl.item(i);
-			    resultArray[i] = n;
+			if (nlChildNodes.item(i) instanceof JDFNode) {
+				JDFNode n = (JDFNode) nlChildNodes.item(i);
+				
+				List<Object> l = Arrays.asList(resultArray);
+				List<Object> l1 = new ArrayList<Object>(l);
+				l1.add(n);
+				
+				resultArray = l1.toArray();
+			} else if (nlChildNodes.item(i) instanceof JDFJMF) {
+			    JDFJMF n = (JDFJMF) nlChildNodes.item(i);
+                
+                List<Object> l = Arrays.asList(resultArray);
+                List<Object> l1 = new ArrayList<Object>(l);
+                l1.add(n);
+                
+                resultArray = l1.toArray();
+			} else if (nlChildNodes.item(i) instanceof JDFAuditPool) {
+			    JDFAuditPool n = (JDFAuditPool) nlChildNodes.item(i);
+			    
+			    List<Object> l = Arrays.asList(resultArray);
+				List<Object> l1 = new ArrayList<Object>(l);
+				l1.add(n);
+				
+				resultArray = l1.toArray();
+			} else if (nlChildNodes.item(i) instanceof JDFCreated) {
+				JDFCreated n = (JDFCreated) nlChildNodes.item(i);
+			    
+			    List<Object> l = Arrays.asList(resultArray);
+				List<Object> l1 = new ArrayList<Object>(l);
+				l1.add(n);
+				
+				resultArray = l1.toArray();
 			} else {
-				Node n = nl.item(i);
+				Node n = nlChildNodes.item(i);
 				if (n.getNodeType() == Node.COMMENT_NODE)
 				{
 					System.out.println("getElements comment node: " + n/*.getNodeName()*/);
