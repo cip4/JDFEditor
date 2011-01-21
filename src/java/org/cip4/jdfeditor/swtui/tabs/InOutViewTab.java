@@ -70,57 +70,42 @@
  */
 package org.cip4.jdfeditor.swtui.tabs;
 
-import java.util.ResourceBundle;
-
-import org.cip4.jdfeditor.swtui.EditorSwtMain;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.widgets.Canvas;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Text;
 
-public class ProcessViewTab implements ISelectionChangedListener {
-	private static ResourceBundle bundle = EditorSwtMain.bundle;
+public class InOutViewTab implements ISelectionChangedListener
+{
 	private TreeViewer treeViewer;
+	private Text text;
 
-	public ProcessViewTab(TreeViewer treeViewer)
+	public InOutViewTab(TreeViewer treeViewer)
 	{
 		this.treeViewer = treeViewer;
 		treeViewer.addSelectionChangedListener(this);
 	}
 
-	public Control createUI(Composite c)
+	public Control createUI(Composite composite)
 	{
-		final Canvas canvas = new Canvas(c, SWT.NONE);
-//		canvas.setSize(150, 150);
-//		canvas.setLocation(20, 20);
+		Composite c = new Composite(composite, SWT.NONE);
+		c.setLayout(new FillLayout());
 
-		canvas.addPaintListener(new PaintListener() {
-			public void paintControl(PaintEvent e)
-			{
-				e.gc.drawRectangle(10, 10, 40, 40);
-				e.gc.dispose();
-			}
-		});
+		text = new Text(c, SWT.BORDER);
+//		text.setText("text-01");
 
-//		GC gc = new GC(canvas);
-//		gc.setLineWidth(4);
-//		gc.drawRectangle(10, 10, 40, 45);
-//		gc.dispose();
-
-		return canvas;
+		return c;
 	}
 
 	public void selectionChanged(SelectionChangedEvent e)
 	{
 		ISelection is = treeViewer.getSelection();
 //		System.out.println("is: " + is);
+		text.setText(is.toString());
 	}
-
 }

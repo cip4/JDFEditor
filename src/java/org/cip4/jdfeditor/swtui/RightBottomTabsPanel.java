@@ -68,59 +68,35 @@
  *  
  * 
  */
-package org.cip4.jdfeditor.swtui.tabs;
+package org.cip4.jdfeditor.swtui;
 
 import java.util.ResourceBundle;
 
-import org.cip4.jdfeditor.swtui.EditorSwtMain;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.swt.widgets.Text;
 
-public class ProcessViewTab implements ISelectionChangedListener {
+public class RightBottomTabsPanel
+{
 	private static ResourceBundle bundle = EditorSwtMain.bundle;
-	private TreeViewer treeViewer;
 
-	public ProcessViewTab(TreeViewer treeViewer)
+	public RightBottomTabsPanel()
 	{
-		this.treeViewer = treeViewer;
-		treeViewer.addSelectionChangedListener(this);
 	}
 
-	public Control createUI(Composite c)
+	public void createUI(Composite c)
 	{
-		final Canvas canvas = new Canvas(c, SWT.NONE);
-//		canvas.setSize(150, 150);
-//		canvas.setLocation(20, 20);
+		TabFolder tabFolder = new TabFolder(c, SWT.NONE);
 
-		canvas.addPaintListener(new PaintListener() {
-			public void paintControl(PaintEvent e)
-			{
-				e.gc.drawRectangle(10, 10, 40, 40);
-				e.gc.dispose();
-			}
-		});
+		TabItem tabItem = new TabItem(tabFolder, SWT.NULL);
+		tabItem.setText(bundle.getString("ValidationResultKey"));
+		Text text = new Text(tabFolder, SWT.BORDER);
+		text.setText("text-01");
+		tabItem.setControl(text);
 
-//		GC gc = new GC(canvas);
-//		gc.setLineWidth(4);
-//		gc.drawRectangle(10, 10, 40, 45);
-//		gc.dispose();
-
-		return canvas;
+		TabItem tabItem2 = new TabItem(tabFolder, SWT.NULL);
+		tabItem2.setText(bundle.getString("SchemaOutputKey"));
 	}
-
-	public void selectionChanged(SelectionChangedEvent e)
-	{
-		ISelection is = treeViewer.getSelection();
-//		System.out.println("is: " + is);
-	}
-
 }

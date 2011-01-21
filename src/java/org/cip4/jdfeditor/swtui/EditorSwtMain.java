@@ -87,6 +87,9 @@ import org.cip4.jdfeditor.EditorUtils;
 import org.cip4.jdfeditor.INIReader;
 import org.cip4.jdflib.core.JDFDoc;
 
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -292,11 +295,14 @@ public class EditorSwtMain
 		rightBottomComposite.setLayout(new FillLayout());
 		
 //		new Button(rightTopComposite, SWT.PUSH).setText("Button in pane3");
-		RightTopTabsPanel rtp = new RightTopTabsPanel();
+		RightTopTabsPanel rtp = new RightTopTabsPanel(treeViewer);
 		rtp.createUI(rightTopComposite);
 		
-		new Button(rightBottomComposite, SWT.PUSH).setText("Button in pane4");
-		verticalSashForm.setWeights(new int[] {75, 25});
+//		new Button(rightBottomComposite, SWT.PUSH).setText("Button in pane4");
+		RightBottomTabsPanel rbtp = new RightBottomTabsPanel();
+		rbtp.createUI(rightBottomComposite);
+		
+		verticalSashForm.setWeights(new int[] {55, 45});
 		
 		sashForm.setWeights(new int[] {25, 75});
 	}

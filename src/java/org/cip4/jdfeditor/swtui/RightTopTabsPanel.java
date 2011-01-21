@@ -72,7 +72,9 @@ package org.cip4.jdfeditor.swtui;
 
 import java.util.ResourceBundle;
 
+import org.cip4.jdfeditor.swtui.tabs.InOutViewTab;
 import org.cip4.jdfeditor.swtui.tabs.ProcessViewTab;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -82,24 +84,28 @@ import org.eclipse.swt.widgets.Text;
 
 public class RightTopTabsPanel {
 	private static ResourceBundle bundle = EditorSwtMain.bundle;
+	private TreeViewer treeViewer;
 	
-	public RightTopTabsPanel()
+	public RightTopTabsPanel(TreeViewer treeViewer)
 	{
+	    this.treeViewer = treeViewer;
 	}
 	
 	public void createUI(Composite c)
 	{
-		TabFolder tabFolder = new TabFolder(c, SWT.BORDER);
+		TabFolder tabFolder = new TabFolder(c, SWT.NONE);
 		
 		TabItem tabItem = new TabItem(tabFolder, SWT.NULL);
 		tabItem.setText(bundle.getString("NextNeighbourKey"));
-		Text text = new Text(tabFolder, SWT.BORDER);
-		text.setText("text-01");
-		tabItem.setControl(text);
+//		Text text = new Text(tabFolder, SWT.BORDER);
+//		text.setText("text-01");
+		InOutViewTab iovt = new InOutViewTab(treeViewer);
+//		iovt.createUI(c);
+		tabItem.setControl(iovt.createUI(tabFolder) /*text*/);
 		
 		TabItem tabItem2 = new TabItem(tabFolder, SWT.NULL);
 		tabItem2.setText(bundle.getString("ProcessViewKey"));
-		ProcessViewTab pvt = new ProcessViewTab();
+		ProcessViewTab pvt = new ProcessViewTab(treeViewer);
 		tabItem2.setControl(pvt.createUI(tabFolder));
 	}
 }
