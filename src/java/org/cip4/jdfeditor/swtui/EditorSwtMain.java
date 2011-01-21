@@ -68,7 +68,6 @@
  *  
  * 
  */
-
 package org.cip4.jdfeditor.swtui;
 
 import java.io.File;
@@ -125,7 +124,7 @@ public class EditorSwtMain
 {
 	private static final Logger log = Logger.getLogger(EditorSwtMain.class);
 	
-	private static ResourceBundle bundle;
+	public static ResourceBundle bundle;
 	
 	private static final String ICONS_PATH = "icons-nuvola/org/cip4/jdfeditor/icons-nuvola/";
 	
@@ -277,8 +276,27 @@ public class EditorSwtMain
 		treeViewer.setLabelProvider(new JDFTreeLabelProvider());
 
 		Composite child2 = new Composite(sashForm, SWT.NONE);
-		child2.setLayout(new FillLayout());
-		new Button(child2, SWT.PUSH).setText("Button in pane2");
+//		child2.setLayout(new FillLayout());
+		child2.setLayout(new GridLayout(1, true));
+		child2.setLayoutData(gd);
+//		new Button(child2, SWT.PUSH).setText("Button in pane2");
+		
+		SashForm verticalSashForm = new SashForm(child2, SWT.VERTICAL);
+		verticalSashForm.setLayout(new GridLayout(1, true));
+		verticalSashForm.setLayoutData(gd);
+		
+		Composite rightTopComposite = new Composite(verticalSashForm, SWT.NONE);
+		rightTopComposite.setLayout(new FillLayout());
+		
+		Composite rightBottomComposite = new Composite(verticalSashForm, SWT.NONE);
+		rightBottomComposite.setLayout(new FillLayout());
+		
+//		new Button(rightTopComposite, SWT.PUSH).setText("Button in pane3");
+		RightTopTabsPanel rtp = new RightTopTabsPanel();
+		rtp.createUI(rightTopComposite);
+		
+		new Button(rightBottomComposite, SWT.PUSH).setText("Button in pane4");
+		verticalSashForm.setWeights(new int[] {75, 25});
 		
 		sashForm.setWeights(new int[] {25, 75});
 	}
