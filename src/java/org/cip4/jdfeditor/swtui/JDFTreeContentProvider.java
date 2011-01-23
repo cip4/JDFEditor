@@ -82,6 +82,8 @@ import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFAuditPool;
+import org.cip4.jdflib.pool.JDFResourceLinkPool;
+import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.jdflib.resource.JDFCreated;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -188,6 +190,12 @@ public class JDFTreeContentProvider implements ITreeContentProvider
 		        resultList.add(n);
             }
 		    resultArray = resultList.toArray();
+		} else if (o instanceof JDFResourceLinkPool) {
+			JDFResourceLinkPool jdfRlp = (JDFResourceLinkPool) o;
+		    nlChildNodes = jdfRlp.getChildNodes();
+		} else if (o instanceof JDFResourcePool) {
+			JDFResourcePool jdfRp = (JDFResourcePool) o;
+		    nlChildNodes = jdfRp.getChildNodes();
 		}
 		
 		for (int i = 0; i < nlChildNodes.getLength(); i++)
@@ -218,6 +226,22 @@ public class JDFTreeContentProvider implements ITreeContentProvider
 				resultArray = l1.toArray();
 			} else if (nlChildNodes.item(i) instanceof JDFCreated) {
 				JDFCreated n = (JDFCreated) nlChildNodes.item(i);
+			    
+			    List<Object> l = Arrays.asList(resultArray);
+				List<Object> l1 = new ArrayList<Object>(l);
+				l1.add(n);
+				
+				resultArray = l1.toArray();
+			} else if (nlChildNodes.item(i) instanceof JDFResourceLinkPool) {
+				JDFResourceLinkPool n = (JDFResourceLinkPool) nlChildNodes.item(i);
+			    
+			    List<Object> l = Arrays.asList(resultArray);
+				List<Object> l1 = new ArrayList<Object>(l);
+				l1.add(n);
+				
+				resultArray = l1.toArray();
+			} else if (nlChildNodes.item(i) instanceof JDFResourcePool) {
+				JDFResourcePool n = (JDFResourcePool) nlChildNodes.item(i);
 			    
 			    List<Object> l = Arrays.asList(resultArray);
 				List<Object> l1 = new ArrayList<Object>(l);

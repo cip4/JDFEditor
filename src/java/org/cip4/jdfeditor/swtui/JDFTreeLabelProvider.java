@@ -74,6 +74,8 @@ import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFAuditPool;
+import org.cip4.jdflib.pool.JDFResourceLinkPool;
+import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.jdflib.resource.JDFCreated;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -111,8 +113,17 @@ public class JDFTreeLabelProvider implements ILabelProvider
 			return n.getNodeName() + " "
 //			TODO: add timestamp
 				+ ", " + n.getID();
+		} else if (o instanceof JDFResourceLinkPool)
+		{
+			JDFResourceLinkPool n = (JDFResourceLinkPool) o;
+			return n.getNodeName();
+		} else if (o instanceof JDFResourcePool)
+		{
+			JDFResourcePool n = (JDFResourcePool) o;
+			return n.getNodeName();
 		} else if (o instanceof Node)
 		{
+//			show attributes: name="value"
 			Node n = (Node) o;
 			return n.getNodeName() + "=\"" + n.getNodeValue() + "\"";
 		} else {
