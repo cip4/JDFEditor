@@ -71,56 +71,84 @@
 package org.cip4.jdfeditor.swtui.tabs;
 
 import java.util.ResourceBundle;
+import java.util.Vector;
 
+import org.cip4.jdfeditor.ProcessPart;
 import org.cip4.jdfeditor.swtui.EditorSwtMain;
+import org.cip4.jdflib.core.VElement;
+import org.cip4.jdflib.node.JDFNode;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-public class ProcessViewTab implements ISelectionChangedListener {
+public class ProcessViewTab extends Canvas implements ISelectionChangedListener
+{
 	private static ResourceBundle bundle = EditorSwtMain.bundle;
 	private TreeViewer treeViewer;
+	private static int x = 10;
+	private static int y = 10;
+	private JDFNode jdfNode;
 
-	public ProcessViewTab(TreeViewer treeViewer)
+	public ProcessViewTab(Composite parent, int style)
+	{
+		super(parent, style);
+	}
+	
+	public void setTreeViewer(TreeViewer treeViewer)
 	{
 		this.treeViewer = treeViewer;
 		treeViewer.addSelectionChangedListener(this);
-	}
-
-	public Control createUI(Composite c)
-	{
-		final Canvas canvas = new Canvas(c, SWT.NONE);
-//		canvas.setSize(150, 150);
-//		canvas.setLocation(20, 20);
-
-		canvas.addPaintListener(new PaintListener() {
+		
+		addDisposeListener(new DisposeListener() {
+	         public void widgetDisposed(DisposeEvent e) {
+//	        	 ProcessViewTab.this.widgetDisposed(e);
+	         }
+		});
+		
+		addPaintListener(new PaintListener() {
 			public void paintControl(PaintEvent e)
 			{
-				e.gc.drawRectangle(10, 10, 40, 40);
-				e.gc.dispose();
+				ProcessViewTab.this.paintControl(e);
 			}
 		});
-
-//		GC gc = new GC(canvas);
-//		gc.setLineWidth(4);
-//		gc.drawRectangle(10, 10, 40, 45);
-//		gc.dispose();
-
-		return canvas;
 	}
-
+	
+	public void paintControl(PaintEvent e)
+	{
+//		System.out.println("paintControl e: " + e);
+		e.gc.drawRectangle(x++, y++, 40, 40);
+		
+		/*JDFNode rootJDF = jdfNode;
+		VElement vJDFNodes = new VElement();
+        vJDFNodes.add(rootJDF);
+        
+        vJDFNodes.addAll(rootJDF.getChildElementVector("JDF", null, null, false, -1,false));
+        
+        final Vector _vParts = new Vector();*/
+	}
+	
 	public void selectionChanged(SelectionChangedEvent e)
 	{
-		ISelection is = treeViewer.getSelection();
-//		System.out.println("is: " + is);
+		TreeSelection ts = (TreeSelection) treeViewer.getSelection();
+		Object o = ts.getFirstElement();
+		if (o instanceof JDFNode)
+		{
+			jdfNode = (JDFNode) o;
+//			System.out.println("ProcessViewTab2 is: " + is);
+			redraw();
+		}
 	}
 
 }

@@ -105,7 +105,8 @@ public class RightTopTabsPanel {
 		
 		TabItem tabItem2 = new TabItem(tabFolder, SWT.NULL);
 		tabItem2.setText(bundle.getString("ProcessViewKey"));
-		ProcessViewTab pvt = new ProcessViewTab(treeViewer);
-		tabItem2.setControl(pvt.createUI(tabFolder));
+		ProcessViewTab pvt2 = new ProcessViewTab(tabFolder, SWT.BORDER);
+		pvt2.setTreeViewer(treeViewer);
+		tabItem2.setControl(pvt2);
 	}
 }
