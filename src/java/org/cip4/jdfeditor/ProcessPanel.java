@@ -511,15 +511,15 @@ public class ProcessPanel extends JPanel
     }
 
     /**
-         * @param rootJDF
-         */
-        private void drawLeafNode(JDFNode rootJDF)
-        {
-            y = 20;
-            final ProcessPart procPart = addPart(new ProcessPart(rootJDF, ProcessPart.NODE,null));
-            procPart.setPos(x, y);
-            x += procPart.rawWidth + esX;
-       }
+     * @param rootJDF
+     */
+    private void drawLeafNode(JDFNode rootJDF)
+    {
+    	y = 20;
+    	final ProcessPart procPart = addPart(new ProcessPart(rootJDF, ProcessPart.NODE,null));
+    	procPart.setPos(x, y);
+    	x += procPart.rawWidth + esX;
+    }
 
         /**
          * Get the node to search for in the Process View.
@@ -545,6 +545,7 @@ public class ProcessPanel extends JPanel
             if (node != null)
                 Editor.getFrame().m_treeArea.findNode(node);
         }
+
     /**
      * @param rootJDF
      * @param parentPart
