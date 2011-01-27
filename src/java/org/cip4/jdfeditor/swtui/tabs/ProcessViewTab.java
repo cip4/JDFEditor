@@ -177,6 +177,9 @@ public class ProcessViewTab extends Canvas implements ISelectionChangedListener
 	public void drawProcessView()
 	{
 		JDFNode rootJDF = jdfNode;
+		if (rootJDF == null)
+			return;
+		clear();
 		
 		setupVariables();
 		
@@ -199,6 +202,10 @@ public class ProcessViewTab extends Canvas implements ISelectionChangedListener
 		{
 			drawLeafNode(rootJDF);
 		}
+		
+		drawOutputLinks(parentPart);
+		
+//		TODO: setPreferredSize(calcSize());
 
 	}
 	
@@ -412,7 +419,18 @@ public class ProcessViewTab extends Canvas implements ISelectionChangedListener
 			}
         }
 	}
-	
+
+	/**
+	 * return true if part is already in the list
+	 * 
+	 * @param part - the ProcessPart to check
+	 * @return
+	 */
+	private boolean hasPart(ProcessPartWidget part)
+	{
+		return vParts.indexOf(part) >= 0;
+	}
+
 	private ProcessPartWidget addPart(ProcessPartWidget part)
 	{
 		final int partPos = vParts.indexOf(part);
@@ -461,6 +479,51 @@ public class ProcessViewTab extends Canvas implements ISelectionChangedListener
 		final ProcessPartWidget procPart = addPart(new ProcessPartWidget(new Composite(this, SWT.BORDER), SWT.BORDER, rootJDF, ProcessPartWidget.NODE, null));
 		procPart.setPos(x, y);
 		x += procPart.rawWidth + esX;
+	}
+
+	/**
+	 * @param rootJDF
+	 * @param parentPart
+	 */
+	private void drawOutputLinks(ProcessPartWidget partRoot)
+	{
+		int outResStart = parentPart.rawWidth + parentPart.getxPos();
+
+		JDFNode rootJDF = (JDFNode) partRoot.getElem();
+		final VElement vOutputLinks = rootJDF.getResourceLinks(null, new JDFAttributeMap(AttributeName.USAGE, EnumUsage.Output), null);
+		if (vOutputLinks != null && !vOutputLinks.isEmpty())
+		{
+			int w = 0;
+			y = 20;
+			Vector vTmp = new Vector();
+
+			for (int i = 0; i < vOutputLinks.size(); i++)
+			{
+				final JDFResourceLink outputLink = (JDFResourceLink) vOutputLinks.get(i);
+				if (outputLink == null)
+					continue;
+				JDFResource r = outputLink.getLinkRoot();
+
+				if (r != null)
+				{
+					ProcessPartWidget outputPart = new ProcessPartWidget(new Composite(this, SWT.BORDER), SWT.BORDER, r, ProcessPartWidget.RES_EXTERNAL, outputLink);
+
+					if (!hasPart(outputPart))
+					{
+						vTmp.add(outputPart);
+					}
+					if (rootJDF.hasChildElement("JDF", null))
+						x = outResStart + 40;
+					outputPart = addPart(outputPart);
+					outputPart.setPos(x, y);
+					partRoot.addTovOutRes(outputPart);
+					w = Math.max(w, outputPart.rawWidth);
+					y += outputPart.rawHeight + esY;
+				}
+			}
+			rescale(w, vTmp);
+			x += w + esX;
+		}
 	}
 
 	/**
@@ -539,7 +602,16 @@ public class ProcessViewTab extends Canvas implements ISelectionChangedListener
 			inputPart.rawWidth = _width;
 		}
 	}
-	
+
+	public void clear()
+	{
+		vParts.clear();
+		parentPart = null;
+		setLayout(null);
+//		TODO: removeAll();
+//		TODO: setBackground(Color.white);
+	}
+
 	public void selectionChanged(SelectionChangedEvent e)
 	{
 		TreeSelection ts = (TreeSelection) treeViewer.getSelection();
