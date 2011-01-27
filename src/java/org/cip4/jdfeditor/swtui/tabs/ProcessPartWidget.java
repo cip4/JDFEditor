@@ -98,15 +98,15 @@ public class ProcessPartWidget extends Canvas
 	private static Color resColorUnAvailable = new Color(null, 250, 200, 180);
 	private static Color resColorDraft = new Color(null, 250, 250, 180);
 
-	public int rawWidth = 100;
-	public int rawHeight = 100;
+	public int rawWidth;
+	public int rawHeight;
 
 	public static final int PARENT = 0;
 	public static final int NODE = 1;
 	public static final int RESOURCE = 2;
 	public static final int RES_EXTERNAL = 3;
 
-	public boolean isSelected=false; // if true, this element is selected and is connected by emphasized ResourceLink lines
+	public boolean isSelected = false; // if true, this element is selected and is connected by emphasized ResourceLink lines
 	private final KElement elem; // the element (node or resource) that is displayed
 	public int style; // the style of this ProcessPart, i.e Node, Parent Resource or Res_External
 
@@ -275,6 +275,21 @@ public class ProcessPartWidget extends Canvas
 			w = 100;
 		}
 		return w;
+	}
+
+	public void addTovOutRes(ProcessPartWidget pp)
+	{
+		vOutRes.add(pp);
+	}
+
+    public Color getgColor()
+    {
+        return gColor;
+    }
+
+	public String[] getgString()
+	{
+		return this.gString;
 	}
 
 	public int getxPos()

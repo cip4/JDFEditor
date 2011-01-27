@@ -73,7 +73,7 @@ package org.cip4.jdfeditor.swtui.tabs;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
-//import org.cip4.jdfeditor.ProcessPart;
+import org.cip4.jdfeditor.Editor;
 import org.cip4.jdfeditor.ProcessPart;
 import org.cip4.jdfeditor.swtui.EditorSwtMain;
 import org.cip4.jdflib.core.AttributeName;
@@ -99,9 +99,13 @@ import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.LineAttributes;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.ScrollBar;
 
 public class ProcessViewTab extends Canvas implements ISelectionChangedListener
 {
@@ -122,7 +126,19 @@ public class ProcessViewTab extends Canvas implements ISelectionChangedListener
 
 	public ProcessViewTab(Composite parent, int style)
 	{
-		super(parent, style);
+		super(parent, style | SWT.V_SCROLL | SWT.H_SCROLL);
+		final Point origin = new Point(0, 0);
+		final ScrollBar vBar = getVerticalBar();
+		vBar.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event e)
+			{
+				int vSelection = vBar.getSelection();
+				int destY = -vSelection - origin.y;
+				Rectangle rect = getBounds();
+				scroll(0, destY, 0, 0, rect.width, rect.height, false);
+				origin.y = -vSelection;
+			}
+		});
 	}
 	
 	public void setTreeViewer(TreeViewer treeViewer)
@@ -154,7 +170,7 @@ public class ProcessViewTab extends Canvas implements ISelectionChangedListener
 //		ProcessPanel.drawProcessView()
 		drawProcessView();
 //		ProcessPanel.paintComponent()
-//		TODO: paintParent(e.gc);
+		paintParent(e.gc);
 //		TODO: paintPoints(e.gc);
 		paintParts(e.gc);
 	}
@@ -174,7 +190,7 @@ public class ProcessViewTab extends Canvas implements ISelectionChangedListener
 		parentPart = addPart(new ProcessPartWidget(new Composite(this, SWT.BORDER), SWT.BORDER, rootJDF, ProcessPartWidget.PARENT, null));
 
 		drawInputLinks(parentPart);
-//		drawSubResLinks(vJDFNodes, _vParts);
+		drawSubResLinks(vJDFNodes, _vParts);
 		
 		if (rootJDF.hasChildElement("JDF", null))
 		{
@@ -319,25 +335,62 @@ public class ProcessViewTab extends Canvas implements ISelectionChangedListener
 			vRet.add(vUnlinked);
 		return vRet;
 	}
-	
+
+	/**
+	 * @param g
+	 */
+	private void paintParent(GC gc)
+	{
+		if (parentPart != null)
+		{
+//			TODO: g.setFont(parentPart.getFont());
+			gc.setForeground(parentPart.getgColor());
+			gc.fillRoundRectangle(parentPart.getxPos(), parentPart.getyPos(), parentPart.rawWidth, parentPart.rawHeight, 25, 25);
+			gc.setForeground(getDisplay().getSystemColor(SWT.COLOR_BLACK));
+			gc.drawRoundRectangle(parentPart.getxPos(), parentPart.getyPos(), parentPart.rawWidth, parentPart.rawHeight, 25, 25);
+
+			final String[] s = parentPart.getgString();
+			final int xMarg = 15;
+			int yMarg = 2;
+
+			for (int i = 0; i < s.length; i++)
+			{
+				yMarg += 15;
+				gc.drawString(s[i], parentPart.getxPos() + xMarg, parentPart.getyPos() + yMarg);
+			}
+
+			double zoom = 1; // TODO: Editor.getEditorDoc().getZoom();
+			parentPart.setBounds((int) (parentPart.getxPos() * zoom),
+					(int) (parentPart.getyPos() * zoom),
+					(int) (parentPart.rawWidth * zoom),
+					(int) (parentPart.rawHeight * zoom));
+//			TODO: add(parentPart, -1);
+		}
+	}
+
 	private void paintParts(GC gc)
 	{
 		for (int i = 0; i < vParts.size(); i++)
-        {
-            final ProcessPartWidget part = (ProcessPartWidget) vParts.get(i);
-            
-            if (part.getElem() instanceof JDFNode)
-            {
+		{
+			final ProcessPartWidget part = (ProcessPartWidget) vParts.get(i);
+			if (part == parentPart)
+				continue;
+
+//			TODO: g.setFont(part.getFont());
+			gc.setBackground(part.getgColor());
+
+			if (part.getElem() instanceof JDFNode)
+			{
 //            	LineAttributes la = new LineAttributes();
             	
 //            	gc.setForeground(getDisplay().getSystemColor(SWT.COLOR_RED));
-            	gc.setBackground(getDisplay().getSystemColor(SWT.COLOR_GREEN));
+//            	gc.setBackground(getDisplay().getSystemColor(SWT.COLOR_GREEN));
             	
             	FontMetrics fm = gc.getFontMetrics();
             	fm.getAverageCharWidth();
             	Point p = gc.stringExtent("Test string");
             	
-            	gc.setBackground(new Color(null, 215, 245, 255));
+//            	gc.setBackground(new Color(null, 215, 245, 255));
             	System.out.println("x: " + part.getxPos() +
             			", y: " + part.getyPos() +
             			", w: " + part.rawWidth +
@@ -347,7 +400,12 @@ public class ProcessViewTab extends Canvas implements ISelectionChangedListener
 //            	gc.drawRectangle(50, 50, 100, 100);
             	gc.setForeground(getDisplay().getSystemColor(SWT.COLOR_BLACK));
             	gc.drawRoundRectangle(part.getxPos(), part.getyPos(), part.rawWidth, part.rawHeight, 10, 10);
-            }
+			}
+			else
+			{
+				gc.fillRectangle(part.getxPos(), part.getyPos(), part.rawWidth, part.rawHeight);
+				gc.setForeground(getDisplay().getSystemColor(SWT.COLOR_BLACK));
+			}
         }
 	}
 	
@@ -394,7 +452,7 @@ public class ProcessViewTab extends Canvas implements ISelectionChangedListener
 	 * @param vJDFNodes
 	 * @param _vParts the vector of JDFNode parts that will be filled
 	 */
-	/*private void drawSubResLinks(final VElement vJDFNodes, final Vector _vParts)
+	private void drawSubResLinks(final VElement vJDFNodes, final Vector _vParts)
 	{
 		if (vJDFNodes != null)
 		{
@@ -402,7 +460,7 @@ public class ProcessViewTab extends Canvas implements ISelectionChangedListener
 			for (int i = 1; i < sizeJDF; i++)
 			{
 				final JDFNode nodeElem = (JDFNode) vJDFNodes.get(i);
-				final ProcessPartWidget nodePart = addPart(new ProcessPartWidget(nodeElem, ProcessPart.NODE, null));
+				final ProcessPartWidget nodePart = addPart(new ProcessPartWidget(new Composite(this, SWT.BORDER), SWT.BORDER, nodeElem, ProcessPart.NODE, null));
 
 				final JDFResourceLinkPool resLinkPool = nodeElem
 						.getResourceLinkPool();
@@ -422,7 +480,30 @@ public class ProcessViewTab extends Canvas implements ISelectionChangedListener
 				_vParts.add(nodePart);
 			}
 		}
-	}*/
+	}
+
+	/**
+	 * @param nodePart
+	 * @param links
+	 * @param j
+	 */
+	private void prepareResLink(final ProcessPartWidget nodePart, JDFResourceLink rL)
+	{
+		JDFResource resource = rL.getTarget();
+		if (resource != null)
+		{
+			resource = resource.getResourceRoot();
+			ProcessPartWidget res = addPart(new ProcessPartWidget(new Composite(this, SWT.BORDER), SWT.BORDER, resource, ProcessPart.RESOURCE, rL));
+			final EnumUsage usage = rL.getUsage();
+			if (EnumUsage.Input.equals(usage))
+			{
+				nodePart.addTovInRes(res);
+			} else if (EnumUsage.Output.equals(usage))
+			{
+				nodePart.addTovOutRes(res);
+			}
+		}
+	}
 
 	/**
      * 
