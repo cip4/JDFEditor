@@ -74,7 +74,6 @@ import java.util.ResourceBundle;
 import java.util.Vector;
 
 import org.cip4.jdfeditor.Editor;
-import org.cip4.jdfeditor.ProcessPart;
 import org.cip4.jdfeditor.swtui.EditorSwtMain;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFResourceLink;
@@ -196,6 +195,11 @@ public class ProcessViewTab extends Canvas implements ISelectionChangedListener
 		{
 			drawParts(_vParts);
 		}
+		else
+		{
+			drawLeafNode(rootJDF);
+		}
+
 	}
 	
 	private void drawParts(final Vector _vParts)
@@ -447,7 +451,18 @@ public class ProcessViewTab extends Canvas implements ISelectionChangedListener
 		x += w + esX;
 		pPartStart = x - 10;
 	}
-	
+
+	/**
+	 * @param rootJDF
+	 */
+	private void drawLeafNode(JDFNode rootJDF)
+	{
+		y = 20;
+		final ProcessPartWidget procPart = addPart(new ProcessPartWidget(new Composite(this, SWT.BORDER), SWT.BORDER, rootJDF, ProcessPartWidget.NODE, null));
+		procPart.setPos(x, y);
+		x += procPart.rawWidth + esX;
+	}
+
 	/**
 	 * @param vJDFNodes
 	 * @param _vParts the vector of JDFNode parts that will be filled
@@ -460,7 +475,7 @@ public class ProcessViewTab extends Canvas implements ISelectionChangedListener
 			for (int i = 1; i < sizeJDF; i++)
 			{
 				final JDFNode nodeElem = (JDFNode) vJDFNodes.get(i);
-				final ProcessPartWidget nodePart = addPart(new ProcessPartWidget(new Composite(this, SWT.BORDER), SWT.BORDER, nodeElem, ProcessPart.NODE, null));
+				final ProcessPartWidget nodePart = addPart(new ProcessPartWidget(new Composite(this, SWT.BORDER), SWT.BORDER, nodeElem, ProcessPartWidget.NODE, null));
 
 				final JDFResourceLinkPool resLinkPool = nodeElem
 						.getResourceLinkPool();
@@ -493,7 +508,7 @@ public class ProcessViewTab extends Canvas implements ISelectionChangedListener
 		if (resource != null)
 		{
 			resource = resource.getResourceRoot();
-			ProcessPartWidget res = addPart(new ProcessPartWidget(new Composite(this, SWT.BORDER), SWT.BORDER, resource, ProcessPart.RESOURCE, rL));
+			ProcessPartWidget res = addPart(new ProcessPartWidget(new Composite(this, SWT.BORDER), SWT.BORDER, resource, ProcessPartWidget.RESOURCE, rL));
 			final EnumUsage usage = rL.getUsage();
 			if (EnumUsage.Input.equals(usage))
 			{
