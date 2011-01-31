@@ -81,7 +81,12 @@ import org.cip4.jdflib.datatypes.VJDFAttributeMap;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.resource.JDFResource.EnumResStatus;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontMetrics;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 
@@ -119,6 +124,10 @@ public class ProcessPartWidget extends Canvas
 	private final Vector<ProcessPartWidget> vInRes = new Vector<ProcessPartWidget>();
 	private final Vector<ProcessPartWidget> vOutRes = new Vector<ProcessPartWidget>();
 
+	static private Font procFont = null;
+	static private Font resourceFont = null;
+	static private Font parentFont = null;
+
 	public ProcessPartWidget(Composite parent, int style,
 			KElement _elem, int _style, JDFResourceLink rl)
 	{
@@ -126,13 +135,43 @@ public class ProcessPartWidget extends Canvas
 		elem = _elem;
 		style = _style;
 		isSelected = _style == PARENT;
-//		TODO: fonts
+		setupFonts();
+
+		switch (style)
+		{
+			case 0:
+				setFont(parentFont);
+				break;
+			case 1:
+				setFont(procFont);
+				break;
+			case 2:
+				setFont(resourceFont);
+				break;
+			case 3:
+				setFont(resourceFont);
+				break;
+
+			default:
+				throw new IllegalArgumentException("Bad style in constructor, mustt be in range 0-3: " + style);
+		}
+
 		setStrings(rl);
 	}
 
-	public KElement getElem()
+	/**
+	 * Set up the initial fonts based on inireader.
+	 */
+	private void setupFonts()
 	{
-		return elem;
+		if (procFont == null)
+        {
+			int fontSize = 7;
+			String fontName = "Default"; //"Arial";
+			procFont = new Font(getDisplay(), fontName, fontSize, SWT.NORMAL);
+			resourceFont = new Font(getDisplay(), fontName, fontSize - 1, SWT.NORMAL);
+			parentFont = new Font(getDisplay(), fontName, fontSize + 1, SWT.BOLD);
+        }
 	}
 
 	public void setPos(int _xPos, int _yPos)
@@ -176,7 +215,8 @@ public class ProcessPartWidget extends Canvas
 					elem.getNodeName() + " " + elem.getAttribute("Type"),
 					elem.getAttribute("ID") + " - " + elem.getAttribute("Status"),
 					node.getJobID(true) + " - " + node.getJobPartID(false),
-					node.getDescriptiveName() };
+					node.getDescriptiveName()
+			};
 			gString = tmp;
 			String types = elem.getAttribute(AttributeName.TYPES, null, null);
 			if (types != null)
@@ -187,7 +227,8 @@ public class ProcessPartWidget extends Canvas
 
 			rawWidth = setPartWidth(gString);
 			setToolTipText("JDFNode: " + elem.getAttribute("DescriptiveName"));
-		} else if (style == RES_EXTERNAL)
+		}
+		else if (style == RES_EXTERNAL)
 		{
 			rawHeight = 75;
 
@@ -200,7 +241,8 @@ public class ProcessPartWidget extends Canvas
 
 			rawWidth = setPartWidth(gString);
 			setToolTipText(elem.getNodeName() + ": " + elem.getAttribute("DescriptiveName"));
-		} else
+		}
+		else
 		{
 			rawHeight = 75;
 
@@ -262,19 +304,51 @@ public class ProcessPartWidget extends Canvas
 				gColor = defColor;
 			}
 		}
-
 	}
 
 	private int setPartWidth(String[] s)
 	{
 		int w = 0;
-//		TODO: FontMetrics fm = getFM();
+		FontMetrics fm = getFM();
+		int stringWidth = fm.getAverageCharWidth() * "Alex Khilov".length();
+		System.out.println("stringWidth: " + stringWidth);
 		for (int i = 0; i < s.length; i++)
 		{
-//			TODO: w = w < fm.stringWidth(s[i]) ? fm.stringWidth(s[i]) : w;
-			w = 100;
+			w = w < fm.getAverageCharWidth() * s[i].length() ? fm.getAverageCharWidth() * s[i].length() : w;
 		}
 		return w;
+	}
+
+	public KElement getElem()
+	{
+		return elem;
+	}
+
+	public Point getRightPoint()
+	{
+		final Point p = new Point(xPos + this.rawWidth, yPos + this.rawHeight / 2);
+		return p;
+	}
+
+	public Point getLeftPoint()
+	{
+		final Point p = new Point(xPos, yPos + this.rawHeight / 2);
+		return p;
+	}
+
+	public Vector<ProcessPartWidget> getvInRes()
+	{
+		return vInRes;
+	}
+
+	public void addTovInRes(ProcessPartWidget pp)
+	{
+		vInRes.add(pp);
+	}
+
+	public Vector<ProcessPartWidget> getvOutRes()
+	{
+		return vOutRes;
 	}
 
 	public void addTovOutRes(ProcessPartWidget pp)
@@ -302,19 +376,29 @@ public class ProcessPartWidget extends Canvas
 		return yPos;
 	}
 
-	public Vector getvInRes()
-	{
-		return vInRes;
-	}
+	public FontMetrics getFM()
+    {
+		GC gc = new GC(this);
+		FontMetrics fontMetrics = gc.getFontMetrics();
+		return fontMetrics;
+    }
 
-	public void addTovInRes(ProcessPartWidget pp)
+	/**
+	 * ProcessParts are equal if they contain the same element elem
+	 * also compares this.elem to a KElement
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object arg0)
 	{
-		vInRes.add(pp);
-	}
-
-	public Vector getvOutRes()
-	{
-		return vOutRes;
+		if (super.equals(arg0))
+			return true;
+		if (arg0 instanceof ProcessPartWidget)
+			return elem.equals(((ProcessPartWidget) arg0).elem);
+		else if (arg0 instanceof KElement)
+			return elem.equals(arg0);
+		return false;
 	}
 
 	/**
