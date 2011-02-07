@@ -77,6 +77,7 @@ import org.cip4.jdfeditor.Editor;
 import org.cip4.jdfeditor.swtui.EditorSwtMain;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFElement;
+import org.cip4.jdflib.core.JDFException;
 import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
@@ -91,8 +92,11 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
@@ -140,6 +144,10 @@ public class ProcessViewTab extends /*Composite*/ Canvas implements ISelectionCh
 				origin.y = -vSelection;
 			}
 		});
+		/*ScrolledComposite sc = new ScrolledComposite(this, SWT.V_SCROLL | SWT.H_SCROLL);
+		sc.setExpandHorizontal(true);
+		sc.setExpandVertical(true);
+		sc.setContent(this);*/
 	}
 	
 	public void setTreeViewer(TreeViewer treeViewer)
@@ -166,7 +174,7 @@ public class ProcessViewTab extends /*Composite*/ Canvas implements ISelectionCh
 	public void paintControl(PaintEvent e)
 	{
 //		System.out.println("paintControl e: " + e);
-		e.gc.drawRectangle(x++, y++, 40, 40);
+//		e.gc.drawRectangle(x++, y++, 40, 40);
 		
 //		ProcessPanel.drawProcessView()
 		drawProcessView();
@@ -314,6 +322,23 @@ public class ProcessViewTab extends /*Composite*/ Canvas implements ISelectionCh
 		if (partPos >= 0)
 			return (ProcessPartWidget) vParts.elementAt(partPos);
 //		TODO: part.addMouseListener(new PartListener());
+//		System.out.println("---> add MouseListener");
+		part.addMouseListener(new MouseListener() {
+			public void mouseUp(MouseEvent event)
+			{
+				System.out.println("---> event: " + event);
+			}
+			
+			public void mouseDown(MouseEvent event)
+			{
+				System.out.println("---> event: " + event);
+			}
+			
+			public void mouseDoubleClick(MouseEvent event)
+			{
+				System.out.println("---> event: " + event);
+			}
+		});
 		vParts.add(part);
 		return part;
 	}
@@ -409,9 +434,73 @@ public class ProcessViewTab extends /*Composite*/ Canvas implements ISelectionCh
 	/**
 	 * @param g
 	 */
-	private void paintPoints(GC gc)
+	private void paintPoints(GC g)
 	{
-		
+		GC g2 = new GC(this);
+		final int partSize = vParts.size();
+		for(int selTop = 0; selTop < 2; selTop++)
+		{
+			g2.setForeground(selTop == 0 ? getDisplay().getSystemColor(SWT.COLOR_BLACK) : getDisplay().getSystemColor(SWT.COLOR_RED));
+			for (int i = 0; i < partSize; i++)
+			{
+				final ProcessPartWidget part = vParts.get(i);
+				for (int k = 0; k < 2; k++)
+				{
+					final Vector<ProcessPartWidget> v = k == 0 ? part.getvInRes() :  part.getvOutRes();
+					if (v != null && !v.isEmpty())
+					{
+						if (part.style != ProcessPartWidget.NODE && part.style != ProcessPartWidget.PARENT)
+							throw new JDFException("oops");
+						final Point p1 = k == 0 ? part.getLeftPoint() : part.getRightPoint();
+						final int size = v.size();
+						for (int j = 0; j < size; j++)
+						{
+							ProcessPartWidget inPart = v.elementAt(j);
+							if (part.isSelected || inPart.isSelected)
+							{
+								if (selTop == 0)
+									continue;
+							}
+							else
+							{
+								if (selTop == 1)
+									continue;
+							}
+							final Point p2 = k == 0 ? inPart.getRightPoint() : inPart.getLeftPoint();
+							paintArrowLine(g2, k == 0 ? p2 : p1, k == 0 ? p1 : p2);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private void paintArrowLine(GC g2, final Point p1, final Point p2)
+	{
+		final int arrowLength = 8;
+		final int arrowWidth = 6;
+		final int arcRadius = 6;
+		final int x1 = (int) p1.x;
+		final int y1 = (int) p1.y;
+		final int x2 = (int) p2.x;
+		final int y2 = (int) p2.y;
+		final int xm = x1 < x2 ? x2 - 20 : x2 + 20;
+
+//		line
+		g2.drawLine(x1, y1, xm, y1);
+		g2.drawLine(xm, y1, xm, y2);
+		g2.drawLine(xm, y2, x2, y2);
+
+//		arc
+		final int angle = x1 < x2 ? 270 : 90;
+		g2.fillArc(x1 - arcRadius, y1 - arcRadius, 2 * arcRadius, 2 * arcRadius, angle, 180);
+
+//		arrow
+		final int xa = x1 < x2 ? x2 - arrowLength : x2 + arrowLength;
+		final int arrowX[] = { xa, x2, xa };
+		final int arrowY[] = { y2 - arrowWidth, y2, y2 + arrowWidth };
+		int r[] = {arrowX[0], arrowY[0], arrowX[1], arrowY[1], arrowX[2], arrowY[2]};
+		g2.fillPolygon(r);
 	}
 
 	private void paintParts(GC gc)
@@ -427,21 +516,28 @@ public class ProcessViewTab extends /*Composite*/ Canvas implements ISelectionCh
 
 			if (part.getElem() instanceof JDFNode)
 			{
-            	FontMetrics fm = gc.getFontMetrics();
-            	fm.getAverageCharWidth();
-//            	Point p = gc.stringExtent("Test string");
-            	
-//            	gc.setBackground(new Color(null, 215, 245, 255));
-            	System.out.println("x: " + part.getxPos() +	", y: " + part.getyPos() +
-            			", w: " + part.rawWidth + ", h: " + part.rawHeight);
-            	gc.fillRoundRectangle(part.getxPos(), part.getyPos(), part.rawWidth, part.rawHeight, 10, 10);
-            	gc.setForeground(getDisplay().getSystemColor(SWT.COLOR_BLACK));
-            	gc.drawRoundRectangle(part.getxPos(), part.getyPos(), part.rawWidth, part.rawHeight, 10, 10);
+				FontMetrics fm = gc.getFontMetrics();
+				fm.getAverageCharWidth();
+				Point p = gc.stringExtent("Alex Khilov");
+				System.out.println("p.x: " + p.x + ", p.y: " + p.y);
+
+				System.out.println("x: " + part.getxPos() +	", y: " + part.getyPos() +
+						", w: " + part.rawWidth + ", h: " + part.rawHeight);
+				gc.fillRoundRectangle(part.getxPos(), part.getyPos(), part.rawWidth, part.rawHeight, 10, 10);
+				gc.setForeground(getDisplay().getSystemColor(SWT.COLOR_BLACK));
+				gc.drawRoundRectangle(part.getxPos(), part.getyPos(), part.rawWidth, part.rawHeight, 10, 10);
 			}
 			else
 			{
 				gc.fillRectangle(part.getxPos(), part.getyPos(), part.rawWidth, part.rawHeight);
 				gc.setForeground(getDisplay().getSystemColor(SWT.COLOR_BLACK));
+				if (part.isSelected) {
+					gc.setLineWidth(3);
+				}
+				else
+				{
+					gc.setLineWidth(1);
+				}
 				gc.drawRectangle(part.getxPos(), part.getyPos(), part.rawWidth, part.rawHeight);
 			}
 			final String[] s = part.getgString();

@@ -390,14 +390,14 @@ public class ProcessPartWidget extends Canvas
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object arg0)
+	public boolean equals(Object obj)
 	{
-		if (super.equals(arg0))
+		if (super.equals(obj))
 			return true;
-		if (arg0 instanceof ProcessPartWidget)
-			return elem.equals(((ProcessPartWidget) arg0).elem);
-		else if (arg0 instanceof KElement)
-			return elem.equals(arg0);
+		if (obj instanceof ProcessPartWidget)
+			return elem.equals(((ProcessPartWidget) obj).elem);
+		else if (obj instanceof KElement)
+			return elem.equals(obj);
 		return false;
 	}
 
