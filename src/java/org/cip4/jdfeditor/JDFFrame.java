@@ -212,7 +212,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		// dirty hack to avoid npe
 		Editor.my_Frame = this;
 		m_source = DragSource.getDefaultDragSource();
-		m_source.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_COPY_OR_MOVE, this);
+
+		//		m_source.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_COPY_OR_MOVE, this);
 		final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds(0, 0, d.width, d.height - 30);
 
