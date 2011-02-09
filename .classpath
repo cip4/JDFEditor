@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry excluding="**/.svn/**" kind="src" path="src/java"/>
-	<classpathentry kind="src" path="icons-nuvola"/>
 	<classpathentry kind="src" path="src/conf"/>
 	<classpathentry kind="src" path="src/help"/>
 	<classpathentry excluding="**/.svn/**" kind="src" path="src/test/java"/>
@@ -21,6 +20,5 @@
 	<classpathentry kind="lib" path="lib/org.mortbay.jetty.jar"/>
 	<classpathentry kind="lib" path="lib/javax.servlet.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
-	<classpathentry kind="lib" path="lib/swt/swt-3.6.1-cocoa-macosx.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
