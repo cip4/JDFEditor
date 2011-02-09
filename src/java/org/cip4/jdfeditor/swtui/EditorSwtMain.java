@@ -68,16 +68,13 @@
  *  
  * 
  */
+
 package org.cip4.jdfeditor.swtui;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
@@ -85,12 +82,7 @@ import org.apache.log4j.Logger;
 import org.cip4.jdfeditor.EditorDocument;
 import org.cip4.jdfeditor.EditorUtils;
 import org.cip4.jdfeditor.INIReader;
-import org.cip4.jdflib.core.JDFDoc;
 
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionListener;
@@ -116,33 +108,25 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeItem;
 
 /**
  * Class with main method to run JDFEditor in SWT UI.
  *
  */
-public class EditorSwtMain
-{
+public class EditorSwtMain {
 	private static final Logger log = Logger.getLogger(EditorSwtMain.class);
 	
-	public static ResourceBundle bundle;
+	private static ResourceBundle bundle;
 	
 	private static final String ICONS_PATH = "icons-nuvola/org/cip4/jdfeditor/icons-nuvola/";
 	
 //	Vector<EditorDocument> m_VjdfDocument = new Vector<EditorDocument>();
-	Map<String, JDFDoc> documentsMap = new HashMap<String, JDFDoc>();
-	
-	private Tree jdfTree;
-	private TreeViewer treeViewer;
+	List<String> documentsList = new ArrayList<String>();
 
-	public EditorSwtMain()
-	{
+	public EditorSwtMain() {
 	}
 	
-	public void createMenuBar(Shell shell)
-	{
+	public void createMenuBar(Shell shell) {
 		Menu menuBar = new Menu(shell, SWT.BAR);
 
 		MenuItem menuItemFile = new MenuItem(menuBar, SWT.CASCADE);
@@ -164,8 +148,7 @@ public class EditorSwtMain
 		shell.setMenuBar(menuBar);
 	}
 	
-	public void createToolBar(final Shell shell)
-	{
+	public void createToolBar(final Shell shell) {
 		Composite c = new Composite(shell, SWT.NONE);
 		c.setLayout(new RowLayout(SWT.HORIZONTAL));
 		
@@ -174,20 +157,16 @@ public class EditorSwtMain
 		
 		CoolBar coolBar = new CoolBar(c, SWT.HORIZONTAL);
 		
-		Listener listener = new Listener()
-		{
-			public void handleEvent(Event event)
-			{
+		Listener listener = new Listener() {
+			public void handleEvent(Event event) {
 //				log.debug("event: " + event);
 				ToolItem item = (ToolItem) event.widget;
 				String string = item.getToolTipText();
 				log.debug("string: " + string);
 				
-				if (string.equals(bundle.getString("NewKey")))
-				{
+				if (string.equals(bundle.getString("NewKey"))) {
 //					TODO: show dialog
-				} else if (string.equals(bundle.getString("OpenKey")))
-				{
+				} else if (string.equals(bundle.getString("OpenKey"))) {
 					FileDialog dialog = new FileDialog(shell, SWT.OPEN);
 					dialog.setFilterNames(new String[] { "All accepted files (.xml, .jdf, .jmf, .mim, .mjm, .mjd)",
 							"XML files (.xml)", "JDF files (.jdf)", "JMF files (.jmf)",
@@ -199,34 +178,18 @@ public class EditorSwtMain
 							"*.*" });
 					String result = dialog.open();
 					log.debug("selected file: " + result);
-					if (result == null)
-					{
+					if (result == null) {
 						return;
 					}
 					
-					if (documentsMap.containsKey(result))
-					{
+					if (documentsList.contains(result)) {
 						log.debug("file already opened: " + result);
-						JDFDoc jdfDoc = documentsMap.get(result);
-						treeViewer.setInput(jdfDoc);
-					} else
-					{
-						File fts = new File(result);
-//						EditorDocument[] eDoc = EditorUtils.getEditorDocuments(fts);
-//						System.out.println("eDoc: " + eDoc);
+//						TODO: switch to open Editor
+					} else {
+						documentsList.add(result);
 						
-						try {
-							FileInputStream inStream = new FileInputStream(fts);
-							JDFDoc jdfDoc = EditorUtils.parseInStream(inStream, false);
-							
-							System.out.println("jdfDoc: " + jdfDoc);
-//							jdfTree.setInput(jdfDoc);
-							treeViewer.setInput(jdfDoc);
-							
-							documentsMap.put(result, jdfDoc);
-						} catch (FileNotFoundException e) {
-							e.printStackTrace();
-						}
+						File fts = new File(result);
+						EditorDocument[] eDoc = EditorUtils.getEditorDocuments(fts);
 					}
 					
 					/*File fts = new File(result);
@@ -261,8 +224,7 @@ public class EditorSwtMain
 		item.setSize(p2);
 	}
 	
-	public void createMainUI(Composite c)
-	{
+	public void createMainUI(Composite c) {
 		SashForm sashForm = new SashForm(c, SWT.HORIZONTAL);
 		sashForm.setLayout(new GridLayout(2, false));
 		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -271,44 +233,16 @@ public class EditorSwtMain
 		Composite child1 = new Composite(sashForm, SWT.NONE);
 		child1.setLayout(new GridLayout(1, false));
 		child1.setLayoutData(gd);
-//		new Label(child1, SWT.NONE).setText("Label in pane 1");
-		
-		treeViewer = new TreeViewer(child1, SWT.BORDER);
-		treeViewer.getTree().setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL));
-		treeViewer.setContentProvider(new JDFTreeContentProvider());
-		treeViewer.setLabelProvider(new JDFTreeLabelProvider());
+		new Label(child1, SWT.NONE).setText("Label in pane 1");
 
 		Composite child2 = new Composite(sashForm, SWT.NONE);
-//		child2.setLayout(new FillLayout());
-		child2.setLayout(new GridLayout(1, true));
-		child2.setLayoutData(gd);
-//		new Button(child2, SWT.PUSH).setText("Button in pane2");
+		child2.setLayout(new FillLayout());
+		new Button(child2, SWT.PUSH).setText("Button in pane2");
 		
-		SashForm verticalSashForm = new SashForm(child2, SWT.VERTICAL);
-		verticalSashForm.setLayout(new GridLayout(1, true));
-		verticalSashForm.setLayoutData(gd);
-		
-		Composite rightTopComposite = new Composite(verticalSashForm, SWT.NONE);
-		rightTopComposite.setLayout(new FillLayout());
-		
-		Composite rightBottomComposite = new Composite(verticalSashForm, SWT.NONE);
-		rightBottomComposite.setLayout(new FillLayout());
-		
-//		new Button(rightTopComposite, SWT.PUSH).setText("Button in pane3");
-		RightTopTabsPanel rtp = new RightTopTabsPanel(treeViewer);
-		rtp.createUI(rightTopComposite);
-		
-//		new Button(rightBottomComposite, SWT.PUSH).setText("Button in pane4");
-		RightBottomTabsPanel rbtp = new RightBottomTabsPanel();
-		rbtp.createUI(rightBottomComposite);
-		
-		verticalSashForm.setWeights(new int[] {55, 45});
-		
-		sashForm.setWeights(new int[] {25, 75});
+		sashForm.setWeights(new int[] {20, 80});
 	}
 	
-	public void createUI()
-	{
+	public void createUI() {
 		Display display = new Display();
 		Shell shell = new Shell(display);
 		shell.setMaximized(true);
@@ -316,6 +250,7 @@ public class EditorSwtMain
 		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
 		shell.setLayoutData(gd);
 		shell.setText(bundle.getString("TitleKey"));
+		shell.open();
 		
 		createMenuBar(shell);
 		createToolBar(shell);
@@ -325,8 +260,6 @@ public class EditorSwtMain
 		c.setLayoutData(gd);
 		
 		createMainUI(c);
-		
-		shell.open();
 		
 		while (! shell.isDisposed()) {
 			if (! display.readAndDispatch())
@@ -338,8 +271,7 @@ public class EditorSwtMain
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args)
-	{
+	public static void main(String[] args) {
 		INIReader iniFile = new INIReader();
 		final String language = iniFile.getLanguage();
 		final Locale currentLocale = new Locale(language, language.toUpperCase());
