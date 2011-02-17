@@ -313,7 +313,7 @@ public class Editor
 	{
 		final String about = getEditorName() + "\n" + getEditorVersion() + "\nInternational Cooperation for Integration of Processes in Prepress, Press and Postpress,\n"
 				+ "hereinafter referred to as CIP4. All Rights Reserved\n\n"
-				+ "Authors: Anna Andersson, Evelina Thunell, Ingemar Svenonius, Elena Skobchenko, Rainer Prosi, Alex Khilowv\n\n"
+				+ "Authors: Anna Andersson, Evelina Thunell, Ingemar Svenonius, Elena Skobchenko, Rainer Prosi, Alex Khilov\n\n"
 				+ "The APPLICATION is provided 'as is', without warranty of any kind, express, implied, or\n"
 				+ "otherwise, including but not limited to the warranties of merchantability,fitness for a\n"
 				+ "particular purpose and noninfringement. In no event will CIP4 be liable, for any claim,\n"
