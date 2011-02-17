@@ -103,7 +103,7 @@
 			</fileset>
 		</copy>
 		<copy todir="${dist.bin.dir}/lib">
-			<fileset file="${dist.dir}/${jar.filename}" />
+			<!--fileset file="${dist.dir}/${jar.filename}" /-->
 			<fileset dir="${lib.dir}">
 				<include name="**/*.jar" />
 				<include name="**/*.license" />
@@ -127,6 +127,7 @@
 	  <antcall target="appledist" />
 		<antcall target="windist" />
 	</target>
+
 	<target name="srcdist" depends="compile" description="Builds a source distribution of
 		        JDFEditor.">
 		<echo>Building JDFEditor source distribution...</echo>
@@ -154,6 +155,7 @@
 		<chmod dir="${dist.src.dir}/src" perm="ugo+rx" includes="**/*.sh" />
 		<zip destfile="${dist.dir}/${base.filename}-src.zip" basedir="${dist.src.dir}" />
 	</target>
+
 	<target name="test" description="Runs JUnit tests." depends="compile">
 		<property name="test.bin.dir" value="${bin.dir}/test" />
 		<mkdir dir="${test.bin.dir}" />
@@ -204,27 +206,30 @@
 		<!-- build .exe file -->
 		<copy file="../JDFLibJ/dist/JDFLibJ-${major.version}.${minor.version}.jar" todir="${win.dist.bin.dir}/lib">
 		</copy>
+		<property name="win.exe.name" value="JDFEditor.exe" />
+		
 		<launch4j>
-			<config headerType="console" outfile="${win.dist.bin.dir}/JDFEditor.exe"
+			<config headerType="console" outfile="${win.dist.bin.dir}/${win.exe.name}"
 				dontWrapJar="false"
 				jar="dist/jdfeditor.jar">
+				<!-- runtime classpath, from current directory -->
 				<classPath mainClass="${EditorMainClass}">
-					<!--cp>JDFLibJ/dist/JDFLibJ-2.1.4a.64.jar</cp-->
-					<cp>lib/*.jar</cp><!-- runtime classpath, from current directory -->
+					<cp>lib/*.jar</cp>
 				</classPath>
 				<jre minVersion="1.6.0">
 				</jre>
 			</config>
 		</launch4j>
-		<!-- build .bat file -->
+		<!-- build script file, .bat/.sh -->
 		<property name="exe.dist.dir" location="./dist" />
-		<property name="exe.name" value="startup" />
+		<property name="script.name" value="startup" />
 
 		<makerunscript basedir="${win.dist.bin.dir}">
-			<scriptfile file="${win.dist.bin.dir}/${exe.name}.bat" os="windows" />
-			<!--scriptfile file="${exe.dist.dir}/${exe.name}.sh" os="*nix" /-->
+			<scriptfile file="${win.dist.bin.dir}/${script.name}.bat" os="windows" />
+			<scriptfile file="${win.dist.bin.dir}/${script.name}.sh" os="*nix" />
 			<java maxmemory="512m" classname="${EditorMainClass}">
 				<classpath>
+					<pathelement path="${win.dist.bin.dir}/${win.exe.name}" />
 					<fileset dir="${win.dist.bin.dir}/lib">
 						<include name="*.jar" />
 					</fileset>
