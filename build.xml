@@ -27,6 +27,13 @@
 		<property name="dist.bin.dir" value="${dist.dir}/${base.filename}-bin" />
 		<property name="dist.src.dir" value="${dist.dir}/${base.filename}-src" />
 		<property name="verbose" value="true" />
+
+		<!-- Sets path to external tools -->
+		<property name="launch4j.dir" location="/opt/launch4j" />
+		<property name="makerunscript.dir" location="lib-build/" />
+		
+		<property name="EditorMainClass" value="org.cip4.jdfeditor.Editor" />
+
 		<!-- Sets class path -->
 		<path id="project.class.path">
 			<pathelement path="${java.class.path}" />
@@ -34,10 +41,19 @@
 				<include name="**/*.jar" />
 			</fileset>
 		</path>
+		<path id="lib.path">
+			<fileset dir="${lib.dir}">
+				<include name="**/*.jar" />
+			</fileset>
+		</path>
 		<!-- Creates directories -->
 		<mkdir dir="${bin.dir}" />
 		<mkdir dir="${dist.dir}" />
+		
+		<taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
+		<taskdef name="makerunscript" classname="com.citizenhawk.makerunscript.MakeRunScript" classpath="${makerunscript.dir}/makerunscript.jar" />
 	</target>
+
 	<target name="compile" depends="-init" description="Compiles the JDFEditor
         source code.">
 		<echo>Compiling...</echo>
@@ -52,22 +68,25 @@
 		<native2ascii encoding="UTF-8" reverse="false" src="${java.src.dir}/org/cip4/jdfeditor/messages" 
 			includes="*.properties" dest="${bin.dir}/org/cip4/jdfeditor/messages"/>
 	</target>
+
 	<target name="jar" depends="compile">
 		<jar destfile="${dist.dir}/${jar.filename}" basedir="${bin.dir}">
 			<manifest>
-				<attribute name="Main-Class" value="org.cip4.jdfeditor.Editor" />
+				<attribute name="Main-Class" value="${EditorMainClass}" />
 				<attribute name="Bundle-Name" value="JDF Editor ${major.version}.${minor.version}" />
 				<attribute name="Bundle-Vendor" value="CIP4" />
 			</manifest>
 		</jar>
 	</target>
+
 	<target name="clean" depends="-init" description="Cleans the build.">
 		<echo>Cleaning...</echo>
 		<delete dir="${bin.dir}" />
 		<delete dir="${dist.dir}" />
-		<delete dir="${bin.dir}" />
 	</target>
+	
 	<target name="dist" depends="srcdist,bindist,appledist" />
+	
 	<target name="bindist" depends="jar" description="Builds a binary distribution of
         JDFEditor.">
 		<echo>Building JDFEditor binary distribution...</echo>
@@ -170,28 +189,63 @@
 		</junit>
 		<echo>Tests reports have been written to: ${test.reports.dir}</echo>
 	</target>
+
 	<!-- Windows application -->
 	<target name="windist" depends="-init">
 		<property name="win.dist.bin.dir" value="${dist.dir}/${base.filename}-win" />
+		<mkdir dir="${win.dist.bin.dir}" />
 		<copy todir="${win.dist.bin.dir}">
 			<fileset dir="${dist.bin.dir}">
 				<exclude name="bin" />
 				<exclude name="bin/**/*" />
 			</fileset>
 		</copy>
-		<copy file="${src.dir}/bin/windows/JDF Editor.exe" todir="${win.dist.bin.dir}" />
+		<!--copy file="${src.dir}/bin/windows/JDF Editor.exe" todir="${win.dist.bin.dir}" /-->
+		<!-- build .exe file -->
+		<copy file="../JDFLibJ/dist/JDFLibJ-${major.version}.${minor.version}.jar" todir="${win.dist.bin.dir}/lib">
+		</copy>
+		<launch4j>
+			<config headerType="console" outfile="${win.dist.bin.dir}/JDFEditor.exe"
+				dontWrapJar="false"
+				jar="dist/jdfeditor.jar">
+				<classPath mainClass="${EditorMainClass}">
+					<!--cp>JDFLibJ/dist/JDFLibJ-2.1.4a.64.jar</cp-->
+					<cp>lib/*.jar</cp><!-- runtime classpath, from current directory -->
+				</classPath>
+				<jre minVersion="1.6.0">
+				</jre>
+			</config>
+		</launch4j>
+		<!-- build .bat file -->
+		<property name="exe.dist.dir" location="./dist" />
+		<property name="exe.name" value="startup" />
+
+		<makerunscript basedir="${win.dist.bin.dir}">
+			<scriptfile file="${win.dist.bin.dir}/${exe.name}.bat" os="windows" />
+			<!--scriptfile file="${exe.dist.dir}/${exe.name}.sh" os="*nix" /-->
+			<java maxmemory="512m" classname="${EditorMainClass}">
+				<classpath>
+					<fileset dir="${win.dist.bin.dir}/lib">
+						<include name="*.jar" />
+					</fileset>
+				</classpath>
+			</java>
+		</makerunscript>
+		
 		<zip destfile="${win.dist.bin.dir}.zip">
 			<zipfileset dir="${win.dist.bin.dir}" prefix="${base.filename}-win" />
 		</zip>
 	</target>
-	<target name="windist-compile" depends="bindist" description="This target is only need if the EXE file needs to be recompiled.">
+
+	<!--target name="windist-compile" depends="bindist" description="This target is only need if the EXE file needs to be recompiled.">
 		<property name="win.dist.bin.dir" value="${dist.dir}/${base.filename}-win" />
 		<echo>Loading JSmooth Ant tasks. Make sure you have jsmoothgen-ant.jar (http://jsmooth.sourceforge.net) installed in ANT_HOME/lib</echo>
 		<taskdef name="jsmoothgen" classname="net.charabia.jsmoothgen.ant.JSmoothGen" />
 		<copy file="${src.dir}/bin/windows/JDFEditor.jsmooth" todir="${win.dist.bin.dir}" />
 		<jsmoothgen project="${win.dist.bin.dir}/JDFEditor.jsmooth" skeletonroot="${src.dir}/bin/windows/skeletons" />
 		<delete file="${win.dist.bin.dir}/JDFEditor.jsmooth" />
-	</target>
+	</target-->
+
 	<!-- For special app bundle on the Mac -->
 	<target name="appledist" depends="-init" description="Assembles stand alone Macintosh Bundle. Must build on a Mac (>= 10.2).">
 		<echo>Building Mac OS X application bundle...</echo>
@@ -204,7 +258,7 @@
 		<taskdef name="jarbundler" classname="net.sourceforge.jarbundler.JarBundler" />
 		<property name="mac.dist.bin.dir" value="${dist.dir}/${base.filename}-mac" />
 		<mkdir dir="${mac.dist.bin.dir}" />
-		<jarbundler dir="${dist.dir}" name="JDF Editor" mainclass="org.cip4.jdfeditor.Editor" bundleid="org.cip4.jdfeditor.Editor" jvmversion="1.5+" shortname="CIP4 JDF Editor" infostring="CIP4 JDF Editor" signature="JDFE" version="${major.version}.${minor.version}.${build.number}" icon="${src.dir}/bin/macosx/icons/JDFEditor.icns" vmoptions="-Xmx512m" stubfile="${src.dir}/bin/macosx/JavaApplicationStub">
+		<jarbundler dir="${dist.dir}" name="JDF Editor" mainclass="${EditorMainClass}" bundleid="${EditorMainClass}" jvmversion="1.5+" shortname="CIP4 JDF Editor" infostring="CIP4 JDF Editor" signature="JDFE" version="${major.version}.${minor.version}.${build.number}" icon="${src.dir}/bin/macosx/icons/JDFEditor.icns" vmoptions="-Xmx512m" stubfile="${src.dir}/bin/macosx/JavaApplicationStub">
 			<jarfileset dir="${lib.dir}">
 				<include name="*.jar" />
 			</jarfileset>
