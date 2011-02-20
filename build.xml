@@ -236,6 +236,7 @@
 				</classpath>
 			</java>
 		</makerunscript>
+		<chmod dir="${win.dist.bin.dir}" perm="ugo+rx" includes="**/*.sh" />
 		
 		<zip destfile="${win.dist.bin.dir}.zip">
 			<zipfileset dir="${win.dist.bin.dir}" prefix="${base.filename}-win" />
