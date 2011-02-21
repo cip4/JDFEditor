@@ -50,8 +50,8 @@
 		<mkdir dir="${bin.dir}" />
 		<mkdir dir="${dist.dir}" />
 		
-		<taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
-		<taskdef name="makerunscript" classname="com.citizenhawk.makerunscript.MakeRunScript" classpath="${makerunscript.dir}/makerunscript.jar" />
+		<taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask"  />
+		<taskdef name="makerunscript" classname="com.citizenhawk.makerunscript.MakeRunScript" />
 	</target>
 
 	<target name="compile" depends="-init" description="Compiles the JDFEditor
@@ -124,8 +124,6 @@
 			<zipfileset dir="bin" excludes="*.sh" />
 			<zipfileset dir="bin" includes="*.sh" filemode="755" />
 		</zip>
-	  <antcall target="appledist" />
-		<antcall target="windist" />
 	</target>
 
 	<target name="srcdist" depends="compile" description="Builds a source distribution of
@@ -193,7 +191,7 @@
 	</target>
 
 	<!-- Windows application -->
-	<target name="windist" depends="-init">
+	<target name="windist" depends="bindist">
 		<property name="win.dist.bin.dir" value="${dist.dir}/${base.filename}-win" />
 		<mkdir dir="${win.dist.bin.dir}" />
 		<copy todir="${win.dist.bin.dir}">
@@ -209,15 +207,18 @@
 		<property name="win.exe.name" value="JDFEditor.exe" />
 		
 		<launch4j>
-			<config headerType="console" outfile="${win.dist.bin.dir}/${win.exe.name}"
+			<config headerType="gui" outfile="${win.dist.bin.dir}/${win.exe.name}"
 				dontWrapJar="false"
+				icon="${src.dir}/bin/windows/icons/JDFEditor.ico"
 				jar="dist/jdfeditor.jar">
+				
 				<!-- runtime classpath, from current directory -->
 				<classPath mainClass="${EditorMainClass}">
 					<cp>lib/*.jar</cp>
 				</classPath>
 				<jre minVersion="1.6.0">
 				</jre>
+				
 			</config>
 		</launch4j>
 		<!-- build script file, .bat/.sh -->
@@ -253,7 +254,7 @@
 	</target-->
 
 	<!-- For special app bundle on the Mac -->
-	<target name="appledist" depends="-init" description="Assembles stand alone Macintosh Bundle. Must build on a Mac (>= 10.2).">
+	<target name="appledist" depends="windist" description="Assembles stand alone Macintosh Bundle. Must build on a Mac (>= 10.2).">
 		<echo>Building Mac OS X application bundle...</echo>
 		<echo>Loading JarBundler Ant tasks. Make sure you have installed http://informagen.com/JarBundler/ in ANT_HOME/lib</echo>
 		<echo>if you get  an error such as:
