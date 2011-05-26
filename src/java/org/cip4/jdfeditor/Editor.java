@@ -78,18 +78,22 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.JDFAudit;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.jmf.JMFBuilder;
+import org.cip4.jdflib.util.FileUtil;
 
 /**
  * @author AnderssA ThunellE
@@ -100,6 +104,7 @@ public class Editor
 	private static Editor my_Editor;
 	protected static JDFFrame my_Frame;
 	private static INIReader m_iniFile;
+	private static Log log = null;
 
 	/*
 	 * This package is found under JDFEditor in the src/java section. It contains all of the icons associated with the JDFEditor. For your icons to appear,
@@ -152,6 +157,7 @@ public class Editor
 			}
 		}
 		my_Editor = new Editor();
+		log.info("Main arguments: " + Arrays.toString(args));
 		my_Editor.init(file);
 		/*
 		File log = new File("/share/data/editor.log");
@@ -205,6 +211,13 @@ public class Editor
 	 */
 	public Editor()
 	{
+		String s = System.getProperty("user.home");
+		if (s != null)
+			FileUtil.getFileInDirectory(new File(s), new File("logs")).mkdirs();
+
+		if (log == null)
+			log = LogFactory.getLog(Editor.class);
+		log.info("Starting editor");
 		// nothing to do here (yet)
 	}
 

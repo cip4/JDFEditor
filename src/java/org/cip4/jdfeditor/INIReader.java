@@ -109,7 +109,7 @@ public class INIReader
 {
 
 	private static final Logger log = Logger.getLogger(INIReader.class);
-	
+
 	final ImageIcon defaultErrAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ErrorAttIcon.gif");
 	final ImageIcon defaultErrAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ErrorAttIconSelected.gif");
 	final ImageIcon defaultErrElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ErrorElemIcon.gif");
@@ -218,13 +218,13 @@ public class INIReader
 	private final String xjdfSpanAsAttribute = "Extension/XJDF/@SpanAsAttribute";
 	private final String xjdfMergeRunList = "Extension/XJDF/@MergeRunList";
 	private final String xjdfConvertLayoutPrep = "Extension/XJDF/@ConvertLayoutPrep";
-	
-//	HTTP server settings
+
+	//	HTTP server settings
 	private final String httpIpAddress = "HTTPserver/@IpAddress";
 	private final String httpPort = "HTTPserver/@Port";
 	private final String httpStorePath = "HTTPserver/@StorePath";
-	
-//	Find dialog
+
+	//	Find dialog
 	private final String findPattern = "Find/@Pattern-";
 	private final String findCaseSensitive = "Find/@CaseSensitive";
 	private final String findWrap = "Find/@Wrap";
@@ -719,7 +719,6 @@ public class INIReader
 
 	private String getIniPath()
 	{
-		// TODO find correct property for application data
 		final String path = System.getProperty("user.home");
 		final File iniDir = new File(path + File.separator + "CIP4Editor");
 		if (!iniDir.exists())
@@ -1406,51 +1405,55 @@ public class INIReader
 	{
 		setAttribute(xjdfConvertLayoutPrep, b ? "true" : "false");
 	}
-	
+
 	public String getHttpStorePath()
 	{
 		return getAttribute(httpStorePath, "/var/tmp/JDFEditor/ReceivedMessages/");
 	}
-	
+
 	public void setHttpStorePath(final String p)
 	{
 		setAttribute(httpStorePath, p);
 	}
-	
+
 	public boolean getFindCaseSensitive()
 	{
 		return getAttribute(findCaseSensitive, "true").equalsIgnoreCase("true") ? true : false;
 	}
-	
+
 	public void setFindCaseSensitive(final boolean p)
 	{
 		setAttribute(findCaseSensitive, p ? "true" : "false");
 	}
-	
+
 	public boolean getFindWrap()
 	{
 		return getAttribute(findWrap, "true").equalsIgnoreCase("true") ? true : false;
 	}
-	
+
 	public void setFindWrap(final boolean p)
 	{
 		setAttribute(findWrap, p ? "true" : "false");
 	}
-	
+
 	public List<String> getFindPattern()
 	{
 		List<String> res = new ArrayList<String>();
-		for (int i = 0; i < SearchDialog.MAX_ELEMENTS; i++) {
+		for (int i = 0; i < SearchDialog.MAX_ELEMENTS; i++)
+		{
 			String pattern = getAttribute(findPattern + i, "");
-			if (StringUtils.isNotBlank(pattern)) {
+			if (StringUtils.isNotBlank(pattern))
+			{
 				res.add(pattern);
 			}
 		}
 		return res;
 	}
-	
-	public void setFindPattern(List<String> patternList) {
-		for (int i = 0; i < patternList.size(); i++) {
+
+	public void setFindPattern(List<String> patternList)
+	{
+		for (int i = 0; i < patternList.size(); i++)
+		{
 			setAttribute(findPattern + i, patternList.get(i));
 		}
 	}

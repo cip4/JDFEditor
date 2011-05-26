@@ -3,7 +3,7 @@
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
     
     <appender name="A1" class="org.apache.log4j.RollingFileAppender">        
-        <param name="File" value="../JDFEditor.log"/>  
+        <param name="File" value="${user.home}/logs/JDFEditor.log"/>  
         <param name="MaxFileSize" value="500KB"/>
         <param name="MaxBackupIndex" value="10"/>
         <param name="Threshold" value="DEBUG"/>
