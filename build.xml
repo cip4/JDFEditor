@@ -265,7 +265,7 @@
 		<taskdef name="jarbundler" classname="net.sourceforge.jarbundler.JarBundler" />
 		<property name="mac.dist.bin.dir" value="${dist.dir}/${base.filename}-mac" />
 		<mkdir dir="${mac.dist.bin.dir}" />
-		<jarbundler dir="${dist.dir}" name="JDF Editor" mainclass="${EditorMainClass}" bundleid="${EditorMainClass}" jvmversion="1.5+" shortname="CIP4 JDF Editor" infostring="CIP4 JDF Editor" signature="JDFE" version="${major.version}.${minor.version}.${build.number}" icon="${src.dir}/bin/macosx/icons/JDFEditor.icns" vmoptions="-Xmx512m" stubfile="${src.dir}/bin/macosx/JavaApplicationStub">
+		<jarbundler dir="${dist.dir}" name="JDF Editor" mainclass="${EditorMainClass}" bundleid="${EditorMainClass}" jvmversion="1.5+" shortname="CIP4 JDF Editor" infostring="CIP4 JDF Editor" signature="JDFE" version="${major.version}.${minor.version}.${build.number}" icon="${src.dir}/bin/macosx/icons/JDFEditor.icns" vmoptions="-Xmx512m" jvmarchs="i386 x64_86">
 			<jarfileset dir="${lib.dir}">
 				<include name="*.jar" />
 			</jarfileset>
