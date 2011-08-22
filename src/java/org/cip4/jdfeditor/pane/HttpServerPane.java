@@ -91,7 +91,6 @@ import java.util.ResourceBundle;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -117,19 +116,19 @@ import org.cip4.jdfeditor.transport.HttpReceiver;
 import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFMessage;
-import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
 
 /**
  * Class that implements a "HTTP server" tab/panel.
  *
  */
-public class HttpServerPane implements FileAlterationListener, ActionListener {
+public class HttpServerPane implements FileAlterationListener, ActionListener
+{
 	private static final Logger log = Logger.getLogger(HttpServerPane.class);
 	private static ResourceBundle bundle = Editor.getBundle();
 	private static INIReader conf = Editor.getIniFile();
-	
-	private JDFFrame frame;
-	
+
+	private final JDFFrame frame;
+
 	private JComboBox ipComboBox;
 	private JTextField portValueLabel;
 	private JLabel statusValueLabel;
@@ -139,66 +138,70 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 	private JButton buttonClear;
 	private JButton buttonSelectPath;
 	private JLabel labelStorePath;
-	
-	private MessageTableModel tableModel = new MessageTableModel();
-	
-	
-	public HttpServerPane(JDFFrame frame) {
+
+	private final MessageTableModel tableModel = new MessageTableModel();
+
+	public HttpServerPane(JDFFrame frame)
+	{
 		this.frame = frame;
-		
+
 		File directory = new File(conf.getHttpStorePath());
 		FileAlterationObserver observer = new FileAlterationObserver(directory);
 		observer.addListener(this);
-		
+
 		FileAlterationMonitor monitor = new FileAlterationMonitor(3000);
 		monitor.addObserver(observer);
-		try {
+		try
+		{
 			monitor.start();
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 	}
-	
-	public JPanel createPane() {
+
+	public JPanel createPane()
+	{
 		JPanel httpPanel = new JPanel(new BorderLayout());
-		
+
 		JPanel leftPanel = new JPanel(new BorderLayout());
 		leftPanel.add(new JLabel(bundle.getString("HTTPserver") + ":"), BorderLayout.NORTH);
-		
+
 		JPanel settingsPanel = new JPanel();
 		SpringLayout settingsLayout = new SpringLayout();
 		settingsPanel.setLayout(settingsLayout);
-		
+
 		JLabel ipLabel = new JLabel(bundle.getString("IPAddress") + ":");
 		settingsLayout.putConstraint(SpringLayout.WEST, ipLabel, 5, SpringLayout.WEST, settingsPanel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, ipLabel, 10, SpringLayout.NORTH, settingsPanel);
-		
+
 		ipComboBox = new JComboBox();
 		fillWithIPAddresses(ipComboBox);
 		settingsLayout.putConstraint(SpringLayout.WEST, ipComboBox, 5, SpringLayout.EAST, ipLabel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, ipComboBox, 10, SpringLayout.NORTH, settingsPanel);
-		
+
 		JLabel portLabel = new JLabel(bundle.getString("Port") + ":");
 		settingsLayout.putConstraint(SpringLayout.WEST, portLabel, 5, SpringLayout.WEST, settingsPanel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, portLabel, 10, SpringLayout.SOUTH, ipLabel);
-		
+
 		portValueLabel = new JTextField("8280", 5);
 		settingsLayout.putConstraint(SpringLayout.WEST, portValueLabel, 0, SpringLayout.WEST, ipComboBox);
 		settingsLayout.putConstraint(SpringLayout.NORTH, portValueLabel, 10, SpringLayout.SOUTH, ipLabel);
-		
+
 		JLabel statusLabel = new JLabel(bundle.getString("Status") + ":");
 		settingsLayout.putConstraint(SpringLayout.WEST, statusLabel, 5, SpringLayout.WEST, settingsPanel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, statusLabel, 10, SpringLayout.SOUTH, portLabel);
-		
+
 		statusValueLabel = new JLabel(bundle.getString("Stopped"));
 		settingsLayout.putConstraint(SpringLayout.WEST, statusValueLabel, 0, SpringLayout.WEST, portValueLabel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, statusValueLabel, 10, SpringLayout.SOUTH, portLabel);
-		
+
 		gatewayValueLabel = new JLabel(HttpReceiver.DEF_PROTOCOL + "://localhost:" + portValueLabel.getText() + HttpReceiver.DEF_PATH);
 		gatewayValueLabel.setEnabled(false);
 		settingsLayout.putConstraint(SpringLayout.WEST, gatewayValueLabel, 5, SpringLayout.WEST, settingsPanel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, gatewayValueLabel, 10, SpringLayout.SOUTH, statusLabel);
-		
+
 		settingsPanel.add(ipLabel);
 		settingsPanel.add(ipComboBox);
 		settingsPanel.add(portLabel);
@@ -206,9 +209,9 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 		settingsPanel.add(statusLabel);
 		settingsPanel.add(statusValueLabel);
 		settingsPanel.add(gatewayValueLabel);
-		
+
 		leftPanel.add(settingsPanel, BorderLayout.CENTER);
-		
+
 		JPanel buttonsPanel = new JPanel();
 		buttonStart = new JButton(bundle.getString("Start"));
 		buttonStart.addActionListener(this);
@@ -217,23 +220,28 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 		buttonStop.setEnabled(false);
 		buttonsPanel.add(buttonStart);
 		buttonsPanel.add(buttonStop);
-		
+
 		leftPanel.add(buttonsPanel, BorderLayout.SOUTH);
-		
+
 		JPanel rightTopPanel = new JPanel(new BorderLayout());
 		rightTopPanel.add(new JLabel(bundle.getString("ReceivedMessages") + ":"), BorderLayout.NORTH);
-		
+
 		JTable table = new JTable(tableModel);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane scrollPane = new JScrollPane(table);
 		table.setFillsViewportHeight(true);
-		table.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 2) {
+		table.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(MouseEvent e)
+			{
+				if (e.getClickCount() == 2)
+				{
 					JTable target = (JTable) e.getSource();
 					int row = target.getSelectedRow();
 					log.debug("row: " + row);
-					if (row == -1) return;
+					if (row == -1)
+						return;
 					int modelRow = target.convertRowIndexToModel(row);
 					log.debug("modelRow: " + modelRow);
 					MessageBean msg = tableModel.getItem(modelRow);
@@ -243,21 +251,20 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 				}
 			}
 		});
-		TableRowSorter<MessageTableModel> sorter = new TableRowSorter<MessageTableModel>((MessageTableModel)table.getModel());
+		TableRowSorter<MessageTableModel> sorter = new TableRowSorter<MessageTableModel>((MessageTableModel) table.getModel());
 		table.setRowSorter(sorter);
 		List<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
 		sortKeys.add(new RowSorter.SortKey(2, SortOrder.DESCENDING));
 		sorter.setSortKeys(sortKeys);
 
-		
 		rightTopPanel.add(scrollPane, BorderLayout.CENTER);
 
 		buttonClear = new JButton(bundle.getString("ClearAll"));
 		buttonClear.addActionListener(this);
 		rightTopPanel.add(buttonClear, BorderLayout.SOUTH);
-		
+
 		JPanel rightPanel = new JPanel(new BorderLayout());
-		
+
 		JPanel rightBottomPanel = new JPanel(new BorderLayout());
 		rightBottomPanel.add(new JLabel(bundle.getString("PathMessages") + ":"), BorderLayout.NORTH);
 		JPanel pathPanel = new JPanel();
@@ -268,43 +275,50 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 		labelStorePath = new JLabel(conf.getHttpStorePath());
 		pathPanel.add(labelStorePath);
 		rightBottomPanel.add(pathPanel, BorderLayout.SOUTH);
-		
+
 		rightPanel.add(rightTopPanel, BorderLayout.CENTER);
 		rightPanel.add(rightBottomPanel, BorderLayout.SOUTH);
-		
+
 		httpPanel.add(leftPanel, BorderLayout.WEST);
 		httpPanel.add(rightPanel, BorderLayout.CENTER);
-		
+
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
 		splitPane.setOneTouchExpandable(true);
 		splitPane.setDividerLocation(220);
 		httpPanel.add(splitPane);
-		
+
 		return httpPanel;
 	}
-	
-	private void fillWithIPAddresses(JComboBox ipComboBox) {
-	    ipComboBox.removeAllItems();
-        ipComboBox.setEditable(false);
-	    try {
-            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-            while(interfaces.hasMoreElements()) {
-                NetworkInterface ni = interfaces.nextElement();
-                Enumeration<InetAddress> inetAddress = ni.getInetAddresses();
-                while (inetAddress.hasMoreElements()) {
-                    InetAddress address = inetAddress.nextElement();
-//                    if (address.isLoopbackAddress()) continue;
-                    log.info("host address: " + address.getHostAddress());
-                    ipComboBox.addItem(address.getHostAddress());
-                }
-                log.info("------- next interface");
-            }
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
+
+	private void fillWithIPAddresses(JComboBox ipComboBox)
+	{
+		ipComboBox.removeAllItems();
+		ipComboBox.setEditable(false);
+		try
+		{
+			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+			while (interfaces.hasMoreElements())
+			{
+				NetworkInterface ni = interfaces.nextElement();
+				Enumeration<InetAddress> inetAddress = ni.getInetAddresses();
+				while (inetAddress.hasMoreElements())
+				{
+					InetAddress address = inetAddress.nextElement();
+					//                    if (address.isLoopbackAddress()) continue;
+					log.debug("host address: " + address.getHostAddress());
+					ipComboBox.addItem(address.getHostAddress());
+				}
+				log.debug("------- next interface");
+			}
+		}
+		catch (SocketException e)
+		{
+			log.error("Snafu filling addresses", e);
+		}
 	}
-	
-	private void updateControls(boolean enabled) {
+
+	private void updateControls(boolean enabled)
+	{
 		buttonStart.setEnabled(enabled);
 		buttonStop.setEnabled(!enabled);
 		ipComboBox.setEnabled(enabled);
@@ -335,32 +349,35 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 	public void onFileCreate(File f)
 	{
 		log.debug("file created: " + f.getAbsolutePath());
-		
+
 		String senderId = "none";
 		String type = "---";
-		try {
+		try
+		{
 			String messageBody = FileUtils.readFileToString(f);
 			JDFJMF jmf = new JDFParser().parseString(messageBody).getJMFRoot();
 			senderId = jmf.getSenderID();
-			
+
 			JDFMessage m = jmf.getMessageElement(null /*EnumFamily.Query*/, null, 0);
 			type = m.getType();
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			e.printStackTrace();
 		}
-		
+
 		MessageBean msg = new MessageBean();
 		msg.setFilePathName(f.getAbsolutePath());
 		msg.setMessageType(type);
 		msg.setSenderId(senderId);
 		msg.setSize(FileUtils.byteCountToDisplaySize(f.length()));
-		
+
 		Date d = new Date(f.lastModified());
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 		String timeReceived = formatter.format(d);
-		
+
 		msg.setTimeReceived(timeReceived);
-		
+
 		tableModel.addMessage(msg);
 	}
 
@@ -381,29 +398,40 @@ public class HttpServerPane implements FileAlterationListener, ActionListener {
 
 	public void actionPerformed(ActionEvent e)
 	{
-		if (e.getSource() == buttonStart) {
-			try {
+		if (e.getSource() == buttonStart)
+		{
+			try
+			{
 				HttpReceiver.getInstance().startServer((String) ipComboBox.getSelectedItem(), Integer.parseInt(portValueLabel.getText()));
 				statusValueLabel.setText(bundle.getString("Started"));
 				gatewayValueLabel.setText(HttpReceiver.DEF_PROTOCOL + "://" + (String) ipComboBox.getSelectedItem() + ":" + portValueLabel.getText() + HttpReceiver.DEF_PATH);
 				updateControls(false);
-			} catch (Exception ex) {
+			}
+			catch (Exception ex)
+			{
 				ex.printStackTrace();
 				JOptionPane.showMessageDialog(frame, "Could not start server", "Error", JOptionPane.ERROR_MESSAGE);
 			}
-		} else if (e.getSource() == buttonStop) {
+		}
+		else if (e.getSource() == buttonStop)
+		{
 			HttpReceiver.getInstance().stopServer();
 			statusValueLabel.setText(bundle.getString("Stopped"));
 			updateControls(true);
-		} else if (e.getSource() == buttonClear) {
+		}
+		else if (e.getSource() == buttonClear)
+		{
 			tableModel.clearAll();
-		} else if (e.getSource() == buttonSelectPath) {
-			JFileChooser chooser = new JFileChooser(); 
+		}
+		else if (e.getSource() == buttonSelectPath)
+		{
+			JFileChooser chooser = new JFileChooser();
 			chooser.setCurrentDirectory(new File(conf.getHttpStorePath()));
 			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			chooser.setAcceptAllFileFilterUsed(false);
-			if (chooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) { 
-				log.debug("getSelectedFile(): " +  chooser.getSelectedFile());
+			if (chooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION)
+			{
+				log.debug("getSelectedFile(): " + chooser.getSelectedFile());
 				conf.setHttpStorePath(chooser.getSelectedFile().getAbsolutePath());
 				labelStorePath.setText(chooser.getSelectedFile().getAbsolutePath());
 			}

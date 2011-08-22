@@ -94,6 +94,7 @@ import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.jmf.JMFBuilder;
 import org.cip4.jdflib.util.FileUtil;
+import org.cip4.jdflib.util.logging.LogConfigurator;
 
 /**
  * @author AnderssA ThunellE
@@ -148,34 +149,17 @@ public class Editor
 		{
 			if (!args[i].startsWith("-"))
 			{
-				final File f = new File(args[i]);
-				if (f.canRead())
+				file = new File(args[i]);
+				if (file.canRead())
 				{
-					file = f;
 					break;
 				}
+				file = null;
 			}
 		}
 		my_Editor = new Editor();
-		log.info("Main arguments: " + Arrays.toString(args));
+		log.info("Main arguments: " + Arrays.toString(args) + " file=" + file);
 		my_Editor.init(file);
-		/*
-		File log = new File("/share/data/editor.log");
-		try
-		{
-			PrintWriter w = new PrintWriter(log);
-			w.println("Args: " + args.length);
-			for (String arg : args)
-				w.println("Arg1: " + arg);
-			w.flush();
-			w.close();
-		}
-		catch (FileNotFoundException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
 	}
 
 	// ////////////////////////////////////////////////////////////////
@@ -212,8 +196,12 @@ public class Editor
 	public Editor()
 	{
 		String s = System.getProperty("user.home");
+		File logDir = new File(".");
 		if (s != null)
-			FileUtil.getFileInDirectory(new File(s), new File("logs")).mkdirs();
+		{
+			logDir = FileUtil.getFileInDirectory(new File(s), new File("logs"));
+		}
+		LogConfigurator.configureLog(logDir.getAbsolutePath(), "JDFEditor.log");
 
 		if (log == null)
 			log = LogFactory.getLog(Editor.class);
@@ -270,7 +258,7 @@ public class Editor
 		}
 		catch (final Exception e)
 		{
-			e.printStackTrace();
+			log.error("error initializing Editor", e);
 		}
 	}
 
