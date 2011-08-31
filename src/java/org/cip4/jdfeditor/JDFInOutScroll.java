@@ -80,7 +80,6 @@ import java.awt.event.MouseEvent;
 import java.util.Enumeration;
 import java.util.ResourceBundle;
 import java.util.Stack;
-import java.util.Vector;
 
 import javax.swing.Box;
 import javax.swing.JLabel;
@@ -185,8 +184,8 @@ public class JDFInOutScroll extends JScrollPane
 
 	/**
 	 * Creates a JLabel for the titles in the In & Output View
-	 * @param String - The text on the JLabel
-	 * @param int - The width of the JLabel
+	 * @param title - The text on the JLabel
+	 * @param width - The width of the JLabel
 	 * @return A JLabel with the title text
 	 */
 	private JLabel getTitleLabel(final String title, final int width)
@@ -567,6 +566,7 @@ public class JDFInOutScroll extends JScrollPane
 		}
 		if (node == null)
 		{
+			Editor.setCursor(0, null);
 			return;
 		}
 
@@ -607,7 +607,7 @@ public class JDFInOutScroll extends JScrollPane
 							for (int i = 0; i < resourceLinks.size(); i++)
 							{
 								final JDFResourceLink link = (JDFResourceLink) resourceLinks.item(i);
-								if (link.getTarget() != null)
+								if (link.getLinkRoot() != null)
 								{
 									addResourceTree(link, isJDFNode);
 								}
@@ -628,7 +628,7 @@ public class JDFInOutScroll extends JScrollPane
 					final ResourceBundle m_littleBundle = Editor.getBundle();
 
 					mTitle = m_littleBundle.getString("ResourceKey");
-					Vector vProcs = new Vector();
+					VElement vProcs = new VElement();
 					if (root instanceof JDFNode)
 					{
 						vProcs = ((JDFNode) root).getvJDFNode(null, null, false);
@@ -671,7 +671,6 @@ public class JDFInOutScroll extends JScrollPane
 			}
 		}
 		Editor.setCursor(0, null);
-
 	}
 
 	/**
