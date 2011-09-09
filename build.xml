@@ -69,6 +69,7 @@
 				<include name="xml-apis.jar" />
 				<include name="xercesImpl.jar" />
 				<include name="commons-*.jar" />
+				<include name="activation*.jar" />
 			</fileset>
 		</copy>
 	</target>
