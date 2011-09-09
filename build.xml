@@ -53,8 +53,27 @@
 		<taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask"  />
 		<taskdef name="makerunscript" classname="com.citizenhawk.makerunscript.MakeRunScript" />
 	</target>
+	<target name="prepare" depends="-init">
+		<!-- Creates directories -->
+		<mkdir dir="${bin.dir}" />
+		<mkdir dir="${dist.dir}" />
 
-	<target name="compile" depends="-init" description="Compiles the JDFEditor
+		<copy overwrite="true" todir="${lib.dir}" flatten="true">
+			<fileset dir="../JDFLibJ/dist">
+				<include name="JDFLibJ-2.1.4a.jar" />
+			</fileset>
+			<fileset dir="../jdfutility/dist">
+				<include name="JDFUtility-2.1.4a.jar" />
+			</fileset>
+			<fileset dir="../JDFLibJ/lib">
+				<include name="xml-apis.jar" />
+				<include name="xercesImpl.jar" />
+				<include name="commons-*.jar" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="compile" depends="prepare" description="Compiles the JDFEditor
         source code.">
 		<echo>Compiling...</echo>
 		<javac destdir="${bin.dir}" debug="${build.debug}" target="1.5" source="1.5" >

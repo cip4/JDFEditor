@@ -520,7 +520,7 @@ public class SendToDevice extends JPanel implements ActionListener
 		{
 			// the send method depends on the settings in the Editor.ini file
 			url = getURL(false);
-			bSendTrue = sendJDF(url, isMime(), getURL(true), rbPackageAll == null ? false : rbPackageAll.isSelected());
+			bSendTrue = sendJDF(url, isMime(), getURL(true), isPackageAll());
 		}
 
 		// show success in a popup window
@@ -535,12 +535,18 @@ public class SendToDevice extends JPanel implements ActionListener
 		JOptionPane.showMessageDialog(Editor.getFrame(), sLabel);
 	}
 
+	private boolean isPackageAll()
+	{
+		return rbPackageAll == null ? false : rbPackageAll.isSelected();
+	}
+
 	/**
 	 * @return true if mime is selected
 	 */
 	private boolean isMime()
 	{
-		return rbMIME == null ? false : rbMIME.isSelected();
+		boolean simpleMime = rbMIME == null ? false : rbMIME.isSelected();
+		return simpleMime || isPackageAll();
 	}
 
 }
