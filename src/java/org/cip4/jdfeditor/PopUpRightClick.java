@@ -624,12 +624,20 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 			return;
 		}
 		final KElement e = node.getElement();
-		if (!(e instanceof JDFMessageService))
+		if (e instanceof JDFMessageService)
+		{
+			final JDFMessageService ms = (JDFMessageService) e;
+			new MessageSender(ms).sendJMF();
+		}
+		if (e instanceof JDFJMF)
+		{
+			final SendToDevice sendTo = new SendToDevice();
+			sendTo.trySend();
+		}
+		else
 		{
 			return;
 		}
-		final JDFMessageService ms = (JDFMessageService) e;
-		new MessageSender(ms).sendJMF();
 
 	}
 

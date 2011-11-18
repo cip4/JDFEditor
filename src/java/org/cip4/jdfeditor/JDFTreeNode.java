@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2010 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2011 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -104,6 +104,7 @@ import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.resource.devicecapability.JDFAbstractState;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCap;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCaps;
+import org.cip4.jdflib.resource.process.JDFBinderySignature;
 import org.cip4.jdflib.resource.process.JDFColor;
 import org.cip4.jdflib.resource.process.JDFComChannel;
 import org.cip4.jdflib.resource.process.JDFCompany;
@@ -700,6 +701,13 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 			{
 				final JDFCompany c = (JDFCompany) e;
 				s += " " + c.getOrganizationName();
+			}
+			else if (e instanceof JDFBinderySignature)
+			{
+				final JDFBinderySignature bs = (JDFBinderySignature) e;
+				String foldCatalog = bs.getFoldCatalog();
+				if (!"".equals(foldCatalog))
+					s += " " + foldCatalog;
 			}
 			else if (e instanceof JDFComChannel)
 			{

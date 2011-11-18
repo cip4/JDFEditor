@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2010 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2011 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -109,6 +109,7 @@ import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.resource.devicecapability.JDFDeviceCap;
 import org.cip4.jdflib.util.ContainerUtil;
 import org.cip4.jdflib.util.JDFSpawn;
+import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.jdflib.validate.JDFValidator;
 import org.w3c.dom.Attr;
@@ -393,8 +394,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * Method buildModel. Creates the JDFTreeNodes
-	 * @param node
-	 * @param m_root
+	 * @param my_Root
 	 */
 	public void buildModel(final JDFTreeNode my_Root)
 	{
@@ -423,8 +423,12 @@ public class JDFTreeModel extends DefaultTreeModel
 	// /////////////////////////////////////////////////////////////
 	/**
 	 * Method insertAttribute. inserts a new AttributeNode into the m_jdfTree
-	 * @param path
-	 * @param attribute
+	 * @param parentNode 
+	 * @param attName 
+	 * @param attValue 
+	 * @param attNS 
+	 * @param bInherit 
+	 * @return 
 	 */
 	public JDFTreeNode setAttribute(final JDFTreeNode parentNode, final String attName, final String attValue, final String attNS, final boolean bInherit)
 	{
@@ -537,8 +541,8 @@ public class JDFTreeModel extends DefaultTreeModel
 	/**
 	 * Method addRequiredAttributes. adds the required attributes to an element
 	 * @param newNode
+	 * @return 
 	 */
-
 	public Vector<JDFTreeNode> addRequiredAttributes(final JDFTreeNode newNode)
 	{
 		final KElement kElement = newNode.getElement();
@@ -567,6 +571,12 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	// /////////////////////////////////////////////////////
 
+	/**
+	 * append a new node into an existing parent
+	 * @param newNodeName
+	 * @param parentNode
+	 * @return
+	 */
 	public JDFTreeNode appendNode(final String newNodeName, final JDFTreeNode parentNode)
 	{
 		final KElement element = parentNode.getElement();
@@ -581,7 +591,12 @@ public class JDFTreeModel extends DefaultTreeModel
 	}
 
 	// ///////////////////////////////////////////////////////////////
-
+	/**
+	 * @param newNode 
+	 * @param parentNode 
+	 * @param pos 
+	 * 
+	 */
 	public void insertInto(final JDFTreeNode newNode, final JDFTreeNode parentNode, int pos)
 	{
 		if (parentNode.isElement())
@@ -597,7 +612,8 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * Method addRequiredElements. adds the required elements to an element
-	 * @param newNode
+	 * @param node
+	 * @return 
 	 */
 	public Vector<JDFTreeNode> addRequiredElements(final JDFTreeNode node)
 	{
@@ -670,24 +686,34 @@ public class JDFTreeModel extends DefaultTreeModel
 			}
 		}
 		// Show inherited attributes in the In&Output View and in the Tree View if that feature is selected
-		if (!m_ignoreAttributes && (elem instanceof JDFResource && iniFile.getInhAttr()))
+		if (elem instanceof JDFResource)
 		{
 			final JDFResource res = (JDFResource) elem;
-
-			// Create a vector with all the attribute names including the inherited attributes
-			VString vInheritedAttNames = res.getAttributeVector_JDFResource();
-			vInheritedAttNames = processDefaultAttributes(vInheritedAttNames, elem, showDefaultAtts);
-
-			for (int i = 0; i < vInheritedAttNames.size(); i++)
+			if (node.getParent() == null)
 			{
-				final String attNameStr = vInheritedAttNames.stringAt(i);
+				String id = StringUtil.getNonEmpty(res.getID());
+				if (id != null)
+					setAttribute(node, AttributeName.ID, id, null, true);
 
-				// Add the attribute to the TreeNode, but only if it is an inherited attribute
-				if (!vAttNames.contains(attNameStr))
+			}
+			if (!m_ignoreAttributes && (elem instanceof JDFResource && iniFile.getInhAttr()))
+			{
+
+				// Create a vector with all the attribute names including the inherited attributes
+				VString vInheritedAttNames = res.getAttributeVector_JDFResource();
+				vInheritedAttNames = processDefaultAttributes(vInheritedAttNames, elem, showDefaultAtts);
+
+				for (int i = 0; i < vInheritedAttNames.size(); i++)
 				{
-					final String attName = vInheritedAttNames.stringAt(i);
-					final String attVal = elem.getAttribute(attName);
-					setAttribute(node, attName, attVal, null, true);
+					final String attNameStr = vInheritedAttNames.stringAt(i);
+
+					// Add the attribute to the TreeNode, but only if it is an inherited attribute
+					if (!vAttNames.contains(attNameStr))
+					{
+						final String attName = vInheritedAttNames.stringAt(i);
+						final String attVal = elem.getAttribute(attName);
+						setAttribute(node, attName, attVal, null, true);
+					}
 				}
 			}
 		}
@@ -750,10 +776,9 @@ public class JDFTreeModel extends DefaultTreeModel
 			final KElement elem = nNode.getElement();
 			if (attValue.equals(elem.getAttribute(attName, null, null)))
 			{
-				JDFTreeNode n = null;
 				for (int i = 0; i < nNode.getChildCount(); i++)
 				{
-					n = (JDFTreeNode) nNode.getChildAt(i);
+					JDFTreeNode n = (JDFTreeNode) nNode.getChildAt(i);
 					if (n.toString().equals(sNodeString))
 					{
 						return n;
@@ -771,9 +796,8 @@ public class JDFTreeModel extends DefaultTreeModel
 	 * @param selectedResource - name of resource to insert
 	 * @param hasResourcePool - Has parentNode had a resourcePool before action started? Importent for representation of m_jdfTree. ResourcePool is
 	 * automatically added to parentNode but we need to insert it into m_model.
-	 * @param withLink - insert Resource + ResourceLink if true and only Resource if false
-	 * @param input - resource link usage. true - input, false - output
-	 * @returns created newResourceNode. null if operation was not completed successful
+	 * @param usage - resource link usage. true - input, false - output
+	 * @return JDFTreeNode created newResourceNode. null if operation was not completed successful
 	 */
 	public JDFTreeNode insertNewResourceNode(final JDFNode parentNode, final JDFTreeNode node, final String selectedResource, final boolean hasResourcePool, final EnumUsage usage)
 	{
@@ -785,47 +809,40 @@ public class JDFTreeModel extends DefaultTreeModel
 		// attribute Class with a correct value will be added automatically
 		final JDFResource newResource = parentNode.addResource(selectedResource, null, usage, null, null, null, null);
 
-		if (newResource != null)
+		final JDFResourcePool rPoolElm = parentNode.getCreateResourcePool();
+		final String xpath = rPoolElm.buildXPath(null, 1);
+		JDFTreeNode rPool = null;
+		boolean bFound = false;
+
+		if (!hasResourcePool)
 		{
-			final JDFResourcePool rPoolElm = parentNode.getCreateResourcePool();
-			final String xpath = rPoolElm.buildXPath(null, 1);
-			JDFTreeNode rPool = null;
-			boolean bFound = false;
-
-			if (!hasResourcePool)
-			{
-				rPool = new JDFTreeNode(rPoolElm);
-				insertInto(rPool, node, -1);
-				bFound = true;
-			}
-			else
-			{
-				final Enumeration<JDFTreeNode> e = node.breadthFirstEnumeration();
-
-				while (e.hasMoreElements() && !bFound)
-				{
-					final JDFTreeNode treeNode = e.nextElement();
-					if (xpath.equals(treeNode.getXPath()))
-					{
-						rPool = treeNode;
-						bFound = true;
-					}
-				}
-			}
-			if (bFound)
-			{
-				newResourceNode = createNewNode(newResource);
-				insertInto(newResourceNode, rPool, -1);
-				autoValidate();
-			}
-			else
-			{
-				EditorUtils.errorBox("ErrInsertResLink", null);
-			}
+			rPool = new JDFTreeNode(rPoolElm);
+			insertInto(rPool, node, -1);
+			bFound = true;
 		}
 		else
 		{
-			EditorUtils.errorBox("ErrInsertRes", null);
+			final Enumeration<JDFTreeNode> e = node.breadthFirstEnumeration();
+
+			while (e.hasMoreElements() && !bFound)
+			{
+				final JDFTreeNode treeNode = e.nextElement();
+				if (xpath.equals(treeNode.getXPath()))
+				{
+					rPool = treeNode;
+					bFound = true;
+				}
+			}
+		}
+		if (bFound)
+		{
+			newResourceNode = createNewNode(newResource);
+			insertInto(newResourceNode, rPool, -1);
+			autoValidate();
+		}
+		else
+		{
+			EditorUtils.errorBox("ErrInsertResLink", null);
 		}
 
 		return newResourceNode;
@@ -1123,6 +1140,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	/**
 	 * Method insertAttributeIntoDoc. creates a new attribute and adds it to the jdfDoc
 	 * @param node
+	 * @return 
 	 */
 	public JDFTreeNode insertAttributeIntoDoc(JDFTreeNode node)
 	{
@@ -1195,6 +1213,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * @param selectionPath
+	 * @param xjdf20 the converter instance
 	 * @experimental
 	 */
 	public void saveAsXJDF(final TreePath selectionPath, XJDF20 xjdf20)
@@ -1205,7 +1224,6 @@ public class JDFTreeModel extends DefaultTreeModel
 			return;
 		}
 		final KElement e = node.getElement();
-		final boolean bZip = e.hasChildElement(ElementName.JDF, null);
 		final EditorDocument eDoc = Editor.getEditorDoc();
 		final String fn = eDoc.getOriginalFileName();
 		KElement xJDF = null;

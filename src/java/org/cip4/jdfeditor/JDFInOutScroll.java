@@ -5,7 +5,7 @@ package org.cip4.jdfeditor;
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2009 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2011 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -91,15 +91,23 @@ import javax.swing.ToolTipManager;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFConstants;
 import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
+import org.cip4.jdflib.datatypes.JDFAttributeMap;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourceLinkPool;
 import org.cip4.jdflib.resource.JDFResource;
 
+/**
+ * 
+ * scroll area for the input / output view
+ * @author rainer prosi
+ * @date pre Oct 8, 2011
+ */
 public class JDFInOutScroll extends JScrollPane
 {
 
@@ -115,6 +123,9 @@ public class JDFInOutScroll extends JScrollPane
 	private int m_inTreePos = 0;
 	private int m_outTreePos = 0;
 
+	/**
+	 * 
+	 */
 	public JDFInOutScroll()
 	{
 		super();
@@ -620,44 +631,25 @@ public class JDFInOutScroll extends JScrollPane
 				{
 					final JDFResource r = (JDFResource) kElement;
 
-					String id = r.getID();
-					if (id.equals(JDFConstants.EMPTYSTRING))
-					{
-						id = r.getResourceRoot().getID();
-					}
 					final ResourceBundle m_littleBundle = Editor.getBundle();
 
 					mTitle = m_littleBundle.getString("ResourceKey");
-					VElement vProcs = new VElement();
-					if (root instanceof JDFNode)
+					rTitle = m_littleBundle.getString("JDFConsumerKey");
+					lTitle = m_littleBundle.getString("JDFProducerKey");
+					if (root instanceof JDFNode) // not in JMF
 					{
-						vProcs = ((JDFNode) root).getvJDFNode(null, null, false);
-					}
+						String id = r.getID();
+						VElement vProcs = ((JDFNode) root).getvJDFNode(null, null, false);
 
-					for (int i = 0; i < vProcs.size(); i++)
-					{
-						final JDFNode jdfNode = (JDFNode) vProcs.elementAt(i);
-						if (jdfNode.hasChildElement(ElementName.RESOURCELINKPOOL, null))
+						for (int i = 0; i < vProcs.size(); i++)
 						{
-							rTitle = m_littleBundle.getString("JDFConsumerKey");
-							lTitle = m_littleBundle.getString("JDFProducerKey");
-
-							final JDFResourceLinkPool rlp = jdfNode.getResourceLinkPool();
-							if (rlp != null)
+							final JDFNode jdfNode = (JDFNode) vProcs.elementAt(i);
+							final VElement resourceLinks = jdfNode.getResourceLinks(new JDFAttributeMap(AttributeName.RREF, id));
+							final int size = resourceLinks == null ? 0 : resourceLinks.size();
+							for (int j = 0; j < size; j++)
 							{
-								final VElement resourceLinks = rlp.getPoolChildren(null, null, null);
-								if (resourceLinks != null)
-								{
-									final int size = resourceLinks.size();
-									for (int j = 0; j < size; j++)
-									{
-										final JDFResourceLink link = (JDFResourceLink) resourceLinks.elementAt(j);
-										if (link.getLinkRoot() == r)
-										{
-											addResourceTree(link, isJDFNode);
-										}
-									}
-								}
+								final JDFResourceLink link = (JDFResourceLink) resourceLinks.elementAt(j);
+								addResourceTree(link, isJDFNode);
 							}
 						}
 					}

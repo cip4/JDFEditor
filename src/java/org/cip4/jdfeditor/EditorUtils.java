@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2010 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2011 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -123,6 +123,8 @@ public class EditorUtils
 
 	/**
 	 * gets all resources from this node and from all its ancestors.
+	 * @param jdfNode 
+	 * @param usage 
 	 * @return - vector of all resources allowed to be linked from the level of jdfNode
 	 */
 	public static VElement getResourcesAllowedToLink(final JDFNode jdfNode, final EnumUsage usage)
@@ -197,7 +199,7 @@ public class EditorUtils
 
 	/**
 	 * Method getAttributeOptions
-	 * @param w
+	 * @param parentElement
 	 * @return
 	 */
 	public static String[] getElementOptions(final KElement parentElement)
@@ -349,9 +351,9 @@ public class EditorUtils
 
 	/**
 	 * parse an input stream
-	 * @param file
+	 * @param inStream 
+	 * @param useSchemaDefault 
 	 * @return
-	 * @throws Exception
 	 */
 	public static JDFDoc parseInStream(final InputStream inStream, final boolean useSchemaDefault)
 	{
@@ -383,6 +385,7 @@ public class EditorUtils
 	/**
 	 * creates the standard error box
 	 * @param errorKey the key in the resources that will be used to display the message
+	 * @param addedString 
 	 */
 	public static void errorBox(final String errorKey, String addedString)
 	{

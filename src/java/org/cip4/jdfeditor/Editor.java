@@ -338,7 +338,7 @@ public class Editor
 	 */
 	public String getEditorBuildDate()
 	{
-		return "Estimated Build Date After September 8 2011";
+		return "Estimated Build Date After October 8 2011";
 	}
 
 	/**

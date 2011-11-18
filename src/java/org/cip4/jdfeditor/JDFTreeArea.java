@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2006 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2011 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -509,6 +509,8 @@ public class JDFTreeArea extends JTextArea
 	{
 
 		final VString vValid = parentNode.linkNames();
+		//TODO evaluate cardinality
+		//		final VString vInfo = parentNode.linkInfo();
 		if (vValid == null)
 		{
 			return null;
@@ -536,7 +538,7 @@ public class JDFTreeArea extends JTextArea
 
 	/**
 	 * choose Resource to link
-	 * @param node where ResourceLink must be added
+	 * @param jdfNode where ResourceLink must be added
 	 * @param usage input, output or any
 	 * @return - selected ResourceName
 	 */
@@ -571,6 +573,11 @@ public class JDFTreeArea extends JTextArea
 		return resource;
 	}
 
+	/**
+	 * 
+	 * get the tree view
+	 * @return
+	 */
 	public JViewport getTreeView()
 	{
 		return m_treeView;
@@ -706,6 +713,11 @@ public class JDFTreeArea extends JTextArea
 		}
 	}
 
+	/**
+	 * 
+	 * get thr currently selected path
+	 * @return
+	 */
 	public TreePath getSelectionPath()
 	{
 		final EditorDocument ed = m_frame.getEditorDoc();
@@ -716,7 +728,7 @@ public class JDFTreeArea extends JTextArea
 
 	/**
 	 * Creates a new link, that links to an already existing resource in the m_jdfTree
-	 * @param input - resource link usage
+	 * @param usage - resource link usage
 	 */
 	public void insertResourceLink(final EnumUsage usage)
 	{
@@ -851,7 +863,7 @@ public class JDFTreeArea extends JTextArea
 	}
 
 	/**
-	 * @param kElement
+	 * 
 	 * @return
 	 */
 	public KElement getPathTarget()
