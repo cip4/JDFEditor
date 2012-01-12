@@ -631,6 +631,14 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 				{
 					s += "/" + att;
 				}
+				if (e instanceof JDFJobPhase)
+				{
+					att = e.getAttribute(AttributeName.JOBID, null, null);
+					if (att != null)
+					{
+						s += " JobID=" + att;
+					}
+				}
 			}
 			else if (e instanceof JDFDeviceInfo)
 			{
