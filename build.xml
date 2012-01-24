@@ -57,6 +57,7 @@
 		<!-- Creates directories -->
 		<mkdir dir="${bin.dir}" />
 		<mkdir dir="${dist.dir}" />
+		<copy overwrite="true" file="../JDFLibJ/version.properties" todir="." />
 
 		<copy overwrite="true" todir="${lib.dir}" flatten="true">
 			<fileset dir="../JDFLibJ/dist">
