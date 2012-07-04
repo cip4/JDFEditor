@@ -117,6 +117,7 @@ import org.cip4.jdflib.resource.process.JDFLayoutElement;
 import org.cip4.jdflib.resource.process.JDFMedia;
 import org.cip4.jdflib.resource.process.JDFPerson;
 import org.cip4.jdflib.resource.process.JDFSeparationSpec;
+import org.cip4.jdflib.resource.process.JDFSourceResource;
 import org.cip4.jdflib.span.JDFSpanBase;
 import org.cip4.jdflib.util.JDFDate;
 import org.cip4.jdflib.util.StringUtil;
@@ -704,6 +705,16 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 				final JDFAttributeMap map = p.getPartMap();
 				s = addPartMap(s, map);
 			}
+			else if (e instanceof JDFSourceResource)
+			{
+				final JDFSourceResource p = (JDFSourceResource) e;
+				JDFRefElement re = p.getRefElement();
+				if (re != null)
+				{
+					s += " rRef: " + re.getrRef();
+					s = addPartMap(s, re.getPartMap());
+				}
+			}
 			else if (e instanceof JDFGeneralID)
 			{
 				final JDFGeneralID p = (JDFGeneralID) e;
@@ -788,7 +799,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 	 */
 	private String addPartMap(String s, final JDFAttributeMap map)
 	{
-		final VString keys = map.getKeys();
+		final VString keys = map == null ? null : map.getKeys();
 		if (keys != null)
 		{
 			Collections.sort(keys);
