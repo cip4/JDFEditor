@@ -3,7 +3,7 @@
 * The CIP4 Software License, Version 1.0
 *
 *
-* Copyright (c) 2001-2010 The International Cooperation for the Integration of 
+* Copyright (c) 2001-2012 The International Cooperation for the Integration of 
 * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
 * reserved.
 *
@@ -76,11 +76,10 @@ import javax.swing.tree.TreePath;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
-/*
+/**
  * AddRequiredAttrEdit.java
  * @author Elena Skobchenko
  */
-
 public class AddRequiredAttrEdit extends EditorUndoableEdit
 {
 	private static final long serialVersionUID = -2778264565816334345L;
@@ -89,6 +88,12 @@ public class AddRequiredAttrEdit extends EditorUndoableEdit
 	private final JDFTreeNode intoNode;
 	private final Vector<JDFTreeNode> addedVector;
 
+	/**
+	 * 
+	 * @param treePath
+	 * @param intoNod
+	 * @param addedVect
+	 */
 	public AddRequiredAttrEdit(final TreePath treePath, final JDFTreeNode intoNod, final Vector<JDFTreeNode> addedVect)
 	{
 		super();
@@ -100,6 +105,10 @@ public class AddRequiredAttrEdit extends EditorUndoableEdit
 		Editor.getFrame().updateViews(path);
 	}
 
+	/**
+	 * 
+	 * @see org.cip4.jdfeditor.EditorUndoableEdit#undo()
+	 */
 	@Override
 	public void undo() throws CannotUndoException
 	{
@@ -112,6 +121,10 @@ public class AddRequiredAttrEdit extends EditorUndoableEdit
 		super.undo();
 	}
 
+	/**
+	 * 
+	 * @see org.cip4.jdfeditor.EditorUndoableEdit#redo()
+	 */
 	@Override
 	public void redo() throws CannotRedoException
 	{
@@ -125,18 +138,30 @@ public class AddRequiredAttrEdit extends EditorUndoableEdit
 		super.redo();
 	}
 
+	/**
+	 * 
+	 * @see org.cip4.jdfeditor.EditorUndoableEdit#canUndo()
+	 */
 	@Override
 	public boolean canUndo()
 	{
 		return super.canUndo() && addedVector.size() > 0;
 	}
 
+	/**
+	 * 
+	 * @see org.cip4.jdfeditor.EditorUndoableEdit#canRedo()
+	 */
 	@Override
 	public boolean canRedo()
 	{
 		return super.canRedo() && addedVector.size() > 0;
 	}
 
+	/**
+	 * 
+	 * @see javax.swing.undo.AbstractUndoableEdit#getPresentationName()
+	 */
 	@Override
 	public String getPresentationName()
 	{
