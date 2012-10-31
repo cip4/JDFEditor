@@ -1,11 +1,9 @@
-package org.cip4.jdfeditor;
-
 /*
  *
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2006 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2012 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -70,6 +68,8 @@ package org.cip4.jdfeditor;
  *  
  * 
  */
+package org.cip4.jdfeditor;
+
 import javax.swing.JTree;
 import javax.swing.ToolTipManager;
 import javax.swing.tree.TreePath;
@@ -94,11 +94,20 @@ public class CheckJDFScrollPane extends ValidationScrollPane
 	 */
 	private static final long serialVersionUID = 2367868076065696719L;
 
+	/**
+	 * 
+	 * @param frame
+	 */
 	public CheckJDFScrollPane(JDFFrame frame)
 	{
 		super(frame);
 	}
 
+	/**
+	 * 
+	 * TODO Please insert comment!
+	 * @param bugReport
+	 */
 	public void drawCheckJDFOutputTree(XMLDoc bugReport)
 	{
 		if (bugReport == null)

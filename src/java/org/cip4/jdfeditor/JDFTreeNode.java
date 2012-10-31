@@ -76,6 +76,7 @@ import javax.swing.tree.TreeNode;
 import org.cip4.jdflib.auto.JDFAutoRefAnchor.EnumAnchor;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFAudit;
+import org.cip4.jdflib.core.JDFComment;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFElement.EnumNodeStatus;
 import org.cip4.jdflib.core.JDFNodeInfo;
@@ -457,6 +458,14 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 				if (d != null)
 				{
 					s += d.getFormattedDateTime(" MMM dd yyyy - HH:mm");
+				}
+			}
+			else if (e instanceof JDFComment)
+			{
+				final String nam = e.getAttribute("Name", null, null);
+				if (nam != null)
+				{
+					s += ": " + nam;
 				}
 			}
 			else if (e instanceof JDFRefElement)

@@ -3,7 +3,7 @@
 * The CIP4 Software License, Version 1.0
 *
 *
-* Copyright (c) 2001-2010 The International Cooperation for the Integration of 
+* Copyright (c) 2001-2012 The International Cooperation for the Integration of 
 * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
 * reserved.
 *
@@ -78,11 +78,10 @@ import javax.swing.undo.CannotUndoException;
 
 import org.cip4.jdflib.core.KElement;
 
-/*
+/**
  * AddRequiredElemEdit.java
  * @author Elena Skobchenko
  */
-
 public class AddRequiredElemEdit extends EditorUndoableEdit
 {
 	private static final long serialVersionUID = -2778264565816334345L;
@@ -91,6 +90,12 @@ public class AddRequiredElemEdit extends EditorUndoableEdit
 	private final JDFTreeNode intoNode;
 	private final Vector<JDFTreeNode> addedVector;
 
+	/**
+	 * 
+	 * @param treePath
+	 * @param _intoNode
+	 * @param _addedVector
+	 */
 	public AddRequiredElemEdit(final TreePath treePath, final JDFTreeNode _intoNode, final Vector<JDFTreeNode> _addedVector)
 	{
 		super();
@@ -102,6 +107,10 @@ public class AddRequiredElemEdit extends EditorUndoableEdit
 		Editor.getFrame().updateViews(path);
 	}
 
+	/**
+	 * 
+	 * @see org.cip4.jdfeditor.EditorUndoableEdit#undo()
+	 */
 	@Override
 	public void undo() throws CannotUndoException
 	{
@@ -115,6 +124,10 @@ public class AddRequiredElemEdit extends EditorUndoableEdit
 		super.undo();
 	}
 
+	/**
+	 * 
+	 * @see org.cip4.jdfeditor.EditorUndoableEdit#redo()
+	 */
 	@Override
 	public void redo() throws CannotRedoException
 	{
@@ -130,6 +143,10 @@ public class AddRequiredElemEdit extends EditorUndoableEdit
 		super.redo();
 	}
 
+	/**
+	 * 
+	 * @see javax.swing.undo.AbstractUndoableEdit#getPresentationName()
+	 */
 	@Override
 	public String getPresentationName()
 	{

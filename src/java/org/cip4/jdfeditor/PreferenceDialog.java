@@ -1,11 +1,9 @@
-package org.cip4.jdfeditor;
-
 /*
  *
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2010 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2012 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -70,6 +68,8 @@ package org.cip4.jdfeditor;
  *  
  * 
  */
+package org.cip4.jdfeditor;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -170,6 +170,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private JCheckBox boxCheckURL;
 	private JCheckBox boxGenerateFull;
 	private JCheckBox boxIgnoreDefaults;
+	private JCheckBox cboxIndentSave;
 
 	private JCheckBox boxValOpen;
 	private JComboBox boxFontName;
@@ -201,6 +202,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private boolean currRemoveDefault;
 	private boolean currDispDefault;
 	private boolean currRemoveWhite;
+	private boolean currIndentSave;
 	private boolean currValidate;
 	private boolean checkURL;
 	private boolean currReadOnly;
@@ -231,6 +233,9 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
 	private final ValidationTab validTab;
 
+	/**
+	 * 
+	 */
 	public PreferenceDialog()
 	{
 		super();
@@ -348,6 +353,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		schemaFile = iniFile.getSchemaURL();
 		currRemoveDefault = iniFile.getRemoveDefault();
 		currRemoveWhite = iniFile.getRemoveWhite();
+		currIndentSave = iniFile.getIndentSave();
 		currDispDefault = iniFile.getDisplayDefault();
 		checkURL = iniFile.getCheckURL();
 		enableExtensions = iniFile.getEnableExtensions();
@@ -475,6 +481,13 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		boxRemWhite.setBounds(10, y, d.width, d.height);
 		boxRemWhite.addActionListener(this);
 		genPanel.add(boxRemWhite);
+
+		y += d.height + 3;
+		cboxIndentSave = new JCheckBox(littleBundle.getString("IndentSave"), currIndentSave);
+		d = cboxIndentSave.getPreferredSize();
+		cboxIndentSave.setBounds(10, y, d.width, d.height);
+		cboxIndentSave.addActionListener(this);
+		genPanel.add(cboxIndentSave);
 
 		y += d.height + 3;
 		boxLongID = new JCheckBox(littleBundle.getString("LongIDKey"), longID);
@@ -1421,6 +1434,10 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		{
 			currValidate = boxValOpen.isSelected();
 		}
+		else if (source == cboxIndentSave)
+		{
+			currIndentSave = cboxIndentSave.isSelected();
+		}
 		else if (source == boxCheckURL)
 		{
 			checkURL = boxCheckURL.isSelected();
@@ -1555,6 +1572,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		iniFile.setRemoveDefault(currRemoveDefault);
 		iniFile.setDisplayDefault(currDispDefault);
 		iniFile.setRemoveWhite(currRemoveWhite);
+		iniFile.setIndentSave(currIndentSave);
 		iniFile.setCheckURL(checkURL);
 		iniFile.setLongID(longID);
 		iniFile.setEnableExtensions(enableExtensions);

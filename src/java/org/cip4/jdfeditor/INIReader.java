@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2011 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2012 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -244,6 +244,7 @@ public class INIReader
 	private final String displayDefault = "ValidEdit/@displayDefault";
 	private final String ignoreDefault = "ValidEdit/@ignoreDefault";
 	private final String removeWhite = "ValidEdit/@removeWhite";
+	private final String indentSave = "ValidEdit/@indentSave";
 	private final String checkURL = "ValidEdit/@checkURL";
 	private final String fixICSVersion = "ValidEdit/@fixICSVersion";
 	private final String convertLPP = "ValidEdit/@convertLPP";
@@ -514,11 +515,21 @@ public class INIReader
 		setAttribute(removeWhite, rem ? "true" : "false");
 	}
 
+	/**
+	 * 
+	 * 
+	 * @return
+	 */
 	public boolean getRemoveWhite()
 	{
 		return getAttribute(removeWhite, "true").equals("true");
 	}
 
+	/**
+	 * 
+	 *  
+	 * @param rem
+	 */
 	public void setRemoveDefault(final boolean rem)
 	{
 		setAttribute(removeDefault, rem ? "true" : "false");
@@ -1456,6 +1467,25 @@ public class INIReader
 		{
 			setAttribute(findPattern + i, patternList.get(i));
 		}
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean getIndentSave()
+	{
+		return getAttribute(indentSave, "true").equals("true");
+	}
+
+	/**
+	 * 
+	 *  
+	 * @param indent
+	 */
+	public void setIndentSave(final boolean indent)
+	{
+		setAttribute(indentSave, indent ? "true" : "false");
 	}
 
 }
