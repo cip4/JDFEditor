@@ -80,6 +80,7 @@ import javax.swing.UIManager;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.cip4.jdfeditor.dialog.SearchComboBoxModel;
 import org.cip4.jdflib.core.JDFConstants;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFElement.EnumValidationLevel;
@@ -215,6 +216,7 @@ public class INIReader
 	private final String structuredCaps = "Extension/@StructuredCaps";
 	private final String xjdfSingleNode = "Extension/XJDF/@SingleNode";
 	private final String xjdfConvertStripping = "Extension/XJDF/@ConvertStripping";
+	private final String xjdfConvertTilde = "Extension/XJDF/@ConvertTilde";
 	private final String xjdfSpanAsAttribute = "Extension/XJDF/@SpanAsAttribute";
 	private final String xjdfMergeRunList = "Extension/XJDF/@MergeRunList";
 	private final String xjdfConvertLayoutPrep = "Extension/XJDF/@ConvertLayoutPrep";
@@ -1417,6 +1419,23 @@ public class INIReader
 		setAttribute(xjdfConvertLayoutPrep, b ? "true" : "false");
 	}
 
+	/**
+	 * if true, tildes are converte to two instances
+	 * @return
+	 */
+	public boolean getXjdfConvertTilde()
+	{
+		return getAttribute(xjdfConvertTilde, "false").equalsIgnoreCase("true") ? true : false;
+	}
+
+	/**
+	 * @return
+	 */
+	public void setXjdfConvertTilde(final boolean b)
+	{
+		setAttribute(xjdfConvertTilde, b ? "true" : "false");
+	}
+
 	public String getHttpStorePath()
 	{
 		return getAttribute(httpStorePath, "/var/tmp/JDFEditor/ReceivedMessages/");
@@ -1447,10 +1466,15 @@ public class INIReader
 		setAttribute(findWrap, p ? "true" : "false");
 	}
 
+	/**
+	 * 
+	 *  
+	 * @return
+	 */
 	public List<String> getFindPattern()
 	{
 		List<String> res = new ArrayList<String>();
-		for (int i = 0; i < SearchDialog.MAX_ELEMENTS; i++)
+		for (int i = 0; i < SearchComboBoxModel.MAX_ELEMENTS; i++)
 		{
 			String pattern = getAttribute(findPattern + i, "");
 			if (StringUtils.isNotBlank(pattern))
@@ -1461,6 +1485,11 @@ public class INIReader
 		return res;
 	}
 
+	/**
+	 * 
+	 *  
+	 * @param patternList
+	 */
 	public void setFindPattern(List<String> patternList)
 	{
 		for (int i = 0; i < patternList.size(); i++)

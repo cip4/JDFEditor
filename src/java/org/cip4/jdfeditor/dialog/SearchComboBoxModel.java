@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2011 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2012 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -81,54 +81,104 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.cip4.jdfeditor.Editor;
 import org.cip4.jdfeditor.INIReader;
-import org.cip4.jdfeditor.SearchDialog;
 
+/** 
+ * @author rainer prosi
+ * @date before  Nov 28, 2012
+ */
+public class SearchComboBoxModel extends AbstractListModel implements ComboBoxModel
+{
+	/**
+	 * 	Max number of strings in combobox
+	 */
+	public static int MAX_ELEMENTS = 5;
 
-public class SearchComboBoxModel extends AbstractListModel implements ComboBoxModel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 
+	 */
+	public SearchComboBoxModel()
+	{
+		super();
+	}
+
 	private static final Logger log = Logger.getLogger(SearchComboBoxModel.class);
-	
+
 	private static INIReader conf = Editor.getIniFile();
-	
+
 	private List<String> elements = new ArrayList<String>();
 	private String selectedItem;
-	
+
+	/**
+	 * 
+	 *  
+	 * @param item
+	 */
 	public void addItem(String item)
 	{
-		if (! ArrayUtils.contains(elements.toArray(new String[0]), item)) {
+		if (!ArrayUtils.contains(elements.toArray(new String[0]), item))
+		{
 			elements.add(item);
 		}
-		if (elements.size() > SearchDialog.MAX_ELEMENTS) {
-			String[] newElements = (String[]) ArrayUtils.subarray(elements.toArray(new String[0]),
-					elements.size() - SearchDialog.MAX_ELEMENTS, elements.size());
+		if (elements.size() > MAX_ELEMENTS)
+		{
+			String[] newElements = (String[]) ArrayUtils.subarray(elements.toArray(new String[0]), elements.size() - MAX_ELEMENTS, elements.size());
 			elements = Arrays.asList(newElements);
 			log.debug("elements: " + elements);
 		}
 		fireContentsChanged(this, 0, elements.size());
 		conf.setFindPattern(elements);
 	}
-	
-	public void addAll(List<String> elements) {
-		for (String item : elements) {
+
+	/**
+	 * 
+	 *  
+	 * @param elements
+	 */
+	public void addAll(List<String> elements)
+	{
+		for (String item : elements)
+		{
 			addItem(item);
 		}
 	}
 
+	/**
+	 * 
+	 * @see javax.swing.ComboBoxModel#getSelectedItem()
+	 */
 	public Object getSelectedItem()
 	{
 		return selectedItem;
 	}
 
+	/**
+	 * 
+	 * @see javax.swing.ComboBoxModel#setSelectedItem(java.lang.Object)
+	 */
 	public void setSelectedItem(Object anItem)
 	{
 		selectedItem = (String) anItem;
 	}
 
+	/**
+	 * 
+	 * @see javax.swing.ListModel#getElementAt(int)
+	 */
 	public Object getElementAt(int index)
 	{
 		int size = elements.size();
 		return elements.get(size - index - 1);
 	}
 
+	/**
+	 * 
+	 * @see javax.swing.ListModel#getSize()
+	 */
 	public int getSize()
 	{
 		return elements.size();

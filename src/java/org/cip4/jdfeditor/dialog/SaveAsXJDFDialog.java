@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2010 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2012 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -109,6 +109,7 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 	private final JCheckBox cbExt3;
 	private final JCheckBox cbExt4;
 	private final JCheckBox cbLoPrep;
+	private final JCheckBox cbTilde;
 	private int choosedButton = BUTTON_CANCEL;
 
 	private static ResourceBundle bundle = Editor.getBundle();
@@ -128,12 +129,14 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 		cbExt3 = new JCheckBox(bundle.getString("SpanAsAttributeKey"));
 		cbExt4 = new JCheckBox(bundle.getString("MergeRunListKey"));
 		cbLoPrep = new JCheckBox(bundle.getString("ConvertLayoutPrepKey"));
+		cbTilde = new JCheckBox(bundle.getString("RemoveTildeFromRange"));
 
 		checkboxesPanel.add(cbExt1);
 		checkboxesPanel.add(cbExt2);
 		checkboxesPanel.add(cbExt3);
 		checkboxesPanel.add(cbExt4);
 		checkboxesPanel.add(cbLoPrep);
+		checkboxesPanel.add(cbTilde);
 
 		JPanel buttonsPanel = new JPanel();
 		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
@@ -163,15 +166,25 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 		cbExt3.setSelected(conf.getXjdfSpanAsAttribute());
 		cbExt4.setSelected(conf.getXjdfMergeRunList());
 		cbLoPrep.setSelected(conf.getXjdfConvertLOPrep());
+		cbTilde.setSelected(conf.getXjdfConvertTilde());
 
 		setVisible(true);
 	}
 
+	/**
+	 * 
+	 *  
+	 * @return
+	 */
 	public int getChoosedButton()
 	{
 		return choosedButton;
 	}
 
+	/**
+	 * 
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	public void actionPerformed(ActionEvent e)
 	{
 		if (e.getSource() == bOK)
@@ -181,6 +194,7 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 			conf.setXjdfSpanAsAttribute(cbExt3.isSelected());
 			conf.setXjdfMergeRunList(cbExt4.isSelected());
 			conf.setXjdfConvertLOPrep(cbLoPrep.isSelected());
+			conf.setXjdfConvertTilde(cbTilde.isSelected());
 
 			choosedButton = BUTTON_OK;
 			dispose();
@@ -205,6 +219,7 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 		xjdf20.bSpanAsAttribute = cbExt3.isSelected();
 		xjdf20.bMergeRunList = cbExt4.isSelected();
 		xjdf20.bMergeLayoutPrep = cbLoPrep.isSelected();
+		xjdf20.bConvertTilde = cbTilde.isSelected();
 		return xjdf20;
 	}
 

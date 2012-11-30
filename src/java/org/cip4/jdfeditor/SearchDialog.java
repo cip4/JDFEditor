@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2011 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2012 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -71,12 +71,12 @@
 package org.cip4.jdfeditor;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -92,7 +92,6 @@ import javax.swing.JRadioButton;
 import javax.swing.JSeparator;
 import javax.swing.tree.TreePath;
 
-import org.apache.log4j.Logger;
 import org.cip4.jdfeditor.dialog.SearchComboBoxModel;
 import org.cip4.jdflib.util.ContainerUtil;
 import org.cip4.jdflib.util.StringUtil;
@@ -103,8 +102,7 @@ import org.cip4.jdflib.util.StringUtil;
  */
 public class SearchDialog extends JDialog implements ActionListener
 {
-	private static final Logger log = Logger.getLogger(SearchDialog.class);
-	
+
 	/**
 	 * Comment for <code>serialVersionUID</code>
 	 */
@@ -113,7 +111,7 @@ public class SearchDialog extends JDialog implements ActionListener
 	private String searchComponent;
 
 	/**
-	 * @return the searchComponent
+	 * @param sComp the searchComponent
 	 */
 	public void setSearchComponent(final String sComp)
 	{
@@ -123,7 +121,7 @@ public class SearchDialog extends JDialog implements ActionListener
 	private final JButton m_findNextButton;
 	private final JButton m_cancelButton;
 	private final JComboBox searchComboBox;
-	private SearchComboBoxModel searchComboBoxModel;
+	private final SearchComboBoxModel searchComboBoxModel;
 	private final JRadioButton m_forwardRadioButton;
 	private final JRadioButton m_backwardRadioButton;
 	private final JCheckBox m_IgnoreCase;
@@ -131,11 +129,8 @@ public class SearchDialog extends JDialog implements ActionListener
 	private static String lastSearch = null;
 	private Vector<JDFTreeNode> m_LastResults = null;
 	private int lastPos;
-	
+
 	private static INIReader conf = Editor.getIniFile();
-	
-//	Max number of strings in combobox
-	public static int MAX_ELEMENTS = 5;
 
 	/**
 	 * Constructor for SearchDialog.
@@ -158,18 +153,13 @@ public class SearchDialog extends JDialog implements ActionListener
 		final JLabel findLabel = new JLabel(frame.m_littleBundle.getString("FindKey"));
 		box2.add(findLabel);
 
-//		TODO: check what is this for
-		/*if (lastSearch != null)
-		{
-			m_searchTextField.setText(lastSearch);
-			m_searchTextField.setSelectionStart(0);
-			m_searchTextField.setSelectionEnd(lastSearch.length());
-		}*/
-
 		searchComboBoxModel = new SearchComboBoxModel();
-		searchComboBoxModel.addAll(conf.getFindPattern());
+		List<String> findPattern = conf.getFindPattern();
+		searchComboBoxModel.addAll(findPattern);
+		if (findPattern != null && findPattern.size() > 0)
+			searchComboBoxModel.setSelectedItem(findPattern.get(findPattern.size() - 1));
 		searchComboBox = new JComboBox(searchComboBoxModel);
-//		searchComboBox.setPreferredSize(new Dimension(60, 20));
+
 		searchComboBox.setEditable(true);
 		box2.add(searchComboBox);
 		middleBox.add(box2);
@@ -252,9 +242,13 @@ public class SearchDialog extends JDialog implements ActionListener
 		{
 			dispose();
 			Editor.getFrame().m_dialog = null;
-		} else if (eSrc == m_IgnoreCase) {
+		}
+		else if (eSrc == m_IgnoreCase)
+		{
 			conf.setFindCaseSensitive(m_IgnoreCase.isSelected());
-		} else if (eSrc == m_Wrap) {
+		}
+		else if (eSrc == m_Wrap)
+		{
 			conf.setFindWrap(m_Wrap.isSelected());
 		}
 	}

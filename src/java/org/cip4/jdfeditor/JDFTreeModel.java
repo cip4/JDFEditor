@@ -1296,6 +1296,9 @@ public class JDFTreeModel extends DefaultTreeModel
 		final EditorDocument eDoc = Editor.getEditorDoc();
 		final String fn = eDoc.getOriginalFileName();
 		final XJDFToJDFConverter c = new XJDFToJDFConverter(null);
+		INIReader conf = Editor.getIniFile();
+		c.setConvertTilde(conf.getXjdfConvertTilde());
+
 		final JDFDoc d = c.convert(e);
 		if (d != null)
 		{
