@@ -130,6 +130,7 @@ import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.core.XMLDocUserData.EnumDirtyPolicy;
+import org.cip4.jdflib.elementwalker.RemoveEmpty;
 import org.cip4.jdflib.goldenticket.BaseGoldenTicket;
 import org.cip4.jdflib.goldenticket.IDPGoldenTicket;
 import org.cip4.jdflib.goldenticket.MISCPGoldenTicket;
@@ -996,19 +997,19 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			{
 				final JDFNode n1 = (JDFNode) element.getDeepParent(ElementName.JDF, 0);
 
+				RemoveEmpty rem = new RemoveEmpty();
+				rem.setZappElements(true);
 				if (n1 != null)
 				{
 					n1.eraseUnlinkedResources();
 					n1.eraseDefaultAttributes(true);
-					n1.eraseEmptyAttributes(true);
-					n1.eraseEmptyNodes(true);
+					rem.removEmpty(n1);
 				}
 				else
 				{
 					if (element instanceof JDFElement)
 						((JDFElement) element).eraseDefaultAttributes(true);
-					element.eraseEmptyAttributes(true);
-					element.eraseEmptyNodes(true);
+					rem.walkTreeKidsFirst(element);
 				}
 			}
 			refreshView(getEditorDoc(), path);

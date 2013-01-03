@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2012 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -329,7 +329,7 @@ public class Editor
 	 */
 	public String getEditorName()
 	{
-		return "CIP4 JDF Editor -- Copyright (c) 2001-2012 CIP4";
+		return "CIP4 JDF Editor -- Copyright (c) 2001-2013 CIP4";
 	}
 
 	/**
@@ -338,7 +338,7 @@ public class Editor
 	 */
 	public String getEditorBuildDate()
 	{
-		return "Estimated Build Date After November 15 2012";
+		return "Estimated Build Date After January 4 2013";
 	}
 
 	/**

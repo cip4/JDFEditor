@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2010 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2012 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -361,7 +361,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 			}
 			add(separator);
 		}
-		else if (elem != null && elem.getNodeName().equals(XJDF20.rootName))
+		else if (XJDF20.rootName.equals(elem.getLocalName()))
 		{
 			m_saveXJDFCaps = addMenuItem("ExportToDevCapKey");
 			m_saveJDF = addMenuItem("SaveJDFKey");
