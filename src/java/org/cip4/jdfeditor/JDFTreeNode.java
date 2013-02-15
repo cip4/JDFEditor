@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2012 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2013 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -109,6 +109,7 @@ import org.cip4.jdflib.resource.process.JDFBinderySignature;
 import org.cip4.jdflib.resource.process.JDFColor;
 import org.cip4.jdflib.resource.process.JDFComChannel;
 import org.cip4.jdflib.resource.process.JDFCompany;
+import org.cip4.jdflib.resource.process.JDFContact;
 import org.cip4.jdflib.resource.process.JDFContentObject;
 import org.cip4.jdflib.resource.process.JDFEmployee;
 import org.cip4.jdflib.resource.process.JDFFileSpec;
@@ -578,6 +579,14 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 					{
 						s += " preferred: " + pref;
 					}
+				}
+			}
+			else if ((e instanceof JDFContact))
+			{
+				final String contactTypes = e.getAttribute(AttributeName.CONTACTTYPES, null, null);
+				if (contactTypes != null)
+				{
+					s += " - " + contactTypes;
 				}
 			}
 			else if ((e instanceof JDFContentObject) || (e instanceof JDFMarkObject))
