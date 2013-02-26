@@ -86,13 +86,13 @@ import javax.swing.JPanel;
 
 import org.cip4.jdfeditor.Editor;
 import org.cip4.jdfeditor.INIReader;
-import org.cip4.jdflib.extensions.XJDF20;
+import org.cip4.jdflib.extensions.xjdfwalker.XJDFToJDFConverter;
 
 /**
  * Class that implements a "Save as XJDF..." dialog.
  *
  */
-public class SaveAsXJDFDialog extends JDialog implements ActionListener
+public class SaveAsJDFDialog extends JDialog implements ActionListener
 {
 	/**
 	 * 
@@ -104,12 +104,9 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 	private final JButton bOK;
 	private final JButton bCancel;
 
-	private final JCheckBox cbExt1;
-	private final JCheckBox cbExt2;
-	private final JCheckBox cbExt3;
-	private final JCheckBox cbExt4;
-	private final JCheckBox cbLoPrep;
 	private final JCheckBox cbTilde;
+	private final JCheckBox cbExtRetainProduct;
+	private final JCheckBox cbHeuristcLink;
 	private int choosedButton = BUTTON_CANCEL;
 
 	private static ResourceBundle bundle = Editor.getBundle();
@@ -118,28 +115,22 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 	/**
 	 * 
 	 */
-	public SaveAsXJDFDialog()
+	public SaveAsJDFDialog()
 	{
-		setTitle(bundle.getString("SaveAsXJDFKey"));
+		setTitle(bundle.getString("SaveJDFKey"));
 		setModal(true);
 		setLayout(new BorderLayout());
 
 		JPanel checkboxesPanel = new JPanel();
 		checkboxesPanel.setLayout(new BoxLayout(checkboxesPanel, BoxLayout.Y_AXIS));
 
-		cbExt1 = new JCheckBox(bundle.getString("SingleNodeKey"));
-		cbExt2 = new JCheckBox(bundle.getString("ConvertStrippingKey"));
-		cbExt3 = new JCheckBox(bundle.getString("SpanAsAttributeKey"));
-		cbExt4 = new JCheckBox(bundle.getString("MergeRunListKey"));
-		cbLoPrep = new JCheckBox(bundle.getString("ConvertLayoutPrepKey"));
+		cbExtRetainProduct = new JCheckBox(bundle.getString("RetainProductKey"));
+		cbHeuristcLink = new JCheckBox(bundle.getString("FromXJDFHeuristicLink"));
 		cbTilde = new JCheckBox(bundle.getString("RemoveTildeFromRange"));
 
-		checkboxesPanel.add(cbExt1);
-		checkboxesPanel.add(cbExt2);
-		checkboxesPanel.add(cbExt3);
-		checkboxesPanel.add(cbExt4);
-		checkboxesPanel.add(cbLoPrep);
+		checkboxesPanel.add(cbExtRetainProduct);
 		checkboxesPanel.add(cbTilde);
+		checkboxesPanel.add(cbHeuristcLink);
 
 		JPanel buttonsPanel = new JPanel();
 		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
@@ -164,12 +155,9 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 		setSize(screenWidth / 4, screenHeight / 4);
 		setLocation(screenWidth / 4, screenHeight / 4);
 
-		cbExt1.setSelected(conf.getXjdfSingleNode());
-		cbExt2.setSelected(conf.getXjdfConvertStripping());
-		cbExt3.setSelected(conf.getXjdfSpanAsAttribute());
-		cbExt4.setSelected(conf.getXjdfMergeRunList());
-		cbLoPrep.setSelected(conf.getXjdfConvertLOPrep());
+		cbExtRetainProduct.setSelected(conf.getFromXjdfRetainProduct());
 		cbTilde.setSelected(conf.getXjdfConvertTilde());
+		cbHeuristcLink.setSelected(conf.getFromXJDFHeuristicLink());
 
 		setVisible(true);
 	}
@@ -192,38 +180,16 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 	{
 		if (e.getSource() == bOK)
 		{
-			conf.setXjdfSingleNode(cbExt1.isSelected());
-			conf.setXjdfConvertStripping(cbExt2.isSelected());
-			conf.setXjdfSpanAsAttribute(cbExt3.isSelected());
-			conf.setXjdfMergeRunList(cbExt4.isSelected());
-			conf.setXjdfConvertLOPrep(cbLoPrep.isSelected());
-			conf.setXjdfConvertTilde(cbTilde.isSelected());
-
+			conf.setFromXjdfRetainProduct(cbExtRetainProduct.isSelected());
+			conf.setFromXJDFHeuristicLink(cbHeuristcLink.isSelected());
 			choosedButton = BUTTON_OK;
-			dispose();
+			conf.setXjdfConvertTilde(cbTilde.isSelected());
 		}
 		else if (e.getSource() == bCancel)
 		{
 			choosedButton = BUTTON_CANCEL;
-			dispose();
 		}
-	}
-
-	/**
-	 * 
-	 * get the converter with the options set in this dialog
-	 * @return the converter
-	 */
-	public XJDF20 getXJDFConverter()
-	{
-		XJDF20 xjdf20 = new XJDF20();
-		xjdf20.bSingleNode = cbExt1.isSelected();
-		xjdf20.bMergeLayout = cbExt2.isSelected();
-		xjdf20.bSpanAsAttribute = cbExt3.isSelected();
-		xjdf20.bMergeRunList = cbExt4.isSelected();
-		xjdf20.bMergeLayoutPrep = cbLoPrep.isSelected();
-		xjdf20.bConvertTilde = cbTilde.isSelected();
-		return xjdf20;
+		dispose();
 	}
 
 	/**
@@ -233,6 +199,19 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 	public boolean isOK()
 	{
 		return getChoosedButton() == SaveAsXJDFDialog.BUTTON_OK;
+	}
+
+	/**
+	 *  
+	 * @return
+	 */
+	public XJDFToJDFConverter getConverter()
+	{
+		final XJDFToJDFConverter c = new XJDFToJDFConverter(null);
+		c.setConvertTilde(conf.getXjdfConvertTilde());
+		c.setCreateProduct(conf.getFromXjdfRetainProduct());
+		c.setHeuristicLink(conf.getFromXJDFHeuristicLink());
+		return c;
 	}
 
 }

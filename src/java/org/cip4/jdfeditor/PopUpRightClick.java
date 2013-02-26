@@ -86,6 +86,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.tree.TreePath;
 
+import org.cip4.jdfeditor.dialog.SaveAsJDFDialog;
 import org.cip4.jdfeditor.dialog.SaveAsXJDFDialog;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
@@ -361,7 +362,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 			}
 			add(separator);
 		}
-		else if (XJDF20.rootName.equals(elem.getLocalName()))
+		else if (elem != null && XJDF20.rootName.equals(elem.getLocalName()))
 		{
 			m_saveXJDFCaps = addMenuItem("ExportToDevCapKey");
 			m_saveJDF = addMenuItem("SaveJDFKey");
@@ -576,14 +577,18 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		else if (eSrc == m_saveXJDF)
 		{
 			SaveAsXJDFDialog d = new SaveAsXJDFDialog();
-			if (d.getChoosedButton() == SaveAsXJDFDialog.BUTTON_OK)
+			if (d.isOK())
 			{
 				Editor.getModel().saveAsXJDF(treeArea.getSelectionPath(), d.getXJDFConverter());
 			}
 		}
 		else if (eSrc == m_saveJDF)
 		{
-			Editor.getModel().saveAsJDF(treeArea.getSelectionPath());
+			SaveAsJDFDialog d = new SaveAsJDFDialog();
+			if (d.isOK())
+			{
+				Editor.getModel().saveAsJDF(treeArea.getSelectionPath(), d.getConverter());
+			}
 		}
 		else if (eSrc == m_saveXJDFCaps)
 		{

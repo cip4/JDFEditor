@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2012 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -79,7 +79,6 @@ import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.cip4.jdfeditor.dialog.SearchComboBoxModel;
 import org.cip4.jdflib.core.JDFConstants;
 import org.cip4.jdflib.core.JDFElement;
@@ -108,8 +107,6 @@ import org.cip4.jdflib.util.StringUtil;
  */
 public class INIReader
 {
-
-	private static final Logger log = Logger.getLogger(INIReader.class);
 
 	final ImageIcon defaultErrAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ErrorAttIcon.gif");
 	final ImageIcon defaultErrAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ErrorAttIconSelected.gif");
@@ -220,6 +217,8 @@ public class INIReader
 	private final String xjdfSpanAsAttribute = "Extension/XJDF/@SpanAsAttribute";
 	private final String xjdfMergeRunList = "Extension/XJDF/@MergeRunList";
 	private final String xjdfConvertLayoutPrep = "Extension/XJDF/@ConvertLayoutPrep";
+	private final String fromXjdfRetainProduct = "Extension/XJDF/@FromXjdfRetainProduct";
+	private final String fromXJDFHeuristicLink = "Extension/XJDF/@FromXJDFHeuristicLink";
 
 	//	HTTP server settings
 	private final String httpIpAddress = "HTTPserver/@IpAddress";
@@ -1429,7 +1428,47 @@ public class INIReader
 	}
 
 	/**
+	 *  
+	 * @param selected
+	 */
+	public void setFromXjdfRetainProduct(boolean selected)
+	{
+		setAttribute(fromXjdfRetainProduct, selected ? "true" : "false");
+	}
+
+	/**
+	 * 
+	 *  
 	 * @return
+	 */
+	public boolean getFromXjdfRetainProduct()
+	{
+		return getAttribute(fromXjdfRetainProduct, "false").equalsIgnoreCase("true") ? true : false;
+	}
+
+	/**
+	 *  
+	 * @param selected
+	 */
+	public void setFromXJDFHeuristicLink(boolean selected)
+	{
+		setAttribute(fromXJDFHeuristicLink, selected ? "true" : "false");
+	}
+
+	/**
+	 * 
+	 *  
+	 * @return
+	 */
+	public boolean getFromXJDFHeuristicLink()
+	{
+		return getAttribute(fromXJDFHeuristicLink, "false").equalsIgnoreCase("true") ? true : false;
+	}
+
+	/**
+	 * 
+	 *  
+	 * @param b
 	 */
 	public void setXjdfConvertTilde(final boolean b)
 	{

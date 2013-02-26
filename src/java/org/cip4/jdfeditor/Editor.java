@@ -158,6 +158,7 @@ public class Editor
 			}
 		}
 		my_Editor = new Editor();
+
 		log.info("Main arguments: " + Arrays.toString(args) + " file=" + file);
 		my_Editor.init(file);
 	}
@@ -338,7 +339,7 @@ public class Editor
 	 */
 	public String getEditorBuildDate()
 	{
-		return "Estimated Build Date After February 22 2013";
+		return "Estimated Build Date After February 28 2013";
 	}
 
 	/**

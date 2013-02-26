@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2011 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -799,6 +799,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	 * @param usage - resource link usage. true - input, false - output
 	 * @return JDFTreeNode created newResourceNode. null if operation was not completed successful
 	 */
+	@SuppressWarnings("unchecked")
 	public JDFTreeNode insertNewResourceNode(final JDFNode parentNode, final JDFTreeNode node, final String selectedResource, final boolean hasResourcePool, final EnumUsage usage)
 	{
 		JDFTreeNode newResourceNode = null;
@@ -852,11 +853,13 @@ public class JDFTreeModel extends DefaultTreeModel
 	 * Inserts new ResourceLink JDFTreeNode into the m_jdfTree. If node had no ResourceLinkPool - creates it.
 	 * @param parentNode - JDFNode to add resource link to
 	 * @param node - JDFTreeNode representation of parentNode
-	 * @param hasResourceLinkPool - Has parentNode had a resourceLinkPool before action started? Importent for representation of m_jdfTree. ResourceLinkPool is
+	 * @param hasLinkPool - Has parentNode had a resourceLinkPool before action started? Importent for representation of m_jdfTree. ResourceLinkPool is
 	 * automatically added to parentNode but we need to insert it into m_model.
 	 * @param resLink - ResourceLink to insert
+	 * @return 
 	 * @returns created newLinkNode. null if operation was not completed successful
 	 */
+	@SuppressWarnings("unchecked")
 	public JDFTreeNode insertNewResourceLinkNode(final JDFNode parentNode, final JDFTreeNode node, final boolean hasLinkPool, final JDFResourceLink resLink)
 	{
 		JDFTreeNode newLinkNode = null;
@@ -907,6 +910,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	/**
 	 * Method renameElementsAndAttributes. renames the selected node in the m_jdfTree and updates the jdfDoc
 	 * @param path
+	 * @return 
 	 */
 	public String renameElementsAndAttributes(final TreePath path)
 	{
@@ -996,6 +1000,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	/**
 	 * Method deleteItem. deletes attributes or elements deletes the selected node in the m_jdfTree an removes it from the jdfDoc as well
 	 * @param treePath
+	 * @return 
 	 */
 	public boolean deleteItem(final TreePath treePath)
 	{
@@ -1010,7 +1015,9 @@ public class JDFTreeModel extends DefaultTreeModel
 	/**
 	 * Method deleteNode. deletes the selected node in the m_jdfTree an removes it from the jdfDoc as well, note that it must reside in a valid tree to
 	 * correctly work
-	 * @param treePath
+	 * @param node 
+	 * @param path
+	 * @return 
 	 */
 	public boolean deleteNode(final JDFTreeNode node, TreePath path)
 	{
@@ -1128,6 +1135,11 @@ public class JDFTreeModel extends DefaultTreeModel
 		return validationResult;
 	}
 
+	/**
+	 * 
+	 *  
+	 * @return
+	 */
 	public KElement getValidationRoot()
 	{
 		if (validationResult == null)
@@ -1283,23 +1295,23 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * @param selectionPath
+	 * @param converter 
 	 * @experimental
 	 */
-	public void saveAsJDF(final TreePath selectionPath)
+	public void saveAsJDF(final TreePath selectionPath, XJDFToJDFConverter converter)
 	{
 		final JDFTreeNode node = (JDFTreeNode) selectionPath.getLastPathComponent();
 		if (node == null)
 		{
 			return;
 		}
-		final KElement e = node.getElement();
+		KElement e = node.getElement();
 		final EditorDocument eDoc = Editor.getEditorDoc();
 		final String fn = eDoc.getOriginalFileName();
-		final XJDFToJDFConverter c = new XJDFToJDFConverter(null);
-		INIReader conf = Editor.getIniFile();
-		c.setConvertTilde(conf.getXjdfConvertTilde());
 
-		final JDFDoc d = c.convert(e);
+		if (e != null)
+			e = e.cloneNewDoc();
+		final JDFDoc d = converter.convert(e);
 		if (d != null)
 		{
 			final String fnNew = UrlUtil.newExtension(fn, ".xjdf.jdf");
@@ -1309,7 +1321,6 @@ public class JDFTreeModel extends DefaultTreeModel
 		else
 		{
 			EditorUtils.errorBox("FixVersionErrorKey", "could not convert xjdf to jdf");
-
 		}
 	}
 

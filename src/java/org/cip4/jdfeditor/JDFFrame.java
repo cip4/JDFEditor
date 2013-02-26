@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2010 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -81,7 +81,6 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DragSource;
 import java.awt.dnd.DragSourceDragEvent;
 import java.awt.dnd.DragSourceDropEvent;
 import java.awt.dnd.DragSourceEvent;
@@ -121,6 +120,8 @@ import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEditSupport;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
@@ -183,9 +184,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	Vector<EditorDocument> m_VjdfDocument = new Vector<EditorDocument>();
 	int m_DocPos = -1; // document position
 
-	// dragndrop support
-	private final DragSource m_source;
-
 	/**
 	 * munues and buttons
 	 */
@@ -203,6 +201,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	UndoAction undoAction = new UndoAction();
 	RedoAction redoAction = new RedoAction();
 
+	private final Log log;
+
 	/**
 	 * constructor of the frame
 	 * 
@@ -211,10 +211,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	{
 		super("CIP4 JDF Editor");
 		// dirty hack to avoid npe
+		log = LogFactory.getLog(getClass());
 		Editor.my_Frame = this;
-		m_source = DragSource.getDefaultDragSource();
-
-		//		m_source.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_COPY_OR_MOVE, this);
 		final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds(0, 0, d.width, d.height - 30);
 
@@ -379,6 +377,10 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		}
 	}
 
+	/**
+	 * 
+	 *  
+	 */
 	public void printWhat()
 	{
 		final String[] options = { m_littleBundle.getString("OkKey"), m_littleBundle.getString("CancelKey") };
@@ -513,8 +515,12 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		return eDoc != null;
 	}
 
-	// ///////////////////////////////////////////////////////////
-
+	/**
+	 * 
+	 *  
+	 * @param eDoc
+	 * @param path
+	 */
 	public void refreshView(EditorDocument eDoc, TreePath path)
 	{
 		if (eDoc == null)
@@ -643,8 +649,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	/**
 	 * Get the node to search for in the Process View.
-	 * @param source - The location in the Process View that's been selected
-	 * @return the JDFTreeNode that is to be searched for.
+	 * @param src - The location in the Process View that's been selected
 	 */
 	void getProcessSearchNode(final Object src)
 	{
@@ -682,7 +687,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	/**
 	 * Method saveFileQuestion. ask if the user wants to save an unsaved file before closing
-	 * @param nMax maximum number of saves
+	 * 
 	 * 
 	 * @return int
 	 */
@@ -846,6 +851,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	/**
 	 * Close the current file.
+	 * @param nMax 
+	 * @return 
 	 */
 	public int closeFile(final int nMax)
 	{
@@ -1247,9 +1254,13 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		}
 	}
 
-	// /////////////////////////////////////////////////////////////////
-
-	public EditorDocument nextFile(int pos)
+	/**
+	 * 
+	 *  
+	 * @param pos
+	 * @return
+	 */
+	EditorDocument nextFile(int pos)
 	{
 		if (m_VjdfDocument.isEmpty())
 		{
@@ -1690,59 +1701,83 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		}
 	}
 
+	/**
+	 * 
+	 * @see java.awt.dnd.DragGestureListener#dragGestureRecognized(java.awt.dnd.DragGestureEvent)
+	 */
 	public void dragGestureRecognized(final DragGestureEvent e)
 	{
-		e.getClass(); // fool compiler
-		//
 	}
 
+	/**
+	 * 
+	 * @see java.awt.dnd.DragSourceListener#dragDropEnd(java.awt.dnd.DragSourceDropEvent)
+	 */
 	public void dragDropEnd(final DragSourceDropEvent e)
 	{
-		e.getClass(); // fool compiler
-		//
 	}
 
+	/**
+	 * 
+	 * @see java.awt.dnd.DragSourceListener#dragEnter(java.awt.dnd.DragSourceDragEvent)
+	 */
 	public void dragEnter(final DragSourceDragEvent e)
 	{
-		e.getClass(); // fool compiler
-		//
 	}
 
+	/**
+	 * 
+	 * @see java.awt.dnd.DragSourceListener#dragExit(java.awt.dnd.DragSourceEvent)
+	 */
 	public void dragExit(final DragSourceEvent e)
 	{
-		e.getClass(); // fool compiler
-		//
 	}
 
+	/**
+	 * 
+	 * @see java.awt.dnd.DragSourceListener#dragOver(java.awt.dnd.DragSourceDragEvent)
+	 */
 	public void dragOver(final DragSourceDragEvent e)
 	{
-		e.getClass(); // fool compiler
-		//
 	}
 
+	/**
+	 * 
+	 * @see java.awt.dnd.DragSourceListener#dropActionChanged(java.awt.dnd.DragSourceDragEvent)
+	 */
 	public void dropActionChanged(final DragSourceDragEvent e)
 	{
-		e.getClass(); // fool compiler
-		//
 	}
 
+	/**
+	 * 
+	 * @see java.awt.dnd.DropTargetListener#dragEnter(java.awt.dnd.DropTargetDragEvent)
+	 */
 	public void dragEnter(final DropTargetDragEvent e)
 	{
 		e.acceptDrag(DnDConstants.ACTION_COPY_OR_MOVE);
 	}
 
+	/**
+	 * 
+	 * @see java.awt.dnd.DropTargetListener#dragExit(java.awt.dnd.DropTargetEvent)
+	 */
 	public void dragExit(final DropTargetEvent e)
 	{
-		e.getClass(); // fool compiler
-		//
 	}
 
+	/**
+	 * 
+	 * @see java.awt.dnd.DropTargetListener#dragOver(java.awt.dnd.DropTargetDragEvent)
+	 */
 	public void dragOver(final DropTargetDragEvent e)
 	{
-		e.getClass(); // fool compiler
-		//
 	}
 
+	/**
+	 * 
+	 * @see java.awt.dnd.DropTargetListener#drop(java.awt.dnd.DropTargetDropEvent)
+	 */
 	public synchronized void drop(final DropTargetDropEvent e)
 	{
 		try
@@ -1774,34 +1809,41 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		}
 		catch (final UnsupportedFlavorException ufe)
 		{
-			System.out.println("data flavor not supported");
+			log.error("data flavor not supported", ufe);
 			e.rejectDrop();
 		}
 	}
 
+	/**
+	 * 
+	 * @see java.awt.dnd.DropTargetListener#dropActionChanged(java.awt.dnd.DropTargetDragEvent)
+	 */
 	public void dropActionChanged(final DropTargetDragEvent e)
 	{
-		e.getClass(); // fool compiler
-		//
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
 	 * 
-	 * @see java.awt.datatransfer.boardOwner#lostOwnership( java.awt.datatransfer.Clipboard, java.awt.datatransfer.Transferable)
+	 * @see java.awt.datatransfer.ClipboardOwner#lostOwnership(java.awt.datatransfer.Clipboard, java.awt.datatransfer.Transferable)
 	 */
 	public void lostOwnership(final Clipboard arg0, final Transferable arg1)
 	{
-		// TODO Auto-generated method stub
-		arg0.getClass();
-		arg1.getClass();
 	}
 
+	/**
+	 * 
+	 *  
+	 * @return
+	 */
 	public TreeSelectionListener getTreeSelectionListener()
 	{
 		return new MyTreeSelectionListener();
 	}
 
+	/**
+	 *  
+	 * @return
+	 */
 	public JDFTreeNode getRootNode()
 	{
 		final EditorDocument ed = getEditorDoc();
@@ -1811,6 +1853,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	/**
 	 * set the currently displayed doc to doc
 	 * @param doc
+	 * @param mimePackage 
 	 * @return the index in the list of docs that doc is stored in
 	 */
 	public int setJDFDoc(final JDFDoc doc, final String mimePackage)
@@ -1875,12 +1918,22 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		return ed == null ? null : ed.getJDFDoc();
 	}
 
+	/**
+	 * 
+	 *  
+	 * @param m_model
+	 */
 	public void setModel(final JDFTreeModel m_model)
 	{
 		final EditorDocument ed = getEditorDoc();
 		ed.setModel(m_model);
 	}
 
+	/**
+	 * 
+	 *  
+	 * @return
+	 */
 	public JDFTreeModel getModel()
 	{
 		final EditorDocument ed = getEditorDoc();
