@@ -110,6 +110,7 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 	private final JCheckBox cbExt4;
 	private final JCheckBox cbLoPrep;
 	private final JCheckBox cbTilde;
+	private final JCheckBox cbTypesafeJMF;
 	private int choosedButton = BUTTON_CANCEL;
 
 	private static ResourceBundle bundle = Editor.getBundle();
@@ -133,6 +134,7 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 		cbExt4 = new JCheckBox(bundle.getString("MergeRunListKey"));
 		cbLoPrep = new JCheckBox(bundle.getString("ConvertLayoutPrepKey"));
 		cbTilde = new JCheckBox(bundle.getString("RemoveTildeFromRange"));
+		cbTypesafeJMF = new JCheckBox(bundle.getString("TypesafeJMF"));
 
 		checkboxesPanel.add(cbExt1);
 		checkboxesPanel.add(cbExt2);
@@ -140,6 +142,7 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 		checkboxesPanel.add(cbExt4);
 		checkboxesPanel.add(cbLoPrep);
 		checkboxesPanel.add(cbTilde);
+		checkboxesPanel.add(cbTypesafeJMF);
 
 		JPanel buttonsPanel = new JPanel();
 		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
@@ -170,6 +173,7 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 		cbExt4.setSelected(conf.getXjdfMergeRunList());
 		cbLoPrep.setSelected(conf.getXjdfConvertLOPrep());
 		cbTilde.setSelected(conf.getXjdfConvertTilde());
+		cbTypesafeJMF.setSelected(conf.getTypesafeJMF());
 
 		setVisible(true);
 	}
@@ -198,6 +202,7 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 			conf.setXjdfMergeRunList(cbExt4.isSelected());
 			conf.setXjdfConvertLOPrep(cbLoPrep.isSelected());
 			conf.setXjdfConvertTilde(cbTilde.isSelected());
+			conf.setTypesafeJMF(cbTypesafeJMF.isSelected());
 
 			choosedButton = BUTTON_OK;
 			dispose();

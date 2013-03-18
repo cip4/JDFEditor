@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2011 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2013 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -91,6 +91,7 @@ import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.VString;
+import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.jdflib.resource.JDFResource;
@@ -374,7 +375,11 @@ public class EditorUtils
 			jdfDoc.clearDirtyIDs();
 			if (iniFile != null && iniFile.getNormalizeOpen())
 			{
-				jdfDoc.getRoot().sortChildren();
+				KElement root = jdfDoc.getRoot();
+				if (!(root instanceof JDFJMF))
+				{
+					root.sortChildren();
+				}
 			}
 		}
 

@@ -217,6 +217,7 @@ public class INIReader
 	private final String xjdfSpanAsAttribute = "Extension/XJDF/@SpanAsAttribute";
 	private final String xjdfMergeRunList = "Extension/XJDF/@MergeRunList";
 	private final String xjdfConvertLayoutPrep = "Extension/XJDF/@ConvertLayoutPrep";
+	private final String xjdfTypesafeJMF = "Extension/XJDF/@TypesafeJMF";
 	private final String fromXjdfRetainProduct = "Extension/XJDF/@FromXjdfRetainProduct";
 	private final String fromXJDFHeuristicLink = "Extension/XJDF/@FromXJDFHeuristicLink";
 
@@ -370,16 +371,29 @@ public class INIReader
 		setAttribute(genericAtts, StringUtil.setvString(s, " ", null, null));
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public boolean getAutoVal()
 	{
 		return getAttribute(autoValidate, "").equals("on");
 	}
 
+	/**
+	 * 
+	 *  
+	 * @param bVal
+	 */
 	public void setAutoVal(final boolean bVal)
 	{
 		setAttribute(autoValidate, bVal ? "on" : "off");
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public boolean getExportValidation()
 	{
 		return getAttribute(exportValidate, "").equals("on");
@@ -1554,6 +1568,25 @@ public class INIReader
 	public void setIndentSave(final boolean indent)
 	{
 		setAttribute(indentSave, indent ? "true" : "false");
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean getTypesafeJMF()
+	{
+		return getAttribute(xjdfTypesafeJMF, "true").equals("true");
+	}
+
+	/**
+	 * 
+	 *  
+	 * @param indent
+	 */
+	public void setTypesafeJMF(final boolean indent)
+	{
+		setAttribute(xjdfTypesafeJMF, indent ? "true" : "false");
 	}
 
 }

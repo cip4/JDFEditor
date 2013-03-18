@@ -1,10 +1,9 @@
-package org.cip4.jdfeditor;
 /*
 *
 * The CIP4 Software License, Version 1.0
 *
 *
-* Copyright (c) 2001-2007 The International Cooperation for the Integration of 
+* Copyright (c) 2001-2013 The International Cooperation for the Integration of 
 * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
 * reserved.
 *
@@ -69,6 +68,8 @@ package org.cip4.jdfeditor;
 *  
 * 
 */
+package org.cip4.jdfeditor;
+
 import java.io.File;
 import java.util.ResourceBundle;
 
@@ -84,56 +85,61 @@ import org.cip4.jdflib.util.StringUtil;
  */
 public class EditorFileChooser extends JFileChooser
 {
-    private static final long serialVersionUID = 1835778964946902960L;
-    public final static String allFiles="xml jdf jmf mim mjm mjd";
-    
-    public EditorFileChooser(File arg0,String fileTypes)
-    {
-        super(arg0);
-        init(arg0,fileTypes);
-    }
-    
-    private void init(File file, String fileTypes)
-    {
-        ResourceBundle littleBundle=Editor.getBundle();
-        setApproveButtonText(littleBundle.getString("OkKey"));
-        setApproveButtonMnemonic('O');
-        setDialogTitle(littleBundle.getString("BrowseKey"));
-        setFileSelectionMode(JFileChooser.FILES_ONLY);
-        setMultiSelectionEnabled(false);        
-        setFilters(fileTypes); 
-        rescanCurrentDirectory();
-        if(file!=null)
-        {
-            setCurrentDirectory(file);
-            if(!file.isDirectory())
-                setSelectedFile(file);
-        }
-        
-    }
-    
-    private void setFilters(String fileTypes)
-    {
-        if(fileTypes==null)
-            return;
-        VString v=StringUtil.tokenize(fileTypes," ",false);
-        final JDFFileFilter xmlFilterAll = new JDFFileFilter();
-        xmlFilterAll.setDescription("All accepted files");
-        for(int i=0;i<v.size();i++)
-        {
-            String s=v.stringAt(i);
-            xmlFilterAll.addExtension(s);
-        }   
-        addChoosableFileFilter(xmlFilterAll);            
+	private static final long serialVersionUID = 1835778964946902960L;
+	final static String allFiles = "xml jdf jmf mim mjm mjd xjdf ptk";
 
-        for(int i=0;i<v.size();i++)
-        {
-            String s=v.stringAt(i);
-            final JDFFileFilter xmlFilter = new JDFFileFilter();
-            xmlFilter.addExtension(s);
-            xmlFilter.setDescription(s.toUpperCase()+" files");
-            addChoosableFileFilter(xmlFilter);            
-        } 
-        setFileFilter(xmlFilterAll);
-    }    
+	/**
+	 * 
+	 * @param arg0
+	 * @param fileTypes
+	 */
+	public EditorFileChooser(File arg0, String fileTypes)
+	{
+		super(arg0);
+		init(arg0, fileTypes);
+	}
+
+	private void init(File file, String fileTypes)
+	{
+		ResourceBundle littleBundle = Editor.getBundle();
+		setApproveButtonText(littleBundle.getString("OkKey"));
+		setApproveButtonMnemonic('O');
+		setDialogTitle(littleBundle.getString("BrowseKey"));
+		setFileSelectionMode(JFileChooser.FILES_ONLY);
+		setMultiSelectionEnabled(false);
+		setFilters(fileTypes);
+		rescanCurrentDirectory();
+		if (file != null)
+		{
+			setCurrentDirectory(file);
+			if (!file.isDirectory())
+				setSelectedFile(file);
+		}
+
+	}
+
+	private void setFilters(String fileTypes)
+	{
+		if (fileTypes == null)
+			return;
+		VString v = StringUtil.tokenize(fileTypes, " ", false);
+		final JDFFileFilter xmlFilterAll = new JDFFileFilter();
+		xmlFilterAll.setDescription("All accepted files");
+		for (int i = 0; i < v.size(); i++)
+		{
+			String s = v.stringAt(i);
+			xmlFilterAll.addExtension(s);
+		}
+		addChoosableFileFilter(xmlFilterAll);
+
+		for (int i = 0; i < v.size(); i++)
+		{
+			String s = v.stringAt(i);
+			final JDFFileFilter xmlFilter = new JDFFileFilter();
+			xmlFilter.addExtension(s);
+			xmlFilter.setDescription(s.toUpperCase() + " files");
+			addChoosableFileFilter(xmlFilter);
+		}
+		setFileFilter(xmlFilterAll);
+	}
 }

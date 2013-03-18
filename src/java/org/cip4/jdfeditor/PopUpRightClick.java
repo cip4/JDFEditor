@@ -359,6 +359,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 			if (ini.getEnableExtensions())
 			{
 				m_saveXJDF = addMenuItem("SaveXJDFKey");
+				//				m_saveJDF = addMenuItem("SaveJDFKey");
 			}
 			add(separator);
 		}
