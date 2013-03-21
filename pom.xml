@@ -17,9 +17,9 @@
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
 	</properties>
 	<scm>
-		<url>http://svn.cip4.org/svnroot/trunk/JDFLibJ</url>
-		<developerConnection>scm:svn:http://svn.cip4.org/svnroot/trunk/JDFLibJ</developerConnection>
-		<connection>scm:svn:http://svn.cip4.org/svnroot/trunk/JDFLibJ</connection>
+		<url>http://svn.cip4.org/svnroot/trunk/JDFEditor</url>
+		<developerConnection>scm:svn:http://svn.cip4.org/svnroot/trunk/JDFEditor</developerConnection>
+		<connection>scm:svn:http://svn.cip4.org/svnroot/trunk/JDFEditor</connection>
 	</scm>
 	<developers>
 		<developer>
