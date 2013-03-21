@@ -78,6 +78,8 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.cip4.jdflib.core.JDFConstants;
 import org.cip4.jdflib.core.JDFElement;
@@ -745,14 +747,25 @@ public class INIReader
 
 	private String getIniPath()
 	{
-		final String path = System.getProperty("user.home");
-		final File iniDir = new File(path + File.separator + "CIP4Editor");
-		if (!iniDir.exists())
-		{
-			iniDir.mkdir();
-		}
-		final String iniPath = iniDir.getPath() + File.separator + "Editor.ini";
-		return iniPath;
+		// ini file
+		String pathDir = FilenameUtils.concat(FileUtils.getUserDirectoryPath(), "CIP4Tools");
+		pathDir = FilenameUtils.concat(pathDir, "JDFEditor");
+		new File(pathDir).mkdirs();
+
+		String pathFile = FilenameUtils.concat(pathDir, "JDFEditor.ini");
+		return pathFile;
+		
+//		this.settingsFile = new File(pathFile);
+//		
+//		
+//		final String path = System.getProperty("user.home");
+//		final File iniDir = new File(path + File.separator + "CIP4Editor");
+//		if (!iniDir.exists())
+//		{
+//			iniDir.mkdir();
+//		}
+//		final String iniPath = iniDir.getPath() + File.separator + "Editor.ini";
+//		return iniPath;
 	}
 
 	private void checkIcon(final String iconName, final String iconPath)

@@ -85,6 +85,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.JDFAudit;
@@ -120,7 +122,7 @@ public class Editor
 	/**
 	 * 
 	 */
-	static final String ICONS_PATH = "/org/cip4/jdfeditor/icons/";
+	static final String ICONS_PATH = "/org/cip4/tools/jdfeditor/icons/";
 
 	static ImageIcon getImageIcon(final Class<?> myClass, final String resString)
 	{
@@ -196,13 +198,13 @@ public class Editor
 	 */
 	public Editor()
 	{
-		String s = System.getProperty("user.home");
-		File logDir = new File(".");
-		if (s != null)
-		{
-			logDir = FileUtil.getFileInDirectory(new File(s), new File("logs"));
-		}
-		LogConfigurator.configureLog(logDir.getAbsolutePath(), "JDFEditor.log");
+		// log file location
+		String pathDir = FilenameUtils.concat(FileUtils.getUserDirectoryPath(), "CIP4Tools");
+		pathDir = FilenameUtils.concat(pathDir, "JDFEditor");
+		pathDir = FilenameUtils.concat(pathDir, "logs");
+		new File(pathDir).mkdirs();
+		
+		LogConfigurator.configureLog(pathDir, "JDFEditor.log");
 
 		if (log == null)
 			log = LogFactory.getLog(Editor.class);

@@ -222,7 +222,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 		final Locale currentLocale = new Locale(language, language.toUpperCase());
 
-		m_littleBundle = ResourceBundle.getBundle("org.cip4.jdfeditor.messages.JDFEditor", currentLocale);
+		m_littleBundle = ResourceBundle.getBundle("org.cip4.tools.jdfeditor.messages.JDFEditor", currentLocale);
 		Locale.setDefault(currentLocale);
 
 		m_menuBar = new EditorMenuBar();
