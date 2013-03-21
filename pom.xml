@@ -139,8 +139,9 @@
 		<profile>
 			<id>Windows</id>
 			<activation>
-				<activeByDefault>false</activeByDefault>
-				<!-- <os> <family>Windows</family> </os> -->
+				<os>
+					<family>Windows</family>
+				</os>
 			</activation>
 			<build>
 				<plugins>
@@ -211,8 +212,9 @@
 		<profile>
 			<id>Mac</id>
 			<activation>
-				<activeByDefault>false</activeByDefault>
-				<!-- <os> <family>mac</family> </os> -->
+				<os>
+					<family>mac</family>
+				</os>
 			</activation>
 			<build>
 				<plugins>
