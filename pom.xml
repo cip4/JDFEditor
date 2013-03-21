@@ -80,7 +80,9 @@
 		<profile>
 			<id>Binaries</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<property>
+			        <name>!alwaysActive</name>
+			      </property>
 			</activation>
 			<build>
 				<plugins>
@@ -108,6 +110,7 @@
 							<repositoryName>libs</repositoryName>
 							<repositoryLayout>flat</repositoryLayout>
 							<assembleDirectory>${project.build.directory}/binaries</assembleDirectory>
+							<showConsoleWindow>false</showConsoleWindow>
 							<binFileExtensions>
 								<unix>.sh</unix>
 							</binFileExtensions>
