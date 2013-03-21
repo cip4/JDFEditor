@@ -1,0 +1,1 @@
+./bin/jdfeditor.bat

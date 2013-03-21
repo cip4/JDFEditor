@@ -21,10 +21,11 @@
 			</includes>
 		</fileSet>
 		<fileSet>
-			<directory>src/main/assemble/binaries</directory>
+			<directory>src/main/assemble/binaries/includes</directory>
 			<outputDirectory>/</outputDirectory>
 			<includes>
-				<include>JDFEditor.ico</include>
+				<include>*.*</include>
+				<include>*/*.*</include>
 			</includes>
 		</fileSet>
 	</fileSets>

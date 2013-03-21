@@ -101,10 +101,10 @@
 							<programs>
 								<program>
 									<mainClass>org.cip4.tools.jdfeditor.Editor</mainClass>
-									<name>${project.build.finalName}</name>
+									<name>jdfeditor</name>
 								</program>
 							</programs>
-							<binFolder>/</binFolder>
+							<binFolder>bin</binFolder>
 							<repositoryName>libs</repositoryName>
 							<repositoryLayout>flat</repositoryLayout>
 							<assembleDirectory>${project.build.directory}/binaries</assembleDirectory>
