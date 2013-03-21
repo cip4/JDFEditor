@@ -1,0 +1,116 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.cip4.tools.jdfeditor</groupId>
+	<artifactId>JDFEditor</artifactId>
+	<version>2.1.4a.74-SNAPSHOT</version>
+	<name>JDFEditor</name>
+	<description>CIP4 JDF Editor</description>
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+	<properties>
+		<timestamp>${maven.build.timestamp}</timestamp>
+		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+	</properties>
+	<scm>
+		<url>http://svn.cip4.org/svnroot/trunk/JDFLibJ</url>
+		<developerConnection>scm:svn:http://svn.cip4.org/svnroot/trunk/JDFLibJ</developerConnection>
+		<connection>scm:svn:http://svn.cip4.org/svnroot/trunk/JDFLibJ</connection>
+	</scm>
+	<developers>
+		<developer>
+			<id>r.prosi</id>
+			<name>Dr. Rainer Prosi</name>
+			<organization>Heidelberger Druckmaschinen AG</organization>
+			<organizationUrl>http://www.heidelberg.com</organizationUrl>
+			<email>rainer.prosi@heidelberg.com</email>
+		</developer>
+		<developer>
+			<id>s.meissner</id>
+			<name>Stefan Meissner</name>
+			<organization>flyeralarm GmbH</organization>
+			<organizationUrl>http://www.flyeralarm.com</organizationUrl>
+			<email>s.meissner@flyeralarm.de</email>
+		</developer>
+		<developer>
+			<id>s.gehrig</id>
+			<name>Simon Gehrig</name>
+			<organization>CIP4 Student</organization>
+			<organizationUrl>http://www.cip4.org</organizationUrl>
+			<email>foto@simongehrig.de</email>
+		</developer>
+		<developer>
+			<id>e.thunell</id>
+			<name> Evelina Thunell</name>
+			<organization>CIP4 Student</organization>
+			<organizationUrl>http://www.cip4.org</organizationUrl>
+			<email>evelina@kth.se</email>
+		</developer>
+	</developers>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.0</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.13</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+					<inputEncoding>UTF-8</inputEncoding>
+					<outputEncoding>UTF-8</outputEncoding>
+					<argLine>-Xmx512m -Dfile.encoding=UTF-8</argLine>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<!-- CIP4 -->
+		<dependency>
+			<groupId>org.cip4.lib.jdf</groupId>
+			<artifactId>JDFLibJ</artifactId>
+			<version>2.1.4a.74</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sun.woodstock.dependlibs</groupId>
+			<artifactId>jhall</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>jetty</groupId>
+			<artifactId>jetty</artifactId>
+			<version>5.1.10</version>
+		</dependency>
+		<dependency>
+			<groupId>ws-commons</groupId>
+			<artifactId>tcpmon</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fifesoft</groupId>
+			<artifactId>rsyntaxtextarea</artifactId>
+			<version>1.4.1</version>
+		</dependency>
+
+		<!-- Test Environment -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>
