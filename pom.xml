@@ -4,14 +4,9 @@
 
 	<groupId>org.cip4.tools.jdfeditor</groupId>
 	<artifactId>JDFEditor</artifactId>
-	<version>2.1.4a.74-SNAPSHOT</version>
+	<version>2.1.4a.75-SNAPSHOT</version>
 	<name>JDFEditor</name>
 	<description>CIP4 JDF Editor</description>
-	<parent>
-		<groupId>org.sonatype.oss</groupId>
-		<artifactId>oss-parent</artifactId>
-		<version>7</version>
-	</parent>
 	<properties>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
@@ -21,6 +16,19 @@
 		<developerConnection>scm:svn:http://svn.cip4.org/svnroot/trunk/JDFEditor</developerConnection>
 		<connection>scm:svn:http://svn.cip4.org/svnroot/trunk/JDFEditor</connection>
 	</scm>
+	<repositories>
+		<repository>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 	<developers>
 		<developer>
 			<id>r.prosi</id>
@@ -57,7 +65,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.0</version>
+				<version>2.3</version>
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
@@ -249,7 +257,7 @@
 		<dependency>
 			<groupId>org.cip4.lib.jdf</groupId>
 			<artifactId>JDFLibJ</artifactId>
-			<version>2.1.4a.74</version>
+			<version>2.1.4a.75-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
