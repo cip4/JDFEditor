@@ -86,7 +86,7 @@
 	</build>
 	<profiles>
 		<profile>
-			<id>Binaries</id>
+			<id>binaries</id>
 			<activation>
 				<property>
 			        <name>!alwaysActive</name>
@@ -147,7 +147,7 @@
 			</build>
 		</profile>
 		<profile>
-			<id>Windows</id>
+			<id>windows</id>
 			<activation>
 				<os>
 					<family>Windows</family>
@@ -220,7 +220,7 @@
 			</build>
 		</profile>
 		<profile>
-			<id>Mac</id>
+			<id>macos</id>
 			<activation>
 				<os>
 					<family>mac</family>
