@@ -79,6 +79,7 @@ import java.awt.event.WindowListener;
 import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.swing.ImageIcon;
@@ -95,7 +96,6 @@ import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.jmf.JMFBuilder;
-import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.logging.LogConfigurator;
 
 /**
@@ -193,6 +193,8 @@ public class Editor
 		}
 	}
 
+	private ResourceBundle m_littleBundle;
+
 	/**
 	 * 
 	 */
@@ -203,7 +205,7 @@ public class Editor
 		pathDir = FilenameUtils.concat(pathDir, "JDFEditor");
 		pathDir = FilenameUtils.concat(pathDir, "logs");
 		new File(pathDir).mkdirs();
-		
+
 		LogConfigurator.configureLog(pathDir, "JDFEditor.log");
 
 		if (log == null)
@@ -219,6 +221,12 @@ public class Editor
 	public void init(final File file)
 	{
 		m_iniFile = new INIReader();
+		final String language = m_iniFile.getLanguage();
+		final Locale currentLocale = new Locale(language, language.toUpperCase());
+
+		Locale.setDefault(currentLocale);
+		m_littleBundle = ResourceBundle.getBundle("org.cip4.tools.jdfeditor.messages.JDFEditor", currentLocale);
+
 		my_Frame = new JDFFrame();
 		setCursor(0, null);
 
@@ -284,12 +292,13 @@ public class Editor
 	}
 
 	/**
-	 * Method getBundle.
+	 * Method getString
+	 * @param key 
 	 * @return ResourceBundle the static resource bundle
 	 */
-	public static ResourceBundle getBundle()
+	public static String getString(String key)
 	{
-		return my_Frame.m_littleBundle;
+		return my_Editor.m_littleBundle.getString(key);
 	}
 
 	/**
@@ -341,7 +350,7 @@ public class Editor
 	 */
 	public String getEditorBuildDate()
 	{
-		return "Estimated Build Date After February 28 2013";
+		return "Estimated Build Date After April 11 2013";
 	}
 
 	/**

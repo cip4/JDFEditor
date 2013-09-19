@@ -5,7 +5,7 @@ package org.cip4.tools.jdfeditor;
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2008 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -79,7 +79,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
-import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -138,11 +137,14 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 	EnumFitsValue testlists = EnumFitsValue.Allowed;
 	private EnumValidationLevel validationLevel = EnumValidationLevel.RecursiveComplete;
 
+	/**
+	 * 
+	 * @param doc
+	 */
 	public DeviceCapDialog(final JDFDoc doc)
 	{
 		super();
 		final INIReader iniFile = Editor.getIniFile();
-		final ResourceBundle littleBundle = Editor.getBundle();
 		JDFFrame parent = Editor.getFrame();
 		KElement docRoot = doc.getRoot();
 
@@ -151,7 +153,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 		ignoreExtensions = !Editor.getIniFile().getHighlight();
 
 		init();
-		final String[] options = { littleBundle.getString("OkKey"), littleBundle.getString("CancelKey") };
+		final String[] options = { Editor.getString("OkKey"), Editor.getString("CancelKey") };
 
 		final int option = JOptionPane.showOptionDialog(parent, this, "Test against DeviceCapabilities file", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
@@ -260,7 +262,6 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 	private void init()
 	{
 		final JPanel panel = new JPanel();
-		final ResourceBundle littleBundle = Editor.getBundle();
 		outConstraints.fill = GridBagConstraints.BOTH;
 		outConstraints.insets = new Insets(0, 0, 10, 0);
 		outLayout.setConstraints(panel, outConstraints);
@@ -272,14 +273,14 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 		final GridBagConstraints constraints = new GridBagConstraints();
 		constraints.fill = GridBagConstraints.HORIZONTAL;
 		constraints.insets = new Insets(3, 5, 3, 5);
-		panel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("DCInputKey")));
+		panel.setBorder(BorderFactory.createTitledBorder(Editor.getString("DCInputKey")));
 
-		final JLabel dLabel = new JLabel(EditorUtils.displayPathName(idFile, littleBundle.getString("DCInputKey").length()));
+		final JLabel dLabel = new JLabel(EditorUtils.displayPathName(idFile, Editor.getString("DCInputKey").length()));
 		constraints.gridwidth = GridBagConstraints.REMAINDER;
 		inLayout.setConstraints(dLabel, constraints);
 		panel.add(dLabel);
 
-		final JLabel idLabel = new JLabel(littleBundle.getString("DCFileKey"));
+		final JLabel idLabel = new JLabel(Editor.getString("DCFileKey"));
 		constraints.insets = new Insets(10, 5, 3, 5);
 		inLayout.setConstraints(idLabel, constraints);
 		panel.add(idLabel);
@@ -292,7 +293,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 		horizontalBox.add(idPath);
 		horizontalBox.add(Box.createHorizontalStrut(10));
 
-		browse = new JButton(littleBundle.getString("BrowseKey"));
+		browse = new JButton(Editor.getString("BrowseKey"));
 		browse.setPreferredSize(new Dimension(85, 22));
 		browse.addActionListener(this);
 		horizontalBox.add(browse);
@@ -309,7 +310,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 		JPanel testLists = new JPanel();
 		testLists.setLayout(inLayout);
 
-		testLists.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("DCTestListsKey")));
+		testLists.setBorder(BorderFactory.createTitledBorder(Editor.getString("DCTestListsKey")));
 
 		//        final Box verticalBox = Box.createVerticalBox();
 		final ButtonGroup group = new ButtonGroup();
@@ -320,6 +321,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 		allowedButton.setSelected(true);
 		allowedButton.addItemListener(new ItemListener()
 		{
+			@Override
 			public void itemStateChanged(ItemEvent e)
 			{
 				if (e.getStateChange() == ItemEvent.SELECTED)
@@ -332,6 +334,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 		group.add(presentButton = new JRadioButton("Present"));
 		presentButton.addItemListener(new ItemListener()
 		{
+			@Override
 			public void itemStateChanged(ItemEvent e)
 			{
 				if (e.getStateChange() == ItemEvent.SELECTED)
@@ -346,7 +349,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 		downPanel.add(testLists);
 
 		final JPanel validationPanel = new JPanel();
-		validationPanel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("ValidationLevelKey")));
+		validationPanel.setBorder(BorderFactory.createTitledBorder(Editor.getString("ValidationLevelKey")));
 
 		final VString allowedValues = EnumUtil.getNamesVector(EnumValidationLevel.class);
 		allowedValues.removeElementAt(0);
@@ -362,6 +365,11 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 		setVisible(true);
 	}
 
+	/**
+	 * 
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
+	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		final Object source = e.getSource();
@@ -386,20 +394,23 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 		}
 	}
 
+	/**
+	 * 
+	 *  
+	 * @return
+	 */
 	public VElement getExecutable()
 	{
 		return executableJDF;
 	}
 
+	/**
+	 * 
+	 *  
+	 * @return
+	 */
 	public XMLDoc getBugReport()
 	{
 		return bugReport;
 	}
-
-	//    private void PrintReport(XMLDoc bugReport2) 
-	//    {
-	//		// TODO Auto-generated method stub
-	//    	System.out.println("I'm in Print");
-	//		
-	//	  }
 }

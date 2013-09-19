@@ -95,8 +95,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.Locale;
-import java.util.ResourceBundle;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
@@ -175,11 +173,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	SearchDialog m_dialog = null;
 
-	/**
-	 * all settings are stored here
-	 */
-	public ResourceBundle m_littleBundle;
-
 	// q&d hack for multi doc support
 	Vector<EditorDocument> m_VjdfDocument = new Vector<EditorDocument>();
 	int m_DocPos = -1; // document position
@@ -217,13 +210,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		setBounds(0, 0, d.width, d.height - 30);
 
 		final INIReader iniFile = Editor.getIniFile();
-		final String language = iniFile.getLanguage();
 		final String currentLookAndFeel = iniFile.getLookAndFeel();
-
-		final Locale currentLocale = new Locale(language, language.toUpperCase());
-
-		m_littleBundle = ResourceBundle.getBundle("org.cip4.tools.jdfeditor.messages.JDFEditor", currentLocale);
-		Locale.setDefault(currentLocale);
 
 		m_menuBar = new EditorMenuBar();
 		try
@@ -233,7 +220,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("LookAndFeelErrorKey"), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, Editor.getString("LookAndFeelErrorKey"), Editor.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 
 		}
 	}
@@ -261,7 +248,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		box_splitPane.add(drawSplitPane());
 
 		final Box box_content = Box.createVerticalBox();
-		m_buttonBar = new EditorButtonBar(m_littleBundle, this);
+		m_buttonBar = new EditorButtonBar(this);
 		m_buttonBar.drawButtonBar();
 		box_content.add(m_buttonBar);
 		box_content.add(box_splitPane);
@@ -279,9 +266,9 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		m_topTabs = new EditorTabbedPaneA();
 		m_errorTabbedPane = new EditorTabbedPaneB(this);
 
-		m_treeArea = new JDFTreeArea(m_littleBundle, this);
+		m_treeArea = new JDFTreeArea(this);
 		new DropTarget(m_treeArea, this);
-		m_treeArea.setToolTipText(m_littleBundle.getString("TreeViewKey"));
+		m_treeArea.setToolTipText(Editor.getString("TreeViewKey"));
 
 		undomanager.setLimit(100);
 		m_treeArea.getDocument().addUndoableEditListener(undomanager);
@@ -358,22 +345,22 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final ClassNotFoundException e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("LookAndFeelErrorKey"), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, Editor.getString("LookAndFeelErrorKey"), Editor.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 		catch (final InstantiationException e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("LookAndFeelErrorKey"), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, Editor.getString("LookAndFeelErrorKey"), Editor.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 		catch (final IllegalAccessException e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("LookAndFeelErrorKey"), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, Editor.getString("LookAndFeelErrorKey"), Editor.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 		catch (final UnsupportedLookAndFeelException e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("LookAndFeelErrorKey"), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, Editor.getString("LookAndFeelErrorKey"), Editor.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -383,26 +370,25 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 */
 	public void printWhat()
 	{
-		final String[] options = { m_littleBundle.getString("OkKey"), m_littleBundle.getString("CancelKey") };
+		final String[] options = { Editor.getString("OkKey"), Editor.getString("CancelKey") };
 
-		final ComponentChooser cc = new ComponentChooser(m_littleBundle);
-
-		final int option = JOptionPane.showOptionDialog(this, cc, m_littleBundle.getString("PrintMessKey"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+		final ComponentChooser cc = new ComponentChooser();
+		final int option = JOptionPane.showOptionDialog(this, cc, Editor.getString("PrintMessKey"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
 		final EditorDocument ed = getEditorDoc();
 		if (option == JOptionPane.OK_OPTION)
 		{
 			Component comp = null;
 
-			if (cc.getComponent().equals(m_littleBundle.getString("ProcessViewKey")))
+			if (cc.getComponent().equals(Editor.getString("ProcessViewKey")))
 			{
 				comp = m_topTabs.m_pArea;
 			}
-			else if (cc.getComponent().equals(m_littleBundle.getString("NextNeighbourKey")))
+			else if (cc.getComponent().equals(Editor.getString("NextNeighbourKey")))
 			{
 				comp = m_topTabs.m_inOutScrollPane.m_inOutArea;
 			}
-			else if (cc.getComponent().equals(m_littleBundle.getString("TreeViewKey")))
+			else if (cc.getComponent().equals(Editor.getString("TreeViewKey")))
 			{
 				comp = ed.getJDFTree();
 			}
@@ -442,8 +428,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("DevcapExportErrorKey") + e.getClass() + " \n"
-					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, Editor.getString("DevcapExportErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), Editor.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -466,40 +451,39 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("DevcapOpenErrorKey") + e.getClass() + " \n"
-					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, Editor.getString("DevcapOpenErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), Editor.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
 	/**
 	 * Method readFile.
-	 * @param fts the file to read
+	 * @param fileToRead the file to read
 	 * @return true if at least one file was read or selected
 	 */
-	public boolean readFile(final File fts)
+	public boolean readFile(final File fileToRead)
 	{
 		EditorDocument eDoc[] = null;
 		Runtime.getRuntime().gc(); // clean up before loading
 
-		if (fts != null)
+		if (fileToRead != null)
 		{
-			final int docIndex = EditorDocument.indexOfFile(fts, m_VjdfDocument);
+			final int docIndex = EditorDocument.indexOfFile(fileToRead, m_VjdfDocument);
 			if (docIndex >= 0)
 			{
 				nextFile(docIndex);
 				return true;
 			}
-			else if (fts.exists())
+			else if (fileToRead.exists())
 			{
-				eDoc = EditorUtils.getEditorDocuments(fts);
+				eDoc = EditorUtils.getEditorDocuments(fileToRead);
 				if (eDoc == null)
 				{
-					EditorUtils.errorBox("FileNotOpenKey", ": " + fts.getName() + "!");
+					EditorUtils.errorBox("FileNotOpenKey", ": " + fileToRead.getName() + "!");
 					Editor.setCursor(0, Editor.getFrame());
 				}
 				else
 				{
-					m_menuBar.updateRecentFilesMenu(fts.getAbsolutePath());
+					m_menuBar.updateRecentFilesMenu(fileToRead.getAbsolutePath());
 					for (int i = 0; i < eDoc.length; i++)
 					{
 						refreshView(eDoc[i], null);
@@ -559,7 +543,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		{
 			setJDFDoc(null, null);
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("FileNotOpenKey"), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, Editor.getString("FileNotOpenKey"), Editor.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 		finally
 		{
@@ -634,8 +618,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 			if (file.exists() && !file.equals(fileToSave))
 			{
-				final String[] options = { m_littleBundle.getString("YesKey"), m_littleBundle.getString("NoKey"), m_littleBundle.getString("CancelKey") };
-				newAnswer = JOptionPane.showOptionDialog(this, m_littleBundle.getString("FileExistsKey"), null, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+				final String[] options = { Editor.getString("YesKey"), Editor.getString("NoKey"), Editor.getString("CancelKey") };
+				newAnswer = JOptionPane.showOptionDialog(this, Editor.getString("FileExistsKey"), null, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 
 			}
 			if (newAnswer == JOptionPane.YES_OPTION)
@@ -662,7 +646,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		}
 		catch (final Exception s)
 		{
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("FindErrorKey"), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, Editor.getString("FindErrorKey"), Editor.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 			s.printStackTrace();
 		}
 		if (node != null)
@@ -706,7 +690,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 					originalFileName = "Untitled";
 				}
 
-				final String question = m_littleBundle.getString("SaveQuestionKey") + "\n" + '"' + originalFileName + '"';
+				final String question = Editor.getString("SaveQuestionKey") + "\n" + '"' + originalFileName + '"';
 				save = JOptionPane.showConfirmDialog(this, question, "", JOptionPane.YES_NO_CANCEL_OPTION);
 			}
 		}
@@ -734,7 +718,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final Exception s)
 		{
 			s.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("FileNotOpenKey"), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, Editor.getString("FileNotOpenKey"), Editor.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 
 	}
@@ -775,7 +759,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final Exception s)
 		{
 			s.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("FileNotOpenKey"), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, Editor.getString("FileNotOpenKey"), Editor.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -835,7 +819,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				catch (final Exception s)
 				{
 					s.printStackTrace();
-					JOptionPane.showMessageDialog(this, m_littleBundle.getString("FileNotOpenKey"), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(this, Editor.getString("FileNotOpenKey"), Editor.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 				}
 
 			}
@@ -843,8 +827,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("DevcapOpenErrorKey") + e.getClass() + " \n"
-					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, Editor.getString("DevcapOpenErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), Editor.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 
 	}
@@ -939,11 +922,11 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 */
 	public void newFile()
 	{
-		final String[] options = { m_littleBundle.getString("OkKey"), m_littleBundle.getString("CancelKey") };
+		final String[] options = { Editor.getString("OkKey"), Editor.getString("CancelKey") };
 
 		final NewFileChooser newFileChooser = new NewFileChooser();
 
-		final int option = JOptionPane.showOptionDialog(this, newFileChooser, m_littleBundle.getString("ChooseNewFileKey"), JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+		final int option = JOptionPane.showOptionDialog(this, newFileChooser, Editor.getString("ChooseNewFileKey"), JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 
 		if (option == JOptionPane.OK_OPTION)
 		{
@@ -977,7 +960,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			return;
 		}
 
-		final FixVersionDialog dialog = new FixVersionDialog(m_littleBundle);
+		final FixVersionDialog dialog = new FixVersionDialog();
 		final TreePath path = m_treeArea.getSelectionPath();
 		dialog.fixIt(path);
 	}
@@ -1024,8 +1007,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("FixVersionErrorKey") + e.getClass() + " \n"
-					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, Editor.getString("FixVersionErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), Editor.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -1057,8 +1039,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, m_littleBundle.getString("FixVersionErrorKey") + e.getClass() + " \n"
-					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), m_littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, Editor.getString("FixVersionErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), Editor.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -1076,6 +1057,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 * TODO remove and distribute over the relevant classes
 	 * @param e the event that gets checked
 	 */
+	@Override
 	public void actionPerformed(final ActionEvent e)
 	{
 		Editor.setCursor(1, null);
@@ -1532,6 +1514,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	// ///////////////////////////////////////////////////////////
 	class MyTreeSelectionListener implements TreeSelectionListener
 	{
+		@Override
 		public void valueChanged(final TreeSelectionEvent e)
 		{
 			e.getClass(); // fool compiler
@@ -1618,6 +1601,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	{
 		private static final long serialVersionUID = 626128726824504002L;
 
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			e.getID();
@@ -1652,6 +1636,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	{
 		private static final long serialVersionUID = 626128726824504003L;
 
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			e.getID(); // fool compiler
@@ -1683,6 +1668,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	class EditChangeListener implements ChangeListener
 	{
+		@Override
 		public void stateChanged(final ChangeEvent e)
 		{
 			e.getClass(); // fool compiler
@@ -1705,6 +1691,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 * 
 	 * @see java.awt.dnd.DragGestureListener#dragGestureRecognized(java.awt.dnd.DragGestureEvent)
 	 */
+	@Override
 	public void dragGestureRecognized(final DragGestureEvent e)
 	{
 	}
@@ -1713,6 +1700,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 * 
 	 * @see java.awt.dnd.DragSourceListener#dragDropEnd(java.awt.dnd.DragSourceDropEvent)
 	 */
+	@Override
 	public void dragDropEnd(final DragSourceDropEvent e)
 	{
 	}
@@ -1721,6 +1709,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 * 
 	 * @see java.awt.dnd.DragSourceListener#dragEnter(java.awt.dnd.DragSourceDragEvent)
 	 */
+	@Override
 	public void dragEnter(final DragSourceDragEvent e)
 	{
 	}
@@ -1729,6 +1718,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 * 
 	 * @see java.awt.dnd.DragSourceListener#dragExit(java.awt.dnd.DragSourceEvent)
 	 */
+	@Override
 	public void dragExit(final DragSourceEvent e)
 	{
 	}
@@ -1737,6 +1727,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 * 
 	 * @see java.awt.dnd.DragSourceListener#dragOver(java.awt.dnd.DragSourceDragEvent)
 	 */
+	@Override
 	public void dragOver(final DragSourceDragEvent e)
 	{
 	}
@@ -1745,6 +1736,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 * 
 	 * @see java.awt.dnd.DragSourceListener#dropActionChanged(java.awt.dnd.DragSourceDragEvent)
 	 */
+	@Override
 	public void dropActionChanged(final DragSourceDragEvent e)
 	{
 	}
@@ -1753,6 +1745,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 * 
 	 * @see java.awt.dnd.DropTargetListener#dragEnter(java.awt.dnd.DropTargetDragEvent)
 	 */
+	@Override
 	public void dragEnter(final DropTargetDragEvent e)
 	{
 		e.acceptDrag(DnDConstants.ACTION_COPY_OR_MOVE);
@@ -1762,6 +1755,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 * 
 	 * @see java.awt.dnd.DropTargetListener#dragExit(java.awt.dnd.DropTargetEvent)
 	 */
+	@Override
 	public void dragExit(final DropTargetEvent e)
 	{
 	}
@@ -1770,6 +1764,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 * 
 	 * @see java.awt.dnd.DropTargetListener#dragOver(java.awt.dnd.DropTargetDragEvent)
 	 */
+	@Override
 	public void dragOver(final DropTargetDragEvent e)
 	{
 	}
@@ -1778,6 +1773,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 * 
 	 * @see java.awt.dnd.DropTargetListener#drop(java.awt.dnd.DropTargetDropEvent)
 	 */
+	@Override
 	public synchronized void drop(final DropTargetDropEvent e)
 	{
 		try
@@ -1818,6 +1814,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 * 
 	 * @see java.awt.dnd.DropTargetListener#dropActionChanged(java.awt.dnd.DropTargetDragEvent)
 	 */
+	@Override
 	public void dropActionChanged(final DropTargetDragEvent e)
 	{
 	}
@@ -1826,6 +1823,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 * 
 	 * @see java.awt.datatransfer.ClipboardOwner#lostOwnership(java.awt.datatransfer.Clipboard, java.awt.datatransfer.Transferable)
 	 */
+	@Override
 	public void lostOwnership(final Clipboard arg0, final Transferable arg1)
 	{
 	}
@@ -1943,18 +1941,18 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	// //////////////////////////////////////////////////////////////
 
 	/*
-	 * public int newMISCPLevel() { String cp1 = (String) JOptionPane.showInputDialog( this, m_littleBundle.getString("MISCPLevelKey2"),
-	 * m_littleBundle.getString("MISCPLevelKey"), JOptionPane.QUESTION_MESSAGE, null, l1, "1");
+	 * public int newMISCPLevel() { String cp1 = (String) JOptionPane.showInputDialog( this, Editor.getString("MISCPLevelKey2"),
+	 * Editor.getString("MISCPLevelKey"), JOptionPane.QUESTION_MESSAGE, null, l1, "1");
 	 * 
 	 * int MISCPSelectLevel = 0; MISCPSelectLevel = Integer.parseInt(cp1); return MISCPSelectLevel; }
 	 * 
-	 * public int newJMFLevel() { String j1 = (String) JOptionPane.showInputDialog( this, m_littleBundle.getString("JMFLevelKey2"),
-	 * m_littleBundle.getString("JMFLevelKey"), JOptionPane.QUESTION_MESSAGE, null, l1, "1");
+	 * public int newJMFLevel() { String j1 = (String) JOptionPane.showInputDialog( this, Editor.getString("JMFLevelKey2"),
+	 * Editor.getString("JMFLevelKey"), JOptionPane.QUESTION_MESSAGE, null, l1, "1");
 	 * 
 	 * int JMFSelectLevel = 0; JMFSelectLevel = Integer.parseInt(j1); return JMFSelectLevel; }
 	 * 
-	 * public int newMISLevel() { String m1 = (String) JOptionPane.showInputDialog( this, m_littleBundle.getString("MISLevelKey2"),
-	 * m_littleBundle.getString("MISLevelKey"), JOptionPane.QUESTION_MESSAGE, null, l2, "1");
+	 * public int newMISLevel() { String m1 = (String) JOptionPane.showInputDialog( this, Editor.getString("MISLevelKey2"),
+	 * Editor.getString("MISLevelKey"), JOptionPane.QUESTION_MESSAGE, null, l2, "1");
 	 * 
 	 * int MISSelectLevel = 0; MISSelectLevel = Integer.parseInt(m1); return MISSelectLevel; }
 	 */

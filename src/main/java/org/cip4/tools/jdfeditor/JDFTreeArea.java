@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2011 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -80,7 +80,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -134,28 +133,26 @@ public class JDFTreeArea extends JTextArea
 	JViewport m_treeView;
 	private JDFTreeRenderer m_renderer;
 	JDFFrame m_frame;
-	private final ResourceBundle m_littleBundle;
 	private static String lastPath = "/JDF";
 
 	/**
 	 * 
-	 * @param bundle
+	 *  
 	 * @param frame
 	 */
-	public JDFTreeArea(final ResourceBundle bundle, final JDFFrame frame)
+	public JDFTreeArea(final JDFFrame frame)
 	{
 		super();
-		m_littleBundle = bundle;
 		m_frame = frame;
 		setEditable(false);
 		m_treeScroll = new JScrollPane();
 		m_treeScroll.getVerticalScrollBar().setUnitIncrement(20);
 		m_treeScroll.getHorizontalScrollBar().setUnitIncrement(20);
 
-		final JLabel treeLabel = new JLabel(" " + bundle.getString("TreeViewKey"));
+		final JLabel treeLabel = new JLabel(" " + Editor.getString("TreeViewKey"));
 		treeLabel.setPreferredSize(new Dimension(treeLabel.getPreferredSize().width, 23));
 		treeLabel.setVerticalTextPosition(SwingConstants.BOTTOM);
-		treeLabel.setToolTipText(bundle.getString("TreeViewKey"));
+		treeLabel.setToolTipText(Editor.getString("TreeViewKey"));
 		treeLabel.setBorder(BorderFactory.createLineBorder(Color.black));
 
 		m_treeView = new JViewport();
@@ -410,15 +407,15 @@ public class JDFTreeArea extends JTextArea
 						defVal = oldVal;
 					}
 
-					selectedValue = (String) JOptionPane.showInputDialog(this, m_littleBundle.getString("ChooseAttValueKey"), m_littleBundle.getString("ModifyAttValueKey"), JOptionPane.QUESTION_MESSAGE, null, vValues.toArray(), defVal);
+					selectedValue = (String) JOptionPane.showInputDialog(this, Editor.getString("ChooseAttValueKey"), Editor.getString("ModifyAttValueKey"), JOptionPane.QUESTION_MESSAGE, null, vValues.toArray(), defVal);
 				}
 				else
 				{
-					selectedValue = JOptionPane.showInputDialog(this, m_littleBundle.getString("InsertNewAttValueKey"), oldVal);
+					selectedValue = JOptionPane.showInputDialog(this, Editor.getString("InsertNewAttValueKey"), oldVal);
 				}
 				if (selectedValue != null && selectedValue.equals("Other.."))
 				{
-					selectedValue = JOptionPane.showInputDialog(this, m_littleBundle.getString("InsertNewAttValueKey"), oldVal);
+					selectedValue = JOptionPane.showInputDialog(this, Editor.getString("InsertNewAttValueKey"), oldVal);
 				}
 				if ((selectedValue != null) && !(selectedValue.equals(oldVal)))
 				{

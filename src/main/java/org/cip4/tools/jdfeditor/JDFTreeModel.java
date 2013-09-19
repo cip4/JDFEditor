@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2011 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -71,10 +71,8 @@
 package org.cip4.tools.jdfeditor;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Enumeration;
-import java.util.ResourceBundle;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
@@ -153,9 +151,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		}
 		catch (final Exception e)
 		{
-			e.printStackTrace();
-			ResourceBundle bundle = Editor.getBundle();
-			JOptionPane.showMessageDialog(frame, bundle.getString("SpawnErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), bundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(frame, Editor.getString("SpawnErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), Editor.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -189,8 +185,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			ResourceBundle bundle = Editor.getBundle();
-			JOptionPane.showMessageDialog(frame, bundle.getString("SpawnErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), bundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(frame, Editor.getString("SpawnErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), Editor.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -213,8 +208,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			ResourceBundle bundle = Editor.getBundle();
-			JOptionPane.showMessageDialog(frame, bundle.getString("MergeErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), bundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(frame, Editor.getString("MergeErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), Editor.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -291,14 +285,20 @@ public class JDFTreeModel extends DefaultTreeModel
 					final File tmpFile = File.createTempFile("tmp", ".jdf");
 					theDoc.write2File(tmpFile.getAbsolutePath(), 0, false);
 					theDoc.setOriginalFileName(fn);
-					FileInputStream inStream = new FileInputStream(tmpFile);
-					JDFDoc tmpDoc = EditorUtils.parseInStream(inStream, true);
+					JDFDoc tmpDoc = EditorUtils.parseInStream(tmpFile, EditorUtils.getSchemaLoc());
 					if (tmpDoc == null)
 					{
-						inStream.close();
-						inStream = new FileInputStream(tmpFile);
-						tmpDoc = EditorUtils.parseInStream(inStream, false);
+						tmpDoc = EditorUtils.parseInStream(tmpFile, null);
 					}
+					//					
+					//					FileInputStream inStream = new FileInputStream(tmpFile);
+					//					JDFDoc tmpDoc = EditorUtils.parseInStream(inStream, true);
+					//					if (tmpDoc == null)
+					//					{
+					//						inStream.close();
+					//						inStream = new FileInputStream(tmpFile);
+					//						tmpDoc = EditorUtils.parseInStream(inStream, false);
+					//					}
 
 					tmpFile.delete();
 					if (tmpDoc != null)
@@ -799,7 +799,6 @@ public class JDFTreeModel extends DefaultTreeModel
 	 * @param usage - resource link usage. true - input, false - output
 	 * @return JDFTreeNode created newResourceNode. null if operation was not completed successful
 	 */
-	@SuppressWarnings("unchecked")
 	public JDFTreeNode insertNewResourceNode(final JDFNode parentNode, final JDFTreeNode node, final String selectedResource, final boolean hasResourcePool, final EnumUsage usage)
 	{
 		JDFTreeNode newResourceNode = null;
@@ -853,13 +852,11 @@ public class JDFTreeModel extends DefaultTreeModel
 	 * Inserts new ResourceLink JDFTreeNode into the m_jdfTree. If node had no ResourceLinkPool - creates it.
 	 * @param parentNode - JDFNode to add resource link to
 	 * @param node - JDFTreeNode representation of parentNode
-	 * @param hasLinkPool - Has parentNode had a resourceLinkPool before action started? Importent for representation of m_jdfTree. ResourceLinkPool is
+	 * @param hasResourceLinkPool - Has parentNode had a resourceLinkPool before action started? Importent for representation of m_jdfTree. ResourceLinkPool is
 	 * automatically added to parentNode but we need to insert it into m_model.
 	 * @param resLink - ResourceLink to insert
-	 * @return 
 	 * @returns created newLinkNode. null if operation was not completed successful
 	 */
-	@SuppressWarnings("unchecked")
 	public JDFTreeNode insertNewResourceLinkNode(final JDFNode parentNode, final JDFTreeNode node, final boolean hasLinkPool, final JDFResourceLink resLink)
 	{
 		JDFTreeNode newLinkNode = null;
@@ -910,7 +907,6 @@ public class JDFTreeModel extends DefaultTreeModel
 	/**
 	 * Method renameElementsAndAttributes. renames the selected node in the m_jdfTree and updates the jdfDoc
 	 * @param path
-	 * @return 
 	 */
 	public String renameElementsAndAttributes(final TreePath path)
 	{
@@ -947,12 +943,11 @@ public class JDFTreeModel extends DefaultTreeModel
 			final KElement parent = node.getElement();
 			final String[] possibleValues = EditorUtils.getAttributeOptions(parent);
 
-			final ResourceBundle resourceBundle = Editor.getBundle();
-			selectedName = (String) JOptionPane.showInputDialog(m_frame, resourceBundle.getString("ChooseNewAttTypeKey"), resourceBundle.getString("RenameKey"), JOptionPane.PLAIN_MESSAGE, null, possibleValues, possibleValues[0]);
+			selectedName = (String) JOptionPane.showInputDialog(m_frame, Editor.getString("ChooseNewAttTypeKey"), Editor.getString("RenameKey"), JOptionPane.PLAIN_MESSAGE, null, possibleValues, possibleValues[0]);
 
 			if (selectedName != null && selectedName.equals("Other.."))
 			{
-				selectedName = JOptionPane.showInputDialog(m_frame, resourceBundle.getString("InsertNewAttTypeKey"), resourceBundle.getString("InsertNewAttTypeKey"), JOptionPane.PLAIN_MESSAGE);
+				selectedName = JOptionPane.showInputDialog(m_frame, Editor.getString("InsertNewAttTypeKey"), Editor.getString("InsertNewAttTypeKey"), JOptionPane.PLAIN_MESSAGE);
 			}
 		}
 
@@ -1000,7 +995,6 @@ public class JDFTreeModel extends DefaultTreeModel
 	/**
 	 * Method deleteItem. deletes attributes or elements deletes the selected node in the m_jdfTree an removes it from the jdfDoc as well
 	 * @param treePath
-	 * @return 
 	 */
 	public boolean deleteItem(final TreePath treePath)
 	{
@@ -1015,9 +1009,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	/**
 	 * Method deleteNode. deletes the selected node in the m_jdfTree an removes it from the jdfDoc as well, note that it must reside in a valid tree to
 	 * correctly work
-	 * @param node 
-	 * @param path
-	 * @return 
+	 * @param treePath
 	 */
 	public boolean deleteNode(final JDFTreeNode node, TreePath path)
 	{
@@ -1135,11 +1127,6 @@ public class JDFTreeModel extends DefaultTreeModel
 		return validationResult;
 	}
 
-	/**
-	 * 
-	 *  
-	 * @return
-	 */
 	public KElement getValidationRoot()
 	{
 		if (validationResult == null)
@@ -1165,8 +1152,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 		final KElement element = node.getElement();
 		final String[] possibleValues = EditorUtils.getAttributeOptions(element);
-		final ResourceBundle resourceBundle = Editor.getBundle();
-		final String attName = resourceBundle.getString("ChooseNewAttTypeKey");
+		final String attName = Editor.getString("ChooseNewAttTypeKey");
 		String selectedValue = (String) JOptionPane.showInputDialog(m_frame, attName, attName, JOptionPane.PLAIN_MESSAGE, null, possibleValues, possibleValues[0]);
 
 		if (selectedValue != null && selectedValue.equals("Other.."))
@@ -1213,7 +1199,7 @@ public class JDFTreeModel extends DefaultTreeModel
 			ns = parentElement.getNamespaceURIFromPrefix(ns);
 			if (ns == null)
 			{
-				ns = JOptionPane.showInputDialog(Editor.getFrame(), Editor.getBundle().getString("ChoosePrefixKey"), "");
+				ns = JOptionPane.showInputDialog(Editor.getFrame(), Editor.getString("ChoosePrefixKey"), "");
 			}
 			if (ns == null || ns.equals(JDFConstants.EMPTYSTRING))
 			{
@@ -1295,23 +1281,19 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * @param selectionPath
-	 * @param converter 
 	 * @experimental
 	 */
-	public void saveAsJDF(final TreePath selectionPath, XJDFToJDFConverter converter)
+	public void saveAsJDF(final TreePath selectionPath, XJDFToJDFConverter c)
 	{
 		final JDFTreeNode node = (JDFTreeNode) selectionPath.getLastPathComponent();
 		if (node == null)
 		{
 			return;
 		}
-		KElement e = node.getElement();
+		final KElement e = node.getElement();
 		final EditorDocument eDoc = Editor.getEditorDoc();
 		final String fn = eDoc.getOriginalFileName();
-
-		if (e != null)
-			e = e.cloneNewDoc();
-		final JDFDoc d = converter.convert(e);
+		final JDFDoc d = c.convert(e);
 		if (d != null)
 		{
 			final String fnNew = UrlUtil.newExtension(fn, ".xjdf.jdf");
@@ -1321,6 +1303,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		else
 		{
 			EditorUtils.errorBox("FixVersionErrorKey", "could not convert xjdf to jdf");
+
 		}
 	}
 

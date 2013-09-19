@@ -5,7 +5,7 @@ package org.cip4.tools.jdfeditor;
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2006 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -76,7 +76,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashSet;
-import java.util.ResourceBundle;
 
 import javax.swing.Box;
 import javax.swing.ImageIcon;
@@ -85,6 +84,12 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+/**
+ * 
+ *  
+ * @author rainer prosi
+ * @date Apr 11, 2013
+ */
 public class EditorButtonBar extends JToolBar implements ActionListener
 {
 
@@ -109,7 +114,6 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 	JButton m_closeButton;
 	HashSet<JButton> m_allButtons;
 
-	private final ResourceBundle m_littleBundle;
 	private final JDFFrame m_frame;
 
 	/**
@@ -117,10 +121,14 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 	 */
 	private static final long serialVersionUID = 2161156231007579898L;
 
-	public EditorButtonBar(ResourceBundle littleBundle, JDFFrame frame)
+	/**
+	 * 
+	 *  
+	 * @param frame
+	 */
+	public EditorButtonBar(JDFFrame frame)
 	{
 		super(SwingConstants.HORIZONTAL);
-		m_littleBundle = littleBundle;
 		m_frame = frame;
 		m_allButtons = new HashSet<JButton>();
 	}
@@ -158,45 +166,45 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		final Dimension d = new Dimension(10, 30);
 		setFloatable(false);
 
-		m_newButton = createDefaultButton(imgNew, m_littleBundle.getString("NewKey"), true, '|');
-		m_openButton = createDefaultButton(imgOpen, m_littleBundle.getString("OpenKey"), true, '|');
-		m_saveButton = createDefaultButton(imgSave, m_littleBundle.getString("SaveKey"), false, '|');
+		m_newButton = createDefaultButton(imgNew, Editor.getString("NewKey"), true, '|');
+		m_openButton = createDefaultButton(imgOpen, Editor.getString("OpenKey"), true, '|');
+		m_saveButton = createDefaultButton(imgSave, Editor.getString("SaveKey"), false, '|');
 
 		addSeparator(d);
 
-		m_printButton = createDefaultButton(imgPrint, m_littleBundle.getString("PrintKey"), false, '|');
-		m_refreshButton = createDefaultButton(imgRefresh, m_littleBundle.getString("RefreshKey"), false, '|');
+		m_printButton = createDefaultButton(imgPrint, Editor.getString("PrintKey"), false, '|');
+		m_refreshButton = createDefaultButton(imgRefresh, Editor.getString("RefreshKey"), false, '|');
 
 		addSeparator(d);
 
-		m_cutButton = createDefaultButton(imgCut, m_littleBundle.getString("CutKey"), false, '|');
-		m_copyButton = createDefaultButton(imgCopy, m_littleBundle.getString("CopyKey"), false, '|');
-		m_pasteButton = createDefaultButton(imgPaste, m_littleBundle.getString("PasteKey"), false, '|');
+		m_cutButton = createDefaultButton(imgCut, Editor.getString("CutKey"), false, '|');
+		m_copyButton = createDefaultButton(imgCopy, Editor.getString("CopyKey"), false, '|');
+		m_pasteButton = createDefaultButton(imgPaste, Editor.getString("PasteKey"), false, '|');
 
 		addSeparator(d);
 
-		m_undoButton = createDefaultButton(imgUndo, m_littleBundle.getString("UndoKey"), false, '|');
+		m_undoButton = createDefaultButton(imgUndo, Editor.getString("UndoKey"), false, '|');
 		m_undoButton.addActionListener(m_frame.undoAction);
-		m_redoButton = createDefaultButton(imgRedo, m_littleBundle.getString("RedoKey"), false, '|');
+		m_redoButton = createDefaultButton(imgRedo, Editor.getString("RedoKey"), false, '|');
 		m_redoButton.addActionListener(m_frame.redoAction);
 
 		addSeparator(d);
 
-		m_validateButton = createDefaultButton(imgReval, m_littleBundle.getString("ValidateToolTipKey"), false, 'A');
-		m_upOneLevelButton = createDefaultButton(imgUp, m_littleBundle.getString("GoUpInProcessViewKey"), false, '|');
-		m_LastButton = createDefaultButton(imgLast, m_littleBundle.getString("LastButtonKey"), false, '|');
-		m_NextButton = createDefaultButton(imgNext, m_littleBundle.getString("NextButtonKey"), false, '|');
+		m_validateButton = createDefaultButton(imgReval, Editor.getString("ValidateToolTipKey"), false, 'A');
+		m_upOneLevelButton = createDefaultButton(imgUp, Editor.getString("GoUpInProcessViewKey"), false, '|');
+		m_LastButton = createDefaultButton(imgLast, Editor.getString("LastButtonKey"), false, '|');
+		m_NextButton = createDefaultButton(imgNext, Editor.getString("NextButtonKey"), false, '|');
 
 		addSeparator(d);
 
-		m_zoomInButton = createDefaultButton(imgZoomIn, m_littleBundle.getString("ZoomInKey"), false, '|');
-		m_zoomOutButton = createDefaultButton(imgZoomOut, m_littleBundle.getString("ZoomOutKey"), false, '|');
-		m_zoomOrigButton = createDefaultButton(imgZoomOrig, m_littleBundle.getString("ZoomOrigKey"), false, '|');
-		m_zoomBestButton = createDefaultButton(imgZoomBest, m_littleBundle.getString("ZoomFitKey"), false, '|');
+		m_zoomInButton = createDefaultButton(imgZoomIn, Editor.getString("ZoomInKey"), false, '|');
+		m_zoomOutButton = createDefaultButton(imgZoomOut, Editor.getString("ZoomOutKey"), false, '|');
+		m_zoomOrigButton = createDefaultButton(imgZoomOrig, Editor.getString("ZoomOrigKey"), false, '|');
+		m_zoomBestButton = createDefaultButton(imgZoomBest, Editor.getString("ZoomFitKey"), false, '|');
 
 		addSeparator(d);
 		final ImageIcon imgClose = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "CloseFile.GIF");
-		m_closeButton = createDefaultButton(imgClose, m_littleBundle.getString("CloseKey"), true, '|');
+		m_closeButton = createDefaultButton(imgClose, Editor.getString("CloseKey"), true, '|');
 		addSeparator(d);
 
 		add(Box.createHorizontalGlue());
@@ -301,6 +309,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 	 * Mother of all action dispatchers
 	 * @param e the event that gets checked
 	 */
+	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 

@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2013 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2011 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -74,7 +74,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.ResourceBundle;
+import java.util.List;
 
 import javax.mail.BodyPart;
 import javax.mail.MessagingException;
@@ -91,7 +91,6 @@ import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.VString;
-import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.jdflib.resource.JDFResource;
@@ -99,6 +98,8 @@ import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
+import org.cip4.tools.jdfeditor.streamloader.IStreamLoader;
+import org.cip4.tools.jdfeditor.streamloader.PluginLoader;
 
 /**
  * static utilities for the editor
@@ -107,6 +108,7 @@ import org.cip4.jdflib.util.UrlUtil;
  */
 public class EditorUtils
 {
+	private static PluginLoader<IStreamLoader> pluginLoader = null;
 
 	/**
 	 * Check if a KElement is valid or not.
@@ -350,42 +352,6 @@ public class EditorUtils
 		return start + "..." + end;
 	}
 
-	/**
-	 * parse an input stream
-	 * @param inStream 
-	 * @param useSchemaDefault 
-	 * @return
-	 */
-	public static JDFDoc parseInStream(final InputStream inStream, final boolean useSchemaDefault)
-	{
-		final JDFParser p = new JDFParser();
-		File schemaloc = null;
-		final INIReader iniFile = Editor.getIniFile();
-		if (iniFile != null && useSchemaDefault && iniFile.getUseSchema())
-		{
-			schemaloc = iniFile.getSchemaURL();
-			if (schemaloc != null)
-			{
-				p.setJDFSchemaLocation(schemaloc);
-			}
-		}
-		final JDFDoc jdfDoc = p.parseStream(inStream);
-		if (jdfDoc != null)
-		{
-			jdfDoc.clearDirtyIDs();
-			if (iniFile != null && iniFile.getNormalizeOpen())
-			{
-				KElement root = jdfDoc.getRoot();
-				if (!(root instanceof JDFJMF))
-				{
-					root.sortChildren();
-				}
-			}
-		}
-
-		return jdfDoc;
-	}
-
 	// ////////////////////////////////////////////////////////////////////////////
 	/**
 	 * creates the standard error box
@@ -404,8 +370,7 @@ public class EditorUtils
 			addedString = " " + addedString;
 		}
 
-		final ResourceBundle littleBundle = frame.m_littleBundle;
-		JOptionPane.showMessageDialog(frame, littleBundle.getString(errorKey) + addedString, littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(frame, Editor.getString(errorKey) + addedString, Editor.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 	}
 
 	// ////////////////////////////////////////////////////////////////////////////
@@ -436,13 +401,18 @@ public class EditorUtils
 				// standard xml parse
 				{
 					ediDocs = new EditorDocument[1];
-					FileInputStream fileStream = new FileInputStream(fts);
-					EditorDocument edidoc = parseStream(fts, null, fileStream, true);
-					if (edidoc == null)
+
+					JDFDoc jdfDoc = parseInStream(fts, getSchemaLoc());
+					if (jdfDoc == null)
 					{
-						fileStream.close();
-						fileStream = new FileInputStream(fts);
-						edidoc = parseStream(fts, null, fileStream, false);
+						jdfDoc = parseInStream(fts, null);
+					}
+
+					EditorDocument edidoc = null;
+
+					if (jdfDoc != null)
+					{
+						edidoc = makeEditorDocument(jdfDoc, null);
 					}
 					if (edidoc != null)
 					{
@@ -535,12 +505,19 @@ public class EditorUtils
 			if (MimeUtil.isJDFMimeType(bp.getContentType()))
 			{
 				InputStream is = bp.getInputStream();
-				EditorDocument edidoc = parseStream(fts, packageName, is, true);
-				if (edidoc == null)
+
+				JDFDoc jdfDoc = parseInStream(is, getSchemaLoc());
+				if (jdfDoc == null)
 				{
 					is.close();
 					is = bp.getInputStream();
-					edidoc = parseStream(fts, packageName, is, false);
+					parseInStream(is, null);
+				}
+				EditorDocument edidoc = null;
+
+				if (jdfDoc != null)
+				{
+					edidoc = makeEditorDocument(jdfDoc, packageName);
 				}
 				if (edidoc != null)
 				{
@@ -551,7 +528,6 @@ public class EditorUtils
 					}
 					fileName = StringUtil.unEscape(fileName, "%", 16, 2);
 					fileName = StringUtil.getUTF8String(fileName.getBytes());
-					final JDFDoc jdfDoc = edidoc.getJDFDoc();
 					jdfDoc.setOriginalFileName(fileName);
 					jdfDoc.setBodyPart(bp);
 					edidoc.setCID(MimeUtil.getContentID(bp));
@@ -562,29 +538,98 @@ public class EditorUtils
 		return ediDocs;
 	}
 
-	private static EditorDocument parseStream(final File fts, final String packageName, final InputStream is, final boolean bUseSchemaDefault)
+	static File getSchemaLoc()
 	{
-		try
+		File schemaloc = null;
+		final INIReader iniFile = Editor.getIniFile();
+
+		if (iniFile != null && iniFile.getUseSchema())
 		{
-			final JDFDoc jdfDoc = EditorUtils.parseInStream(is, bUseSchemaDefault);
-			if (jdfDoc != null)
-			{
-				final JDFFrame frame = Editor.getFrame();
-				frame.setJDFDoc(jdfDoc, packageName);
-				return frame.getEditorDoc();
-			}
-			// refresh the view to the selected document
+			schemaloc = iniFile.getSchemaURL();
 		}
-		catch (final Exception e)
-		{
-			if (!bUseSchemaDefault)// failed 2nd round
-			{
-				e.printStackTrace();
-				EditorUtils.errorBox("FileNotOpenKey", ": " + fts.getName() + "!\n" + e.getMessage());
-			}
-			// nop
-		}
-		return null;
+
+		return (schemaloc);
 	}
 
+	private static EditorDocument makeEditorDocument(JDFDoc jdfDoc, String packageName)
+	{
+		EditorDocument edidoc = null;
+
+		if (jdfDoc != null)
+		{
+			jdfDoc.clearDirtyIDs();
+
+			final INIReader iniFile = Editor.getIniFile();
+
+			if (iniFile != null && iniFile.getNormalizeOpen())
+			{
+				jdfDoc.getRoot().sortChildren();
+			}
+
+			final JDFFrame frame = Editor.getFrame();
+			frame.setJDFDoc(jdfDoc, packageName);
+			edidoc = frame.getEditorDoc();
+		}
+
+		return (edidoc);
+	}
+
+	private static JDFDoc parseInStream(InputStream inStream, File fileSchema) throws IOException
+	{
+		final JDFParser p = new JDFParser();
+
+		if (fileSchema != null)
+		{
+			p.setJDFSchemaLocation(fileSchema);
+		}
+
+		return (p.parseStream(inStream));
+	}
+
+	/**
+	 * 
+	 * 
+	 * @param fileJDF
+	 * @param fileSchema
+	 * @return
+	 * @throws IOException
+	 */
+	static JDFDoc parseInStream(File fileJDF, File fileSchema) throws IOException
+	{
+		JDFDoc jdfDoc = null;
+
+		if (pluginLoader == null)
+		{
+			final File filePluginDir = new File(".", "plugins");
+			pluginLoader = new PluginLoader<IStreamLoader>(IStreamLoader.class, filePluginDir);
+		}
+
+		final List<IStreamLoader> lstStreamLoaders = pluginLoader.getPlugins();
+
+		for (IStreamLoader loader : lstStreamLoaders)
+		{
+			jdfDoc = loader.read(fileJDF, fileSchema);
+
+			if (jdfDoc != null)
+			{
+				break;
+			}
+		}
+
+		if (jdfDoc == null)
+		{
+			final JDFParser p = new JDFParser();
+
+			if (fileSchema != null)
+			{
+				p.setJDFSchemaLocation(fileSchema);
+			}
+
+			final FileInputStream inStream = new FileInputStream(fileJDF);
+			jdfDoc = p.parseStream(inStream);
+			inStream.close();
+		}
+
+		return jdfDoc;
+	}
 }

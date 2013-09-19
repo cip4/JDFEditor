@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2010 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -86,7 +86,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -124,7 +123,6 @@ import org.cip4.tools.jdfeditor.transport.HttpReceiver;
 public class HttpServerPane implements FileAlterationListener, ActionListener
 {
 	private static final Logger log = Logger.getLogger(HttpServerPane.class);
-	private static ResourceBundle bundle = Editor.getBundle();
 	private static INIReader conf = Editor.getIniFile();
 
 	private final JDFFrame frame;
@@ -166,13 +164,13 @@ public class HttpServerPane implements FileAlterationListener, ActionListener
 		JPanel httpPanel = new JPanel(new BorderLayout());
 
 		JPanel leftPanel = new JPanel(new BorderLayout());
-		leftPanel.add(new JLabel(bundle.getString("HTTPserver") + ":"), BorderLayout.NORTH);
+		leftPanel.add(new JLabel(Editor.getString("HTTPserver") + ":"), BorderLayout.NORTH);
 
 		JPanel settingsPanel = new JPanel();
 		SpringLayout settingsLayout = new SpringLayout();
 		settingsPanel.setLayout(settingsLayout);
 
-		JLabel ipLabel = new JLabel(bundle.getString("IPAddress") + ":");
+		JLabel ipLabel = new JLabel(Editor.getString("IPAddress") + ":");
 		settingsLayout.putConstraint(SpringLayout.WEST, ipLabel, 5, SpringLayout.WEST, settingsPanel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, ipLabel, 10, SpringLayout.NORTH, settingsPanel);
 
@@ -181,7 +179,7 @@ public class HttpServerPane implements FileAlterationListener, ActionListener
 		settingsLayout.putConstraint(SpringLayout.WEST, ipComboBox, 5, SpringLayout.EAST, ipLabel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, ipComboBox, 10, SpringLayout.NORTH, settingsPanel);
 
-		JLabel portLabel = new JLabel(bundle.getString("Port") + ":");
+		JLabel portLabel = new JLabel(Editor.getString("Port") + ":");
 		settingsLayout.putConstraint(SpringLayout.WEST, portLabel, 5, SpringLayout.WEST, settingsPanel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, portLabel, 10, SpringLayout.SOUTH, ipLabel);
 
@@ -189,11 +187,11 @@ public class HttpServerPane implements FileAlterationListener, ActionListener
 		settingsLayout.putConstraint(SpringLayout.WEST, portValueLabel, 0, SpringLayout.WEST, ipComboBox);
 		settingsLayout.putConstraint(SpringLayout.NORTH, portValueLabel, 10, SpringLayout.SOUTH, ipLabel);
 
-		JLabel statusLabel = new JLabel(bundle.getString("Status") + ":");
+		JLabel statusLabel = new JLabel(Editor.getString("Status") + ":");
 		settingsLayout.putConstraint(SpringLayout.WEST, statusLabel, 5, SpringLayout.WEST, settingsPanel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, statusLabel, 10, SpringLayout.SOUTH, portLabel);
 
-		statusValueLabel = new JLabel(bundle.getString("Stopped"));
+		statusValueLabel = new JLabel(Editor.getString("Stopped"));
 		settingsLayout.putConstraint(SpringLayout.WEST, statusValueLabel, 0, SpringLayout.WEST, portValueLabel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, statusValueLabel, 10, SpringLayout.SOUTH, portLabel);
 
@@ -213,9 +211,9 @@ public class HttpServerPane implements FileAlterationListener, ActionListener
 		leftPanel.add(settingsPanel, BorderLayout.CENTER);
 
 		JPanel buttonsPanel = new JPanel();
-		buttonStart = new JButton(bundle.getString("Start"));
+		buttonStart = new JButton(Editor.getString("Start"));
 		buttonStart.addActionListener(this);
-		buttonStop = new JButton(bundle.getString("Stop"));
+		buttonStop = new JButton(Editor.getString("Stop"));
 		buttonStop.addActionListener(this);
 		buttonStop.setEnabled(false);
 		buttonsPanel.add(buttonStart);
@@ -224,7 +222,7 @@ public class HttpServerPane implements FileAlterationListener, ActionListener
 		leftPanel.add(buttonsPanel, BorderLayout.SOUTH);
 
 		JPanel rightTopPanel = new JPanel(new BorderLayout());
-		rightTopPanel.add(new JLabel(bundle.getString("ReceivedMessages") + ":"), BorderLayout.NORTH);
+		rightTopPanel.add(new JLabel(Editor.getString("ReceivedMessages") + ":"), BorderLayout.NORTH);
 
 		JTable table = new JTable(tableModel);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -259,14 +257,14 @@ public class HttpServerPane implements FileAlterationListener, ActionListener
 
 		rightTopPanel.add(scrollPane, BorderLayout.CENTER);
 
-		buttonClear = new JButton(bundle.getString("ClearAll"));
+		buttonClear = new JButton(Editor.getString("ClearAll"));
 		buttonClear.addActionListener(this);
 		rightTopPanel.add(buttonClear, BorderLayout.SOUTH);
 
 		JPanel rightPanel = new JPanel(new BorderLayout());
 
 		JPanel rightBottomPanel = new JPanel(new BorderLayout());
-		rightBottomPanel.add(new JLabel(bundle.getString("PathMessages") + ":"), BorderLayout.NORTH);
+		rightBottomPanel.add(new JLabel(Editor.getString("PathMessages") + ":"), BorderLayout.NORTH);
 		JPanel pathPanel = new JPanel();
 		pathPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		buttonSelectPath = new JButton("...");
@@ -326,26 +324,31 @@ public class HttpServerPane implements FileAlterationListener, ActionListener
 		gatewayValueLabel.setEnabled(!enabled);
 	}
 
+	@Override
 	public void onDirectoryChange(File f)
 	{
 		// TODO Auto-generated method stub
 	}
 
+	@Override
 	public void onDirectoryCreate(File f)
 	{
 		// TODO Auto-generated method stub
 	}
 
+	@Override
 	public void onDirectoryDelete(File f)
 	{
 		// TODO Auto-generated method stub
 	}
 
+	@Override
 	public void onFileChange(File f)
 	{
 		// TODO Auto-generated method stub
 	}
 
+	@Override
 	public void onFileCreate(File f)
 	{
 		log.debug("file created: " + f.getAbsolutePath());
@@ -381,21 +384,25 @@ public class HttpServerPane implements FileAlterationListener, ActionListener
 		tableModel.addMessage(msg);
 	}
 
+	@Override
 	public void onFileDelete(File f)
 	{
 		// TODO Auto-generated method stub
 	}
 
+	@Override
 	public void onStart(FileAlterationObserver fao)
 	{
 		// TODO Auto-generated method stub
 	}
 
+	@Override
 	public void onStop(FileAlterationObserver fao)
 	{
 		// TODO Auto-generated method stub
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		if (e.getSource() == buttonStart)
@@ -403,7 +410,7 @@ public class HttpServerPane implements FileAlterationListener, ActionListener
 			try
 			{
 				HttpReceiver.getInstance().startServer((String) ipComboBox.getSelectedItem(), Integer.parseInt(portValueLabel.getText()));
-				statusValueLabel.setText(bundle.getString("Started"));
+				statusValueLabel.setText(Editor.getString("Started"));
 				gatewayValueLabel.setText(HttpReceiver.DEF_PROTOCOL + "://" + (String) ipComboBox.getSelectedItem() + ":" + portValueLabel.getText() + HttpReceiver.DEF_PATH);
 				updateControls(false);
 			}
@@ -416,7 +423,7 @@ public class HttpServerPane implements FileAlterationListener, ActionListener
 		else if (e.getSource() == buttonStop)
 		{
 			HttpReceiver.getInstance().stopServer();
-			statusValueLabel.setText(bundle.getString("Stopped"));
+			statusValueLabel.setText(Editor.getString("Stopped"));
 			updateControls(true);
 		}
 		else if (e.getSource() == buttonClear)

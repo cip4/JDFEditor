@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2009 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -73,7 +73,6 @@ package org.cip4.tools.jdfeditor;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ResourceBundle;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -108,7 +107,6 @@ public class FixVersionDialog extends JPanel implements ActionListener
 	 */
 	private static final long serialVersionUID = -276165456151780040L;
 
-	private final ResourceBundle littleBundle;
 	private boolean bVersionKeyChosen = false;
 	private JComboBox chooseVersion;
 	private JCheckBox cbFixICS;
@@ -118,15 +116,14 @@ public class FixVersionDialog extends JPanel implements ActionListener
 	private boolean bConvertLPP = true;
 
 	/**
-	 * @param bundle
+	 * 
 	 */
-	public FixVersionDialog(final ResourceBundle bundle)
+	public FixVersionDialog()
 	{
 		super();
-		this.littleBundle = bundle;
 
 		init();
-		final String[] options = { littleBundle.getString("FixVersionKey"), littleBundle.getString("CancelKey") };
+		final String[] options = { Editor.getString("FixVersionKey"), Editor.getString("CancelKey") };
 		final int option = JOptionPane.showOptionDialog(Editor.getFrame(), this, "Fix Version in file", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
 		if (option == JOptionPane.OK_OPTION)
@@ -173,10 +170,10 @@ public class FixVersionDialog extends JPanel implements ActionListener
 		final JPanel optionPanel = new JPanel();
 		optionPanel.setLayout(new GridLayout(3, 1, 0, 5));
 		panel.add(optionPanel);
-		cbConvertLPP = new JCheckBox(littleBundle.getString("convertLPP"), bConvertLPP);
+		cbConvertLPP = new JCheckBox(Editor.getString("convertLPP"), bConvertLPP);
 		cbConvertLPP.addActionListener(this);
 		optionPanel.add(cbConvertLPP);
-		cbFixICS = new JCheckBox(littleBundle.getString("fixICSVersion"), bFixICSVersion);
+		cbFixICS = new JCheckBox(Editor.getString("fixICSVersion"), bFixICSVersion);
 		cbFixICS.addActionListener(this);
 		optionPanel.add(cbFixICS);
 	}
@@ -210,6 +207,7 @@ public class FixVersionDialog extends JPanel implements ActionListener
 	/**
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
+	@Override
 	public void actionPerformed(final ActionEvent e)
 	{
 		final Object source = e.getSource();
@@ -291,8 +289,7 @@ public class FixVersionDialog extends JPanel implements ActionListener
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, littleBundle.getString("FixVersionErrorKey") + e.getClass() + " \n"
-					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), littleBundle.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, Editor.getString("FixVersionErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), Editor.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 

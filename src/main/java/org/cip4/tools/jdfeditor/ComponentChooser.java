@@ -73,7 +73,6 @@ package org.cip4.tools.jdfeditor;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ResourceBundle;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
@@ -92,7 +91,6 @@ public class ComponentChooser extends JPanel implements ActionListener
 	private static final long serialVersionUID = -8989231145248120133L;
 
 	private String component;
-	private final ResourceBundle bundle;
 	private JRadioButton processButton;
 	private JRadioButton inOutButton;
 	private JRadioButton jdfTreeButton;
@@ -100,14 +98,13 @@ public class ComponentChooser extends JPanel implements ActionListener
 
 	/**
 	 *    
-	 * @param _bundle
+	 * 
 	 */
-	public ComponentChooser(ResourceBundle _bundle)
+	public ComponentChooser()
 	{
 		super();
 		this.setLayout(new GridLayout(4, 1));
-		this.bundle = _bundle;
-		this.component = _bundle.getString("ProcessViewKey");
+		this.component = Editor.getString("ProcessViewKey");
 		init();
 		setVisible(true);
 	}
@@ -123,8 +120,8 @@ public class ComponentChooser extends JPanel implements ActionListener
 
 		rbg = new ButtonGroup();
 
-		processButton = new JRadioButton(bundle.getString("ProcessViewKey"));
-		processButton.setActionCommand(bundle.getString("ProcessViewKey"));
+		processButton = new JRadioButton(Editor.getString("ProcessViewKey"));
+		processButton.setActionCommand(Editor.getString("ProcessViewKey"));
 		rbg.add(processButton);
 		final JDFFrame frame = Editor.getFrame();
 		if (frame.m_topTabs.processAreaIsNull())
@@ -137,8 +134,8 @@ public class ComponentChooser extends JPanel implements ActionListener
 		processButton.addActionListener(this);
 		add(processButton);
 
-		inOutButton = new JRadioButton(bundle.getString("NextNeighbourKey"));
-		inOutButton.setActionCommand(bundle.getString("NextNeighbourKey"));
+		inOutButton = new JRadioButton(Editor.getString("NextNeighbourKey"));
+		inOutButton.setActionCommand(Editor.getString("NextNeighbourKey"));
 		rbg.add(inOutButton);
 		if (frame.m_topTabs.inOutIsNull())
 			inOutButton.setEnabled(false);
@@ -151,8 +148,8 @@ public class ComponentChooser extends JPanel implements ActionListener
 		inOutButton.addActionListener(this);
 		add(inOutButton);
 
-		jdfTreeButton = new JRadioButton(bundle.getString("TreeViewKey"));
-		jdfTreeButton.setActionCommand(bundle.getString("TreeViewKey"));
+		jdfTreeButton = new JRadioButton(Editor.getString("TreeViewKey"));
+		jdfTreeButton.setActionCommand(Editor.getString("TreeViewKey"));
 		rbg.add(jdfTreeButton);
 		if (frame.m_treeArea.jdfTreeIsNull())
 			jdfTreeButton.setEnabled(false);
@@ -180,6 +177,7 @@ public class ComponentChooser extends JPanel implements ActionListener
 	 * 
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
+	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		this.component = rbg.getSelection().getActionCommand();

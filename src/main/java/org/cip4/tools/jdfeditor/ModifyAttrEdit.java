@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2006 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -76,50 +76,49 @@ import javax.swing.undo.CannotUndoException;
 
 import org.w3c.dom.Attr;
 
-/*
+/**
  * ModifyAttrEdit.java
  * @author Elena Skobchenko
  */
-
-public class ModifyAttrEdit extends EditorUndoableEdit 
+public class ModifyAttrEdit extends EditorUndoableEdit
 {
-    private static final long serialVersionUID = -2778264565816387345L;
-    
-    private TreePath path;
-    private JDFTreeNode attrNode;
-    private String previousValue;
-    
-    public ModifyAttrEdit(final TreePath treePath,JDFTreeNode _attrNode, String previousVal ) 
-    {
-        super();
-        path = treePath;
-        previousValue=previousVal;       
-        attrNode = _attrNode;        
-        Editor.getFrame().updateViews(path);
-        canUndo=canRedo=true;
-    }
+	private static final long serialVersionUID = -2778264565816387345L;
 
-    @Override
-	public void undo() throws CannotUndoException 
-    {
-        Attr atr=attrNode.getAttr();
-        String keep=atr.getNodeValue();
-        atr.setNodeValue(previousValue);
-        previousValue=keep;
-//        attrNode.setUserObject(atr);
-        Editor.getFrame().updateViews(path);
-    }
+	private final TreePath path;
+	private final JDFTreeNode attrNode;
+	private String previousValue;
 
-    @Override
-	public void redo() throws CannotRedoException 
-    {
-        undo(); // since the strings are simply swapped undo and redo are identical
-    }
+	public ModifyAttrEdit(final TreePath treePath, JDFTreeNode _attrNode, String previousVal)
+	{
+		super();
+		path = treePath;
+		previousValue = previousVal;
+		attrNode = _attrNode;
+		Editor.getFrame().updateViews(path);
+		canUndo = canRedo = true;
+	}
 
-    @Override
-	public String getPresentationName() 
-    {
-         return "ModifyAttribute";
-    }
+	@Override
+	public void undo() throws CannotUndoException
+	{
+		Attr atr = attrNode.getAttr();
+		String keep = atr.getNodeValue();
+		atr.setNodeValue(previousValue);
+		previousValue = keep;
+		//        attrNode.setUserObject(atr);
+		Editor.getFrame().updateViews(path);
+	}
+
+	@Override
+	public void redo() throws CannotRedoException
+	{
+		undo(); // since the strings are simply swapped undo and redo are identical
+	}
+
+	@Override
+	public String getPresentationName()
+	{
+		return "ModifyAttribute";
+	}
 
 }

@@ -1,11 +1,9 @@
-package org.cip4.tools.jdfeditor;
-
 /*
  *
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2008 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -70,6 +68,8 @@ package org.cip4.tools.jdfeditor;
  *  
  * 
  */
+package org.cip4.tools.jdfeditor;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -78,7 +78,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.HashMap;
-import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -121,17 +120,19 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 	private int gtSelectLevel = 1;
 	private HashMap<String, String> labelMap;
 
-	public String[] l1 = { "1", "2" };
-	public String[] l2 = { "1", "2", "3" };
+	String[] l1 = { "1", "2" };
+	String[] l2 = { "1", "2", "3" };
 
+	/**
+	 * 
+	 */
 	public GoldenTicketDialog()
 	{
 		super();
 		JDFFrame parent = Editor.getFrame();
-		final ResourceBundle littleBundle = Editor.getBundle();
 
 		init();
-		final String[] options = { littleBundle.getString("OkKey"), littleBundle.getString("CancelKey") };
+		final String[] options = { Editor.getString("OkKey"), Editor.getString("CancelKey") };
 
 		final int option = JOptionPane.showOptionDialog(parent, this, "Golden Ticket File Creation", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
@@ -159,19 +160,18 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 	private void init()
 	{
 		final JPanel panel = new JPanel();
-		final ResourceBundle littleBundle = Editor.getBundle();
 		outConstraints.fill = GridBagConstraints.BOTH;
 		outConstraints.insets = new Insets(0, 0, 10, 0);
 		outLayout.setConstraints(panel, outConstraints);
 		setLayout(outLayout);
 		final GridBagLayout inLayout = new GridBagLayout();
 		panel.setLayout(new GridLayout(4, 1));
-		panel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("GTInputKey")));
+		panel.setBorder(BorderFactory.createTitledBorder(Editor.getString("GTInputKey")));
 
 		//Golden Ticket Chooser
 		JPanel gtChooser = new JPanel();
 		gtChooser.setLayout(inLayout);
-		gtChooser.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("GTFileKey")));
+		gtChooser.setBorder(BorderFactory.createTitledBorder(Editor.getString("GTFileKey")));
 		outLayout.setConstraints(gtChooser, outConstraints);
 
 		initGTLabels(panel, gtChooser);
@@ -179,7 +179,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		//MIS Level
 		JPanel MISLevel = new JPanel();
 		MISLevel.setLayout(inLayout);
-		MISLevel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("MISLevelKey")));
+		MISLevel.setBorder(BorderFactory.createTitledBorder(Editor.getString("MISLevelKey")));
 		outLayout.setConstraints(MISLevel, outConstraints);
 
 		misICSLevel1 = new JComboBox(l2);
@@ -191,7 +191,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		//JMF Level
 		JPanel JMFLevel = new JPanel();
 		JMFLevel.setLayout(inLayout);
-		JMFLevel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("JMFLevelKey")));
+		JMFLevel.setBorder(BorderFactory.createTitledBorder(Editor.getString("JMFLevelKey")));
 		outLayout.setConstraints(JMFLevel, outConstraints);
 
 		jmfICSLevel1 = new JComboBox(l1);
@@ -203,7 +203,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		//GT Level
 		JPanel GTLevel = new JPanel();
 		GTLevel.setLayout(inLayout);
-		GTLevel.setBorder(BorderFactory.createTitledBorder(littleBundle.getString("GTLevelKey")));
+		GTLevel.setBorder(BorderFactory.createTitledBorder(Editor.getString("GTLevelKey")));
 		outLayout.setConstraints(GTLevel, outConstraints);
 
 		gtICSLevel = new JComboBox(l1);
@@ -218,14 +218,13 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 
 	private void initGTLabels(final JPanel panel, JPanel gtChooser)
 	{
-		final ResourceBundle littleBundle = Editor.getBundle();
 		//Add Golden Tickets as they become available.
 		final String[] gt = { "MISCP", "MISPre", "IDP" };
 		String[] gtDisplay = new String[gt.length];
 		labelMap = new HashMap<String, String>();
 		for (int i = 0; i < gt.length; i++)
 		{
-			gtDisplay[i] = littleBundle.getString(gt[i]);
+			gtDisplay[i] = Editor.getString(gt[i]);
 			labelMap.put(gtDisplay[i], gt[i]);
 		}
 		goldenTicketLabel = new JComboBox(gtDisplay);
@@ -235,6 +234,11 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		panel.add(gtChooser);
 	}
 
+	/**
+	 * 
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
+	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		final Object source = e.getSource();
@@ -282,24 +286,40 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		gtLevelSelected = (String) gtICSLevel.getSelectedItem();
 	}
 
-	/*
+	/**
 	 * Methods to return the Levels and which golden ticket to create.
+	 * @return 
 	 */
 	public String getGoldenTicket()
 	{
 		return gtSelected;
 	}
 
+	/**
+	 * 
+	 *  
+	 * @return
+	 */
 	public int getMISLevel()
 	{
 		return misSelectLevel;
 	}
 
+	/**
+	 * 
+	 *  
+	 * @return
+	 */
 	public int getJMFLevel()
 	{
 		return jmfSelectLevel;
 	}
 
+	/**
+	 * 
+	 *  
+	 * @return
+	 */
 	public int getGTLevel()
 	{
 		return gtSelectLevel;

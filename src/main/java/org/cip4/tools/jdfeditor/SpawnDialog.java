@@ -76,7 +76,6 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -112,7 +111,6 @@ public class SpawnDialog extends JPanel implements ActionListener
 	private final JDFNode selectedJDF, originalJDF;
 
 	private JDFNode spawnedPartJDF;
-	private final ResourceBundle littleBundle;
 	private GridBagLayout layout;
 	private GridBagConstraints constraints;
 	private final JDFFrame parFrame;
@@ -120,7 +118,6 @@ public class SpawnDialog extends JPanel implements ActionListener
 
 	/**
 	 * 
-	 * @param bundle
 	 * @param selectJDF
 	 * @param spawnInformative
 	 */
@@ -129,7 +126,6 @@ public class SpawnDialog extends JPanel implements ActionListener
 		super();
 		this.selectedJDF = selectJDF;
 		this.originalFile = new File(selectJDF.getOwnerDocument_KElement().getOriginalFileName());
-		this.littleBundle = Editor.getBundle();
 		this.parFrame = Editor.getFrame();
 
 		final XMLDoc originalDoc = selectJDF.getOwnerDocument_KElement();
@@ -137,7 +133,7 @@ public class SpawnDialog extends JPanel implements ActionListener
 
 		init();
 
-		final String[] options = { littleBundle.getString("OkKey"), littleBundle.getString("CancelKey") };
+		final String[] options = { Editor.getString("OkKey"), Editor.getString("CancelKey") };
 
 		final int option = JOptionPane.showOptionDialog(parFrame, this, "Spawn", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
@@ -157,7 +153,7 @@ public class SpawnDialog extends JPanel implements ActionListener
 
 			if (newPartFile == null || newRootFile == null)
 			{
-				JOptionPane.showMessageDialog(parFrame, littleBundle.getString("SpawningFailedKey"), "Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(parFrame, Editor.getString("SpawningFailedKey"), "Error", JOptionPane.ERROR_MESSAGE);
 				bOK = false;
 			}
 			else
@@ -203,14 +199,14 @@ public class SpawnDialog extends JPanel implements ActionListener
 		constraints = new GridBagConstraints();
 		constraints.fill = GridBagConstraints.HORIZONTAL;
 		constraints.insets = new Insets(3, 5, 3, 5);
-		setBorder(BorderFactory.createTitledBorder(littleBundle.getString("SpawnedOutputKey")));
+		setBorder(BorderFactory.createTitledBorder(Editor.getString("SpawnedOutputKey")));
 
-		final JLabel mergeLabel = new JLabel(EditorUtils.displayPathName(originalFile, littleBundle.getString("SpawnedOutputKey").length()));
+		final JLabel mergeLabel = new JLabel(EditorUtils.displayPathName(originalFile, Editor.getString("SpawnedOutputKey").length()));
 		constraints.gridwidth = GridBagConstraints.REMAINDER;
 		layout.setConstraints(mergeLabel, constraints);
 		add(mergeLabel);
 
-		final JLabel idLabel = new JLabel(littleBundle.getString("SpawnedJDFKey"));
+		final JLabel idLabel = new JLabel(Editor.getString("SpawnedJDFKey"));
 		constraints.insets = new Insets(10, 5, 3, 5);
 		layout.setConstraints(idLabel, constraints);
 		add(idLabel);
@@ -225,7 +221,7 @@ public class SpawnDialog extends JPanel implements ActionListener
 		idBox.add(idPath);
 		idBox.add(Box.createHorizontalStrut(10));
 
-		browse1 = new JButton(littleBundle.getString("BrowseKey"));
+		browse1 = new JButton(Editor.getString("BrowseKey"));
 		browse1.setPreferredSize(new Dimension(85, 22));
 		browse1.addActionListener(this);
 		idBox.add(browse1);
@@ -234,7 +230,7 @@ public class SpawnDialog extends JPanel implements ActionListener
 		layout.setConstraints(idBox, constraints);
 		add(idBox);
 
-		final JLabel rLabel = new JLabel(littleBundle.getString("MainJDFKey"));
+		final JLabel rLabel = new JLabel(Editor.getString("MainJDFKey"));
 		constraints.insets = new Insets(10, 5, 3, 5);
 		layout.setConstraints(rLabel, constraints);
 		add(rLabel);
@@ -249,7 +245,7 @@ public class SpawnDialog extends JPanel implements ActionListener
 		idBox2.add(rootPath);
 		idBox2.add(Box.createHorizontalStrut(10));
 
-		browse2 = new JButton(littleBundle.getString("BrowseKey"));
+		browse2 = new JButton(Editor.getString("BrowseKey"));
 		browse2.setPreferredSize(new Dimension(85, 22));
 		browse2.addActionListener(this);
 		idBox2.add(browse2);
@@ -280,6 +276,11 @@ public class SpawnDialog extends JPanel implements ActionListener
 		return path + name + addOn + extension;
 	}
 
+	/**
+	 * 
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
+	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		if (e.getSource() == browse1 || e.getSource() == browse2)

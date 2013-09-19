@@ -78,7 +78,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.util.ResourceBundle;
 
 import javax.swing.ImageIcon;
 import javax.swing.JMenu;
@@ -200,7 +199,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		 */
 		protected FileMenu()
 		{
-			super(Editor.getBundle().getString("FileKey"));
+			super(Editor.getString("FileKey"));
 		}
 
 		/**
@@ -267,6 +266,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		 * WHERE the process begins when you select File->New from the JDFEditor menu.
 		 * @param e
 		 */
+		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
 			Editor.setCursor(1, null);
@@ -345,46 +345,45 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		{
 			final Color menuColor = getBackground();
 			final JDFFrame m_frame = Editor.getFrame();
-			final ResourceBundle m_littleBundle = Editor.getBundle();
 			final Menu_MouseListener menuListener = new Menu_MouseListener();
 			final int menuKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
 			setBorderPainted(false);
 			addMouseListener(menuListener);
 
-			m_newItem = new JMenuItem(m_littleBundle.getString("NewKey"));
+			m_newItem = new JMenuItem(Editor.getString("NewKey"));
 			m_newItem.addActionListener(this);
 			m_newItem.setAccelerator(KeyStroke.getKeyStroke('N', menuKeyMask));
 			add(m_newItem);
 
-			m_openItem = new JMenuItem(m_littleBundle.getString("OpenKey"));
+			m_openItem = new JMenuItem(Editor.getString("OpenKey"));
 			m_openItem.addActionListener(this);
 			m_openItem.setAccelerator(KeyStroke.getKeyStroke('O', menuKeyMask));
 			add(m_openItem);
 
-			m_closeItem = new JMenuItem(m_littleBundle.getString("CloseKey"));
+			m_closeItem = new JMenuItem(Editor.getString("CloseKey"));
 			m_closeItem.addActionListener(this);
 			m_closeItem.setAccelerator(KeyStroke.getKeyStroke('W', menuKeyMask));
 			add(m_closeItem);
 
-			m_closeAllItem = new JMenuItem(m_littleBundle.getString("CloseAllKey"));
+			m_closeAllItem = new JMenuItem(Editor.getString("CloseAllKey"));
 			m_closeAllItem.addActionListener(this);
 			add(m_closeAllItem);
 
 			add(new JSeparator());
 
-			m_saveItem = new JMenuItem(m_littleBundle.getString("SaveKey"));
+			m_saveItem = new JMenuItem(Editor.getString("SaveKey"));
 			m_saveItem.addActionListener(this);
 			m_saveItem.setAccelerator(KeyStroke.getKeyStroke('S', menuKeyMask));
 			add(m_saveItem);
 
-			m_saveAsItem = new JMenuItem(m_littleBundle.getString("SaveAsKey"));
+			m_saveAsItem = new JMenuItem(Editor.getString("SaveAsKey"));
 			m_saveAsItem.addActionListener(this);
 			m_saveAsItem.setAccelerator(KeyStroke.getKeyStroke('S', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
 			add(m_saveAsItem);
 			add(new JSeparator());
 
-			m_recentFilesMenu = new JMenu(m_littleBundle.getString("OpenRecentFileKey"));
+			m_recentFilesMenu = new JMenu(Editor.getString("OpenRecentFileKey"));
 			final String[] vRecentFiles = recentFiles();
 			m_recentFilesMenu.setEnabled(vRecentFiles.length > 0);
 			m_recentFilesMenu.setMnemonic('R');
@@ -398,17 +397,17 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 			add(m_recentFilesMenu);
 			add(new JSeparator());
 
-			m_devcapOpenMenu = new JMenuItem(m_littleBundle.getString("DevCapFileOpenKey"));
+			m_devcapOpenMenu = new JMenuItem(Editor.getString("DevCapFileOpenKey"));
 			add(m_devcapOpenMenu);
 			m_devcapOpenMenu.addActionListener(this);
 
-			m_csvItem = new JMenuItem(m_littleBundle.getString("CSVKey"));
+			m_csvItem = new JMenuItem(Editor.getString("CSVKey"));
 			m_csvItem.addActionListener(this);
 			add(m_csvItem);
 
 			add(new JSeparator());
 
-			m_quitItem = new JMenuItem(m_littleBundle.getString("ExitKey"));
+			m_quitItem = new JMenuItem(Editor.getString("ExitKey"));
 			m_quitItem.addActionListener(m_frame);
 			m_quitItem.setAccelerator(KeyStroke.getKeyStroke('Q', menuKeyMask));
 			add(m_quitItem);
@@ -447,21 +446,20 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	private JMenu drawEditMenu()
 	{
 		final JDFFrame frame = Editor.getFrame();
-		final ResourceBundle littleBundle = Editor.getBundle();
 		final Menu_MouseListener menuListener = new Menu_MouseListener();
 		final int menuKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
-		m_editMenu = new JMenu(littleBundle.getString("EditKey"));
+		m_editMenu = new JMenu(Editor.getString("EditKey"));
 		m_editMenu.setBorderPainted(false);
 		m_editMenu.addMouseListener(menuListener);
 
-		m_undoItem = new JMenuItem(littleBundle.getString("UndoKey"));
+		m_undoItem = new JMenuItem(Editor.getString("UndoKey"));
 		m_undoItem.addActionListener(frame.undoAction);
 		m_undoItem.setAccelerator(KeyStroke.getKeyStroke('Z', menuKeyMask));
 		m_undoItem.setEnabled(false);
 		m_editMenu.add(m_undoItem);
 
-		m_redoItem = new JMenuItem(littleBundle.getString("RedoKey"));
+		m_redoItem = new JMenuItem(Editor.getString("RedoKey"));
 		m_redoItem.addActionListener(frame.redoAction);
 		m_redoItem.setAccelerator(KeyStroke.getKeyStroke('Y', menuKeyMask));
 		m_redoItem.setEnabled(false);
@@ -469,25 +467,25 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 		m_editMenu.add(new JSeparator());
 
-		m_cutItem = new JMenuItem(littleBundle.getString("CutKey"));
+		m_cutItem = new JMenuItem(Editor.getString("CutKey"));
 		m_cutItem.addActionListener(frame);
 		m_cutItem.setAccelerator(KeyStroke.getKeyStroke('X', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
 		m_cutItem.setEnabled(false);
 		m_editMenu.add(m_cutItem);
 
-		m_copyItem = new JMenuItem(littleBundle.getString("CopyKey"));
+		m_copyItem = new JMenuItem(Editor.getString("CopyKey"));
 		m_copyItem.addActionListener(frame);
 		m_copyItem.setAccelerator(KeyStroke.getKeyStroke('C', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
 		m_copyItem.setEnabled(false);
 		m_editMenu.add(m_copyItem);
 
-		m_pasteItem = new JMenuItem(littleBundle.getString("PasteKey"));
+		m_pasteItem = new JMenuItem(Editor.getString("PasteKey"));
 		m_pasteItem.addActionListener(frame);
 		m_pasteItem.setAccelerator(KeyStroke.getKeyStroke('V', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
 		m_pasteItem.setEnabled(false);
 		m_editMenu.add(m_pasteItem);
 
-		m_deleteItem = new JMenuItem(littleBundle.getString("DeleteKey"));
+		m_deleteItem = new JMenuItem(Editor.getString("DeleteKey"));
 		m_deleteItem.addActionListener(this);
 		m_deleteItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
 		m_deleteItem.setEnabled(false);
@@ -495,22 +493,22 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 		m_editMenu.add(new JSeparator());
 
-		m_renameItem = new JMenuItem(littleBundle.getString("RenameKey"));
+		m_renameItem = new JMenuItem(Editor.getString("RenameKey"));
 		m_renameItem.addActionListener(frame);
 		m_editMenu.add(m_renameItem);
 
-		m_modifyAttrValueItem = new JMenuItem(littleBundle.getString("ModifyAttValueKey"));
+		m_modifyAttrValueItem = new JMenuItem(Editor.getString("ModifyAttValueKey"));
 		m_modifyAttrValueItem.addActionListener(frame);
 		m_editMenu.add(m_modifyAttrValueItem);
 
 		m_editMenu.add(new JSeparator());
 
-		m_findItem = new JMenuItem(littleBundle.getString("FindKey"));
+		m_findItem = new JMenuItem(Editor.getString("FindKey"));
 		m_findItem.addActionListener(frame);
 		m_findItem.setAccelerator(KeyStroke.getKeyStroke('F', menuKeyMask));
 		m_editMenu.add(m_findItem);
 
-		m_findXPathItem = new JMenuItem(littleBundle.getString("FindXPathKey"));
+		m_findXPathItem = new JMenuItem(Editor.getString("FindXPathKey"));
 		m_findXPathItem.addActionListener(this);
 		m_editMenu.add(m_findXPathItem);
 
@@ -524,26 +522,25 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	private JMenu drawHelpMenu()
 	{
 		final JDFFrame m_frame = Editor.getFrame();
-		final ResourceBundle m_littleBundle = Editor.getBundle();
 		final Menu_MouseListener menuListener = new Menu_MouseListener();
 		final int menuKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
-		m_helpMenu = new JMenu(m_littleBundle.getString("HelpKey"));
+		m_helpMenu = new JMenu(Editor.getString("HelpKey"));
 		m_helpMenu.setBorderPainted(false);
 		m_helpMenu.addMouseListener(menuListener);
 
-		m_helpItem = new JMenuItem(m_littleBundle.getString("HelpKey"));
+		m_helpItem = new JMenuItem(Editor.getString("HelpKey"));
 		m_helpItem.addActionListener(this);
 		m_helpItem.setAccelerator(KeyStroke.getKeyStroke('H', menuKeyMask));
 		m_helpMenu.add(m_helpItem);
 
 		m_helpMenu.add(new JSeparator());
 
-		m_aboutItem = new JMenuItem(m_littleBundle.getString("AboutKey"));
+		m_aboutItem = new JMenuItem(Editor.getString("AboutKey"));
 		m_aboutItem.addActionListener(this);
 		m_helpMenu.add(m_aboutItem);
 
-		m_versionItem = new JMenuItem(m_littleBundle.getString("JDFEditorVerKey"));
+		m_versionItem = new JMenuItem(Editor.getString("JDFEditorVerKey"));
 		m_versionItem.addActionListener(m_frame);
 		m_helpMenu.add(m_versionItem);
 
@@ -558,13 +555,12 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	{
 		final Menu_MouseListener menuListener = new Menu_MouseListener();
 		final int menuKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
-		final ResourceBundle m_littleBundle = Editor.getBundle();
 
-		m_windowMenu = new JMenu(m_littleBundle.getString("WindowKey"));
+		m_windowMenu = new JMenu(Editor.getString("WindowKey"));
 		m_windowMenu.setBorderPainted(false);
 		m_windowMenu.addMouseListener(menuListener);
 
-		m_nextItem = new JMenuItem(m_littleBundle.getString("NextKey"));
+		m_nextItem = new JMenuItem(Editor.getString("NextKey"));
 		m_nextItem.addActionListener(this);
 		m_nextItem.setAccelerator(KeyStroke.getKeyStroke('T', menuKeyMask));
 		m_windowMenu.add(m_nextItem);
@@ -625,68 +621,67 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		final Menu_MouseListener menuListener = new Menu_MouseListener();
 
 		final JDFFrame m_frame = Editor.getFrame();
-		final ResourceBundle m_littleBundle = Editor.getBundle();
-		m_insertMenu = new JMenu(m_littleBundle.getString("InsertKey"));
+		m_insertMenu = new JMenu(Editor.getString("InsertKey"));
 		m_insertMenu.setBorderPainted(false);
 		m_insertMenu.addMouseListener(menuListener);
 
-		m_insertElementMenu = new JMenu(m_littleBundle.getString("ElementKey"));
+		m_insertElementMenu = new JMenu(Editor.getString("ElementKey"));
 
-		m_insertElemBeforeItem = new JMenuItem(m_littleBundle.getString("BeforeKey"));
+		m_insertElemBeforeItem = new JMenuItem(Editor.getString("BeforeKey"));
 		m_insertElemBeforeItem.addActionListener(m_frame);
 		m_insertElementMenu.add(m_insertElemBeforeItem);
 
-		m_insertElemIntoItem = new JMenuItem(m_littleBundle.getString("IntoKey"));
+		m_insertElemIntoItem = new JMenuItem(Editor.getString("IntoKey"));
 		m_insertElemIntoItem.addActionListener(m_frame);
 		m_insertElementMenu.add(m_insertElemIntoItem);
 
-		m_insertElemAfterItem = new JMenuItem(m_littleBundle.getString("AfterKey"));
+		m_insertElemAfterItem = new JMenuItem(Editor.getString("AfterKey"));
 		m_insertElemAfterItem.addActionListener(m_frame);
 		m_insertElementMenu.add(m_insertElemAfterItem);
 
 		m_insertMenu.add(m_insertElementMenu);
 
-		m_resourceMenu = new JMenu(m_littleBundle.getString("InsertResKey"));
+		m_resourceMenu = new JMenu(Editor.getString("InsertResKey"));
 
-		m_insertInResItem = new JMenuItem(m_littleBundle.getString("InputResourceKey"));
+		m_insertInResItem = new JMenuItem(Editor.getString("InputResourceKey"));
 		m_insertInResItem.addActionListener(m_frame);
 		m_resourceMenu.add(m_insertInResItem);
 
-		m_insertOutResItem = new JMenuItem(m_littleBundle.getString("OutputResourceKey"));
+		m_insertOutResItem = new JMenuItem(Editor.getString("OutputResourceKey"));
 		m_insertOutResItem.addActionListener(m_frame);
 		m_resourceMenu.add(m_insertOutResItem);
 
 		m_resourceMenu.add(new JSeparator());
 
-		m_insertResItem = new JMenuItem(m_littleBundle.getString("ResourceKey"));
+		m_insertResItem = new JMenuItem(Editor.getString("ResourceKey"));
 		m_insertResItem.addActionListener(m_frame);
 		m_resourceMenu.add(m_insertResItem);
 
 		m_insertMenu.add(m_resourceMenu);
 
-		m_resourceLinkMenu = new JMenu(m_littleBundle.getString("InsertResLinkKey"));
+		m_resourceLinkMenu = new JMenu(Editor.getString("InsertResLinkKey"));
 
-		m_insertInResLinkItem = new JMenuItem(m_littleBundle.getString("ResourceInLinkKey"));
+		m_insertInResLinkItem = new JMenuItem(Editor.getString("ResourceInLinkKey"));
 		m_insertInResLinkItem.addActionListener(m_frame);
 		m_resourceLinkMenu.add(m_insertInResLinkItem);
 
-		m_insertOutResLinkItem = new JMenuItem(m_littleBundle.getString("ResourceOutLinkKey"));
+		m_insertOutResLinkItem = new JMenuItem(Editor.getString("ResourceOutLinkKey"));
 		m_insertOutResLinkItem.addActionListener(m_frame);
 		m_resourceLinkMenu.add(m_insertOutResLinkItem);
 
 		m_insertMenu.add(m_resourceLinkMenu);
 
-		m_insertAttrItem = new JMenuItem(m_littleBundle.getString("AttributeKey"));
+		m_insertAttrItem = new JMenuItem(Editor.getString("AttributeKey"));
 		m_insertAttrItem.addActionListener(m_frame);
 		m_insertMenu.add(m_insertAttrItem);
 
 		m_insertMenu.add(new JSeparator());
 
-		m_requiredAttrItem = new JMenuItem(m_littleBundle.getString("AddRequiredAttKey"));
+		m_requiredAttrItem = new JMenuItem(Editor.getString("AddRequiredAttKey"));
 		m_requiredAttrItem.addActionListener(m_frame);
 		m_insertMenu.add(m_requiredAttrItem);
 
-		m_requiredElemItem = new JMenuItem(m_littleBundle.getString("AddRequiredElKey"));
+		m_requiredElemItem = new JMenuItem(Editor.getString("AddRequiredElKey"));
 		m_requiredElemItem.addActionListener(m_frame);
 		m_insertMenu.add(m_requiredElemItem);
 
@@ -702,12 +697,11 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		final Menu_MouseListener menuListener = new Menu_MouseListener();
 
 		final JDFFrame m_frame = Editor.getFrame();
-		final ResourceBundle m_littleBundle = Editor.getBundle();
-		m_toolsMenu = new JMenu(m_littleBundle.getString("ToolsKey"));
+		m_toolsMenu = new JMenu(Editor.getString("ToolsKey"));
 		m_toolsMenu.setBorderPainted(false);
 		m_toolsMenu.addMouseListener(menuListener);
 
-		m_spawnItem = new JMenuItem(m_littleBundle.getString("SpawnKey"));
+		m_spawnItem = new JMenuItem(Editor.getString("SpawnKey"));
 		m_spawnItem.addActionListener(this);
 		m_spawnItem.setEnabled(false);
 		m_spawnItem.setAccelerator(KeyStroke.getKeyStroke('S', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.ALT_MASK));
@@ -725,34 +719,34 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		m_mergeItem.setEnabled(false);
 		m_toolsMenu.add(m_mergeItem);
 
-		m_unspawnItem = new JMenuItem(m_littleBundle.getString("UnspawnKey"));
+		m_unspawnItem = new JMenuItem(Editor.getString("UnspawnKey"));
 		m_unspawnItem.addActionListener(this);
 		m_unspawnItem.setEnabled(false);
 		m_toolsMenu.add(m_unspawnItem);
 
 		m_toolsMenu.add(new JSeparator());
 
-		m_preferenceItem = new JMenuItem(m_littleBundle.getString("PreferenceMenuKey"));
+		m_preferenceItem = new JMenuItem(Editor.getString("PreferenceMenuKey"));
 		m_preferenceItem.addActionListener(this);
 		m_toolsMenu.add(m_preferenceItem);
 		m_toolsMenu.add(new JSeparator());
 
-		m_sendToDeviceItem = new JMenuItem(m_littleBundle.getString("JDFSendToDeviceMenueEntry"));
+		m_sendToDeviceItem = new JMenuItem(Editor.getString("JDFSendToDeviceMenueEntry"));
 		m_sendToDeviceItem.addActionListener(this);
 		m_toolsMenu.add(m_sendToDeviceItem);
 
 		m_toolsMenu.add(new JSeparator());
-		m_fixVersionItem = new JMenuItem(m_littleBundle.getString("FixVersionKey"));
+		m_fixVersionItem = new JMenuItem(Editor.getString("FixVersionKey"));
 		m_fixVersionItem.addActionListener(m_frame);
 		m_fixVersionItem.setEnabled(true);
 		m_toolsMenu.add(m_fixVersionItem);
 
-		m_fixCleanupItem = new JMenuItem(m_littleBundle.getString("FixCleanupKey"));
+		m_fixCleanupItem = new JMenuItem(Editor.getString("FixCleanupKey"));
 		m_fixCleanupItem.addActionListener(this);
 		m_fixCleanupItem.setEnabled(true);
 		m_toolsMenu.add(m_fixCleanupItem);
 
-		m_removeExtenisionItem = new JMenuItem(m_littleBundle.getString("RemoveExtensionKey"));
+		m_removeExtenisionItem = new JMenuItem(Editor.getString("RemoveExtensionKey"));
 		m_removeExtenisionItem.addActionListener(this);
 		m_removeExtenisionItem.setEnabled(true);
 		m_toolsMenu.add(m_removeExtenisionItem);
@@ -769,13 +763,12 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		final int menuKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 		final INIReader m_iniFile = Editor.getIniFile();
 		final JDFFrame m_frame = Editor.getFrame();
-		final ResourceBundle m_littleBundle = Editor.getBundle();
 
-		m_validateMenu = new JMenu(m_littleBundle.getString("ValidateKey"));
+		m_validateMenu = new JMenu(Editor.getString("ValidateKey"));
 		m_validateMenu.setBorderPainted(false);
 		m_validateMenu.addMouseListener(new Menu_MouseListener());
 
-		m_QuickValidateItem = new JMenuItem(m_littleBundle.getString("ValidateKey"));
+		m_QuickValidateItem = new JMenuItem(Editor.getString("ValidateKey"));
 		m_QuickValidateItem.addActionListener(this);
 		m_QuickValidateItem.setEnabled(false);
 		m_QuickValidateItem.setAccelerator(KeyStroke.getKeyStroke('A', menuKeyMask));
@@ -783,32 +776,32 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 		m_validateMenu.add(new JSeparator());
 
-		m_highlightFNRadioItem = new JRadioButtonMenuItem(m_littleBundle.getString("ValidationFSKey"), m_iniFile.getHighlight());
+		m_highlightFNRadioItem = new JRadioButtonMenuItem(Editor.getString("ValidationFSKey"), m_iniFile.getHighlight());
 		m_highlightFNRadioItem.addActionListener(this);
 		m_validateMenu.add(m_highlightFNRadioItem);
 
 		m_validateMenu.add(new JSeparator());
 
-		m_showAttrRadioItem = new JRadioButtonMenuItem(m_littleBundle.getString("ShowAttrKey"), m_iniFile.getAttr());
+		m_showAttrRadioItem = new JRadioButtonMenuItem(Editor.getString("ShowAttrKey"), m_iniFile.getAttr());
 		m_showAttrRadioItem.addActionListener(this);
 		m_validateMenu.add(m_showAttrRadioItem);
 
-		m_showInhAttrRadioItem = new JRadioButtonMenuItem(m_littleBundle.getString("ShowInhAttrKey"), m_iniFile.getInhAttr());
+		m_showInhAttrRadioItem = new JRadioButtonMenuItem(Editor.getString("ShowInhAttrKey"), m_iniFile.getInhAttr());
 		m_showInhAttrRadioItem.addActionListener(this);
 		m_validateMenu.add(m_showInhAttrRadioItem);
 
-		m_DispDefAttrRadioItem = new JRadioButtonMenuItem(m_littleBundle.getString("DisplayDefaultsKey"), m_iniFile.getDisplayDefault());
+		m_DispDefAttrRadioItem = new JRadioButtonMenuItem(Editor.getString("DisplayDefaultsKey"), m_iniFile.getDisplayDefault());
 		m_DispDefAttrRadioItem.addActionListener(this);
 		m_validateMenu.add(m_DispDefAttrRadioItem);
 
 		m_validateMenu.add(new JSeparator());
 
-		m_copyValidationListItem = new JMenuItem(m_littleBundle.getString("CopyValidationList"));
+		m_copyValidationListItem = new JMenuItem(Editor.getString("CopyValidationList"));
 		m_copyValidationListItem.addActionListener(m_frame);
 		m_copyValidationListItem.setEnabled(false);
 		m_validateMenu.add(m_copyValidationListItem);
 
-		m_exportItem = new JMenuItem(m_littleBundle.getString("ExportKey"));
+		m_exportItem = new JMenuItem(Editor.getString("ExportKey"));
 		m_exportItem.addActionListener(m_frame);
 		m_exportItem.setAccelerator(KeyStroke.getKeyStroke('E', menuKeyMask));
 		m_validateMenu.add(m_exportItem);
@@ -1098,6 +1091,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	 * WHERE the process begins when you select File->New from the JDFEditor menu.
 	 * @param e
 	 */
+	@Override
 	public void actionPerformed(final ActionEvent e)
 	{
 		Editor.setCursor(1, null);
@@ -1271,11 +1265,10 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 	private void showPreferences()
 	{
-		final ResourceBundle bundle = Editor.getBundle();
-		final String[] options = { bundle.getString("OkKey"), bundle.getString("CancelKey") };
+		final String[] options = { Editor.getString("OkKey"), Editor.getString("CancelKey") };
 		final PreferenceDialog pd = new PreferenceDialog();
 
-		final int option = JOptionPane.showOptionDialog(this, pd, bundle.getString("PreferenceKey"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+		final int option = JOptionPane.showOptionDialog(this, pd, Editor.getString("PreferenceKey"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
 		if (option == JOptionPane.OK_OPTION)
 		{

@@ -1,11 +1,9 @@
-package org.cip4.tools.jdfeditor;
-
 /*
  *
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2010 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -70,16 +68,14 @@ package org.cip4.tools.jdfeditor;
  *  
  * 
  */
+package org.cip4.tools.jdfeditor;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.util.Enumeration;
-import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionListener;
@@ -94,64 +90,85 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 // TODO
 //import tcpmon.MainWindow;
 
+/**
+ * 
+ *  
+ * @author rainer prosi
+ * @date Apr 11, 2013
+ */
 public class EditorTabbedPaneB extends JTabbedPane
 {
 
 	private static final long serialVersionUID = -6813043793787501763L;
 	protected JDFFrame m_frame;
-	private final ResourceBundle m_littleBundle;
 	final public int m_VAL_ERRORS_INDEX = 0;
 	final public int m_SCHEMA_ERRORS_INDEX = 1;
 	final public int m_DC_ERRORS_INDEX = 2;
 	final public int m_XML_EDITOR_INDEX = 3;
 
-	public JDFDevCapErrScrollPane m_devCapErrScroll;
-	public CheckJDFScrollPane m_validErrScroll;
-	public SchemaScrollPane m_SchemaErrScroll;
+	JDFDevCapErrScrollPane m_devCapErrScroll;
+	CheckJDFScrollPane m_validErrScroll;
+	SchemaScrollPane m_SchemaErrScroll;
 
 	//    Pane containing XML editor
 	private final RSyntaxTextArea xmlEditorTextArea;
 
+	/**
+	 * 
+	 * @param frame
+	 */
 	public EditorTabbedPaneB(JDFFrame frame)
 	{
 		super();
 		m_frame = frame;
-		m_littleBundle = m_frame.m_littleBundle;
 		setBorder(BorderFactory.createLineBorder(Color.black));
 
 		m_validErrScroll = new CheckJDFScrollPane(m_frame);
-		addTab(m_littleBundle.getString("ValidationResultKey"), null, m_validErrScroll, m_littleBundle.getString("ValidationResultKey"));
+		addTab(Editor.getString("ValidationResultKey"), null, m_validErrScroll, Editor.getString("ValidationResultKey"));
 		setComponentAt(m_VAL_ERRORS_INDEX, m_validErrScroll);
 
 		m_SchemaErrScroll = new SchemaScrollPane(m_frame);
-		addTab(m_littleBundle.getString("SchemaOutputKey"), null, m_SchemaErrScroll, m_littleBundle.getString("SchemaOutputKey"));
+		addTab(Editor.getString("SchemaOutputKey"), null, m_SchemaErrScroll, Editor.getString("SchemaOutputKey"));
 		setComponentAt(m_SCHEMA_ERRORS_INDEX, m_SchemaErrScroll);
 
 		m_devCapErrScroll = new JDFDevCapErrScrollPane(m_frame);
-		addTab(m_littleBundle.getString("DevCapOutputKey"), null, m_devCapErrScroll, m_littleBundle.getString("DevCapOutputKey"));
+		addTab(Editor.getString("DevCapOutputKey"), null, m_devCapErrScroll, Editor.getString("DevCapOutputKey"));
 		setComponentAt(m_DC_ERRORS_INDEX, m_devCapErrScroll);
 
 		//        XML Editor tab
-		JPanel xmlEditorPanel = new JPanel(new BorderLayout());
-		xmlEditorTextArea = new RSyntaxTextArea();
-		xmlEditorTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_XML);
-		xmlEditorTextArea.setEditable(false);
-		RTextScrollPane sp = new RTextScrollPane(xmlEditorTextArea);
-		xmlEditorPanel.add(sp);
-		addTab(m_littleBundle.getString("XmlEditor"), null, xmlEditorPanel, m_littleBundle.getString("XmlEditor"));
+		xmlEditorTextArea = createXMLPane();
 
 		// TODO
 		//        TCPMon tab
-//		MainWindow mWindow = new MainWindow();
-//		Container c = mWindow.getContentPane();
-//		JScrollPane tcpMonScrPane = new JScrollPane(c);
-//		addTab(m_littleBundle.getString("TCPMon"), null, tcpMonScrPane, m_littleBundle.getString("TCPMon"));
-		
-//		HTTP server tab
+		//		MainWindow mWindow = new MainWindow();
+		//		Container c = mWindow.getContentPane();
+		//		JScrollPane tcpMonScrPane = new JScrollPane(c);
+		//		addTab(Editor.getString("TCPMon"), null, tcpMonScrPane, Editor.getString("TCPMon"));
+
+		//		HTTP server tab
 		HttpServerPane httpPanel = new HttpServerPane(m_frame);
-		addTab(m_littleBundle.getString("HTTPserver"), null, httpPanel.createPane(), m_littleBundle.getString("HTTPserver"));
+		addTab(Editor.getString("HTTPserver"), null, httpPanel.createPane(), Editor.getString("HTTPserver"));
 	}
 
+	private RSyntaxTextArea createXMLPane()
+	{
+		JPanel xmlEditorPanel = new JPanel(new BorderLayout());
+		RSyntaxTextArea xmlArea = new RSyntaxTextArea();
+		xmlArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_XML);
+		xmlArea.setAutoIndentEnabled(true);
+
+		xmlArea.setEditable(false);
+		RTextScrollPane sp = new RTextScrollPane(xmlArea);
+		xmlEditorPanel.add(sp);
+		addTab(Editor.getString("XmlEditor"), null, xmlEditorPanel, Editor.getString("XmlEditor"));
+		return xmlArea;
+	}
+
+	/**
+	 * 
+	 *  
+	 * @param path
+	 */
 	public void refreshView(TreePath path)
 	{
 		if (path == null)
@@ -164,12 +181,22 @@ public class EditorTabbedPaneB extends JTabbedPane
 		}
 	}
 
+	/**
+	 * 
+	 *  
+	 * @param s
+	 */
 	public void refreshXmlEditor(String s)
 	{
 		xmlEditorTextArea.setText(s);
 		xmlEditorTextArea.setCaretPosition(0);
 	}
 
+	/**
+	 * 
+	 *  
+	 * @param path
+	 */
 	public void selectNodeWithXPath(TreePath path)
 	{
 		JDFTreeNode node = (JDFTreeNode) path.getLastPathComponent();
@@ -269,6 +296,10 @@ public class EditorTabbedPaneB extends JTabbedPane
 		m_SchemaErrScroll.clearReport();
 	}
 
+	/**
+	 * 
+	 *  
+	 */
 	public void clearAll()
 	{
 		clearViews();

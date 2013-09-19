@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2010 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -78,7 +78,6 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ResourceBundle;
 
 import javax.mail.Multipart;
 import javax.swing.Box;
@@ -103,13 +102,6 @@ import org.cip4.jdflib.jmf.JDFQueueSubmissionParams;
 import org.cip4.jdflib.jmf.JDFReturnQueueEntryParams;
 import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.UrlUtil;
-
-/*
- * Created on 12.07.2004
- *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
 
 /**
  * @author MRE (Institute for Print and Media Technology) History: 20040903 MRE send MIME multipart/related
@@ -151,8 +143,7 @@ public class SendToDevice extends JPanel implements ActionListener
 	{
 		final JDFDoc d = Editor.getJDFDoc();
 		final JDFJMF jmf = d == null ? null : d.getJMFRoot();
-		final ResourceBundle littleBundle = Editor.getBundle();
-		final JLabel urlText = new JLabel(littleBundle.getString("setURL"));
+		final JLabel urlText = new JLabel(Editor.getString("setURL"));
 		urlText.setVerticalAlignment(SwingConstants.BOTTOM);
 		add(urlText);
 
@@ -162,10 +153,10 @@ public class SendToDevice extends JPanel implements ActionListener
 		{
 			// RadioButtons to choose sending JDF with QueueSubmissionParams
 			// and URL or as a multipart/related MIME message
-			rbJMF = new JRadioButton(littleBundle.getString("sendMethodJMF"));
-			rbMIME = new JRadioButton(littleBundle.getString("sendMethodMIME"));
-			rbPackageAll = new JRadioButton(littleBundle.getString("PackageAll"));
-			cbReturn = new JCheckBox(littleBundle.getString("returnJMF"));
+			rbJMF = new JRadioButton(Editor.getString("sendMethodJMF"));
+			rbMIME = new JRadioButton(Editor.getString("sendMethodMIME"));
+			rbPackageAll = new JRadioButton(Editor.getString("PackageAll"));
+			cbReturn = new JCheckBox(Editor.getString("returnJMF"));
 			if (iniFile.getMethodSendToDevice().equals("MIME"))
 			{
 				rbMIME.setSelected(true);
@@ -182,7 +173,7 @@ public class SendToDevice extends JPanel implements ActionListener
 			sendMethodGroup.add(rbMIME);
 			sendMethodGroup.add(rbPackageAll);
 
-			final JLabel rbLabel = new JLabel(littleBundle.getString("sendMethod"));
+			final JLabel rbLabel = new JLabel(Editor.getString("sendMethod"));
 			final Box SendMethodBox = Box.createHorizontalBox();
 
 			SendMethodBox.add(rbLabel);
@@ -191,9 +182,9 @@ public class SendToDevice extends JPanel implements ActionListener
 			SendMethodBox.add(rbPackageAll);
 			add(SendMethodBox);
 			add(cbReturn);
-			urlReturn = initURL(littleBundle.getString("returnToURL"), iniFile.getURLReturnToDevice());
+			urlReturn = initURL(Editor.getString("returnToURL"), iniFile.getURLReturnToDevice());
 		}
-		urlPath = initURL(littleBundle.getString("pathToURL"), iniFile.getURLSendToDevice());
+		urlPath = initURL(Editor.getString("pathToURL"), iniFile.getURLSendToDevice());
 	}
 
 	/**
@@ -218,6 +209,7 @@ public class SendToDevice extends JPanel implements ActionListener
 	 * 
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
+	@Override
 	public void actionPerformed(final ActionEvent e)
 	{
 		final INIReader ini = Editor.getIniFile();
@@ -508,12 +500,11 @@ public class SendToDevice extends JPanel implements ActionListener
 		{
 			return;
 		}
-		final ResourceBundle m_littleBundle = Editor.getBundle();
 		// get the URL to send to and call the CommunicationController
 		boolean bSendTrue = false;
-		final String[] options = { m_littleBundle.getString("OkKey"), m_littleBundle.getString("CancelKey") };
+		final String[] options = { Editor.getString("OkKey"), Editor.getString("CancelKey") };
 
-		final int option = JOptionPane.showOptionDialog(Editor.getFrame(), this, m_littleBundle.getString("JDFSendToDevice"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+		final int option = JOptionPane.showOptionDialog(Editor.getFrame(), this, Editor.getString("JDFSendToDevice"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
 		URL url = null;
 		if (option == JOptionPane.OK_OPTION)
@@ -524,7 +515,7 @@ public class SendToDevice extends JPanel implements ActionListener
 		}
 
 		// show success in a popup window
-		String sLabel = (bSendTrue) ? m_littleBundle.getString("JDFSent") : m_littleBundle.getString("JDFNotSent");
+		String sLabel = (bSendTrue) ? Editor.getString("JDFSent") : Editor.getString("JDFNotSent");
 		if (bSendTrue && url != null)
 		{
 			sLabel += "\n" + url.toExternalForm();

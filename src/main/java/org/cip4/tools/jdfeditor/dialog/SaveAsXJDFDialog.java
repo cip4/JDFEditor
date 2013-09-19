@@ -75,7 +75,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ResourceBundle;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -113,7 +112,6 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 	private final JCheckBox cbTypesafeJMF;
 	private int choosedButton = BUTTON_CANCEL;
 
-	private static ResourceBundle bundle = Editor.getBundle();
 	private static INIReader conf = Editor.getIniFile();
 
 	/**
@@ -121,20 +119,20 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 	 */
 	public SaveAsXJDFDialog()
 	{
-		setTitle(bundle.getString("SaveAsXJDFKey"));
+		setTitle(Editor.getString("SaveAsXJDFKey"));
 		setModal(true);
 		setLayout(new BorderLayout());
 
 		JPanel checkboxesPanel = new JPanel();
 		checkboxesPanel.setLayout(new BoxLayout(checkboxesPanel, BoxLayout.Y_AXIS));
 
-		cbExt1 = new JCheckBox(bundle.getString("SingleNodeKey"));
-		cbExt2 = new JCheckBox(bundle.getString("ConvertStrippingKey"));
-		cbExt3 = new JCheckBox(bundle.getString("SpanAsAttributeKey"));
-		cbExt4 = new JCheckBox(bundle.getString("MergeRunListKey"));
-		cbLoPrep = new JCheckBox(bundle.getString("ConvertLayoutPrepKey"));
-		cbTilde = new JCheckBox(bundle.getString("RemoveTildeFromRange"));
-		cbTypesafeJMF = new JCheckBox(bundle.getString("TypesafeJMF"));
+		cbExt1 = new JCheckBox(Editor.getString("SingleNodeKey"));
+		cbExt2 = new JCheckBox(Editor.getString("ConvertStrippingKey"));
+		cbExt3 = new JCheckBox(Editor.getString("SpanAsAttributeKey"));
+		cbExt4 = new JCheckBox(Editor.getString("MergeRunListKey"));
+		cbLoPrep = new JCheckBox(Editor.getString("ConvertLayoutPrepKey"));
+		cbTilde = new JCheckBox(Editor.getString("RemoveTildeFromRange"));
+		cbTypesafeJMF = new JCheckBox(Editor.getString("TypesafeJMF"));
 
 		checkboxesPanel.add(cbExt1);
 		checkboxesPanel.add(cbExt2);
@@ -150,7 +148,7 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 
 		bOK = new JButton("OK");
 		bOK.addActionListener(this);
-		bCancel = new JButton(bundle.getString("CancelKey"));
+		bCancel = new JButton(Editor.getString("CancelKey"));
 		bCancel.addActionListener(this);
 
 		buttonsPanel.add(bOK);
@@ -192,6 +190,7 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 	 * 
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
+	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		if (e.getSource() == bOK)

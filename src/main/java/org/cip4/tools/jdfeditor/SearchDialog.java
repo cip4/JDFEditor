@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2012 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -139,9 +139,8 @@ public class SearchDialog extends JDialog implements ActionListener
 	public SearchDialog(final String _searchComponent)
 	{
 		super(Editor.getFrame());
-		final JDFFrame frame = Editor.getFrame();
 
-		setTitle(frame.m_littleBundle.getString("FindKey"));
+		setTitle(Editor.getString("FindKey"));
 		searchComponent = _searchComponent;
 		getContentPane().setLayout(new FlowLayout());
 		getContentPane().add(Box.createHorizontalStrut(15));
@@ -150,7 +149,7 @@ public class SearchDialog extends JDialog implements ActionListener
 		middleBox.add(Box.createVerticalStrut(20));
 
 		final Box box2 = Box.createHorizontalBox();
-		final JLabel findLabel = new JLabel(frame.m_littleBundle.getString("FindKey"));
+		final JLabel findLabel = new JLabel(Editor.getString("FindKey"));
 		box2.add(findLabel);
 
 		searchComboBoxModel = new SearchComboBoxModel();
@@ -168,7 +167,7 @@ public class SearchDialog extends JDialog implements ActionListener
 		final ButtonGroup group = new ButtonGroup();
 		middleBox.add(new JSeparator());
 
-		m_forwardRadioButton = new JRadioButton(frame.m_littleBundle.getString("ForwardKey"));
+		m_forwardRadioButton = new JRadioButton(Editor.getString("ForwardKey"));
 		m_forwardRadioButton.setSelected(true);
 		m_forwardRadioButton.setAlignmentX(Component.LEFT_ALIGNMENT);
 		group.add(m_forwardRadioButton);
@@ -177,7 +176,7 @@ public class SearchDialog extends JDialog implements ActionListener
 		boxF.add(Box.createHorizontalGlue());
 		middleBox.add(boxF);
 
-		m_backwardRadioButton = new JRadioButton(frame.m_littleBundle.getString("BackwardKey"));
+		m_backwardRadioButton = new JRadioButton(Editor.getString("BackwardKey"));
 		m_backwardRadioButton.setAlignmentX(Component.LEFT_ALIGNMENT);
 		middleBox.add(m_backwardRadioButton);
 		group.add(m_backwardRadioButton);
@@ -187,11 +186,11 @@ public class SearchDialog extends JDialog implements ActionListener
 		middleBox.add(boxB);
 
 		middleBox.add(new JSeparator());
-		m_IgnoreCase = new JCheckBox(frame.m_littleBundle.getString("ignoreCase"));
+		m_IgnoreCase = new JCheckBox(Editor.getString("ignoreCase"));
 		m_IgnoreCase.addActionListener(this);
 		m_IgnoreCase.setSelected(conf.getFindCaseSensitive());
 		m_IgnoreCase.setAlignmentX(Component.LEFT_ALIGNMENT); // I'm confused why right???
-		m_Wrap = new JCheckBox(frame.m_littleBundle.getString("wrap"));
+		m_Wrap = new JCheckBox(Editor.getString("wrap"));
 		m_Wrap.addActionListener(this);
 		m_Wrap.setSelected(conf.getFindWrap());
 		m_Wrap.setAlignmentX(Component.LEFT_ALIGNMENT); // I'm confused why right???
@@ -203,12 +202,12 @@ public class SearchDialog extends JDialog implements ActionListener
 
 		final JPanel panel2 = new JPanel();
 		panel2.setBorder(BorderFactory.createEmptyBorder());
-		m_findNextButton = new JButton(frame.m_littleBundle.getString("FindNextKey"));
+		m_findNextButton = new JButton(Editor.getString("FindNextKey"));
 		m_findNextButton.addActionListener(this);
 		m_findNextButton.setEnabled(true);
 		panel2.add(m_findNextButton);
 
-		m_cancelButton = new JButton(frame.m_littleBundle.getString("CancelKey"));
+		m_cancelButton = new JButton(Editor.getString("CancelKey"));
 		m_cancelButton.addActionListener(this);
 		m_cancelButton.setMnemonic(KeyEvent.VK_ESCAPE);
 		panel2.add(m_cancelButton);
@@ -228,6 +227,7 @@ public class SearchDialog extends JDialog implements ActionListener
 	/**
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
+	@Override
 	public void actionPerformed(final ActionEvent e)
 	{
 		final Object eSrc = e.getSource();

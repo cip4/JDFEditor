@@ -1,10 +1,11 @@
 package org.cip4.tools.jdfeditor;
+
 /*
  *
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2006 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -70,7 +71,6 @@ package org.cip4.tools.jdfeditor;
  * 
  */
 
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -91,138 +91,154 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
+/**
+ * 
+ *  
+ * @author rainer prosi
+ * @date Apr 11, 2013
+ */
 public class ValidationScrollPane extends JScrollPane
 {
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -3269951200837982708L;
-    JDFFrame m_frame;
-    protected JTree m_reportTree;
-    ValidationSelectionListener m_SelectionListener;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3269951200837982708L;
+	JDFFrame m_frame;
+	protected JTree m_reportTree;
+	ValidationSelectionListener m_SelectionListener;
 
+	/**
+	 * 
+	 * @param frame
+	 */
+	public ValidationScrollPane(JDFFrame frame)
+	{
+		super();
+		m_frame = frame;
+		getVerticalScrollBar().setUnitIncrement(20);
+		getHorizontalScrollBar().setUnitIncrement(20);
+		getViewport().setBackground(Color.white);
+	}
 
-    public ValidationScrollPane(JDFFrame frame)
-    {
-        super();
-        m_frame=frame;
-        getVerticalScrollBar().setUnitIncrement(20);
-        getHorizontalScrollBar().setUnitIncrement(20);
-        getViewport().setBackground(Color.white);
-    }
+	/**
+	 * 
+	 *  
+	 */
+	public void clearReport()
+	{
+		getViewport().setView(null);
+	}
 
-    public void clearReport() 
-    {
-        getViewport().setView(null);        
-    }
+	/**
+	 * Creates the popupmenu after a right mouse click on node in the DevCap Output View.   
+	 * @param path - The path to the clicked node
+	 * @return A JPopupMenu
+	 */
+	JPopupMenu drawValidationMouseMenu(TreePath path)
+	{
+		final JPopupMenu rightMenu = new JPopupMenu();
+		final JDFTreeNode node = (JDFTreeNode) path.getLastPathComponent();
+		if (node == null)
+			return rightMenu;
 
-    /**
-     * Creates the popupmenu after a right mouse click on node in the DevCap Output View.   
-     * @param path - The path to the clicked node
-     * @return A JPopupMenu
-     */
-    JPopupMenu drawValidationMouseMenu(TreePath path)
-    {
-        final JPopupMenu rightMenu = new JPopupMenu();
-        final JDFTreeNode node = (JDFTreeNode) path.getLastPathComponent();
-        if (node == null) 
-            return rightMenu;
-        
-        if (!node.isLeaf())
-        {
-            JMenuItem xpandDevCapOutput = new JMenuItem(m_frame.m_littleBundle.getString("ExpandKey"));
-            xpandDevCapOutput.addActionListener(new ActionListener() 
-                    {
-                public void actionPerformed(ActionEvent ae)
-                {
-                    ae.getID(); // fool compiler
-                    final Enumeration e = node.postorderEnumeration();
-                    
-                    while (e.hasMoreElements())
-                    {
-                        final DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) e.nextElement();
-                        m_reportTree.expandPath(new TreePath(treeNode.getPath()));
-                    }
-                    m_reportTree.expandPath(m_reportTree.getSelectionPath());
-                }
-                    });
-            
-            rightMenu.add(xpandDevCapOutput);
-            xpandDevCapOutput.setEnabled(true);
-            
-            JMenuItem collapseDevCapOutput = new JMenuItem(m_frame.m_littleBundle.getString("CollapseKey"));
-            collapseDevCapOutput.addActionListener(new ActionListener() 
-                    {
-                public void actionPerformed(ActionEvent ae)
-                {
-                    ae.getID(); // fool compiler
-                    final Enumeration e = node.postorderEnumeration();
-                    
-                    while (e.hasMoreElements())
-                    {
-                        final DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) e.nextElement();
-                        m_reportTree.collapsePath(new TreePath(treeNode.getPath()));
-                    }
-                    m_reportTree.collapsePath(m_reportTree.getSelectionPath());
-                }
-                    });
-            
-            rightMenu.add(collapseDevCapOutput);
-            collapseDevCapOutput.setEnabled(true);
-        }
-        
-        return rightMenu;
-    }
-    
-    class ValidationSelectionListener implements TreeSelectionListener
-    {
-        public void valueChanged(TreeSelectionEvent e) 
-        {
-            e.getPath(); // fool compiler
-            final JDFTreeNode node = (JDFTreeNode)m_reportTree.getLastSelectedPathComponent();            
-            if (node != null) 
-            {            
-                final String path = node.getXPathAttr();
-                m_frame.m_treeArea.findInNode(path);
-            }
-        }
-    }
+		if (!node.isLeaf())
+		{
+			JMenuItem xpandDevCapOutput = new JMenuItem(Editor.getString("ExpandKey"));
+			xpandDevCapOutput.addActionListener(new ActionListener()
+			{
+				@Override
+				public void actionPerformed(ActionEvent ae)
+				{
+					ae.getID(); // fool compiler
+					final Enumeration e = node.postorderEnumeration();
 
-    class ValidationPopupListener extends MouseAdapter
-    {
-        @Override
+					while (e.hasMoreElements())
+					{
+						final DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) e.nextElement();
+						m_reportTree.expandPath(new TreePath(treeNode.getPath()));
+					}
+					m_reportTree.expandPath(m_reportTree.getSelectionPath());
+				}
+			});
+
+			rightMenu.add(xpandDevCapOutput);
+			xpandDevCapOutput.setEnabled(true);
+
+			JMenuItem collapseDevCapOutput = new JMenuItem(Editor.getString("CollapseKey"));
+			collapseDevCapOutput.addActionListener(new ActionListener()
+			{
+				@Override
+				public void actionPerformed(ActionEvent ae)
+				{
+					ae.getID(); // fool compiler
+					final Enumeration e = node.postorderEnumeration();
+
+					while (e.hasMoreElements())
+					{
+						final DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) e.nextElement();
+						m_reportTree.collapsePath(new TreePath(treeNode.getPath()));
+					}
+					m_reportTree.collapsePath(m_reportTree.getSelectionPath());
+				}
+			});
+
+			rightMenu.add(collapseDevCapOutput);
+			collapseDevCapOutput.setEnabled(true);
+		}
+
+		return rightMenu;
+	}
+
+	class ValidationSelectionListener implements TreeSelectionListener
+	{
+		@Override
+		public void valueChanged(TreeSelectionEvent e)
+		{
+			e.getPath(); // fool compiler
+			final JDFTreeNode node = (JDFTreeNode) m_reportTree.getLastSelectedPathComponent();
+			if (node != null)
+			{
+				final String path = node.getXPathAttr();
+				m_frame.m_treeArea.findInNode(path);
+			}
+		}
+	}
+
+	class ValidationPopupListener extends MouseAdapter
+	{
+		@Override
 		public void mousePressed(MouseEvent e)
-        {
-            final TreePath path = m_reportTree.getPathForLocation(e.getX(), e.getY());
-            
-            if ((SwingUtilities.isRightMouseButton(e) || e.isControlDown()) && path != null)
-            {
-                m_reportTree.removeTreeSelectionListener(m_SelectionListener);
-                m_reportTree.setSelectionPath(path);
-                
-                final JPopupMenu rightMenu = drawValidationMouseMenu(path);
-                final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-                
-                final Point pTree = e.getComponent().getLocationOnScreen();
-                final Dimension d2 = rightMenu.getPreferredSize();
-                
-                final int x = (int) pTree.getX() + e.getX();
-                final int y = (int) pTree.getY() + e.getY();
-                final int x2 = d2.width;
-                final int y2 = d2.height;
-                int xStart = e.getX();
-                int yStart = e.getY();
-                
-                if ((x + x2) > d.getWidth())
-                    xStart = xStart - x2;
-                
-                if ((y + y2) > d.getHeight())
-                    yStart = yStart - y2;
-                
-                rightMenu.show(e.getComponent(), xStart, yStart);
-                m_reportTree.addTreeSelectionListener(m_SelectionListener);
-            }
-        }
-    }    
+		{
+			final TreePath path = m_reportTree.getPathForLocation(e.getX(), e.getY());
+
+			if ((SwingUtilities.isRightMouseButton(e) || e.isControlDown()) && path != null)
+			{
+				m_reportTree.removeTreeSelectionListener(m_SelectionListener);
+				m_reportTree.setSelectionPath(path);
+
+				final JPopupMenu rightMenu = drawValidationMouseMenu(path);
+				final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+
+				final Point pTree = e.getComponent().getLocationOnScreen();
+				final Dimension d2 = rightMenu.getPreferredSize();
+
+				final int x = (int) pTree.getX() + e.getX();
+				final int y = (int) pTree.getY() + e.getY();
+				final int x2 = d2.width;
+				final int y2 = d2.height;
+				int xStart = e.getX();
+				int yStart = e.getY();
+
+				if ((x + x2) > d.getWidth())
+					xStart = xStart - x2;
+
+				if ((y + y2) > d.getHeight())
+					yStart = yStart - y2;
+
+				rightMenu.show(e.getComponent(), xStart, yStart);
+				m_reportTree.addTreeSelectionListener(m_SelectionListener);
+			}
+		}
+	}
 }

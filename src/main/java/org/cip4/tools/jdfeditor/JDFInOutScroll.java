@@ -5,7 +5,7 @@ package org.cip4.tools.jdfeditor;
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2011 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -78,7 +78,6 @@ import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Enumeration;
-import java.util.ResourceBundle;
 import java.util.Stack;
 
 import javax.swing.Box;
@@ -480,7 +479,7 @@ public class JDFInOutScroll extends JScrollPane
 			}
 			if (!found)
 			{
-				((JLabel) ((Box) ((Box) m_frame.m_dialog.getContentPane().getComponent(1)).getComponent(7)).getComponent(1)).setText(Editor.getBundle().getString("StringNotFoundKey"));
+				((JLabel) ((Box) ((Box) m_frame.m_dialog.getContentPane().getComponent(1)).getComponent(7)).getComponent(1)).setText(Editor.getString("StringNotFoundKey"));
 			}
 		}
 		Editor.setCursor(0, null);
@@ -600,8 +599,7 @@ public class JDFInOutScroll extends JScrollPane
 
 				if (kElement instanceof JDFNode)
 				{
-					final ResourceBundle m_littleBundle = Editor.getBundle();
-					mTitle = m_littleBundle.getString("JDFElementKey");
+					mTitle = Editor.getString("JDFElementKey");
 					isJDFNode = true;
 					final JDFNode n = (JDFNode) kElement;
 
@@ -612,8 +610,8 @@ public class JDFInOutScroll extends JScrollPane
 						{
 							final VElement resourceLinks = resourceLinkPool.getPoolChildren(null, null, null);
 
-							lTitle = m_littleBundle.getString("InputResourceKey");
-							rTitle = m_littleBundle.getString("OutputResourceKey");
+							lTitle = Editor.getString("InputResourceKey");
+							rTitle = Editor.getString("OutputResourceKey");
 
 							for (int i = 0; i < resourceLinks.size(); i++)
 							{
@@ -631,11 +629,9 @@ public class JDFInOutScroll extends JScrollPane
 				{
 					final JDFResource r = (JDFResource) kElement;
 
-					final ResourceBundle m_littleBundle = Editor.getBundle();
-
-					mTitle = m_littleBundle.getString("ResourceKey");
-					rTitle = m_littleBundle.getString("JDFConsumerKey");
-					lTitle = m_littleBundle.getString("JDFProducerKey");
+					mTitle = Editor.getString("ResourceKey");
+					rTitle = Editor.getString("JDFConsumerKey");
+					lTitle = Editor.getString("JDFProducerKey");
 					if (root instanceof JDFNode) // not in JMF
 					{
 						String id = r.getID();

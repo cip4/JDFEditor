@@ -75,7 +75,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ResourceBundle;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -109,7 +108,6 @@ public class SaveAsJDFDialog extends JDialog implements ActionListener
 	private final JCheckBox cbHeuristcLink;
 	private int choosedButton = BUTTON_CANCEL;
 
-	private static ResourceBundle bundle = Editor.getBundle();
 	private static INIReader conf = Editor.getIniFile();
 
 	/**
@@ -117,16 +115,16 @@ public class SaveAsJDFDialog extends JDialog implements ActionListener
 	 */
 	public SaveAsJDFDialog()
 	{
-		setTitle(bundle.getString("SaveJDFKey"));
+		setTitle(Editor.getString("SaveJDFKey"));
 		setModal(true);
 		setLayout(new BorderLayout());
 
 		JPanel checkboxesPanel = new JPanel();
 		checkboxesPanel.setLayout(new BoxLayout(checkboxesPanel, BoxLayout.Y_AXIS));
 
-		cbExtRetainProduct = new JCheckBox(bundle.getString("RetainProductKey"));
-		cbHeuristcLink = new JCheckBox(bundle.getString("FromXJDFHeuristicLink"));
-		cbTilde = new JCheckBox(bundle.getString("RemoveTildeFromRange"));
+		cbExtRetainProduct = new JCheckBox(Editor.getString("RetainProductKey"));
+		cbHeuristcLink = new JCheckBox(Editor.getString("FromXJDFHeuristicLink"));
+		cbTilde = new JCheckBox(Editor.getString("RemoveTildeFromRange"));
 
 		checkboxesPanel.add(cbExtRetainProduct);
 		checkboxesPanel.add(cbTilde);
@@ -138,7 +136,7 @@ public class SaveAsJDFDialog extends JDialog implements ActionListener
 
 		bOK = new JButton("OK");
 		bOK.addActionListener(this);
-		bCancel = new JButton(bundle.getString("CancelKey"));
+		bCancel = new JButton(Editor.getString("CancelKey"));
 		bCancel.addActionListener(this);
 
 		buttonsPanel.add(bOK);
@@ -176,6 +174,7 @@ public class SaveAsJDFDialog extends JDialog implements ActionListener
 	 * 
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
+	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		if (e.getSource() == bOK)
