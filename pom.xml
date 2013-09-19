@@ -149,9 +149,9 @@
 		<profile>
 			<id>windows</id>
 			<activation>
-				<os>
-					<family>Windows</family>
-				</os>
+				<property>
+			        <name>!alwaysActive</name>
+			      </property>
 			</activation>
 			<build>
 				<plugins>
@@ -175,9 +175,9 @@
 						</executions>
 					</plugin>
 					<plugin>
-						<groupId>org.bluestemsoftware.open.maven.plugin</groupId>
-						<artifactId>launch4j-plugin</artifactId>
-						<version>1.5.0.0</version>
+						<groupId>com.akathist.maven.plugins.launch4j</groupId>
+					    <artifactId>launch4j-maven-plugin</artifactId>
+					    <version>1.5.2</version>
 						<executions>
 							<execution>
 								<id>l4j-gui</id>
@@ -190,6 +190,7 @@
 									<outfile>target/${project.build.finalName}.exe</outfile>
 									<jar>target/${project.build.finalName}-app.jar</jar>
 									<errTitle>encc</errTitle>
+									<lib>w32api lib</lib>
 									<icon>src/main/assemble/windows/JDFEditor.ico</icon>
 									<classPath>
 										<mainClass>org.cip4.tools.jdfeditor.Editor</mainClass>
