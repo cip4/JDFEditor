@@ -219,7 +219,7 @@ public class Editor {
 		JDFParser.m_searchStream = true;
 
 		try {
-			my_Frame.setIconImage(Toolkit.getDefaultToolkit().getImage(Editor.class.getResource("/org/cip4/tools/jdfeditor/jdfeditor_128.png")));
+			my_Frame.setIconImage(Toolkit.getDefaultToolkit().getImage(Editor.class.getResource("/org/cip4/tools/jdfeditor/jdfeditor_128.ico")));
 			my_Frame.drawWindow();
 			my_Frame.setBackground(Color.white);
 			my_Frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
