@@ -65,10 +65,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3</version>
+				<version>3.0</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.7</source>
+					<target>1.7</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -257,18 +257,44 @@
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>com.agiliumlabs.osxappbundle</groupId>
-						<artifactId>osxappbundle-maven-plugin</artifactId>
-						<version>1.0.0</version>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.7</version>
 						<executions>
 							<execution>
 								<goals>
-									<goal>bundle</goal>
-								</goals>
+					            	<goal>run</goal>
+					            </goals>
+					            <phase>package</phase>
 								<configuration>
-									<mainClass>org.cip4.tools.jdfeditor.Editor</mainClass>
-									<bundleName>${project.build.finalName}</bundleName>
-									<iconFile>${basedir}/src/main/assemble/macosx/jdfeditor.icns</iconFile>
+									<target>
+										<!-- create app folder -->
+										<mkdir dir="${project.build.directory}/dmg"/>
+										
+										<!-- create app file-->
+										<taskdef name="bundleapp" classname="com.oracle.appbundler.AppBundlerTask" classpath="${basedir}/src/main/assemble/macosx/lib/appbundler-1.0.jar" />
+										<bundleapp 
+									        outputdirectory="${project.build.directory}/dmg" 
+									        name="${project.build.finalName}" 
+									        displayname="My Java Mac OS X App" 
+									        identifier="org.cip4.tools.jdfeditor.Editor" 
+									        icon="${basedir}/src/main/assemble/macosx/jdfeditor.icns"
+									        shortversion="1.0"
+									        applicationCategory="public.app-category.developer-tools"
+									        mainclassname="org.cip4.tools.jdfeditor.Editor">
+									        <classpath file="${project.build.directory}/${project.build.finalName}-app.jar" />
+									    </bundleapp>
+									    
+									    <!-- create dmg using hdiutil-->
+									    <!-- cmd: hdiutil create test.dmg -srcfolder /path/to/folder/ -->
+									    <exec executable="hdiutil">
+											<arg value="create"/>
+										    <arg value="${project.build.directory}/${project.build.finalName}.dmg"/>
+										    <arg value="-srcfolder"/>
+										    <arg value="${project.build.directory}/dmg"/>
+										    <arg value="-volname"/>
+										    <arg value="${project.build.finalName}"/>
+										</exec>
+									</target>
 								</configuration>
 							</execution>
 						</executions>
