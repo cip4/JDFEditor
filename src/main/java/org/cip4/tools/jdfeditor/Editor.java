@@ -103,7 +103,8 @@ import org.cip4.jdflib.util.logging.LogConfigurator;
  * @author AnderssA ThunellE
  * 
  */
-public class Editor {
+public class Editor
+{
 	private static Editor my_Editor;
 	protected static JDFFrame my_Frame;
 	private static INIReader m_iniFile;
@@ -121,13 +122,16 @@ public class Editor {
 	 */
 	static final String ICONS_PATH = "/org/cip4/tools/jdfeditor/icons/";
 
-	static ImageIcon getImageIcon(final Class<?> myClass, final String resString) {
+	static ImageIcon getImageIcon(final Class<?> myClass, final String resString)
+	{
 		final URL url = myClass.getResource(resString);
 		ImageIcon imIc = null;
-		if (url != null) {
+		if (url != null)
+		{
 			imIc = new ImageIcon(url);
 		}
-		if (imIc == null || imIc.getIconHeight() <= 0) {
+		if (imIc == null || imIc.getIconHeight() <= 0)
+		{
 			imIc = new ImageIcon("." + resString);
 		}
 		return imIc;
@@ -137,13 +141,17 @@ public class Editor {
 	 * @param args
 	 */
 	// ////////////////////////////////////////////////////////////////
-	public static void main(final String[] args) {
+	public static void main(final String[] args)
+	{
 		File file = null;
 		// mac may have 2nd argument
-		for (int i = args.length - 1; i >= 0; i--) {
-			if (!args[i].startsWith("-")) {
+		for (int i = args.length - 1; i >= 0; i--)
+		{
+			if (!args[i].startsWith("-"))
+			{
 				file = new File(args[i]);
-				if (file.canRead()) {
+				if (file.canRead())
+				{
 					break;
 				}
 				file = null;
@@ -161,16 +169,23 @@ public class Editor {
 	 * @param iWait 0=ready 1=wait 2=hand
 	 * @param parentComponent the parent frame to set the cursor in, if null use the main frame
 	 */
-	static void setCursor(final int iWait, Component parentComponent) {
-		if (parentComponent == null) {
+	static void setCursor(final int iWait, Component parentComponent)
+	{
+		if (parentComponent == null)
+		{
 			parentComponent = my_Frame;
 		}
 
-		if (iWait == 0) {
+		if (iWait == 0)
+		{
 			parentComponent.setCursor(Cursor.getDefaultCursor());
-		} else if (iWait == 1) {
+		}
+		else if (iWait == 1)
+		{
 			parentComponent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-		} else if (iWait == 2) {
+		}
+		else if (iWait == 2)
+		{
 			final Cursor handCursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
 			parentComponent.setCursor(handCursor);
 		}
@@ -181,7 +196,8 @@ public class Editor {
 	/**
 	 * 
 	 */
-	public Editor() {
+	public Editor()
+	{
 		// log file location
 		String pathDir = FilenameUtils.concat(FileUtils.getUserDirectoryPath(), "CIP4Tools");
 		pathDir = FilenameUtils.concat(pathDir, "JDFEditor");
@@ -200,7 +216,8 @@ public class Editor {
 	 * Method instantiate the editor window
 	 * @param file the file to open initially
 	 */
-	public void init(final File file) {
+	public void init(final File file)
+	{
 		m_iniFile = new INIReader();
 		final String language = m_iniFile.getLanguage();
 		final Locale currentLocale = new Locale(language, language.toUpperCase());
@@ -218,14 +235,18 @@ public class Editor {
 		JDFElement.setDefaultJDFVersion(m_iniFile.getDefaultVersion());
 		JDFParser.m_searchStream = true;
 
-		try {
+		try
+		{
 			my_Frame.drawWindow();
 			my_Frame.setBackground(Color.white);
 			my_Frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-			final WindowListener winLis = new WindowAdapter() {
+			final WindowListener winLis = new WindowAdapter()
+			{
 				@Override
-				public void windowClosing(final WindowEvent e) {
-					if (my_Frame.closeFile(999) != JOptionPane.CANCEL_OPTION) {
+				public void windowClosing(final WindowEvent e)
+				{
+					if (my_Frame.closeFile(999) != JOptionPane.CANCEL_OPTION)
+					{
 						getIniFile().writeINIFile();
 						System.exit(0);
 						e.getID(); // make compile happy
@@ -236,13 +257,17 @@ public class Editor {
 			my_Frame.setIconImage(Toolkit.getDefaultToolkit().getImage(Editor.class.getResource("/org/cip4/tools/jdfeditor/jdfeditor_128.png")));
 
 			// this is only for the PC version
-			if (file != null) {
+			if (file != null)
+			{
 				final boolean b = my_Frame.readFile(file);
-				if (b) {
+				if (b)
+				{
 					my_Frame.m_menuBar.updateRecentFilesMenu(file.toString());
 				}
 			}
-		} catch (final Exception e) {
+		}
+		catch (final Exception e)
+		{
 			log.error("error initializing Editor", e);
 		}
 	}
@@ -251,7 +276,8 @@ public class Editor {
 	 * Method getEditor.
 	 * @return Editor
 	 */
-	public static Editor getEditor() {
+	public static Editor getEditor()
+	{
 		return my_Editor;
 	}
 
@@ -259,7 +285,8 @@ public class Editor {
 	 * Method getFrame.
 	 * @return JDFFrame
 	 */
-	public static JDFFrame getFrame() {
+	public static JDFFrame getFrame()
+	{
 		return my_Frame;
 	}
 
@@ -268,7 +295,8 @@ public class Editor {
 	 * @param key
 	 * @return ResourceBundle the static resource bundle
 	 */
-	public static String getString(String key) {
+	public static String getString(String key)
+	{
 		return my_Editor.m_littleBundle.getString(key);
 	}
 
@@ -276,7 +304,8 @@ public class Editor {
 	 * get the JDFDoc of the currently displayed JDF
 	 * @return the JDFDoc that is currently being displayed
 	 */
-	public static EditorDocument getEditorDoc() {
+	public static EditorDocument getEditorDoc()
+	{
 		return my_Frame.getEditorDoc();
 	}
 
@@ -284,16 +313,19 @@ public class Editor {
 	 * Method getFrame.
 	 * @return JDFFrame
 	 */
-	public static INIReader getIniFile() {
+	public static INIReader getIniFile()
+	{
 		return m_iniFile;
 	}
 
 	/**
 	 * @return the about text
 	 */
-	public String getAboutText() {
+	public String getAboutText()
+	{
 		final String about = getEditorName() + "\n" + getEditorVersion() + "\nInternational Cooperation for Integration of Processes in Prepress, Press and Postpress,\n"
-				+ "hereinafter referred to as CIP4. All Rights Reserved\n\n" + "Authors: Anna Andersson, Evelina Thunell, Ingemar Svenonius, Elena Skobchenko, Rainer Prosi, Alex Khilov, Stefan Meissner\n\n"
+				+ "hereinafter referred to as CIP4. All Rights Reserved\n\n"
+				+ "Authors: Anna Andersson, Evelina Thunell, Ingemar Svenonius, Elena Skobchenko, Rainer Prosi, Alex Khilov, Stefan Meissner\n\n"
 				+ "The APPLICATION is provided 'as is', without warranty of any kind, express, implied, or\n"
 				+ "otherwise, including but not limited to the warranties of merchantability,fitness for a\n"
 				+ "particular purpose and noninfringement. In no event will CIP4 be liable, for any claim,\n"
@@ -306,7 +338,8 @@ public class Editor {
 	 * 
 	 * @return the name of the editor
 	 */
-	public String getEditorName() {
+	public String getEditorName()
+	{
 		return "CIP4 JDF Editor -- Copyright (c) 2001-2013 CIP4";
 	}
 
@@ -314,19 +347,22 @@ public class Editor {
 	 * 
 	 * @return the editor build date
 	 */
-	public String getEditorBuildDate() {
-		return "Estimated Build Date After April 11 2013";
+	public String getEditorBuildDate()
+	{
+		return "Estimated Build Date After October 22 2013";
 	}
 
 	/**
 	 * 
 	 * @return the editor version
 	 */
-	public String getEditorVersion() {
+	public String getEditorVersion()
+	{
 		return "Build version " + JDFAudit.software();
 	}
 
-	JMFBuilder getJMFBuilder() {
+	JMFBuilder getJMFBuilder()
+	{
 		JMFBuilder b = new JMFBuilder();
 		b.setSenderID("JDFEditor");
 
@@ -337,7 +373,8 @@ public class Editor {
 	 * get the model associated with the currently displayed document
 	 * @return the data model
 	 */
-	public static JDFTreeModel getModel() {
+	public static JDFTreeModel getModel()
+	{
 		final EditorDocument ed = getEditorDoc();
 		return ed == null ? null : ed.getModel();
 	}
@@ -345,7 +382,8 @@ public class Editor {
 	/**
 	 * @param m_model
 	 */
-	public static void getsetModel(final JDFTreeModel m_model) {
+	public static void getsetModel(final JDFTreeModel m_model)
+	{
 		final EditorDocument ed = getEditorDoc();
 		ed.setModel(m_model);
 	}
@@ -356,7 +394,8 @@ public class Editor {
 	 * get the JDFDoc of the currently displayed JDF
 	 * @return the JDFDoc that is currently being displayed BMI Created 07-08-31
 	 */
-	public static JDFDoc getJDFDoc() {
+	public static JDFDoc getJDFDoc()
+	{
 		return my_Frame.getJDFDoc();
 	}
 
@@ -364,7 +403,8 @@ public class Editor {
 	 * Method getTreeArea.
 	 * @return ResourceBundle the static resource bundle BMI Created 07-08-31
 	 */
-	public static JDFTreeArea getTreeArea() {
+	public static JDFTreeArea getTreeArea()
+	{
 		return my_Frame.m_treeArea;
 	}
 

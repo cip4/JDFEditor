@@ -5,7 +5,7 @@ package org.cip4.tools.jdfeditor;
 * The CIP4 Software License, Version 1.0
 *
 *
-* Copyright (c) 2001-2006 The International Cooperation for the Integration of 
+* Copyright (c) 2001-2013 The International Cooperation for the Integration of 
 * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
 * reserved.
 *
@@ -78,7 +78,6 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
 import org.cip4.jdflib.core.AttributeName;
-import org.cip4.jdflib.core.JDFComment;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.node.JDFNode;
@@ -97,8 +96,10 @@ public class JDFTreeRenderer extends DefaultTreeCellRenderer
 	protected boolean highlightFN;
 	protected Font standardFont = null;
 	private static VString warnMsgs = new VString("UnlinkedResource", null);
-	protected String toolString = null;
 
+	/**
+	 * 
+	 */
 	public JDFTreeRenderer()
 	{
 		setOpaque(true);
@@ -111,6 +112,10 @@ public class JDFTreeRenderer extends DefaultTreeCellRenderer
 		standardFont = new Font(iniFile.getFontName(), Font.PLAIN, iniFile.getFontSize());
 	}
 
+	/**
+	 * 
+	 * @see javax.swing.tree.DefaultTreeCellRenderer#getTreeCellRendererComponent(javax.swing.JTree, java.lang.Object, boolean, boolean, boolean, int, boolean)
+	 */
 	@Override
 	public Component getTreeCellRendererComponent(JTree jdfTree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean _hasFocus)
 	{
@@ -124,7 +129,7 @@ public class JDFTreeRenderer extends DefaultTreeCellRenderer
 		setFont(standardFont);
 
 		String s = null;
-
+		String toolString = null;
 		JDFTreeNode treeNode = null;
 		if (value instanceof JDFTreeNode)
 		{
@@ -134,15 +139,12 @@ public class JDFTreeRenderer extends DefaultTreeCellRenderer
 			if (treeNode.isElement())
 			{
 				KElement e = treeNode.getElement();
-				if (e instanceof JDFComment)
-				{
-					JDFComment c = (JDFComment) e;
-					toolString = c.getText();
-				}
+				toolString = e.getText();
 				String descName = e.getAttribute(AttributeName.DESCRIPTIVENAME, null, null);
 				if (descName != null && toolString != null)
+				{
 					toolString += "\n " + descName;
-
+				}
 			}
 
 			JDFTreeModel mod = (JDFTreeModel) jdfTree.getModel();
@@ -152,9 +154,10 @@ public class JDFTreeRenderer extends DefaultTreeCellRenderer
 				if (!treeNode.isElement())
 				{
 					final String attVal = treeNode.getValue();
-
 					if (attVal.equals("new value"))
+					{
 						setForeground(Color.magenta);
+					}
 				}
 			}
 			else
