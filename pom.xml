@@ -1,10 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.cip4.tools.jdfeditor</groupId>
 	<artifactId>JDFEditor</artifactId>
-	<version>2.2-SNAPSHOT</version>
+	<version>2.2</version>
 	<name>CIP4 JDFEditor</name>
 	<description>CIP4 JDF-Editor</description>
 	<properties>
@@ -13,9 +12,9 @@
 		<buildDirectory>${project.basedir}/target</buildDirectory>
 	</properties>
 	<scm>
-		<url>http://svn.cip4.org/svnroot/trunk/JDFEditor</url>
-		<developerConnection>scm:svn:http://svn.cip4.org/svnroot/trunk/JDFEditor</developerConnection>
-		<connection>scm:svn:http://svn.cip4.org/svnroot/trunk/JDFEditor</connection>
+		<url>http://svn.cip4.org/svnroot/tags/JDFEditor-2.2</url>
+		<developerConnection>scm:svn:http://svn.cip4.org/svnroot/tags/JDFEditor-2.2</developerConnection>
+		<connection>scm:svn:http://svn.cip4.org/svnroot/tags/JDFEditor-2.2</connection>
 	</scm>
 	<repositories>
 		<repository>
@@ -269,31 +268,23 @@
 								<configuration>
 									<target>
 										<!-- create app folder -->
-										<mkdir dir="${project.build.directory}/dmg"/>
+										<mkdir dir="${project.build.directory}/dmg" />
 										
 										<!-- create app file-->
 										<taskdef name="bundleapp" classname="com.oracle.appbundler.AppBundlerTask" classpath="${basedir}/src/main/assemble/macosx/lib/appbundler-1.0.jar" />
-										<bundleapp 
-									        outputdirectory="${project.build.directory}/dmg" 
-									        name="${project.build.finalName}" 
-									        displayname="My Java Mac OS X App" 
-									        identifier="org.cip4.tools.jdfeditor.Editor" 
-									        icon="${basedir}/src/main/assemble/macosx/jdfeditor.icns"
-									        shortversion="1.0"
-									        applicationCategory="public.app-category.developer-tools"
-									        mainclassname="org.cip4.tools.jdfeditor.Editor">
+										<bundleapp outputdirectory="${project.build.directory}/dmg" name="${project.build.finalName}" displayname="My Java Mac OS X App" identifier="org.cip4.tools.jdfeditor.Editor" icon="${basedir}/src/main/assemble/macosx/jdfeditor.icns" shortversion="1.0" applicationCategory="public.app-category.developer-tools" mainclassname="org.cip4.tools.jdfeditor.Editor">
 									        <classpath file="${project.build.directory}/${project.build.finalName}-app.jar" />
 									    </bundleapp>
 									    
 									    <!-- create dmg using hdiutil-->
 									    <!-- cmd: hdiutil create test.dmg -srcfolder /path/to/folder/ -->
 									    <exec executable="hdiutil">
-											<arg value="create"/>
-										    <arg value="${project.build.directory}/${project.build.finalName}.dmg"/>
-										    <arg value="-srcfolder"/>
-										    <arg value="${project.build.directory}/dmg"/>
-										    <arg value="-volname"/>
-										    <arg value="${project.build.finalName}"/>
+											<arg value="create" />
+										    <arg value="${project.build.directory}/${project.build.finalName}.dmg" />
+										    <arg value="-srcfolder" />
+										    <arg value="${project.build.directory}/dmg" />
+										    <arg value="-volname" />
+										    <arg value="${project.build.finalName}" />
 										</exec>
 									</target>
 								</configuration>
