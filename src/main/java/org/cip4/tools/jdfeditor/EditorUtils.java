@@ -73,6 +73,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.List;
 
@@ -110,6 +111,8 @@ import org.cip4.tools.jdfeditor.streamloader.PluginLoader;
 public class EditorUtils
 {
 	private static final Logger sm_log = Logger.getLogger(EditorUtils.class);
+
+	private final static String ENCODING_UTF8 = "UTF-8";
 
 	private static PluginLoader<IStreamLoader> pluginLoader = null;
 
@@ -604,11 +607,16 @@ public class EditorUtils
 		if (pluginLoader == null)
 		{
 			File fileAppDir = new File(".");
-			final String strAppPath = EditorUtils.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+
+			String strAppPath = EditorUtils.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+
+			strAppPath = URLDecoder.decode(strAppPath, ENCODING_UTF8);
+
+			sm_log.info("application path: " + strAppPath);
 
 			final File fileApp = new File(strAppPath);
 
-			if (fileApp.exists())
+			if (fileApp.exists() && fileApp.isFile())
 			{
 				fileAppDir = fileApp.getParentFile();
 			}
