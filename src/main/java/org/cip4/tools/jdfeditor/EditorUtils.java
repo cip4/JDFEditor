@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2011 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2013 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -82,6 +82,7 @@ import javax.mail.Multipart;
 import javax.swing.JOptionPane;
 import javax.swing.tree.TreePath;
 
+import org.apache.log4j.Logger;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
@@ -108,6 +109,8 @@ import org.cip4.tools.jdfeditor.streamloader.PluginLoader;
  */
 public class EditorUtils
 {
+	private static final Logger sm_log = Logger.getLogger(EditorUtils.class);
+
 	private static PluginLoader<IStreamLoader> pluginLoader = null;
 
 	/**
@@ -600,7 +603,20 @@ public class EditorUtils
 
 		if (pluginLoader == null)
 		{
-			final File filePluginDir = new File(".", "plugins");
+			File fileAppDir = new File(".");
+			final String strAppPath = EditorUtils.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+
+			final File fileApp = new File(strAppPath);
+
+			if (fileApp.exists())
+			{
+				fileAppDir = fileApp.getParentFile();
+			}
+
+			final File filePluginDir = new File(fileAppDir, "plugins");
+
+			sm_log.info("found plugin directory: " + filePluginDir.getAbsolutePath());
+
 			pluginLoader = new PluginLoader<IStreamLoader>(IStreamLoader.class, filePluginDir);
 		}
 
