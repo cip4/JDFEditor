@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2011 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -659,10 +659,6 @@ public class JDFTreeModel extends DefaultTreeModel
 	public void addNodeAttributes(final JDFTreeNode node)
 	{
 		final KElement elem = node.getElement();
-		if (!elem.hasAttributes())
-		{
-			return; // nothing to do
-		}
 		final INIReader iniFile = Editor.getIniFile();
 		if (iniFile.getAttr() == false)
 		{
@@ -674,10 +670,8 @@ public class JDFTreeModel extends DefaultTreeModel
 		VString vAttNames = elem.getAttributeVector_KElement();
 
 		vAttNames = processDefaultAttributes(vAttNames, elem, showDefaultAtts);
-		final int attSize = vAttNames.size();
-		for (int i = 0; i < attSize; i++)
+		for (String attName : vAttNames)
 		{
-			final String attName = vAttNames.stringAt(i);
 			if (!m_ignoreAttributes || attName.equals(AttributeName.TYPE) || attName.equals(AttributeName.TYPES) || attName.equals(AttributeName.DESCRIPTIVENAME)
 					|| attName.equals(AttributeName.ID))
 			{
