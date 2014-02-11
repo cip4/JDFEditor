@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -85,6 +85,7 @@ import java.util.ResourceBundle;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
 import org.apache.commons.io.FileUtils;
@@ -224,6 +225,17 @@ public class Editor
 
 		Locale.setDefault(currentLocale);
 		m_littleBundle = ResourceBundle.getBundle("org.cip4.tools.jdfeditor.messages.JDFEditor", currentLocale);
+		final INIReader iniFile = Editor.getIniFile();
+		final String currentLookAndFeel = iniFile.getLookAndFeel();
+
+		try
+		{
+			UIManager.setLookAndFeel(currentLookAndFeel);
+		}
+		catch (final Exception e)
+		{
+			//
+		}
 
 		my_Frame = new JDFFrame();
 		setCursor(0, null);
@@ -349,7 +361,7 @@ public class Editor
 	 */
 	public String getEditorBuildDate()
 	{
-		return "Estimated Build Date After January 17 2014";
+		return "Estimated Build Date After February 7 2014";
 	}
 
 	/**

@@ -208,21 +208,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		Editor.my_Frame = this;
 		final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds(0, 0, d.width, d.height - 30);
-
-		final INIReader iniFile = Editor.getIniFile();
-		final String currentLookAndFeel = iniFile.getLookAndFeel();
-
 		m_menuBar = new EditorMenuBar();
-		try
-		{
-			UIManager.setLookAndFeel(currentLookAndFeel);
-		}
-		catch (final Exception e)
-		{
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, Editor.getString("LookAndFeelErrorKey"), Editor.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
-
-		}
 	}
 
 	/**
