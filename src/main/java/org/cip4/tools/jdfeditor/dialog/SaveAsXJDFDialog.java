@@ -221,12 +221,12 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 	public XJDF20 getXJDFConverter()
 	{
 		XJDF20 xjdf20 = new XJDF20();
-		xjdf20.bSingleNode = cbExt1.isSelected();
-		xjdf20.bMergeLayout = cbExt2.isSelected();
-		xjdf20.bSpanAsAttribute = cbExt3.isSelected();
-		xjdf20.bMergeRunList = cbExt4.isSelected();
-		xjdf20.bMergeLayoutPrep = cbLoPrep.isSelected();
-		xjdf20.bConvertTilde = cbTilde.isSelected();
+		xjdf20.setSingleNode(cbExt1.isSelected());
+		xjdf20.setMergeLayout(cbExt2.isSelected());
+		xjdf20.setSpanAsAttribute(cbExt3.isSelected());
+		xjdf20.setMergeRunList(cbExt4.isSelected());
+		xjdf20.setMergeLayoutPrep(cbLoPrep.isSelected());
+		xjdf20.setConvertTilde(cbTilde.isSelected());
 		return xjdf20;
 	}
 
