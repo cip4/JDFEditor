@@ -455,7 +455,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 			if (e instanceof JDFAudit)
 			{
 				final JDFAudit a = (JDFAudit) e;
-				final JDFDate d = a.getTimeStampDate();
+				final JDFDate d = a.getTimeStamp();
 				if (d != null)
 				{
 					s += d.getFormattedDateTime(" MMM dd yyyy - HH:mm");

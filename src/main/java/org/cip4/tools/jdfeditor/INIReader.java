@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -667,18 +667,28 @@ public class INIReader
 		setAttribute(urlReturnToDevice, url);
 	}
 
+	/**
+	 * 
+	 *  
+	 * @return
+	 */
 	public EnumValidationLevel getValidationLevel()
 	{
 		final String s = getAttribute(validLevel, JDFConstants.VALIDATIONLEVEL_RECURSIVECOMPLETE);
 		return EnumValidationLevel.getEnum(s);
 	}
 
+	/**
+	 * 
+	 *  
+	 * @param level
+	 */
 	public void setValidationLevel(final EnumValidationLevel level)
 	{
 		setAttribute(validLevel, level.getName());
 	}
 
-	static private String defaultVersion = "1.4";
+	static private String defaultVersion = "1.5";
 
 	/**
 	 * 
@@ -754,18 +764,18 @@ public class INIReader
 
 		String pathFile = FilenameUtils.concat(pathDir, "JDFEditor.ini");
 		return pathFile;
-		
-//		this.settingsFile = new File(pathFile);
-//		
-//		
-//		final String path = System.getProperty("user.home");
-//		final File iniDir = new File(path + File.separator + "CIP4Editor");
-//		if (!iniDir.exists())
-//		{
-//			iniDir.mkdir();
-//		}
-//		final String iniPath = iniDir.getPath() + File.separator + "Editor.ini";
-//		return iniPath;
+
+		//		this.settingsFile = new File(pathFile);
+		//		
+		//		
+		//		final String path = System.getProperty("user.home");
+		//		final File iniDir = new File(path + File.separator + "CIP4Editor");
+		//		if (!iniDir.exists())
+		//		{
+		//			iniDir.mkdir();
+		//		}
+		//		final String iniPath = iniDir.getPath() + File.separator + "Editor.ini";
+		//		return iniPath;
 	}
 
 	private void checkIcon(final String iconName, final String iconPath)

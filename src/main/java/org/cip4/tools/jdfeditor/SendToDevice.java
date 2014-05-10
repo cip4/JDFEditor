@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -113,9 +113,9 @@ public class SendToDevice extends JPanel implements ActionListener
 	 */
 	private static final long serialVersionUID = -4676135228882149268L;
 
-	// private File file;
 	private JTextField urlPath;
 	private JTextField urlReturn;
+	private JRadioButton rbRawXML;
 	private JRadioButton rbJMF;
 	private JRadioButton rbMIME;
 	private JRadioButton rbPackageAll;
@@ -155,22 +155,29 @@ public class SendToDevice extends JPanel implements ActionListener
 			// and URL or as a multipart/related MIME message
 			rbJMF = new JRadioButton(Editor.getString("sendMethodJMF"));
 			rbMIME = new JRadioButton(Editor.getString("sendMethodMIME"));
+			rbRawXML = new JRadioButton(Editor.getString("sendMethodRaw"));
 			rbPackageAll = new JRadioButton(Editor.getString("PackageAll"));
 			cbReturn = new JCheckBox(Editor.getString("returnJMF"));
 			if (iniFile.getMethodSendToDevice().equals("MIME"))
 			{
 				rbMIME.setSelected(true);
 			}
-			else
+			else if (iniFile.getMethodSendToDevice().equals("JMF"))
 			{
 				rbJMF.setSelected(true);
 			}
+			else
+			{
+				rbRawXML.setSelected(true);
+			}
 			rbMIME.addActionListener(this);
 			rbJMF.addActionListener(this);
+			rbRawXML.addActionListener(this);
 			rbPackageAll.addActionListener(this);
 			final ButtonGroup sendMethodGroup = new ButtonGroup();
 			sendMethodGroup.add(rbJMF);
 			sendMethodGroup.add(rbMIME);
+			sendMethodGroup.add(rbRawXML);
 			sendMethodGroup.add(rbPackageAll);
 
 			final JLabel rbLabel = new JLabel(Editor.getString("sendMethod"));
@@ -179,6 +186,7 @@ public class SendToDevice extends JPanel implements ActionListener
 			SendMethodBox.add(rbLabel);
 			SendMethodBox.add(rbJMF);
 			SendMethodBox.add(rbMIME);
+			SendMethodBox.add(rbRawXML);
 			SendMethodBox.add(rbPackageAll);
 			add(SendMethodBox);
 			add(cbReturn);
@@ -214,13 +222,15 @@ public class SendToDevice extends JPanel implements ActionListener
 	{
 		final INIReader ini = Editor.getIniFile();
 		final Object eSrc = e.getSource();
-		if (eSrc == rbJMF)
+		if (eSrc == rbJMF || eSrc == rbMIME || eSrc == rbRawXML)
 		{
-			ini.setMethodSendToDevice(rbJMF.isSelected() ? "JMF" : "MIME");
-		}
-		else if (eSrc == rbMIME)
-		{
-			ini.setMethodSendToDevice(rbMIME.isSelected() ? "MIME" : "JMF");
+			if (rbJMF.isSelected())
+				ini.setMethodSendToDevice("JMF");
+			else if (rbMIME.isSelected())
+				ini.setMethodSendToDevice("MIME");
+			else if (rbRawXML.isSelected())
+				ini.setMethodSendToDevice("RAW");
+
 		}
 		else if (eSrc == rbPackageAll)
 		{
@@ -236,9 +246,9 @@ public class SendToDevice extends JPanel implements ActionListener
 	 * @param returnURL
 	 * @return true if success
 	 */
-	private boolean sendJDF(final URL url, final boolean bMime, final URL returnURL, final boolean packageAll)
+	private boolean sendJDF()
 	{
-
+		URL url = getURL(false);
 		if (url == null)
 		{
 			EditorUtils.errorBox("ErrorSendDevice", "URL =null");
@@ -247,18 +257,18 @@ public class SendToDevice extends JPanel implements ActionListener
 		final EditorDocument editorDoc = Editor.getEditorDoc();
 		final JDFDoc theDoc = editorDoc.getJDFDoc();
 		final JDFJMF theJMF = theDoc.getJMFRoot();
-		if (theJMF != null)
+		if (theJMF != null || isRaw())
 		{
-			return sendJMF(url);
+			return sendRaw(url);
 		}
 
 		if (cbReturn.isSelected())
 		{
-			return returnJDFFromDevice(url, bMime, packageAll);
+			return returnJDFFromDevice(url, isMime(), isPackageAll());
 		}
 		else
 		{
-			return submitJDFToDevice(url, bMime, returnURL, packageAll);
+			return submitJDFToDevice(url, isMime(), getURL(true), isPackageAll());
 		}
 	}
 
@@ -402,7 +412,7 @@ public class SendToDevice extends JPanel implements ActionListener
 	 * @param url
 	 * @return true if ok
 	 */
-	private boolean sendJMF(final URL url)
+	private boolean sendRaw(final URL url)
 	{
 		boolean bSendTrue = true;
 		final EditorDocument editorDoc = Editor.getEditorDoc();
@@ -506,29 +516,39 @@ public class SendToDevice extends JPanel implements ActionListener
 
 		final int option = JOptionPane.showOptionDialog(Editor.getFrame(), this, Editor.getString("JDFSendToDevice"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
-		URL url = null;
 		if (option == JOptionPane.OK_OPTION)
 		{
 			// the send method depends on the settings in the Editor.ini file
-			url = getURL(false);
-			bSendTrue = sendJDF(url, isMime(), getURL(true), isPackageAll());
+			bSendTrue = sendJDF();
 		}
 
 		// show success in a popup window
 		String sLabel = (bSendTrue) ? Editor.getString("JDFSent") : Editor.getString("JDFNotSent");
-		if (bSendTrue && url != null)
+		URL url = getURL(false);
+		sLabel += "\n\nURL= " + url.toExternalForm();
+		if (bSendTrue)
 		{
-			sLabel += "\n" + url.toExternalForm();
 			final INIReader iniFile = Editor.getIniFile();
 			iniFile.writeINIFile();
+			JOptionPane.showMessageDialog(Editor.getFrame(), sLabel, "", JOptionPane.INFORMATION_MESSAGE);
 		}
-
-		JOptionPane.showMessageDialog(Editor.getFrame(), sLabel);
+		else
+		{
+			JOptionPane.showMessageDialog(Editor.getFrame(), sLabel, "SNAFU", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	private boolean isPackageAll()
 	{
 		return rbPackageAll == null ? false : rbPackageAll.isSelected();
+	}
+
+	/**
+	 * @return true if raw is selected
+	 */
+	private boolean isRaw()
+	{
+		return rbRawXML.isSelected();
 	}
 
 	/**

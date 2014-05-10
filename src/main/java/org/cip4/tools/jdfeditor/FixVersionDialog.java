@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -194,6 +194,7 @@ public class FixVersionDialog extends JPanel implements ActionListener
 		allValues.addElement(EnumVersion.Version_1_2.getName());
 		allValues.addElement(EnumVersion.Version_1_3.getName());
 		allValues.addElement(EnumVersion.Version_1_4.getName());
+		allValues.addElement(EnumVersion.Version_1_5.getName());
 		chooseVersion = new JComboBox(allValues);
 		chooseVersion.setSelectedItem(defVersion.getName());
 		chooseVersion.addActionListener(this);
