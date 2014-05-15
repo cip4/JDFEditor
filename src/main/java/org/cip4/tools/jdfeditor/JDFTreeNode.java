@@ -105,6 +105,7 @@ import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.resource.devicecapability.JDFAbstractState;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCap;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCaps;
+import org.cip4.jdflib.resource.intent.JDFDropItemIntent;
 import org.cip4.jdflib.resource.process.JDFBinderySignature;
 import org.cip4.jdflib.resource.process.JDFColor;
 import org.cip4.jdflib.resource.process.JDFComChannel;
@@ -118,8 +119,10 @@ import org.cip4.jdflib.resource.process.JDFIdentical;
 import org.cip4.jdflib.resource.process.JDFLayoutElement;
 import org.cip4.jdflib.resource.process.JDFMedia;
 import org.cip4.jdflib.resource.process.JDFPerson;
+import org.cip4.jdflib.resource.process.JDFRuleLength;
 import org.cip4.jdflib.resource.process.JDFSeparationSpec;
 import org.cip4.jdflib.resource.process.JDFSourceResource;
+import org.cip4.jdflib.resource.process.JDFStation;
 import org.cip4.jdflib.span.JDFSpanBase;
 import org.cip4.jdflib.util.JDFDate;
 import org.cip4.jdflib.util.StringUtil;
@@ -610,6 +613,14 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 					s += " DeviceID=" + att;
 				}
 			}
+			else if (e instanceof JDFDropItemIntent)
+			{
+				final String att = e.getAttribute(AttributeName.AMOUNT, null, null);
+				if (att != null)
+				{
+					s += " Amount=" + att;
+				}
+			}
 			else if (e instanceof JDFLayoutElement)
 			{
 				final String att = e.getXPathAttribute("FileSpec/@URL", null);
@@ -754,6 +765,22 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 				String foldCatalog = bs.getFoldCatalog();
 				if (!"".equals(foldCatalog))
 					s += " " + foldCatalog;
+			}
+			else if (e instanceof JDFRuleLength)
+			{
+				final JDFRuleLength rl = (JDFRuleLength) e;
+				s += " " + rl.getDDESCutType();
+				double l = rl.getLengthJDF();
+				if (l > 0)
+					s += " Len=" + l;
+			}
+			else if (e instanceof JDFStation)
+			{
+				final JDFStation rl = (JDFStation) e;
+				s += " " + rl.getStationName();
+				int l = rl.getStationAmount();
+				if (l > 0)
+					s += " Amount=" + l;
 			}
 			else if (e instanceof JDFComChannel)
 			{
