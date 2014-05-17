@@ -70,27 +70,20 @@
  */
 package org.cip4.tools.jdfeditor;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
+import org.cip4.jdflib.core.*;
+import org.cip4.jdflib.core.JDFElement.EnumValidationLevel;
+import org.cip4.jdflib.core.JDFElement.EnumVersion;
+import org.cip4.jdflib.util.StringUtil;
+import org.cip4.tools.jdfeditor.dialog.SearchComboBoxModel;
+
+import javax.swing.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.swing.ImageIcon;
-import javax.swing.UIManager;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
-import org.cip4.jdflib.core.JDFConstants;
-import org.cip4.jdflib.core.JDFElement;
-import org.cip4.jdflib.core.JDFElement.EnumValidationLevel;
-import org.cip4.jdflib.core.JDFElement.EnumVersion;
-import org.cip4.jdflib.core.JDFParser;
-import org.cip4.jdflib.core.KElement;
-import org.cip4.jdflib.core.VString;
-import org.cip4.jdflib.core.XMLDoc;
-import org.cip4.jdflib.util.StringUtil;
-import org.cip4.tools.jdfeditor.dialog.SearchComboBoxModel;
 
 /*
  * INI_Reader.java
@@ -120,8 +113,8 @@ public class INIReader
 	final ImageIcon defaultWarnElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "WarnElemIcon.gif");
 	final ImageIcon defaultWarnElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "WarnElemIconSelected.gif");
 
-	final ImageIcon defaultAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "AttIcon.gif");
-	final ImageIcon defaultAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "AttIconSelected.gif");
+	final ImageIcon defaultAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/leaf.png");
+	final ImageIcon defaultAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/leaf.png");
 	final ImageIcon defaultIAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "InhAttIcon.gif");
 	final ImageIcon defaultIAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "InhAttIconSelected.gif");
 
@@ -134,11 +127,11 @@ public class INIReader
 	final ImageIcon defaultRefAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "RefAttIcon.gif");
 	final ImageIcon defaultRefAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "RefAttIconSelected.gif");
 
-	final ImageIcon defaultElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ElemIcon.gif");
-	final ImageIcon defaultElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ElemIconSelected.gif");
+	final ImageIcon defaultElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/node.png");
+	final ImageIcon defaultElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/node.png");
 
-	final ImageIcon defaultJDFElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "JDFElemIcon.gif");
-	final ImageIcon defaultJDFElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "JDFElemIconSelected.gif");
+	final ImageIcon defaultJDFElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/node_jdf.png");
+	final ImageIcon defaultJDFElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/node_jdf.png");
 
 	final ImageIcon defaultRefElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefElemIcon.gif");
 	final ImageIcon defaultRefElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefElemIconSelected.gif");
