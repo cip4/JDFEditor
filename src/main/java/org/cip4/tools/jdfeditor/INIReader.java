@@ -103,8 +103,8 @@ import java.util.List;
 public class INIReader
 {
 
-	final ImageIcon defaultErrAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ErrorAttIcon.gif");
-	final ImageIcon defaultErrAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ErrorAttIconSelected.gif");
+	final ImageIcon defaultErrAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/leaf_error.png");
+	final ImageIcon defaultErrAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/leaf_error.png");
 	final ImageIcon defaultErrElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ErrorElemIcon.gif");
 	final ImageIcon defaultErrElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ErrorElemIconSelected.gif");
 
@@ -115,17 +115,17 @@ public class INIReader
 
 	final ImageIcon defaultAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/leaf.png");
 	final ImageIcon defaultAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/leaf.png");
-	final ImageIcon defaultIAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "InhAttIcon.gif");
-	final ImageIcon defaultIAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "InhAttIconSelected.gif");
+	final ImageIcon defaultIAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/leaf_inherit.png");
+	final ImageIcon defaultIAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/leaf_inherit.png");
 
-	final ImageIcon defaultPAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "PartIDKeysAttIcon.gif");
-	final ImageIcon defaultPAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "PartIDKeysAttIconSelected.gif");
+	final ImageIcon defaultPAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/leaf_keys.png");
+	final ImageIcon defaultPAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/leaf_keys.png");
 
-	final ImageIcon defaultIPAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "InhPartIDKeysAttIcon.gif");
-	final ImageIcon defaultIPAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "InhPartIDKeysAttIconSelected.gif");
+	final ImageIcon defaultIPAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/leaf_keys.png");
+	final ImageIcon defaultIPAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/leaf_keys.png");
 
-	final ImageIcon defaultRefAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "RefAttIcon.gif");
-	final ImageIcon defaultRefAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "RefAttIconSelected.gif");
+	final ImageIcon defaultRefAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/leaf_ref.png");
+	final ImageIcon defaultRefAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/leaf_ref.png");
 
 	final ImageIcon defaultElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/node.png");
 	final ImageIcon defaultElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/node.png");
@@ -135,10 +135,10 @@ public class INIReader
 
 	final ImageIcon defaultRefElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefElemIcon.gif");
 	final ImageIcon defaultRefElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefElemIconSelected.gif");
-	final ImageIcon defaultRefInElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefInElemIcon.gif");
-	final ImageIcon defaultRefInElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefInElemIconSelected.gif");
-	final ImageIcon defaultRefOutElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefOutElemIcon.gif");
-	final ImageIcon defaultRefOutElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefOutElemIconSelected.gif");
+	final ImageIcon defaultRefInElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/node_link.png");
+	final ImageIcon defaultRefInElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/node_link.png");
+	final ImageIcon defaultRefOutElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/node_link.png");
+	final ImageIcon defaultRefOutElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/node_link.png");
 
 	ImageIcon warnAttIcon = defaultWarnAttIcon;
 	ImageIcon warnAttIconS = defaultWarnAttIconS;

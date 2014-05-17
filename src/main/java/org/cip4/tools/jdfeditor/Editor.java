@@ -70,10 +70,16 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Toolkit;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.cip4.jdflib.core.*;
+import org.cip4.jdflib.jmf.JMFBuilder;
+import org.cip4.jdflib.util.logging.LogConfigurator;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -82,23 +88,6 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.ResourceBundle;
-
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
-import javax.swing.UIManager;
-import javax.swing.WindowConstants;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.cip4.jdflib.core.JDFAudit;
-import org.cip4.jdflib.core.JDFDoc;
-import org.cip4.jdflib.core.JDFElement;
-import org.cip4.jdflib.core.JDFParser;
-import org.cip4.jdflib.core.KElement;
-import org.cip4.jdflib.jmf.JMFBuilder;
-import org.cip4.jdflib.util.logging.LogConfigurator;
 
 /**
  * @author AnderssA ThunellE
