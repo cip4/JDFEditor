@@ -70,64 +70,10 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.ClipboardOwner;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DragGestureEvent;
-import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DragSourceDragEvent;
-import java.awt.dnd.DragSourceDropEvent;
-import java.awt.dnd.DragSourceEvent;
-import java.awt.dnd.DragSourceListener;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetEvent;
-import java.awt.dnd.DropTargetListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.Vector;
-
-import javax.swing.AbstractAction;
-import javax.swing.Box;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
-import javax.swing.JTree;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.event.UndoableEditEvent;
-import javax.swing.tree.TreePath;
-import javax.swing.undo.CannotUndoException;
-import javax.swing.undo.UndoManager;
-import javax.swing.undo.UndoableEditSupport;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cip4.jdflib.core.ElementName;
-import org.cip4.jdflib.core.JDFDoc;
-import org.cip4.jdflib.core.JDFElement;
+import org.cip4.jdflib.core.*;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
-import org.cip4.jdflib.core.KElement;
-import org.cip4.jdflib.core.VElement;
-import org.cip4.jdflib.core.VString;
-import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.core.XMLDocUserData.EnumDirtyPolicy;
 import org.cip4.jdflib.elementwalker.RemoveEmpty;
 import org.cip4.jdflib.goldenticket.BaseGoldenTicket;
@@ -138,6 +84,23 @@ import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.util.StringUtil;
+
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.tree.TreePath;
+import javax.swing.undo.CannotUndoException;
+import javax.swing.undo.UndoManager;
+import javax.swing.undo.UndoableEditSupport;
+import java.awt.*;
+import java.awt.datatransfer.*;
+import java.awt.dnd.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.Iterator;
+import java.util.Vector;
 
 /**
  * @author AnderssA ThunellE SvenoniusI Elena Skobchenko
@@ -203,6 +166,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	public JDFFrame()
 	{
 		super("CIP4 JDF Editor");
+        enableOSXFullscreen(this);
+
 		// dirty hack to avoid npe
 		log = LogFactory.getLog(getClass());
 		Editor.my_Frame = this;
@@ -210,6 +175,22 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		setBounds(0, 0, d.width, d.height - 30);
 		m_menuBar = new EditorMenuBar();
 	}
+
+    /**
+     * Enables JDFEditor to run in full screen mode on a MacOSX System.
+     * @param window This window
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static void enableOSXFullscreen(Window window) {
+        try {
+            Class util = Class.forName("com.apple.eawt.FullScreenUtilities");
+            Class params[] = new Class[]{Window.class, Boolean.TYPE};
+            Method method = util.getMethod("setWindowCanFullScreen", params);
+            method.invoke(util, window, true);
+        } catch (ClassNotFoundException e1) {
+        } catch (Exception e) {
+        }
+    }
 
 	/**
 	 * Method drawWindow.
