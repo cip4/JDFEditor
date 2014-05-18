@@ -70,13 +70,10 @@
  */
 package org.cip4.tools.jdfeditor.refactor;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.*;
 import org.cip4.jdflib.jmf.JMFBuilder;
-import org.cip4.jdflib.util.logging.LogConfigurator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -187,13 +184,7 @@ public class Editor
 	 */
 	public Editor()
 	{
-		// log file location
-		String pathDir = FilenameUtils.concat(FileUtils.getUserDirectoryPath(), "CIP4Tools");
-		pathDir = FilenameUtils.concat(pathDir, "JDFEditor");
-		pathDir = FilenameUtils.concat(pathDir, "logs");
-		new File(pathDir).mkdirs();
 
-		LogConfigurator.configureLog(pathDir, "JDFEditor.log");
 
 		if (log == null)
 			log = LogFactory.getLog(Editor.class);
@@ -256,6 +247,7 @@ public class Editor
 			};
 			my_Frame.addWindowListener(winLis);
 			my_Frame.setIconImage(Toolkit.getDefaultToolkit().getImage(Editor.class.getResource("/org/cip4/tools/jdfeditor/jdfeditor_128.png")));
+            my_Frame.setVisible(true);
 
 			// this is only for the PC version
 			if (file != null)
