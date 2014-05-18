@@ -71,7 +71,7 @@
 package org.cip4.tools.jdfeditor.refactor;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.cip4.jdflib.core.*;
 import org.cip4.jdflib.jmf.JMFBuilder;
 
@@ -91,6 +91,8 @@ import java.util.ResourceBundle;
  */
 public class Editor
 {
+    private static final Logger LOGGER = Logger.getLogger(Editor.class);
+
 	private static Editor my_Editor;
 	protected static JDFFrame my_Frame;
 	private static INIReader m_iniFile;
@@ -186,9 +188,7 @@ public class Editor
 	{
 
 
-		if (log == null)
-			log = LogFactory.getLog(Editor.class);
-		log.info("Starting editor");
+
 		// nothing to do here (yet)
 	}
 
@@ -198,6 +198,8 @@ public class Editor
 	 */
 	public void init(final File file)
 	{
+        LOGGER.info("Init Editor");
+
         my_Editor = this;
 		m_iniFile = new INIReader();
 		final String language = m_iniFile.getLanguage();
@@ -219,6 +221,8 @@ public class Editor
 
 		my_Frame = new JDFFrame();
 		setCursor(0, null);
+
+
 
 		// read the initialization stuff
 		JDFAudit.setStaticAgentName(getEditorName());
@@ -247,7 +251,6 @@ public class Editor
 			};
 			my_Frame.addWindowListener(winLis);
 			my_Frame.setIconImage(Toolkit.getDefaultToolkit().getImage(Editor.class.getResource("/org/cip4/tools/jdfeditor/jdfeditor_128.png")));
-            my_Frame.setVisible(true);
 
 			// this is only for the PC version
 			if (file != null)
