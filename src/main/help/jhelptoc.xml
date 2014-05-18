@@ -3,7 +3,7 @@
 <toc version="1.0">
   <tocitem target="id220952" text="JDF Editor users's manual">
     <tocitem target="id314284" text="Getting Started">
-      <tocitem target="id314306" text="The Application handles JDF and JMF Files"/>
+      <tocitem target="id314306" text="The org.cip4.tools.jdfeditor.Application handles JDF and JMF Files"/>
     </tocitem>
     <tocitem target="id284785" text="The Views">
       <tocitem target="id284791" text="Tree View"/>

@@ -1487,7 +1487,7 @@ is included with JRE 7, JDK 7, and OpenJDK 7
 
 3. Distribution Obligations.
 
-     3.1. Application of License.
+     3.1. org.cip4.tools.jdfeditor.Application of License.
      The Modifications which You create or to which You contribute are
      governed by the terms of this License, including without limitation
      Section 2.2. The Source Code version of Covered Code may be
@@ -1614,7 +1614,7 @@ is included with JRE 7, JDK 7, and OpenJDK 7
      sufficiently detailed for a recipient of ordinary skill to be able to
      understand it.
 
-5. Application of this License.
+5. org.cip4.tools.jdfeditor.Application of this License.
 
      This License applies to code to which the Initial Developer has
      attached the notice in Exhibit A and to related Covered Code.

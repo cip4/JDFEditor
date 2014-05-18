@@ -27,7 +27,7 @@
     </title>
     <section>
       <title>
-        <phrase lang="en">The Application handles JDF and JMF Files</phrase>
+        <phrase lang="en">The org.cip4.tools.jdfeditor.Application handles JDF and JMF Files</phrase>
       </title>
       <para>It is possible to Open an existing File or create a new JDF or JMF File.
       You can Open a File either with the <emphasis role="bold">Open Button</emphasis>,
@@ -201,7 +201,7 @@
       </para>
       <para><emphasis role="bold">jdkversion = 1.4.2 1.4.1 1.4 1.3</emphasis>
       </para>
-      <para>so that the Starter Application won'­t read that line, or simply delete it. Thereafter add a new Line:
+      <para>so that the Starter org.cip4.tools.jdfeditor.Application won'­t read that line, or simply delete it. Thereafter add a new Line:
       </para>
       <para><emphasis role="bold">javadllpath = c:\path\jvm.dll</emphasis>
       </para>

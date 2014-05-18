@@ -37,7 +37,7 @@ Microsoft provides you with access to a variety of resources on this website
 (“Web Site”), including documentation and other product information
 (collectively the “Documentation”), download areas, communication forums, and
 other services (collectively "Services"), software, including developer tools
-and sample code (collectively “Software”), and Application Program Interface
+and sample code (collectively “Software”), and org.cip4.tools.jdfeditor.Application Program Interface
 information (“APIs”).  The Documentation, Services, Software, and APIs
 (including any updates, enhancements, new features, and/or the addition of any
 new Web properties to the Web Site), are subject to the following Terms of Use

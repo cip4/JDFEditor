@@ -106,7 +106,7 @@
 				<configuration>
 					<programs>
 						<program>
-							<mainClass>org.cip4.tools.jdfeditor.Editor</mainClass>
+							<mainClass>org.cip4.tools.jdfeditor.refactor.Editor</mainClass>
 							<name>jdfeditor</name>
 						</program>
 					</programs>
@@ -150,6 +150,11 @@
 			<version>2.1.5.80-SNAPSHOT</version>
 		</dependency>
 
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>4.0.4.RELEASE</version>
+        </dependency>
 		<dependency>
 			<groupId>com.sun.woodstock.dependlibs</groupId>
 			<artifactId>jhall</artifactId>
@@ -228,7 +233,7 @@
 									<lib>w32api lib</lib>
 									<icon>src/main/assemble/windows/jdfeditor_128.ico</icon>
 									<classPath>
-										<mainClass>org.cip4.tools.jdfeditor.Editor</mainClass>
+										<mainClass>org.cip4.tools.jdfeditor.refactor.Editor</mainClass>
 										<addDependencies>true</addDependencies>
 										<preCp>anything</preCp>
 									</classPath>
@@ -309,7 +314,7 @@
                                     <lib>w32api lib</lib>
                                     <icon>src/main/assemble/windows/jdfeditor_128.ico</icon>
                                     <classPath>
-                                        <mainClass>org.cip4.tools.jdfeditor.Editor</mainClass>
+                                        <mainClass>org.cip4.tools.jdfeditor.refactor.Editor</mainClass>
                                         <addDependencies>true</addDependencies>
                                         <preCp>anything</preCp>
                                     </classPath>
@@ -363,7 +368,7 @@
 										
 										<!-- create app file-->
 										<taskdef name="bundleapp" classname="com.oracle.appbundler.AppBundlerTask" classpath="${basedir}/src/main/assemble/macosx/lib/appbundler-1.0.jar" />
-										<bundleapp outputdirectory="${project.build.directory}/dmg" name="${project.build.finalName}" displayname="My Java Mac OS X App" identifier="org.cip4.tools.jdfeditor.Editor" icon="${basedir}/src/main/assemble/macosx/jdfeditor.icns" shortversion="1.0" applicationCategory="public.app-category.developer-tools" mainclassname="org.cip4.tools.jdfeditor.Editor">
+										<bundleapp outputdirectory="${project.build.directory}/dmg" name="${project.build.finalName}" displayname="My Java Mac OS X App" identifier="org.cip4.tools.jdfeditor.refactor.Editor" icon="${basedir}/src/main/assemble/macosx/jdfeditor.icns" shortversion="1.0" applicationCategory="public.app-category.developer-tools" mainclassname="org.cip4.tools.jdfeditor.refactor.Editor">
 									        <classpath file="${project.build.directory}/${project.build.finalName}-app.jar" />
 									    </bundleapp>
 									    
