@@ -34,10 +34,10 @@ public class Application {
         LOGGER.info("Start CIP4 JDFEditor...");
 
         // init spring framework
-        //ApplicationContext ctx = new ClassPathXmlApplicationContext(RES_BEANS_XML);
+        // ApplicationContext ctx = new ClassPathXmlApplicationContext(RES_BEANS_XML);
 
-        // apple properties
-        System.setProperty("apple.laf.useScreenMenuBar", "true"); // use menu
+        // MainController mainController = ctx.getBean(MainController.class);
+        // mainController.displayForm();
 
         // start editor
         Editor editor = new Editor();

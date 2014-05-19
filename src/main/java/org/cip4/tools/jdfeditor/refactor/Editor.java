@@ -198,6 +198,11 @@ public class Editor
 	 */
 	public void init(final File file)
 	{
+
+        // apple properties
+        System.setProperty("apple.laf.useScreenMenuBar", "true"); // use menu
+
+
         LOGGER.info("Init Editor");
 
         my_Editor = this;
