@@ -133,6 +133,10 @@ public class Editor
 	// ////////////////////////////////////////////////////////////////
 	public static void main(final String[] args)
 	{
+
+        // apple menu compatibility
+        System.setProperty("apple.laf.useScreenMenuBar", "true");
+
 		File file = null;
 		// mac may have 2nd argument
 		for (int i = args.length - 1; i >= 0; i--)
