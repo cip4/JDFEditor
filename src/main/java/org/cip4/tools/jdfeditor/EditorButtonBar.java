@@ -70,6 +70,11 @@ package org.cip4.tools.jdfeditor;
  *  
  * 
  */
+import org.cip4.jdflib.extensions.XJDF20;
+import org.cip4.jdflib.jmf.JDFJMF;
+import org.cip4.tools.jdfeditor.dialog.SaveAsJDFDialog;
+import org.cip4.tools.jdfeditor.dialog.SaveAsXJDFDialog;
+
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -101,6 +106,8 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 	JButton m_cutButton;
 	JButton m_copyButton;
 	JButton m_pasteButton;
+    JButton m_convert2Jdf;
+    JButton m_convert2XJdf;
 	JButton m_validateButton;
 	JButton m_upOneLevelButton;
 	JButton m_NextButton;
@@ -155,6 +162,9 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		final ImageIcon imgCopy = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "toolbar/copy.png");
 		final ImageIcon imgPaste = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "toolbar/paste.png");
 
+        final ImageIcon imgJDF = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "toolbar/jdf.png");
+        final ImageIcon imgXJDF = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "toolbar/xjdf.png");
+
 		final ImageIcon imgUndo = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "toolbar/undo.png");
 		final ImageIcon imgRedo = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "toolbar/redo.png");
 
@@ -174,44 +184,48 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		final Dimension d = new Dimension(10, 30);
 		setFloatable(false);
 
-		m_newButton = createDefaultButton(imgNew, Editor.getString("NewKey"), true, '|');
-		m_openButton = createDefaultButton(imgOpen, Editor.getString("OpenKey"), true, '|');
-		m_saveButton = createDefaultButton(imgSave, Editor.getString("SaveKey"), false, '|');
-
+        // document block
+		m_newButton = createDefaultButton(imgNew, Editor.getString("main.toolbar.document.new"), true, '|');
+		m_openButton = createDefaultButton(imgOpen, Editor.getString("main.toolbar.document.open"), true, '|');
+		m_saveButton = createDefaultButton(imgSave, Editor.getString("main.toolbar.document.save"), false, '|');
+        m_closeButton = createDefaultButton(imgClose, Editor.getString("main.toolbar.document.close"), true, '|');
 		addSeparator(d);
 
-		m_printButton = createDefaultButton(imgPrint, Editor.getString("PrintKey"), false, '|');
-		m_refreshButton = createDefaultButton(imgRefresh, Editor.getString("RefreshKey"), false, '|');
-
+        // util block
+		m_printButton = createDefaultButton(imgPrint, Editor.getString("main.toolbar.util.print"), false, '|');
+		m_refreshButton = createDefaultButton(imgRefresh, Editor.getString("main.toolbar.util.refresh"), false, '|');
+        m_validateButton = createDefaultButton(imgReval, Editor.getString("main.toolbar.util.validate"), false, 'A');
 		addSeparator(d);
 
-		m_cutButton = createDefaultButton(imgCut, Editor.getString("CutKey"), false, '|');
-		m_copyButton = createDefaultButton(imgCopy, Editor.getString("CopyKey"), false, '|');
-		m_pasteButton = createDefaultButton(imgPaste, Editor.getString("PasteKey"), false, '|');
-
+        // edit block
+		m_cutButton = createDefaultButton(imgCut, Editor.getString("main.toolbar.edit.cut"), false, '|');
+		m_copyButton = createDefaultButton(imgCopy, Editor.getString("main.toolbar.edit.copy"), false, '|');
+		m_pasteButton = createDefaultButton(imgPaste, Editor.getString("main.toolbar.edit.paste"), false, '|');
 		addSeparator(d);
 
-		m_undoButton = createDefaultButton(imgUndo, Editor.getString("UndoKey"), false, '|');
+        // convert block
+        m_convert2Jdf = createDefaultButton(imgJDF, Editor.getString("main.toolbar.convert.jdf"), false, '|');
+        m_convert2XJdf = createDefaultButton(imgXJDF, Editor.getString("main.toolbar.convert.xjdf"), false, '|');
+        addSeparator(d);
+
+        // history block
+		m_undoButton = createDefaultButton(imgUndo, Editor.getString("main.toolbar.history.undo"), false, '|');
 		m_undoButton.addActionListener(m_frame.undoAction);
-		m_redoButton = createDefaultButton(imgRedo, Editor.getString("RedoKey"), false, '|');
+		m_redoButton = createDefaultButton(imgRedo, Editor.getString("main.toolbar.history.redo"), false, '|');
 		m_redoButton.addActionListener(m_frame.redoAction);
-
 		addSeparator(d);
 
-		m_validateButton = createDefaultButton(imgReval, Editor.getString("ValidateToolTipKey"), false, 'A');
-		m_upOneLevelButton = createDefaultButton(imgUp, Editor.getString("GoUpInProcessViewKey"), false, '|');
-		m_LastButton = createDefaultButton(imgLast, Editor.getString("LastButtonKey"), false, '|');
-		m_NextButton = createDefaultButton(imgNext, Editor.getString("NextButtonKey"), false, '|');
-
+		// navigation block
+		m_upOneLevelButton = createDefaultButton(imgUp, Editor.getString("main.toolbar.nav.up"), false, '|');
+		m_LastButton = createDefaultButton(imgLast, Editor.getString("main.toolbar.nav.last"), false, '|');
+		m_NextButton = createDefaultButton(imgNext, Editor.getString("main.toolbar.nav.next"), false, '|');
 		addSeparator(d);
 
-		m_zoomInButton = createDefaultButton(imgZoomIn, Editor.getString("ZoomInKey"), false, '|');
-		m_zoomOutButton = createDefaultButton(imgZoomOut, Editor.getString("ZoomOutKey"), false, '|');
-		m_zoomOrigButton = createDefaultButton(imgZoomOrig, Editor.getString("ZoomOrigKey"), false, '|');
-		m_zoomBestButton = createDefaultButton(imgZoomBest, Editor.getString("ZoomFitKey"), false, '|');
-
-		addSeparator(d);
-		m_closeButton = createDefaultButton(imgClose, Editor.getString("CloseKey"), true, '|');
+        // zoom block
+		m_zoomInButton = createDefaultButton(imgZoomIn, Editor.getString("main.toolbar.zoom.in"), false, '|');
+		m_zoomOutButton = createDefaultButton(imgZoomOut, Editor.getString("main.toolbar.zoom.out"), false, '|');
+		m_zoomOrigButton = createDefaultButton(imgZoomOrig, Editor.getString("main.toolbar.zoom.orig"), false, '|');
+		m_zoomBestButton = createDefaultButton(imgZoomBest, Editor.getString("main.toolbar.zoom.fit"), false, '|');
 		addSeparator(d);
 
 		add(Box.createHorizontalGlue());
@@ -284,6 +298,8 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		m_undoButton.setEnabled(false);
 		m_redoButton.setEnabled(false);
 		m_upOneLevelButton.setEnabled(false);
+        m_convert2Jdf.setEnabled(false);
+        m_convert2XJdf.setEnabled(false);
 		m_LastButton.setEnabled(false);
 		m_NextButton.setEnabled(false);
 		m_zoomInButton.setEnabled(false);
@@ -305,6 +321,9 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		m_LastButton.setEnabled(true);
 		m_NextButton.setEnabled(true);
 
+        m_convert2Jdf.setEnabled(true);
+        m_convert2XJdf.setEnabled(true);
+
 		m_validateButton.setEnabled(true);
 		m_printButton.setEnabled(true);
 		EditorDocument eDoc = Editor.getEditorDoc();
@@ -322,15 +341,15 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 
 		final Object eSrc = e.getSource();
 		Editor.setCursor(1, null);
-		if (eSrc == m_newButton)
+		if (eSrc == m_newButton) // new document
 		{
 			m_frame.newFile();
 		}
-		else if (eSrc == m_openButton)
+		else if (eSrc == m_openButton) // open document
 		{
 			m_frame.openFile();
 		}
-		else if (eSrc == m_saveButton)
+		else if (eSrc == m_saveButton) // save document
 		{
 			if (m_frame.getTitle().equalsIgnoreCase("Untitled.jdf") || m_frame.getTitle().equalsIgnoreCase("Untitled.jmf"))
 			{
@@ -342,62 +361,78 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 				m_frame.getJDFDoc().clearDirtyIDs();
 			}
 		}
-		else if (eSrc == m_validateButton && m_frame.getModel() != null)
+		else if (eSrc == m_validateButton && m_frame.getModel() != null) // validate
 		{
 			m_frame.getModel().validate();
 		}
-		else if (eSrc == m_upOneLevelButton)
+        else if (eSrc == m_convert2Jdf) // convert 2 JDF
+        {
+            SaveAsJDFDialog d = new SaveAsJDFDialog();
+            if (d.isOK())
+            {
+                Editor.getModel().saveAsJDF(null, d.getConverter());
+            }
+        }
+        else if (eSrc == m_convert2XJdf) // convert 2 XJDF
+        {
+            SaveAsXJDFDialog d = new SaveAsXJDFDialog();
+            if (d.isOK())
+            {
+                Editor.getModel().saveAsXJDF(null, d.getXJDFConverter());
+            }
+        }
+		else if (eSrc == m_upOneLevelButton) // navigate up
 		{
 			m_frame.m_topTabs.m_pArea.goUpOneLevelInProcessView();
 		}
 
-		else if (eSrc == m_NextButton)
+		else if (eSrc == m_NextButton) // navigate next
 		{
 			Editor.getEditorDoc().setNextSelection();
 		}
-		else if (eSrc == m_LastButton)
+		else if (eSrc == m_LastButton) // navigate last
 		{
 			Editor.getEditorDoc().setLastSelection();
 		}
-		else if (eSrc == m_printButton)
+		else if (eSrc == m_printButton)  // print
 		{
 			m_frame.printWhat();
 		}
-		else if (eSrc == m_zoomInButton)
+		else if (eSrc == m_zoomInButton)  // zoom in
 		{
 			m_frame.m_topTabs.m_pArea.zoom('+');
 		}
-		else if (eSrc == m_zoomOutButton)
+		else if (eSrc == m_zoomOutButton) // zoom out
 		{
 			m_frame.m_topTabs.m_pArea.zoom('-');
 		}
-		else if (eSrc == m_zoomOrigButton)
+		else if (eSrc == m_zoomOrigButton) // zoom to original size
 		{
 			m_frame.m_topTabs.m_pArea.zoom('o');
 		}
-		else if (eSrc == m_zoomBestButton)
+		else if (eSrc == m_zoomBestButton) // zoom to best fit
 		{
 			m_frame.m_topTabs.m_pArea.zoom('b');
 		}
-		else if (eSrc == m_closeButton)
+		else if (eSrc == m_closeButton) // close document
 		{
 			m_frame.closeFile(1);
 		}
 		else if (!Editor.getIniFile().getReadOnly())
 		{
-			if (eSrc == m_cutButton)
+			if (eSrc == m_cutButton) // cut
 			{
 				m_frame.cutSelectedNode();
 			}
-			else if (eSrc == m_copyButton)
+			else if (eSrc == m_copyButton) // copy
 			{
 				m_frame.copySelectedNode();
 			}
-			else if (eSrc == m_pasteButton)
+			else if (eSrc == m_pasteButton) // paste
 			{
 				m_frame.pasteCopiedNode();
 			}
-			else if (eSrc == m_refreshButton)
+			else if (eSrc == m_refreshButton) // refresh
 			{
 				m_frame.refresh();
 			}

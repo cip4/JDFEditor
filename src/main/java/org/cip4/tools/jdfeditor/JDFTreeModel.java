@@ -1210,8 +1210,8 @@ public class JDFTreeModel extends DefaultTreeModel
 	 */
 	public void saveAsXJDF(final TreePath selectionPath, XJDF20 xjdf20)
 	{
-		final JDFTreeNode node = selectionPath == null ? getRootNode() : (JDFTreeNode) selectionPath.getLastPathComponent();
-		if (node == null)
+		final JDFTreeNode node = selectionPath == null ? (JDFTreeNode) getRootNode().getChildAt(0) : (JDFTreeNode) selectionPath.getLastPathComponent();
+		if (node == null || XJDF20.rootName.equals(node.getElement().getLocalName()))
 		{
 			return;
 		}
@@ -1279,8 +1279,8 @@ public class JDFTreeModel extends DefaultTreeModel
 	 */
 	public void saveAsJDF(final TreePath selectionPath, XJDFToJDFConverter c)
 	{
-		final JDFTreeNode node = (JDFTreeNode) selectionPath.getLastPathComponent();
-		if (node == null)
+		final JDFTreeNode node = selectionPath == null ? (JDFTreeNode) getRootNode().getChildAt(0) : (JDFTreeNode) selectionPath.getLastPathComponent();
+		if (node == null || node.getElement() instanceof JDFNode)
 		{
 			return;
 		}

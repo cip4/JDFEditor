@@ -131,7 +131,9 @@ public class INIReader
 	final ImageIcon defaultElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/node.png");
 
 	final ImageIcon defaultJDFElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/node_jdf.png");
-	final ImageIcon defaultJDFElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/node_jdf.png");
+    final ImageIcon defaultJDFElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/node_jdf.png");
+    final ImageIcon defaultXJDFElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/node_xjdf.png");
+    final ImageIcon defaultXJDFElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/node_xjdf.png");
 
 	final ImageIcon defaultRefElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefElemIcon.gif");
 	final ImageIcon defaultRefElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefElemIconSelected.gif");
@@ -161,7 +163,9 @@ public class INIReader
 	ImageIcon elemIcon;
 	ImageIcon elemIconS;
 	ImageIcon jdfElemIcon;
-	ImageIcon jdfElemIconS;
+    ImageIcon jdfElemIconS;
+    ImageIcon xjdfElemIcon;
+    ImageIcon xjdfElemIconS;
 	ImageIcon rRefInElemIcon;
 	ImageIcon rRefInElemIconS;
 	ImageIcon rRefOutElemIcon;
@@ -185,7 +189,7 @@ public class INIReader
 	String iconStrings[] = { "Attribute with Error=default", "Attribute with Error (selected)=default", "Element with Error=default", "Element with Error (selected)=default",
 			"Attribute=default", "Attribute (selected)=default", "Inherited Attribute=default", "Inherited Attribute (selected)=default", "PartID Key Attribute=default",
 			"PartID Key Attribute (selected)=default", "Inherited PartID Key Attribute=default", "Inherited PartID Key Attribute (selected)=default", "rRef Attribute=default",
-			"rRef Attriubte (selected)=default", "Element=default", "Element (selected)=default", "JDF Element=default", "JDF Element (selected)=default",
+			"rRef Attriubte (selected)=default", "Element=default", "Element (selected)=default", "JDF Element=default", "JDF Element (selected)=default","XJDF Element=default", "XJDF Element (selected)=default",
 			"Input rRef Element=default", "Input rRef Element (selected)=default", "Output rRef Element=default", "Output rRef Element (selected)=default", "rRef Element=default",
 			"rRef Element (selected)=default", "Attribute with Warning=default", "Attribute with Warning (selected)=default", "Element with Warning=default",
 			"Element with Warning (selected)=default",
@@ -1011,6 +1015,30 @@ public class INIReader
 					jdfElemIconS = new ImageIcon(iconPath);
 				}
 			}
+
+            else if (iconName.equals("XJDF Element="))
+            {
+                if (iconPath.equalsIgnoreCase("default"))
+                {
+                    xjdfElemIcon = defaultXJDFElemIcon;
+                }
+                else
+                {
+                    xjdfElemIcon = new ImageIcon(iconPath);
+                }
+            }
+
+            else if (iconName.equals("XJDF Element (selected)="))
+            {
+                if (iconPath.equalsIgnoreCase("default"))
+                {
+                    xjdfElemIconS = defaultXJDFElemIconS;
+                }
+                else
+                {
+                    xjdfElemIconS = new ImageIcon(iconPath);
+                }
+            }
 
 			else if (iconName.equals("Input rRef Element="))
 			{

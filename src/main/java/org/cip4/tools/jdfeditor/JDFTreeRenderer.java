@@ -70,17 +70,14 @@ package org.cip4.tools.jdfeditor;
 *  
 * 
 */
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-
-import javax.swing.JTree;
-import javax.swing.tree.DefaultTreeCellRenderer;
-
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.node.JDFNode;
+
+import javax.swing.*;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import java.awt.*;
 
 /**
  * @author AnderssA ThunellE SvenoniusI
@@ -203,6 +200,13 @@ public class JDFTreeRenderer extends DefaultTreeCellRenderer
 					else
 						setIcon(iniFile.jdfElemIcon);
 				}
+                else if (elem.getNodeName().equals("XJDF"))
+                {
+                    if (sel)
+                        setIcon(iniFile.xjdfElemIconS);
+                    else
+                        setIcon(iniFile.xjdfElemIcon);
+                }
 				else if (elem != null && elem.hasAttribute("Usage", null, false))
 				{
 					if (elem.getAttribute("Usage", null, "").equals("Input"))
