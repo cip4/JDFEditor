@@ -74,6 +74,7 @@ import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.XMLDoc;
+import org.cip4.tools.jdfeditor.view.renderer.CheckJDFOutputTreeCellRenderer;
 
 import javax.swing.*;
 import javax.swing.tree.TreePath;
@@ -134,7 +135,7 @@ public class CheckJDFScrollPane extends ValidationScrollPane
 		final ValidationPopupListener popupListener = new ValidationPopupListener();
 		m_reportTree.addMouseListener(popupListener);
 
-		final CheckJDFOutputCellRenderer dcRenderer = new CheckJDFOutputCellRenderer();
+		final CheckJDFOutputTreeCellRenderer dcRenderer = new CheckJDFOutputTreeCellRenderer();
 		m_reportTree.setCellRenderer(dcRenderer);
 		getViewport().setView(m_reportTree);
 	}

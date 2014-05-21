@@ -116,6 +116,7 @@ import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCap;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCaps;
 import org.cip4.jdflib.util.StringUtil;
+import org.cip4.tools.jdfeditor.view.renderer.JDFTreeCellRenderer;
 
 /**
  * This is a new dump for some of the JDFFrame classes that relate to the actual tree view

@@ -1,7 +1,10 @@
-package org.cip4.tools.jdfeditor;
+package org.cip4.tools.jdfeditor.view.renderer;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.validate.JDFValidator;
+import org.cip4.tools.jdfeditor.Editor;
+import org.cip4.tools.jdfeditor.INIReader;
+import org.cip4.tools.jdfeditor.JDFTreeNode;
 
 import javax.swing.*;
 
@@ -11,19 +14,19 @@ import javax.swing.*;
  * TBD Refactoring (s.meissner)
  */
 
-public class DCOutputCellRenderer extends JDFTreeCellRenderer
+public class DCOutputTreeCellRenderer extends JDFTreeCellRenderer
 {
     private static final long serialVersionUID = 626128726824503000L;
     
     
-    public DCOutputCellRenderer()
+    public DCOutputTreeCellRenderer()
     {
         super();
     }
     
     @Override
 	protected void setNodeIcon(JTree jdfTree,JDFTreeNode treeNode){
-        final INIReader iniFile=Editor.getIniFile();
+        final INIReader iniFile= Editor.getIniFile();
 
         final String nodeName=treeNode.getName();
         KElement elem = treeNode.getElement();

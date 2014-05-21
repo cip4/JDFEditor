@@ -1,10 +1,12 @@
-package org.cip4.tools.jdfeditor;
+package org.cip4.tools.jdfeditor.view.renderer;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.node.JDFNode;
+import org.cip4.tools.jdfeditor.JDFTreeModel;
+import org.cip4.tools.jdfeditor.JDFTreeNode;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultTreeCellRenderer;

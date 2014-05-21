@@ -78,6 +78,7 @@ import javax.swing.tree.TreeSelectionModel;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.XMLDoc;
+import org.cip4.tools.jdfeditor.view.renderer.SchemaOutputTreeCellRenderer;
 
 /**
  * this class encapsulates the output of the dev caps test
@@ -131,7 +132,7 @@ public class SchemaScrollPane extends ValidationScrollPane
         final ValidationPopupListener popupListener = new ValidationPopupListener();
         m_reportTree.addMouseListener(popupListener);
         
-        final SchemaOutputCellRenderer dcRenderer = new SchemaOutputCellRenderer();
+        final SchemaOutputTreeCellRenderer dcRenderer = new SchemaOutputTreeCellRenderer();
         m_reportTree.setCellRenderer(dcRenderer);
         getViewport().setView(m_reportTree);
     }

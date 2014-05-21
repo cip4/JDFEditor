@@ -100,6 +100,7 @@ import org.cip4.jdflib.datatypes.JDFAttributeMap;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourceLinkPool;
 import org.cip4.jdflib.resource.JDFResource;
+import org.cip4.tools.jdfeditor.view.renderer.JDFResourceTreeCellRenderer;
 
 /**
  * 
@@ -714,7 +715,7 @@ public class JDFInOutScroll extends JScrollPane
 		resTree.addMouseListener(mouseListener);
 		ToolTipManager.sharedInstance().registerComponent(resTree);
 		resTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-		final JDFResourceCellRenderer resourceRenderer = new JDFResourceCellRenderer();
+		final JDFResourceTreeCellRenderer resourceRenderer = new JDFResourceTreeCellRenderer();
 		resTree.setCellRenderer(resourceRenderer);
 		resTree.setRowHeight(18);
 		resTree.setBackground(Color.white);

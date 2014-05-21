@@ -79,6 +79,7 @@ import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.XMLDoc;
+import org.cip4.tools.jdfeditor.view.renderer.DCOutputTreeCellRenderer;
 
 /**
  * this class encapsulates the output of the dev caps test
@@ -167,7 +168,7 @@ public class JDFDevCapErrScrollPane extends ValidationScrollPane
 		final ValidationPopupListener popupListener = new ValidationPopupListener();
 		m_reportTree.addMouseListener(popupListener);
 
-		final DCOutputCellRenderer dcRenderer = new DCOutputCellRenderer();
+		final DCOutputTreeCellRenderer dcRenderer = new DCOutputTreeCellRenderer();
 		m_reportTree.setCellRenderer(dcRenderer);
 		getViewport().setView(m_reportTree);
 	}

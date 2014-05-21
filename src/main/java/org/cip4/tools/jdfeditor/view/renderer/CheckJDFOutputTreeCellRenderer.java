@@ -1,10 +1,9 @@
-package org.cip4.tools.jdfeditor;
 /*
  *
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2006 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2012 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -69,63 +68,113 @@ package org.cip4.tools.jdfeditor;
  *  
  * 
  */
+package org.cip4.tools.jdfeditor.view.renderer;
+
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.validate.JDFValidator;
+import org.cip4.tools.jdfeditor.Editor;
+import org.cip4.tools.jdfeditor.INIReader;
+import org.cip4.tools.jdfeditor.JDFTreeNode;
 
 import javax.swing.*;
 
 /**
  * @author Elena Skobchenko
  */
-
-public class SchemaOutputCellRenderer extends JDFTreeCellRenderer
+public class CheckJDFOutputTreeCellRenderer extends JDFTreeCellRenderer
 {
-    private static final long serialVersionUID = 6261287268245030123L;
-    
-    
-    public SchemaOutputCellRenderer()
+	private static final long serialVersionUID = 6261287268245030123L;
 
-    {
-        super();
-    }
-    
-    @Override
-	protected void setNodeIcon(JTree jdfTree,JDFTreeNode treeNode){
-        String n=treeNode.getName();
-        INIReader iniFile=Editor.getIniFile();
-        if(treeNode.isElement())
-        {
-            KElement elem = treeNode.getElement();
-            String tts=JDFValidator.toMessageString(elem);
-            if(tts!=null)
-               setToolTipText(tts);
-            
-            if (n.equals("Error"))
-            {
-                setIcon(loadImageIcon(ICON_NODE_ERR));
-            }
-            else if (n.equals("SchemaValidationOutput"))
-            {
-                if(elem!=null && !elem.getAttribute("ValidationResult",null,"").equals("Valid"))
-                {
+	/**
+	 * 
+	 */
+	public CheckJDFOutputTreeCellRenderer()
+	{
+		super();
+	}
+
+	////////////////////////////////////////////////////////////////////
+	/**
+	 * 
+	 */
+	@Override
+	protected void setNodeIcon(JTree jdfTree, JDFTreeNode treeNode)
+	{
+		String n = treeNode.getName();
+		final INIReader iniFile = Editor.getIniFile();
+		if (treeNode.isElement())
+		{
+			KElement elem = treeNode.getElement();
+
+			if (n.equals("TestAttribute"))
+			{
+				if (elem != null && !elem.getBoolAttribute("IsValid", null, false))
+				{
+                    setIcon(loadImageIcon(ICON_ATTR_ERR));
+				}
+				else
+				{
+                    setIcon(loadImageIcon(ICON_ATTR_DEFAULT));
+				}
+
+				String tts = JDFValidator.toMessageString(elem);
+				if (tts != null)
+					setToolTipText(tts);
+			}
+			else if (n.equals("TestElement"))
+			{
+				if (elem != null && !elem.getBoolAttribute("IsValid", null, false))
+				{
                     setIcon(loadImageIcon(ICON_NODE_ERR));
-                }
-                else
-                {
+				}
+				else
+				{
                     setIcon(loadImageIcon(ICON_NODE_JDF));
-                }
-                
-                if(elem.getAttribute("Message")!=null)
-                    setToolTipText(elem.getAttribute("Message"));
-                
-            }
+				}
 
-        }
-        else // attributes
-        {
+				if (elem.getAttribute("Message") != null)
+					setToolTipText(elem.getAttribute("Message"));
+
+			}
+			else if (n.equals("CheckJDFOutput"))
+			{
+				if (elem != null && !elem.getBoolAttribute("IsValid", null, true))
+				{
+                    setIcon(loadImageIcon(ICON_NODE_ERR));
+				}
+				else
+				{
+                    setIcon(loadImageIcon(ICON_NODE_JDF));
+				}
+
+				if (elem.getAttribute("Message") != null)
+					setToolTipText(elem.getAttribute("Message"));
+
+			}
+
+			else if (n.equals("Part"))
+			{
+                setIcon(loadImageIcon(ICON_NODE_JDF));
+			}
+			else
+			{
+				if ("false".equals(elem.getInheritedAttribute("IsValid", null, null)))
+				{
+                    setIcon(loadImageIcon(ICON_NODE_ERR));
+				}
+				else
+				{
+                    setIcon(loadImageIcon(ICON_NODE_JDF));
+				}
+
+				if (elem.getAttribute("Message") != null)
+					setToolTipText(elem.getAttribute("Message"));
+			}
+		}
+		else
+		// real attributes
+		{
             setIcon(loadImageIcon(ICON_ATTR_DEFAULT));
-        }
-    }       
-    
+		}
+	}
 }
-

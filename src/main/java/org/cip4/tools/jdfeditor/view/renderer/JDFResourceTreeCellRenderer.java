@@ -1,4 +1,6 @@
-package org.cip4.tools.jdfeditor;
+package org.cip4.tools.jdfeditor.view.renderer;
+import org.cip4.tools.jdfeditor.*;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -8,7 +10,7 @@ import java.awt.*;
  * only overwrite the difference to the default tree renderer
  * 
  */
-public class JDFResourceCellRenderer extends JDFTreeCellRenderer
+public class JDFResourceTreeCellRenderer extends JDFTreeCellRenderer
 {
     /**
      * 
@@ -21,7 +23,7 @@ public class JDFResourceCellRenderer extends JDFTreeCellRenderer
     // TODO see what can be reused from JDFTreeRenderer
     private Color colorFoc = new Color(110, 200, 240);
     
-    public JDFResourceCellRenderer()
+    public JDFResourceTreeCellRenderer()
     {
         super();
         // colorSel = new Color(200, 200, 200);
