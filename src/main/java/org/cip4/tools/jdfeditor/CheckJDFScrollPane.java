@@ -70,15 +70,14 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import javax.swing.JTree;
-import javax.swing.ToolTipManager;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
-
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.XMLDoc;
+
+import javax.swing.*;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 
 /**
  * this class encapsulates the output of the dev caps test
@@ -135,7 +134,7 @@ public class CheckJDFScrollPane extends ValidationScrollPane
 		final ValidationPopupListener popupListener = new ValidationPopupListener();
 		m_reportTree.addMouseListener(popupListener);
 
-		final CheckJDFOutputRenderer dcRenderer = new CheckJDFOutputRenderer();
+		final CheckJDFOutputCellRenderer dcRenderer = new CheckJDFOutputCellRenderer();
 		m_reportTree.setCellRenderer(dcRenderer);
 		getViewport().setView(m_reportTree);
 	}

@@ -714,7 +714,7 @@ public class JDFInOutScroll extends JScrollPane
 		resTree.addMouseListener(mouseListener);
 		ToolTipManager.sharedInstance().registerComponent(resTree);
 		resTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-		final JDFResourceRenderer resourceRenderer = new JDFResourceRenderer();
+		final JDFResourceCellRenderer resourceRenderer = new JDFResourceCellRenderer();
 		resTree.setCellRenderer(resourceRenderer);
 		resTree.setRowHeight(18);
 		resTree.setBackground(Color.white);

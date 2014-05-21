@@ -167,7 +167,7 @@ public class JDFDevCapErrScrollPane extends ValidationScrollPane
 		final ValidationPopupListener popupListener = new ValidationPopupListener();
 		m_reportTree.addMouseListener(popupListener);
 
-		final DCOutputRenderer dcRenderer = new DCOutputRenderer();
+		final DCOutputCellRenderer dcRenderer = new DCOutputCellRenderer();
 		m_reportTree.setCellRenderer(dcRenderer);
 		getViewport().setView(m_reportTree);
 	}

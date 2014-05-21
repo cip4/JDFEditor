@@ -1,8 +1,6 @@
 package org.cip4.tools.jdfeditor;
-import java.awt.Color;
-import java.awt.Component;
-
-import javax.swing.JTree;
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * @author AnderssA ThunellE SvenoniusI
@@ -10,19 +8,27 @@ import javax.swing.JTree;
  * only overwrite the difference to the default tree renderer
  * 
  */
-public class JDFResourceRenderer extends JDFTreeRenderer
+public class JDFResourceCellRenderer extends JDFTreeCellRenderer
 {
     /**
      * 
      */
+
+
+    private boolean highlightFN;
+
     private static final long serialVersionUID = 1L;
     // TODO see what can be reused from JDFTreeRenderer
     private Color colorFoc = new Color(110, 200, 240);
     
-    public JDFResourceRenderer()
+    public JDFResourceCellRenderer()
     {
         super();
-        colorSel = new Color(200, 200, 200);
+        // colorSel = new Color(200, 200, 200);
+
+        final INIReader iniFile = Editor.getIniFile();
+
+        highlightFN = iniFile.getHighlight();
     }
     
     @Override

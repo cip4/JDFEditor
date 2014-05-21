@@ -70,41 +70,20 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GraphicsEnvironment;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.File;
-import java.util.Arrays;
-import java.util.Vector;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-import javax.swing.border.EtchedBorder;
-
 import org.cip4.jdflib.core.JDFElement.EnumValidationLevel;
 import org.cip4.jdflib.core.JDFElement.EnumVersion;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.util.EnumUtil;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.util.Vector;
 
 /**
  * @author Dr. Rainer Prosi, Heidelberger Druckmaschinen AG
@@ -162,8 +141,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private JCheckBox boxNormalizeOpen;
 	private JCheckBox boxRemDefault;
 	private JCheckBox boxDispDefault;
-	private JCheckBox boxEnableExtension;
-	private JCheckBox boxStructuredCaps;
 	private JCheckBox boxLongID;
 	private JCheckBox boxRemWhite;
 	private JCheckBox boxCheckURL;
@@ -172,10 +149,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private JCheckBox cboxIndentSave;
 
 	private JCheckBox boxValOpen;
-	private JComboBox boxFontName;
-
-	private JComboBox boxFontSize;
-	private int fontSize;
 
 	// Allow for Base, MIS, JMF Level under Golden Ticket Tab
 	private JComboBox boxBaseLevel;
@@ -196,7 +169,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private String currLang;
 	private String currIcon;
 	private String currLNF;
-	public String fontName;
 	private String currMethodSendToDevice;
 	private boolean currRemoveDefault;
 	private boolean currDispDefault;
@@ -220,7 +192,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private String misURL;
 
 	private final UIManager.LookAndFeelInfo aLnF[] = UIManager.getInstalledLookAndFeels();
-	private String[] iconStrings;
 
 	private JComboBox chooseValidLevel;
 	private JComboBox chooseVersion;
@@ -251,11 +222,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		return this.currValidate;
 	}
 
-	public boolean getCheckURL()
-	{
-		return this.checkURL;
-	}
-
 	public String getLNF()
 	{
 		return this.currLNF;
@@ -264,11 +230,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	public String getLanguage()
 	{
 		return this.currLang;
-	}
-
-	public String[] getIconStrings()
-	{
-		return this.iconStrings;
 	}
 
 	void setCurrentLNF(final String _lnf)
@@ -303,12 +264,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		f.applyLookAndFeel(this);
 	}
 
-	private void applyFontSize()
-	{
-		final String s = (String) boxFontSize.getSelectedItem();
-		fontSize = Integer.parseInt(s);
-	}
-
 	private void applyBaseLevel()
 	{
 		final String s = (String) boxBaseLevel.getSelectedItem();
@@ -327,21 +282,11 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		JMFLevel = Integer.parseInt(s);
 	}
 
-	private void applyFontName()
-	{
-		fontName = (String) boxFontName.getSelectedItem();
-		if (fontName.equals("...Default"))
-		{
-			fontName = null;
-		}
-	}
-
 	private void init()
 	{
 		final INIReader iniFile = Editor.getIniFile();
 		this.currLang = iniFile.getLanguage();
 		this.currLNF = iniFile.getLookAndFeel();
-		this.iconStrings = iniFile.getIconStrings();
 		this.currValidate = iniFile.getAutoVal();
 		this.currReadOnly = iniFile.getReadOnly();
 		this.currMethodSendToDevice = iniFile.getMethodSendToDevice();
@@ -353,8 +298,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		currIndentSave = iniFile.getIndentSave();
 		currDispDefault = iniFile.getDisplayDefault();
 		checkURL = iniFile.getCheckURL();
-		enableExtensions = iniFile.getEnableExtensions();
-		structuredCaps = iniFile.getStructuredCaps();
 
 		genericStrings = iniFile.getGenericAtts();
 		generateFull = iniFile.getGenerateFull();
@@ -396,17 +339,8 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		final JPanel dir = createDirPref();
 		prepareTab(n++, dir, "DirectoriesKey");
 
-		final JPanel icon = createIconPref();
-		prepareTab(n++, icon, "IconsKey");
-
 		final JPanel send = createSendToDevicePref();
 		prepareTab(n++, send, "SendToDeviceKey");
-
-		final JPanel font = createFontPref();
-		prepareTab(n++, font, "FontOptionsKey");
-
-		final JPanel ext = createExtPref();
-		prepareTab(n++, ext, "ExtOptionsKey");
 
 		final JPanel valid = createValidatePref();
 		prepareTab(n++, valid, "ValidateKey");
@@ -525,73 +459,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		return main;
 	}
 
-	JPanel createFontPref()
-	{
-		final JPanel main = new JPanel(new BorderLayout());
-
-		main.add(Box.createVerticalStrut(5), BorderLayout.SOUTH);
-		main.add(Box.createHorizontalStrut(5), BorderLayout.EAST);
-		main.add(Box.createHorizontalStrut(5), BorderLayout.WEST);
-		main.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
-
-		final JPanel genPanel = new JPanel(null);
-		genPanel.setBorder(BorderFactory.createTitledBorder(Editor.getString("FontOptionsKey")));
-
-		int y = 30;
-
-		final VString sizes = new VString();
-		sizes.add("10");
-		sizes.add("12");
-		sizes.add("14");
-
-		final JLabel fl = new JLabel();
-		fl.setText(Editor.getString("FontSizeKey"));
-		Dimension d = fl.getPreferredSize();
-		fl.setBounds(10, y, d.width, d.height);
-		genPanel.add(fl);
-
-		fontSize = Editor.getIniFile().getFontSize();
-		y += d.height + 9;
-		boxFontSize = new JComboBox(sizes);
-		boxFontSize.setSelectedItem(String.valueOf(fontSize));
-		d = boxFontSize.getPreferredSize();
-		boxFontSize.setBounds(10, y, d.width, d.height);
-		boxFontSize.addActionListener(this);
-		genPanel.add(boxFontSize);
-
-		y += d.height + 9;
-		final JLabel fnl = new JLabel();
-		fnl.setText(Editor.getString("FontNameKey"));
-		d = fnl.getPreferredSize();
-		fnl.setBounds(10, y, d.width, d.height);
-		genPanel.add(fnl);
-
-		fontName = Editor.getIniFile().getFontName();
-		y += d.height + 9;
-		final String[] allFontNames_ = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-		final String[] allFontNames = new String[allFontNames_.length + 1];
-		allFontNames[0] = "...Default";
-		for (int i = 0; i < allFontNames_.length; i++)
-		{
-			allFontNames[i + 1] = allFontNames_[i];
-		}
-
-		boxFontName = new JComboBox(allFontNames);
-
-		if (fontName != null)
-		{
-			boxFontName.setSelectedItem(fontName);
-		}
-		d = boxFontName.getPreferredSize();
-		boxFontName.setBounds(10, y, d.width, d.height);
-		boxFontName.addActionListener(this);
-		genPanel.add(boxFontName);
-
-		main.add(genPanel, BorderLayout.CENTER);
-
-		return main;
-	}
-
 	/**
 	 * draw the flags etc. for the language preferences
 	 * @return
@@ -704,36 +571,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
 		main.add(dirPanel, BorderLayout.CENTER);
 
-		return main;
-	}
-
-	private JPanel createExtPref()
-	{
-		final JPanel main = new JPanel(new BorderLayout());
-
-		main.add(Box.createVerticalStrut(5), BorderLayout.SOUTH);
-		main.add(Box.createHorizontalStrut(5), BorderLayout.EAST);
-		main.add(Box.createHorizontalStrut(5), BorderLayout.WEST);
-		main.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
-
-		final JPanel panel = new JPanel(null);
-		panel.setBorder(BorderFactory.createTitledBorder(Editor.getString("ExtOptionsKey")));
-
-		int y = 30;
-		boxEnableExtension = new JCheckBox(Editor.getString("EnableExtensionKey"), enableExtensions);
-		Dimension d = boxEnableExtension.getPreferredSize();
-		boxEnableExtension.setBounds(10, y, d.width, d.height);
-		boxEnableExtension.addActionListener(this);
-		panel.add(boxEnableExtension);
-
-		y += 100;
-		boxStructuredCaps = new JCheckBox(Editor.getString("StructuredCapsKey"), structuredCaps);
-		d = boxStructuredCaps.getPreferredSize();
-		boxStructuredCaps.setBounds(10, y, d.width, d.height);
-		boxStructuredCaps.addActionListener(this);
-		panel.add(boxStructuredCaps);
-
-		main.add(panel, BorderLayout.CENTER);
 		return main;
 	}
 
@@ -983,317 +820,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		return langBox;
 	}
 
-	JPanel createIconPref()
-	{
-		final JPanel main = new JPanel(new BorderLayout());
-
-		main.add(Box.createVerticalStrut(5), BorderLayout.SOUTH);
-		main.add(Box.createHorizontalStrut(5), BorderLayout.EAST);
-		main.add(Box.createHorizontalStrut(5), BorderLayout.WEST);
-		main.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
-
-		final JPanel iconPanel = new JPanel(null);
-		iconPanel.setBorder(BorderFactory.createTitledBorder(Editor.getString("EditorIconsKey")));
-
-		final String[] iconNames = createIconNames();
-
-		currIcon = iconNames[0];
-		final JComboBox icoBox = new JComboBox(iconNames);
-		icoBox.setAlignmentX(Component.LEFT_ALIGNMENT);
-		icoBox.addActionListener(this);
-		icoBox.setBounds(155, 40, 210, 24);
-		iconPanel.add(icoBox);
-
-		iconPreview = new JLabel();
-		iconPreview.setHorizontalAlignment(SwingConstants.CENTER);
-		setPic((String) icoBox.getSelectedItem());
-		iconPreview.setBounds(20, 40, 80, 80);
-		iconPreview.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-		iconPanel.add(iconPreview);
-
-		defaultIconButton = new JButton(Editor.getString("DefaultIconKey"));
-		defaultIconButton.addActionListener(this);
-
-		changeIconButton = new JButton(Editor.getString("ChangeIconKey"));
-		changeIconButton.addActionListener(this);
-
-		final Dimension defaultDim = defaultIconButton.getPreferredSize();
-		final Dimension changeDim = changeIconButton.getPreferredSize();
-		final int defaultX = 390 - (defaultDim.width + changeDim.width + 35);
-		final int changeX = 390 - (changeDim.width + 25);
-
-		defaultIconButton.setBounds(defaultX, 130, defaultDim.width, defaultDim.height);
-		changeIconButton.setBounds(changeX, 130, changeDim.width, changeDim.height);
-		iconPanel.add(defaultIconButton);
-		iconPanel.add(changeIconButton);
-
-		main.add(iconPanel, BorderLayout.CENTER);
-
-		return main;
-	}
-
-	private String[] createIconNames()
-	{
-		final String[] tmp = new String[iconStrings.length];
-
-		for (int i = 0; i < iconStrings.length; i++)
-		{
-			final int index = iconStrings[i].indexOf("=");
-			final String name = iconStrings[i].substring(0, index);
-			tmp[i] = name;
-		}
-		Arrays.sort(tmp);
-
-		return tmp;
-	}
-
-	private void setPic(final String iconName)
-	{
-		final INIReader iniFile = Editor.getIniFile();
-		if (iconName.equals("Attribute with Error"))
-		{
-			iconPreview.setIcon(iniFile.errAttIcon);
-		}
-		else if (iconName.equals("Attribute with Error (selected)"))
-		{
-			iconPreview.setIcon(iniFile.errAttIconS);
-		}
-		else if (iconName.equals("Element with Error"))
-		{
-			iconPreview.setIcon(iniFile.errElemIcon);
-		}
-		else if (iconName.equals("Element with Error (selected)"))
-		{
-			iconPreview.setIcon(iniFile.errElemIconS);
-		}
-		else if (iconName.equals("Attribute"))
-		{
-			iconPreview.setIcon(iniFile.attIcon);
-		}
-		else if (iconName.equals("Attribute (selected)"))
-		{
-			iconPreview.setIcon(iniFile.attIconS);
-		}
-		else if (iconName.equals("Inherited Attribute"))
-		{
-			iconPreview.setIcon(iniFile.iAttIcon);
-		}
-		else if (iconName.equals("Inherited Attribute (selected)"))
-		{
-			iconPreview.setIcon(iniFile.iAttIconS);
-		}
-		else if (iconName.equals("PartID Key Attribute"))
-		{
-			iconPreview.setIcon(iniFile.pAttIcon);
-		}
-		else if (iconName.equals("PartID Key Attribute (selected)"))
-		{
-			iconPreview.setIcon(iniFile.pAttIconS);
-		}
-		else if (iconName.equals("Inherited PartID Key Attribute"))
-		{
-			iconPreview.setIcon(iniFile.iPAttIcon);
-		}
-		else if (iconName.equals("Inherited PartID Key Attribute (selected)"))
-		{
-			iconPreview.setIcon(iniFile.iPAttIconS);
-		}
-		else if (iconName.equals("rRef Attribute"))
-		{
-			iconPreview.setIcon(iniFile.refAttIcon);
-		}
-		else if (iconName.equals("rRef Attriubte (selected)"))
-		{
-			iconPreview.setIcon(iniFile.refAttIconS);
-		}
-		else if (iconName.equals("Element"))
-		{
-			iconPreview.setIcon(iniFile.elemIcon);
-		}
-		else if (iconName.equals("Element (selected)"))
-		{
-			iconPreview.setIcon(iniFile.elemIconS);
-		}
-		else if (iconName.equals("JDF Element"))
-		{
-			iconPreview.setIcon(iniFile.jdfElemIcon);
-		}
-		else if (iconName.equals("JDF Element (selected)"))
-		{
-			iconPreview.setIcon(iniFile.jdfElemIconS);
-		}
-		else if (iconName.equals("Input rRef Element"))
-		{
-			iconPreview.setIcon(iniFile.rRefInElemIcon);
-		}
-		else if (iconName.equals("Input rRef Element (selected)"))
-		{
-			iconPreview.setIcon(iniFile.rRefInElemIconS);
-		}
-		else if (iconName.equals("Output rRef Element"))
-		{
-			iconPreview.setIcon(iniFile.rRefOutElemIcon);
-		}
-		else if (iconName.equals("Output rRef Element (selected)"))
-		{
-			iconPreview.setIcon(iniFile.rRefOutElemIconS);
-		}
-		else if (iconName.equals("rRef Element"))
-		{
-			iconPreview.setIcon(iniFile.rRefElemIcon);
-		}
-		else if (iconName.equals("rRef Element (selected)"))
-		{
-			iconPreview.setIcon(iniFile.rRefElemIconS);
-		}
-	}
-
-	private void setDefaultPic(final String iconName)
-	{
-		final INIReader iniFile = Editor.getIniFile();
-		for (int i = 0; i < iconStrings.length; i++)
-		{
-			final String iconCheck = iconStrings[i].substring(0, iconStrings[i].indexOf("="));
-			if (iconCheck.equals(iconName))
-			{
-				iconStrings[i] = iconName + "=default";
-				iniFile.setIconStrings(iconStrings);
-				iniFile.writeINIFile();
-				iniFile.setIcons();
-				setPic(iconName);
-				break;
-			}
-		}
-
-		if (iconName.equals("Attribute with Error"))
-		{
-			iconPreview.setIcon(iniFile.defaultErrAttIcon);
-		}
-		else if (iconName.equals("Attribute with Error (selected)"))
-		{
-			iconPreview.setIcon(iniFile.defaultErrAttIconS);
-		}
-		else if (iconName.equals("Element with Error"))
-		{
-			iconPreview.setIcon(iniFile.defaultErrElemIcon);
-		}
-		else if (iconName.equals("Element with Error (selected)"))
-		{
-			iconPreview.setIcon(iniFile.defaultErrElemIconS);
-		}
-		else if (iconName.equals("Attribute"))
-		{
-			iconPreview.setIcon(iniFile.defaultAttIcon);
-		}
-		else if (iconName.equals("Attribute (selected)"))
-		{
-			iconPreview.setIcon(iniFile.defaultAttIconS);
-		}
-		else if (iconName.equals("Inherited Attribute"))
-		{
-			iconPreview.setIcon(iniFile.defaultIAttIcon);
-		}
-		else if (iconName.equals("Inherited Attribute (selected)"))
-		{
-			iconPreview.setIcon(iniFile.defaultIAttIconS);
-		}
-		else if (iconName.equals("PartID Key Attribute"))
-		{
-			iconPreview.setIcon(iniFile.defaultPAttIcon);
-		}
-		else if (iconName.equals("PartID Key Attribute (selected)"))
-		{
-			iconPreview.setIcon(iniFile.defaultPAttIconS);
-		}
-		else if (iconName.equals("Inherited PartID Key Attribute"))
-		{
-			iconPreview.setIcon(iniFile.defaultIPAttIcon);
-		}
-		else if (iconName.equals("Inherited PartID Key Attribute (selected)"))
-		{
-			iconPreview.setIcon(iniFile.defaultIPAttIconS);
-		}
-		else if (iconName.equals("rRef Attribute"))
-		{
-			iconPreview.setIcon(iniFile.defaultRefAttIcon);
-		}
-		else if (iconName.equals("rRef Attriubte (selected)"))
-		{
-			iconPreview.setIcon(iniFile.defaultRefAttIconS);
-		}
-		else if (iconName.equals("Element"))
-		{
-			iconPreview.setIcon(iniFile.defaultElemIcon);
-		}
-		else if (iconName.equals("Element (selected)"))
-		{
-			iconPreview.setIcon(iniFile.defaultElemIconS);
-		}
-		else if (iconName.equals("JDF Element"))
-		{
-			iconPreview.setIcon(iniFile.defaultJDFElemIcon);
-		}
-		else if (iconName.equals("JDF Element (selected)"))
-		{
-			iconPreview.setIcon(iniFile.defaultJDFElemIconS);
-		}
-		else if (iconName.equals("Input rRef Element"))
-		{
-			iconPreview.setIcon(iniFile.defaultRefInElemIcon);
-		}
-		else if (iconName.equals("Input rRef Element (selected)"))
-		{
-			iconPreview.setIcon(iniFile.defaultRefInElemIconS);
-		}
-		else if (iconName.equals("Output rRef Element"))
-		{
-			iconPreview.setIcon(iniFile.defaultRefOutElemIcon);
-		}
-		else if (iconName.equals("Output rRef Element (selected)"))
-		{
-			iconPreview.setIcon(iniFile.defaultRefOutElemIconS);
-		}
-		else if (iconName.equals("rRef Element"))
-		{
-			iconPreview.setIcon(iniFile.defaultRefElemIcon);
-		}
-		else if (iconName.equals("rRef Element (selected)"))
-		{
-			iconPreview.setIcon(iniFile.defaultRefElemIconS);
-		}
-	}
-
-	private void changeIcon(final String s)
-	{
-		final JFileChooser jfc = new JFileChooser(Editor.getString("SelectIconKey"));
-		jfc.setMultiSelectionEnabled(false);
-
-		final int answer = jfc.showOpenDialog(null);
-
-		if (answer == JFileChooser.APPROVE_OPTION)
-		{
-			final String path = jfc.getSelectedFile().getAbsolutePath();
-			final INIReader iniFile = Editor.getIniFile();
-
-			if (path != null)
-			{
-				for (int i = 0; i < iconStrings.length; i++)
-				{
-					final String iconCheck = iconStrings[i].substring(0, iconStrings[i].indexOf("="));
-					if (iconCheck.equals(s))
-					{
-						iconStrings[i] = s + "=" + path;
-						iniFile.setIconStrings(iconStrings);
-						iniFile.writeINIFile();
-						iniFile.setIcons();
-						setPic(s);
-						break;
-					}
-				}
-			}
-		}
-	}
-
 	// 20040906 MRE
 	JPanel createSendToDevicePref()
 	{
@@ -1393,21 +919,9 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	public void actionPerformed(final ActionEvent e)
 	{
 		final Object source = e.getSource();
-		if (source == defaultIconButton)
-		{
-			setDefaultPic(currIcon);
-		}
-		else if (source == changeIconButton)
-		{
-			changeIcon(currIcon);
-		}
-		else if (source == applyLnFButton)
+		if (source == applyLnFButton)
 		{
 			applyLnF();
-		}
-		else if (source == boxFontSize)
-		{
-			applyFontSize();
 		}
 		else if (source == boxBaseLevel)
 		{
@@ -1420,10 +934,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		else if (source == boxJMFLevel)
 		{
 			applyJMFLevel();
-		}
-		else if (source == boxFontName)
-		{
-			applyFontName();
 		}
 		else if (source == boxReadOnly)
 		{
@@ -1460,14 +970,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		else if (source == boxLongID)
 		{
 			longID = boxLongID.isSelected();
-		}
-		else if (source == boxEnableExtension)
-		{
-			enableExtensions = boxEnableExtension.isSelected();
-		}
-		else if (source == boxStructuredCaps)
-		{
-			structuredCaps = boxStructuredCaps.isSelected();
 		}
 		else if (source == boxIgnoreDefaults)
 		{
@@ -1516,22 +1018,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		{
 			misURL = fieldMISURL.getText();
 		}
-		else if (source.getClass().equals(JComboBox.class))
-		{
-			final JComboBox jcb = (JComboBox) source;
-			currIcon = (String) jcb.getSelectedItem();
-			setPic(currIcon);
-		}
-
-	}
-
-	/**
-	 * returns the currently selected font size
-	 * @return
-	 */
-	public int getFontSize()
-	{
-		return fontSize;
 	}
 
 	public int getBaseLevel()
@@ -1549,17 +1035,12 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		return JMFLevel;
 	}
 
-	// //////////////////////////////////////////////////////////
-	/**
-	 * 
-	 */
 	public void writeToIni()
 	{
 		final INIReader iniFile = Editor.getIniFile();
 		validTab.writeToIni();
 		iniFile.setUseSchema(useSchema);
 		iniFile.setSchemaURL(getSchemaURL());
-		iniFile.setFontSize(getFontSize());
 
 		iniFile.setBaseLevel(getBaseLevel());
 		iniFile.setMISLevel(getMISLevel());
@@ -1568,18 +1049,14 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		iniFile.setLanguage(getLanguage());
 		iniFile.setReadOnly(getReadOnly());
 		iniFile.setAutoVal(getAutoVal());
-		iniFile.setIconStrings(getIconStrings());
 		iniFile.setMethodSendToDevice(getMethodSendToDevice());
 		iniFile.setLookAndFeel(getLNF());
-		iniFile.setFontName(fontName);
 		iniFile.setRemoveDefault(currRemoveDefault);
 		iniFile.setDisplayDefault(currDispDefault);
 		iniFile.setRemoveWhite(currRemoveWhite);
 		iniFile.setIndentSave(currIndentSave);
 		iniFile.setCheckURL(checkURL);
 		iniFile.setLongID(longID);
-		iniFile.setEnableExtensions(enableExtensions);
-		iniFile.setStructuredCaps(structuredCaps);
 		iniFile.setGenerateFull(generateFull);
 		iniFile.setNormalizeOpen(normalizeOpen);
 		iniFile.setIgnoreDefault(ignoreDefaults);
@@ -1623,9 +1100,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		return ignoreDefaults;
 	}
 
-	/**
-	 * @param ignoreDefaults the ignoreDefaults to set
-	 */
 	public void setIgnoreDefaults(final boolean _ignoreDefaults)
 	{
 		this.ignoreDefaults = _ignoreDefaults;

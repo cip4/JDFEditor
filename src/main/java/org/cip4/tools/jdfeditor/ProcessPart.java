@@ -69,23 +69,15 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Point;
-import java.util.Vector;
-
-import javax.swing.JComponent;
-
-import org.cip4.jdflib.core.AttributeName;
-import org.cip4.jdflib.core.ElementName;
-import org.cip4.jdflib.core.JDFResourceLink;
-import org.cip4.jdflib.core.KElement;
-import org.cip4.jdflib.core.VElement;
+import org.cip4.jdflib.core.*;
 import org.cip4.jdflib.datatypes.VJDFAttributeMap;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.resource.JDFResource.EnumResStatus;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.Vector;
 
 /*
  * FooProcessPart.java
@@ -166,12 +158,9 @@ public class ProcessPart extends JComponent
     {
         if(procFont==null)
         {
-            INIReader reader=Editor.getIniFile();
-            final String fontName=reader.getFontName();
-            final int fontSize=reader.getFontSize();
-            procFont = new Font(fontName, Font.PLAIN, fontSize);
-            resourceFont = new Font(fontName, Font.PLAIN, fontSize-1);
-            parentFont = new Font(fontName, Font.BOLD, fontSize+2);
+            procFont = new Font(null, Font.PLAIN, 10);
+            resourceFont = new Font(null, Font.PLAIN, 9);
+            parentFont = new Font(null, Font.BOLD, 8);
         }
     }
 

@@ -131,7 +131,7 @@ public class JDFTreeArea extends JTextArea
 	private static final long serialVersionUID = 2036935468347224324L;
 	private final JScrollPane m_treeScroll;
 	JViewport m_treeView;
-	private JDFTreeRenderer m_renderer;
+	private JDFTreeCellRenderer m_renderer;
 	JDFFrame m_frame;
 	private static String lastPath = "/JDF";
 
@@ -258,7 +258,7 @@ public class JDFTreeArea extends JTextArea
 		jdfTree.setExpandsSelectedPaths(true);
 		jdfTree.putClientProperty("JTree.lineStyle", "Angled");
 		ToolTipManager.sharedInstance().registerComponent(jdfTree);
-		m_renderer = new JDFTreeRenderer();
+		m_renderer = new JDFTreeCellRenderer();
 		jdfTree.setCellRenderer(m_renderer);
 		jdfTree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
 		m_treeSelectionListener = m_frame.getTreeSelectionListener();

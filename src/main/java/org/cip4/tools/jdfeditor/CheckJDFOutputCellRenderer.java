@@ -1,10 +1,9 @@
-package org.cip4.tools.jdfeditor;
 /*
  *
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2006 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2012 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -69,74 +68,110 @@ package org.cip4.tools.jdfeditor;
  *  
  * 
  */
-import javax.swing.JTree;
+package org.cip4.tools.jdfeditor;
 
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.validate.JDFValidator;
 
+import javax.swing.*;
+
 /**
  * @author Elena Skobchenko
  */
-
-public class SchemaOutputRenderer extends JDFTreeRenderer 
+public class CheckJDFOutputCellRenderer extends JDFTreeCellRenderer
 {
-    private static final long serialVersionUID = 6261287268245030123L;
-    
-    
-    public SchemaOutputRenderer()
-    {
-        super();
-    }
-    
-    @Override
-	protected void setNodeIcon(JTree jdfTree,boolean sel, JDFTreeNode treeNode){
-        String n=treeNode.getName();
-        INIReader iniFile=Editor.getIniFile();
-        if(treeNode.isElement())
-        {
-            KElement elem = treeNode.getElement();
-            String tts=JDFValidator.toMessageString(elem);
-            if(tts!=null)
-               setToolTipText(tts);
-            
-            if (n.equals("Error"))
-            {
-                if (sel)
-                    setIcon(iniFile.errElemIconS);
-                else
-                    setIcon(iniFile.errElemIcon);
-            }
-            else if (n.equals("SchemaValidationOutput"))
-            {
-                if(elem!=null && !elem.getAttribute("ValidationResult",null,"").equals("Valid"))
-                {
-                    if (sel)
-                        setIcon(iniFile.errElemIconS);
-                    else
-                        setIcon(iniFile.errElemIcon);
-                }
-                else
-                {
-                    if (sel)
-                        setIcon(iniFile.jdfElemIconS);
-                    else
-                        setIcon(iniFile.jdfElemIcon);
-                }
-                
-                if(elem.getAttribute("Message")!=null)
-                    setToolTipText(elem.getAttribute("Message"));
-                
-            }
+	private static final long serialVersionUID = 6261287268245030123L;
 
-        }
-        else // attributes
-        {
-            if (sel)
-                setIcon(iniFile.attIconS);
-            else
-                setIcon(iniFile.attIcon);
-        }
-    }       
-    
+	/**
+	 * 
+	 */
+	public CheckJDFOutputCellRenderer()
+	{
+		super();
+	}
+
+	////////////////////////////////////////////////////////////////////
+	/**
+	 * 
+	 */
+	@Override
+	protected void setNodeIcon(JTree jdfTree, JDFTreeNode treeNode)
+	{
+		String n = treeNode.getName();
+		final INIReader iniFile = Editor.getIniFile();
+		if (treeNode.isElement())
+		{
+			KElement elem = treeNode.getElement();
+
+			if (n.equals("TestAttribute"))
+			{
+				if (elem != null && !elem.getBoolAttribute("IsValid", null, false))
+				{
+                    setIcon(loadImageIcon(ICON_ATTR_ERR));
+				}
+				else
+				{
+                    setIcon(loadImageIcon(ICON_ATTR_DEFAULT));
+				}
+
+				String tts = JDFValidator.toMessageString(elem);
+				if (tts != null)
+					setToolTipText(tts);
+			}
+			else if (n.equals("TestElement"))
+			{
+				if (elem != null && !elem.getBoolAttribute("IsValid", null, false))
+				{
+                    setIcon(loadImageIcon(ICON_NODE_ERR));
+				}
+				else
+				{
+                    setIcon(loadImageIcon(ICON_NODE_JDF));
+				}
+
+				if (elem.getAttribute("Message") != null)
+					setToolTipText(elem.getAttribute("Message"));
+
+			}
+			else if (n.equals("CheckJDFOutput"))
+			{
+				if (elem != null && !elem.getBoolAttribute("IsValid", null, true))
+				{
+                    setIcon(loadImageIcon(ICON_NODE_ERR));
+				}
+				else
+				{
+                    setIcon(loadImageIcon(ICON_NODE_JDF));
+				}
+
+				if (elem.getAttribute("Message") != null)
+					setToolTipText(elem.getAttribute("Message"));
+
+			}
+
+			else if (n.equals("Part"))
+			{
+                setIcon(loadImageIcon(ICON_NODE_JDF));
+			}
+			else
+			{
+				if ("false".equals(elem.getInheritedAttribute("IsValid", null, null)))
+				{
+                    setIcon(loadImageIcon(ICON_NODE_ERR));
+				}
+				else
+				{
+                    setIcon(loadImageIcon(ICON_NODE_JDF));
+				}
+
+				if (elem.getAttribute("Message") != null)
+					setToolTipText(elem.getAttribute("Message"));
+			}
+		}
+		else
+		// real attributes
+		{
+            setIcon(loadImageIcon(ICON_ATTR_DEFAULT));
+		}
+	}
 }
-

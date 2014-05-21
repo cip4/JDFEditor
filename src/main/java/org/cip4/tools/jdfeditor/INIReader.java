@@ -82,7 +82,6 @@ import org.cip4.tools.jdfeditor.dialog.SearchComboBoxModel;
 import javax.swing.*;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /*
@@ -102,99 +101,6 @@ import java.util.List;
  */
 public class INIReader
 {
-
-	final ImageIcon defaultErrAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/leaf_error.png");
-	final ImageIcon defaultErrAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/leaf_error.png");
-	final ImageIcon defaultErrElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ErrorElemIcon.gif");
-	final ImageIcon defaultErrElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ErrorElemIconSelected.gif");
-
-	final ImageIcon defaultWarnAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "WarnAttIcon.gif");
-	final ImageIcon defaultWarnAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "WarnAttIconSelected.gif");
-	final ImageIcon defaultWarnElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "WarnElemIcon.gif");
-	final ImageIcon defaultWarnElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "WarnElemIconSelected.gif");
-
-	final ImageIcon defaultAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/leaf.png");
-	final ImageIcon defaultAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/leaf.png");
-	final ImageIcon defaultIAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/leaf_inherit.png");
-	final ImageIcon defaultIAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/leaf_inherit.png");
-
-	final ImageIcon defaultPAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/leaf_keys.png");
-	final ImageIcon defaultPAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/leaf_keys.png");
-
-	final ImageIcon defaultIPAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/leaf_keys.png");
-	final ImageIcon defaultIPAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/leaf_keys.png");
-
-	final ImageIcon defaultRefAttIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/leaf_ref.png");
-	final ImageIcon defaultRefAttIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/leaf_ref.png");
-
-	final ImageIcon defaultElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/node.png");
-	final ImageIcon defaultElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/node.png");
-
-	final ImageIcon defaultJDFElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/node_jdf.png");
-    final ImageIcon defaultJDFElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/node_jdf.png");
-    final ImageIcon defaultXJDFElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/node_xjdf.png");
-    final ImageIcon defaultXJDFElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/node_xjdf.png");
-
-	final ImageIcon defaultRefElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefElemIcon.gif");
-	final ImageIcon defaultRefElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefElemIconSelected.gif");
-	final ImageIcon defaultRefInElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/node_link.png");
-	final ImageIcon defaultRefInElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/node_link.png");
-	final ImageIcon defaultRefOutElemIcon = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/node_link.png");
-	final ImageIcon defaultRefOutElemIconS = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "treeview/node_link.png");
-
-	ImageIcon warnAttIcon = defaultWarnAttIcon;
-	ImageIcon warnAttIconS = defaultWarnAttIconS;
-	ImageIcon warnElemIcon = defaultWarnElemIcon;
-	ImageIcon warnElemIconS = defaultWarnElemIconS;
-	ImageIcon errAttIcon;
-	ImageIcon errAttIconS;
-	ImageIcon errElemIcon;
-	ImageIcon errElemIconS;
-	ImageIcon attIcon;
-	ImageIcon attIconS;
-	ImageIcon iAttIcon;
-	ImageIcon iAttIconS;
-	ImageIcon pAttIcon;
-	ImageIcon pAttIconS;
-	ImageIcon iPAttIcon;
-	ImageIcon iPAttIconS;
-	ImageIcon refAttIcon;
-	ImageIcon refAttIconS;
-	ImageIcon elemIcon;
-	ImageIcon elemIconS;
-	ImageIcon jdfElemIcon;
-    ImageIcon jdfElemIconS;
-    ImageIcon xjdfElemIcon;
-    ImageIcon xjdfElemIconS;
-	ImageIcon rRefInElemIcon;
-	ImageIcon rRefInElemIconS;
-	ImageIcon rRefOutElemIcon;
-	ImageIcon rRefOutElemIconS;
-	ImageIcon rRefElemIcon;
-	ImageIcon rRefElemIconS;
-	// ImageIcon invElemIcon;
-	// ImageIcon invAttIcon;
-	// ImageIcon misElemIcon;
-	// ImageIcon misAttIcon;
-	// ImageIcon unkElemIcon;
-	// ImageIcon unkAttIcon;
-	// ImageIcon execJDFIcon;
-	// ImageIcon invElemIconS;
-	// ImageIcon invAttIconS;
-	// ImageIcon misElemIconS;
-	// ImageIcon misAttIconS;
-	// ImageIcon unkElemIconS;
-	// ImageIcon unkAttIconS;
-
-	String iconStrings[] = { "Attribute with Error=default", "Attribute with Error (selected)=default", "Element with Error=default", "Element with Error (selected)=default",
-			"Attribute=default", "Attribute (selected)=default", "Inherited Attribute=default", "Inherited Attribute (selected)=default", "PartID Key Attribute=default",
-			"PartID Key Attribute (selected)=default", "Inherited PartID Key Attribute=default", "Inherited PartID Key Attribute (selected)=default", "rRef Attribute=default",
-			"rRef Attriubte (selected)=default", "Element=default", "Element (selected)=default", "JDF Element=default", "JDF Element (selected)=default","XJDF Element=default", "XJDF Element (selected)=default",
-			"Input rRef Element=default", "Input rRef Element (selected)=default", "Output rRef Element=default", "Output rRef Element (selected)=default", "rRef Element=default",
-			"rRef Element (selected)=default", "Attribute with Warning=default", "Attribute with Warning (selected)=default", "Element with Warning=default",
-			"Element with Warning (selected)=default",
-	// "JDF Folder=default"
-	};
 	private final String language = "General/@language";
 	private final String lookAndFeel = "General/@lookAndFeel";
 	private final String methodSendToDevice = "SendToDevice/@Method";
@@ -204,8 +110,6 @@ public class INIReader
 	private final String urlSendToDevice = "SendToDevice/@URLSendTo";
 	private final String urlReturnToDevice = "SendToDevice/@URLReturnTo";
 	private final String longID = "General/@longID";
-	private final String fontSize = "General/@fontSize";
-	private final String fontName = "General/@fontName";
 	private final String normalizeOpen = "General/@NormalizeOpen";
 
 	private final String enableExtensions = "Extension/@enableExtensions";
@@ -221,8 +125,6 @@ public class INIReader
 	private final String fromXJDFHeuristicLink = "Extension/XJDF/@FromXJDFHeuristicLink";
 
 	//	HTTP server settings
-	private final String httpIpAddress = "HTTPserver/@IpAddress";
-	private final String httpPort = "HTTPserver/@Port";
 	private final String httpStorePath = "HTTPserver/@StorePath";
 
 	//	Find dialog
@@ -273,7 +175,6 @@ public class INIReader
 
 	private void init()
 	{
-		Arrays.sort(iconStrings);
 		// Read the Editor.ini file and store the data in it
 		try
 		{
@@ -288,7 +189,6 @@ public class INIReader
 			writeINIFile();
 			readINIFile();
 		}
-		setIcons();
 	}
 
 	/**
@@ -320,35 +220,19 @@ public class INIReader
 	/**
 	 * @return
 	 */
-	public int getFontSize()
-	{
-		final String s = getAttribute(fontSize, "10");
-		return Integer.parseInt(s);
-	}
+//	public int getFontSize()
+//	{
+//		final String s = getAttribute(fontSize, "10");
+//		return Integer.parseInt(s);
+//	}
 
 	/**
 	 * @return
 	 */
-	public String getFontName()
-	{
-		return getAttribute(fontName, null);
-	}
-
-	/**
-	 * @param fs
-	 */
-	public void setFontSize(final int fs)
-	{
-		setAttribute(fontSize, String.valueOf(fs));
-	}
-
-	/**
-	 * @param _fontName
-	 */
-	public void setFontName(final String _fontName)
-	{
-		setAttribute(fontName, _fontName);
-	}
+//	public String getFontName()
+//	{
+//		return getAttribute(fontName, null);
+//	}
 
 	/**
 	 * @return
@@ -574,11 +458,6 @@ public class INIReader
 		return getAttribute(ignoreDefault, "true").equals("true");
 	}
 
-	public String[] getIconStrings()
-	{
-		return this.iconStrings;
-	}
-
 	public boolean getHighlight()
 	{
 		return getAttribute(highlightFN, "").equalsIgnoreCase("on") ? true : false;
@@ -591,7 +470,7 @@ public class INIReader
 
 	public boolean getEnableExtensions()
 	{
-		return getAttribute(enableExtensions, "false").equalsIgnoreCase("true") ? true : false;
+		return true;
 	}
 
 	public void setEnableExtensions(final boolean b)
@@ -601,7 +480,7 @@ public class INIReader
 
 	public boolean getStructuredCaps()
 	{
-		return getAttribute(structuredCaps, "false").equalsIgnoreCase("true") ? true : false;
+		return true;
 	}
 
 	public void setStructuredCaps(final boolean b)
@@ -731,7 +610,6 @@ public class INIReader
 			{
 				break;
 			}
-			checkIcon(name, path);
 		}
 
 	}
@@ -773,364 +651,6 @@ public class INIReader
 		//		}
 		//		final String iniPath = iniDir.getPath() + File.separator + "Editor.ini";
 		//		return iniPath;
-	}
-
-	private void checkIcon(final String iconName, final String iconPath)
-	{
-
-		for (int i = 0; i < iconStrings.length; i++)
-		{
-			final String temp = iconStrings[i].substring(0, iconStrings[i].indexOf("="));
-
-			if (iconName.equals(temp))
-			{
-				iconStrings[i] = iconName + "=" + iconPath;
-				break;
-			}
-		}
-	}
-
-	public void setIcons()
-	{
-		for (int i = 0; i < iconStrings.length; i++)
-		{
-			final int index = iconStrings[i].indexOf("=") + 1;
-			final String iconName = iconStrings[i].substring(0, index);
-			final String iconPath = iconStrings[i].substring(index, iconStrings[i].length());
-			setAttribute("Icons/Icon[" + String.valueOf(i + 1) + "]/@Name", iconName);
-			setAttribute("Icons/Icon[" + String.valueOf(i + 1) + "]/@Path", iconPath);
-
-			if (iconName.equals("Attribute with Error="))
-			{
-				if (iconPath.equalsIgnoreCase("default"))
-				{
-					errAttIcon = defaultErrAttIcon;
-				}
-				else
-				{
-					errAttIcon = new ImageIcon(iconPath);
-				}
-			}
-
-			else if (iconName.equals("Attribute with Error (selected)="))
-			{
-				if (iconPath.equalsIgnoreCase("default"))
-				{
-					errAttIconS = defaultErrAttIconS;
-				}
-				else
-				{
-					errAttIconS = new ImageIcon(iconPath);
-				}
-			}
-
-			else if (iconName.equals("Element with Error="))
-			{
-				if (iconPath.equalsIgnoreCase("default"))
-				{
-					errElemIcon = defaultErrElemIcon;
-				}
-				else
-				{
-					errElemIcon = new ImageIcon(iconPath);
-				}
-			}
-
-			else if (iconName.equals("Element with Error (selected)="))
-			{
-				if (iconPath.equalsIgnoreCase("default"))
-				{
-					errElemIconS = defaultErrElemIconS;
-				}
-				else
-				{
-					errElemIconS = new ImageIcon(iconPath);
-				}
-			}
-
-			else if (iconName.equals("Attribute="))
-			{
-				if (iconPath.equalsIgnoreCase("default"))
-				{
-					attIcon = defaultAttIcon;
-				}
-				else
-				{
-					attIcon = new ImageIcon(iconPath);
-				}
-			}
-
-			else if (iconName.equals("Attribute (selected)="))
-			{
-				if (iconPath.equalsIgnoreCase("default"))
-				{
-					attIconS = defaultAttIconS;
-				}
-				else
-				{
-					attIconS = new ImageIcon(iconPath);
-				}
-			}
-
-			else if (iconName.equals("Inherited Attribute="))
-			{
-				if (iconPath.equalsIgnoreCase("default"))
-				{
-					iAttIcon = defaultIAttIcon;
-				}
-				else
-				{
-					iAttIcon = new ImageIcon(iconPath);
-				}
-			}
-
-			else if (iconName.equals("Inherited Attribute (selected)="))
-			{
-				if (iconPath.equalsIgnoreCase("default"))
-				{
-					iAttIconS = defaultIAttIconS;
-				}
-				else
-				{
-					iAttIconS = new ImageIcon(iconPath);
-				}
-			}
-
-			else if (iconName.equals("PartID Key Attribute="))
-			{
-				if (iconPath.equalsIgnoreCase("default"))
-				{
-					pAttIcon = defaultPAttIcon;
-				}
-				else
-				{
-					pAttIcon = new ImageIcon(iconPath);
-				}
-			}
-
-			else if (iconName.equals("PartID Key Attribute (selected)="))
-			{
-				if (iconPath.equalsIgnoreCase("default"))
-				{
-					pAttIconS = defaultPAttIconS;
-				}
-				else
-				{
-					pAttIconS = new ImageIcon(iconPath);
-				}
-			}
-
-			else if (iconName.equals("Inherited PartID Key Attribute="))
-			{
-				if (iconPath.equalsIgnoreCase("default"))
-				{
-					iPAttIcon = defaultIPAttIcon;
-				}
-				else
-				{
-					iPAttIcon = new ImageIcon(iconPath);
-				}
-			}
-
-			else if (iconName.equals("Inherited PartID Key Attribute (selected)="))
-			{
-				if (iconPath.equalsIgnoreCase("default"))
-				{
-					iPAttIconS = defaultIPAttIconS;
-				}
-				else
-				{
-					iPAttIconS = new ImageIcon(iconPath);
-				}
-			}
-
-			else if (iconName.equals("rRef Attribute="))
-			{
-				if (iconPath.equalsIgnoreCase("default"))
-				{
-					refAttIcon = defaultRefAttIcon;
-				}
-				else
-				{
-					refAttIcon = new ImageIcon(iconPath);
-				}
-			}
-
-			else if (iconName.equals("rRef Attriubte (selected)="))
-			{
-				if (iconPath.equalsIgnoreCase("default"))
-				{
-					refAttIconS = defaultRefAttIconS;
-				}
-				else
-				{
-					refAttIconS = new ImageIcon(iconPath);
-				}
-			}
-
-			else if (iconName.equals("Element="))
-			{
-				if (iconPath.equalsIgnoreCase("default"))
-				{
-					elemIcon = defaultElemIcon;
-				}
-				else
-				{
-					elemIcon = new ImageIcon(iconPath);
-				}
-			}
-
-			else if (iconName.equals("Element (selected)="))
-			{
-				if (iconPath.equalsIgnoreCase("default"))
-				{
-					elemIconS = defaultElemIconS;
-				}
-				else
-				{
-					elemIconS = new ImageIcon(iconPath);
-				}
-			}
-
-			else if (iconName.equals("JDF Element="))
-			{
-				if (iconPath.equalsIgnoreCase("default"))
-				{
-					jdfElemIcon = defaultJDFElemIcon;
-				}
-				else
-				{
-					jdfElemIcon = new ImageIcon(iconPath);
-				}
-			}
-
-			else if (iconName.equals("JDF Element (selected)="))
-			{
-				if (iconPath.equalsIgnoreCase("default"))
-				{
-					jdfElemIconS = defaultJDFElemIconS;
-				}
-				else
-				{
-					jdfElemIconS = new ImageIcon(iconPath);
-				}
-			}
-
-            else if (iconName.equals("XJDF Element="))
-            {
-                if (iconPath.equalsIgnoreCase("default"))
-                {
-                    xjdfElemIcon = defaultXJDFElemIcon;
-                }
-                else
-                {
-                    xjdfElemIcon = new ImageIcon(iconPath);
-                }
-            }
-
-            else if (iconName.equals("XJDF Element (selected)="))
-            {
-                if (iconPath.equalsIgnoreCase("default"))
-                {
-                    xjdfElemIconS = defaultXJDFElemIconS;
-                }
-                else
-                {
-                    xjdfElemIconS = new ImageIcon(iconPath);
-                }
-            }
-
-			else if (iconName.equals("Input rRef Element="))
-			{
-				if (iconPath.equalsIgnoreCase("default"))
-				{
-					rRefInElemIcon = defaultRefInElemIcon;
-				}
-				else
-				{
-					rRefInElemIcon = new ImageIcon(iconPath);
-				}
-			}
-
-			else if (iconName.equals("Input rRef Element (selected)="))
-			{
-				if (iconPath.equalsIgnoreCase("default"))
-				{
-					rRefInElemIconS = defaultRefInElemIconS;
-				}
-				else
-				{
-					rRefInElemIconS = new ImageIcon(iconPath);
-				}
-			}
-
-			else if (iconName.equals("Output rRef Element="))
-			{
-				if (iconPath.equalsIgnoreCase("default"))
-				{
-					rRefOutElemIcon = defaultRefOutElemIcon;
-				}
-				else
-				{
-					rRefOutElemIcon = new ImageIcon(iconPath);
-				}
-			}
-
-			else if (iconName.equals("Output rRef Element (selected)="))
-			{
-				if (iconPath.equalsIgnoreCase("default"))
-				{
-					rRefOutElemIconS = defaultRefOutElemIconS;
-				}
-				else
-				{
-					rRefOutElemIconS = new ImageIcon(iconPath);
-				}
-			}
-
-			else if (iconName.equals("rRef Element="))
-			{
-				if (iconPath.equalsIgnoreCase("default"))
-				{
-					rRefElemIcon = defaultRefElemIcon;
-				}
-				else
-				{
-					rRefElemIcon = new ImageIcon(iconPath);
-				}
-			}
-
-			else if (iconName.equals("rRef Element (selected)="))
-			{
-				if (iconPath.equalsIgnoreCase("default"))
-				{
-					rRefElemIconS = defaultRefElemIconS;
-				}
-				else
-				{
-					rRefElemIconS = new ImageIcon(iconPath);
-				}
-			}
-			// else if (iconName.equals("JDF Folder="))
-			// {
-			// if (iconPath.equalsIgnoreCase("default"))
-			// execJDFIcon = defaultExecJDFIcon;
-			// }
-
-			// invElemIcon = defaultInvElemIcon;
-			// invAttIcon = defaultInvAttIcon;
-			// misElemIcon = defaultMisElemIcon;
-			// misAttIcon = defaultMisAttIcon;
-			// unkElemIcon = defaultUnkElemIcon;
-			// unkAttIcon = defaultUnkAttIcon;
-			// execJDFIcon = defaultExecJDFIcon;
-			// invElemIconS = defaultInvElemIconS;
-			// invAttIconS = defaultInvAttIconS;
-			// misElemIconS = defaultMisElemIconS;
-			// misAttIconS = defaultMisAttIconS;
-			// unkElemIconS = defaultUnkElemIconS;
-			// unkAttIconS = defaultUnkAttIconS;
-		}
 	}
 
 	/**
@@ -1254,11 +774,6 @@ public class INIReader
 		setAttribute(lookAndFeel, lnf);
 	}
 
-	public void setIconStrings(final String[] is)
-	{
-		iconStrings = is;
-	}
-
 	/**
 	 * @return
 	 */
@@ -1296,9 +811,6 @@ public class INIReader
 		return getAttribute(normalizeOpen, "true").equalsIgnoreCase("true") ? true : false;
 	}
 
-	/**
-	 * @param normalizeOpen2
-	 */
 	public void setNormalizeOpen(final boolean bNormalizeOpen)
 	{
 		setAttribute(normalizeOpen, bNormalizeOpen ? "true" : "false");
@@ -1313,9 +825,6 @@ public class INIReader
 		return !EnumValidationLevel.isNoWarn(level);
 	}
 
-	/**
-	 * @param misURL
-	 */
 	public void setMISURL(final String _misURL)
 	{
 		setAttribute(misURL, _misURL);
@@ -1329,9 +838,6 @@ public class INIReader
 		return getAttribute(misURL, null);
 	}
 
-	/**
-	 * @param BaseLevel
-	 */
 	public void setBaseLevel(final int _baselevel)
 	{
 		setAttribute(BaseLevel, String.valueOf(_baselevel));
@@ -1347,9 +853,6 @@ public class INIReader
 
 	}
 
-	/**
-	 * @param MISLevel
-	 */
 	public void setMISLevel(final int _mislevel)
 	{
 		setAttribute(MISLevel, String.valueOf(_mislevel));
@@ -1364,9 +867,6 @@ public class INIReader
 		return StringUtil.parseInt(s, 1);
 	}
 
-	/**
-	 * @param MISLevel
-	 */
 	public void setJobIncrement(final int inc)
 	{
 		setAttribute(incSendToDevice, String.valueOf(inc));
@@ -1381,9 +881,6 @@ public class INIReader
 		return StringUtil.parseInt(s, 1);
 	}
 
-	/**
-	 * @param JMFLevel
-	 */
 	public void setJMFLevel(final int _jmflevel)
 	{
 		setAttribute(JMFLevel, String.valueOf(_jmflevel));

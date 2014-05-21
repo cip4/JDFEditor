@@ -131,7 +131,7 @@ public class SchemaScrollPane extends ValidationScrollPane
         final ValidationPopupListener popupListener = new ValidationPopupListener();
         m_reportTree.addMouseListener(popupListener);
         
-        final SchemaOutputRenderer dcRenderer = new SchemaOutputRenderer();
+        final SchemaOutputCellRenderer dcRenderer = new SchemaOutputCellRenderer();
         m_reportTree.setCellRenderer(dcRenderer);
         getViewport().setView(m_reportTree);
     }
