@@ -70,13 +70,12 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.*;
 import org.cip4.jdflib.jmf.JMFBuilder;
 import org.cip4.jdflib.util.logging.LogConfigurator;
+import org.cip4.tools.jdfeditor.util.LocationUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -193,9 +192,7 @@ public class Editor
 	public Editor()
 	{
 		// log file location
-		String pathDir = FilenameUtils.concat(FileUtils.getUserDirectoryPath(), "CIP4Tools");
-		pathDir = FilenameUtils.concat(pathDir, "JDFEditor");
-		pathDir = FilenameUtils.concat(pathDir, "logs");
+        String pathDir = LocationUtil.getDirCIP4Tools();
 		new File(pathDir).mkdirs();
 
 		LogConfigurator.configureLog(pathDir, "JDFEditor.log");
