@@ -70,51 +70,46 @@
  */
 package org.cip4.tools.jdfeditor.view.renderer;
 
+import org.apache.log4j.Logger;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.validate.JDFValidator;
-import org.cip4.tools.jdfeditor.Editor;
-import org.cip4.tools.jdfeditor.INIReader;
+import org.cip4.tools.jdfeditor.JDFTreeModel;
 import org.cip4.tools.jdfeditor.JDFTreeNode;
-
-import javax.swing.*;
 
 /**
  * @author Elena Skobchenko
  */
-public class CheckJDFOutputTreeCellRenderer extends JDFTreeCellRenderer
+public class CheckJDFOutputTreeCellRenderer extends AbstractTreeCellRenderer
 {
-	private static final long serialVersionUID = 6261287268245030123L;
+    private static final Logger LOGGER = Logger.getLogger(CheckJDFOutputTreeCellRenderer.class);
 
-	/**
-	 * 
-	 */
-	public CheckJDFOutputTreeCellRenderer()
-	{
-		super();
+    /**
+     * Default constructor.
+     */
+	public CheckJDFOutputTreeCellRenderer() {
 	}
 
-	////////////////////////////////////////////////////////////////////
-	/**
-	 * 
-	 */
-	@Override
-	protected void setNodeIcon(JTree jdfTree, JDFTreeNode treeNode)
-	{
-		String n = treeNode.getName();
-		final INIReader iniFile = Editor.getIniFile();
-		if (treeNode.isElement())
+    @Override
+    protected Logger getLogger() {
+        return LOGGER;
+    }
+
+    @Override
+    protected void setNodeIcon(JDFTreeNode node, JDFTreeModel model) {
+		String n = node.getName();
+		if (node.isElement())
 		{
-			KElement elem = treeNode.getElement();
+			KElement elem = node.getElement();
 
 			if (n.equals("TestAttribute"))
 			{
 				if (elem != null && !elem.getBoolAttribute("IsValid", null, false))
 				{
-                    setIcon(loadImageIcon(ICON_ATTR_ERR));
+                    setIcon(loadImageIcon(TreeIcon.ATTR_ERR));
 				}
 				else
 				{
-                    setIcon(loadImageIcon(ICON_ATTR_DEFAULT));
+                    setIcon(loadImageIcon(TreeIcon.ATTR_DEFAULT));
 				}
 
 				String tts = JDFValidator.toMessageString(elem);
@@ -125,11 +120,11 @@ public class CheckJDFOutputTreeCellRenderer extends JDFTreeCellRenderer
 			{
 				if (elem != null && !elem.getBoolAttribute("IsValid", null, false))
 				{
-                    setIcon(loadImageIcon(ICON_NODE_ERR));
+                    setIcon(loadImageIcon(TreeIcon.NODE_ERR));
 				}
 				else
 				{
-                    setIcon(loadImageIcon(ICON_NODE_JDF));
+                    setIcon(loadImageIcon(TreeIcon.NODE_JDF));
 				}
 
 				if (elem.getAttribute("Message") != null)
@@ -140,11 +135,11 @@ public class CheckJDFOutputTreeCellRenderer extends JDFTreeCellRenderer
 			{
 				if (elem != null && !elem.getBoolAttribute("IsValid", null, true))
 				{
-                    setIcon(loadImageIcon(ICON_NODE_ERR));
+                    setIcon(loadImageIcon(TreeIcon.NODE_ERR));
 				}
 				else
 				{
-                    setIcon(loadImageIcon(ICON_NODE_JDF));
+                    setIcon(loadImageIcon(TreeIcon.NODE_JDF));
 				}
 
 				if (elem.getAttribute("Message") != null)
@@ -154,17 +149,17 @@ public class CheckJDFOutputTreeCellRenderer extends JDFTreeCellRenderer
 
 			else if (n.equals("Part"))
 			{
-                setIcon(loadImageIcon(ICON_NODE_JDF));
+                setIcon(loadImageIcon(TreeIcon.NODE_JDF));
 			}
 			else
 			{
 				if ("false".equals(elem.getInheritedAttribute("IsValid", null, null)))
 				{
-                    setIcon(loadImageIcon(ICON_NODE_ERR));
+                    setIcon(loadImageIcon(TreeIcon.NODE_ERR));
 				}
 				else
 				{
-                    setIcon(loadImageIcon(ICON_NODE_JDF));
+                    setIcon(loadImageIcon(TreeIcon.NODE_JDF));
 				}
 
 				if (elem.getAttribute("Message") != null)
@@ -174,7 +169,7 @@ public class CheckJDFOutputTreeCellRenderer extends JDFTreeCellRenderer
 		else
 		// real attributes
 		{
-            setIcon(loadImageIcon(ICON_ATTR_DEFAULT));
+            setIcon(loadImageIcon(TreeIcon.ATTR_DEFAULT));
 		}
 	}
 }

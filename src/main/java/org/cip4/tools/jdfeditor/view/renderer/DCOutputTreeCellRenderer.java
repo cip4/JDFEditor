@@ -1,45 +1,53 @@
 package org.cip4.tools.jdfeditor.view.renderer;
+import org.apache.log4j.Logger;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.validate.JDFValidator;
 import org.cip4.tools.jdfeditor.Editor;
 import org.cip4.tools.jdfeditor.INIReader;
+import org.cip4.tools.jdfeditor.JDFTreeModel;
 import org.cip4.tools.jdfeditor.JDFTreeNode;
-
-import javax.swing.*;
 
 /**
  * @author Elena Skobchenko
- *
- * TBD Refactoring (s.meissner)
  */
 
-public class DCOutputTreeCellRenderer extends JDFTreeCellRenderer
+public class DCOutputTreeCellRenderer extends AbstractTreeCellRenderer
 {
+    private static final Logger LOGGER = Logger.getLogger(DCOutputTreeCellRenderer.class);
+
     private static final long serialVersionUID = 626128726824503000L;
-    
-    
+
+    /**
+     * Default constructor.
+     */
     public DCOutputTreeCellRenderer()
     {
         super();
     }
-    
+
     @Override
-	protected void setNodeIcon(JTree jdfTree,JDFTreeNode treeNode){
+    protected Logger getLogger() {
+        return LOGGER;
+    }
+
+    @Override
+    protected void setNodeIcon(JDFTreeNode node, JDFTreeModel model) {
+
         final INIReader iniFile= Editor.getIniFile();
 
-        final String nodeName=treeNode.getName();
-        KElement elem = treeNode.getElement();
+        final String nodeName=node.getName();
+        KElement elem = node.getElement();
         
-        if(treeNode.isElement()){
+        if(node.isElement()){
             if(elem.getAttribute("Value",null,"").equals("true")){
-                setIcon(loadImageIcon(ICON_NODE_DEFAULT));
+                setIcon(loadImageIcon(TreeIcon.NODE_DEFAULT));
             }
             else if(elem.getAttribute("Value",null,"").equals("false")){
-                setIcon(loadImageIcon(ICON_NODE_ERR));
+                setIcon(loadImageIcon(TreeIcon.NODE_ERR));
             }
             else if(elem.getAttribute("Severity",null,"").equals("Error")){
-                setIcon(loadImageIcon(ICON_NODE_ERR));
+                setIcon(loadImageIcon(TreeIcon.NODE_ERR));
             }
             String tts=JDFValidator.toMessageString(elem);
             if(tts!=null)
@@ -47,63 +55,63 @@ public class DCOutputTreeCellRenderer extends JDFTreeCellRenderer
         }
         else
         {
-            setIcon(loadImageIcon(ICON_ATTR_DEFAULT));
+            setIcon(loadImageIcon(TreeIcon.ATTR_DEFAULT));
             
         }
         if (nodeName.equals("RejectedNode")||nodeName.equals("RejectedChildNode"))
         {
 
-            setIcon(loadImageIcon(ICON_NODE_ERR));
+            setIcon(loadImageIcon(TreeIcon.NODE_ERR));
         }
         else if (nodeName.equals("InvalidAttribute")||nodeName.equals("InvalidSpan")||nodeName.equals("InvalidComment"))
         {
-            setIcon(loadImageIcon(ICON_ATTR_ERR));
+            setIcon(loadImageIcon(TreeIcon.ATTR_ERR));
         }
         else if (nodeName.equals("InvalidSubelement")||nodeName.equals("InvalidResource")||nodeName.equals("InvalidPartitionLeaf"))
         {
-            setIcon(loadImageIcon(ICON_NODE_ERR));
+            setIcon(loadImageIcon(TreeIcon.NODE_ERR));
         }
         else if (nodeName.equals("UnknownSubelement"))
         {
-            setIcon(loadImageIcon(ICON_NODE_ERR));
+            setIcon(loadImageIcon(TreeIcon.NODE_ERR));
         }
         else if (nodeName.equals("MissingAttribute")||nodeName.equals("MissingSpan"))
         {
-            setIcon(loadImageIcon(ICON_ATTR_ERR));
+            setIcon(loadImageIcon(TreeIcon.ATTR_ERR));
         }
         else if (nodeName.equals("UnknownAttribute")||nodeName.equals("UnknownSpan")||nodeName.equals("SyntaxWarning"))
         {
-            setIcon(loadImageIcon(ICON_ATTR_ERR));
+            setIcon(loadImageIcon(TreeIcon.ATTR_ERR));
         }
         else if (nodeName.equals("MissingSubelement")||nodeName.equals("MissingElement")||nodeName.equals("MissingResourceLink")
                 ||nodeName.equals("MissingCustomerInfo")||nodeName.equals("MissingNodeInfo"))
         {
-            setIcon(loadImageIcon(ICON_NODE_ERR));
+            setIcon(loadImageIcon(TreeIcon.NODE_ERR));
         }
         else if (nodeName.equals("MissingResources")|| nodeName.equals("MissingElements")|| nodeName.equals("InvalidResources")
                 ||nodeName.equals("UnknownResources"))
         {
-            setIcon(loadImageIcon(ICON_NODE_ERR));
+            setIcon(loadImageIcon(TreeIcon.NODE_ERR));
         }
         else if (nodeName.endsWith("Report"))
         {
             if(elem.hasChildElement("ExecutableNodes",null)||"true".equals(elem.getAttribute("IsValid")))
             {
-                setIcon(loadImageIcon(ICON_NODE_DEFAULT));
+                setIcon(loadImageIcon(TreeIcon.NODE_DEFAULT));
                                 
             }
             else
             {
-                setIcon(loadImageIcon(ICON_NODE_ERR));
+                setIcon(loadImageIcon(TreeIcon.NODE_ERR));
             }
         }
         else if (nodeName.equals("ExecutableNodes"))
         {
-            setIcon(loadImageIcon(ICON_NODE_DEFAULT));
+            setIcon(loadImageIcon(TreeIcon.NODE_DEFAULT));
         }        
         else if (elem instanceof JDFNode)
         {
-            setIcon(loadImageIcon(ICON_NODE_JDF));
+            setIcon(loadImageIcon(TreeIcon.NODE_JDF));
         }        
     }
 }

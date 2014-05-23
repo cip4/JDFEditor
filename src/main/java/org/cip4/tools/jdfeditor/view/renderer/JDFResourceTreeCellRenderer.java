@@ -1,57 +1,39 @@
 package org.cip4.tools.jdfeditor.view.renderer;
-import org.cip4.tools.jdfeditor.*;
 
-import javax.swing.*;
+import org.apache.log4j.Logger;
+import org.cip4.tools.jdfeditor.JDFTreeNode;
+
 import java.awt.*;
 
 /**
- * @author AnderssA ThunellE SvenoniusI
- * The renderer used for the JTrees in the In & Output View
- * only overwrite the difference to the default tree renderer
- * 
+ * Tree renderer for JDFResource elements.
  */
-public class JDFResourceTreeCellRenderer extends JDFTreeCellRenderer
-{
+public class JDFResourceTreeCellRenderer extends AbstractTreeCellRenderer {
+
+    private static final Logger LOGGER = Logger.getLogger(JDFResourceTreeCellRenderer.class);
+
     /**
-     * 
+     * Default constructor.
      */
-
-
-    private boolean highlightFN;
-
-    private static final long serialVersionUID = 1L;
-    // TODO see what can be reused from JDFTreeRenderer
-    private Color colorFoc = new Color(110, 200, 240);
-    
-    public JDFResourceTreeCellRenderer()
-    {
-        super();
-        // colorSel = new Color(200, 200, 200);
-
-        final INIReader iniFile = Editor.getIniFile();
-
-        highlightFN = iniFile.getHighlight();
+    public JDFResourceTreeCellRenderer() {
     }
-    
+
     @Override
-	public Component getTreeCellRendererComponent(JTree jdfTree, Object value, boolean sel, boolean expanded,
-            boolean leaf, int row, boolean _hasFocus)
-    {
-        
-        super.getTreeCellRendererComponent(jdfTree,value,sel,expanded,leaf,row,_hasFocus);
-        JDFTreeNode treeNode=null;
-        Color background = hasFocus ? colorFoc : Color.white;
-        setBackground(background);
-        if(value instanceof JDFTreeNode)
-        {
-            treeNode=(JDFTreeNode)value;
-            if (treeNode.hasForeignNS() && highlightFN)
-            {
-                final JDFTreeModel mod=(JDFTreeModel) jdfTree.getModel();
-                if(mod.isValid(treeNode))  
-                    setForeground(Color.blue);
-        }    }    
-        
-        return this;
+    protected Logger getLogger() {
+        return LOGGER;
+    }
+
+    @Override
+    protected void setBasicAppearance(JDFTreeNode node, boolean isSelected, boolean hasFocus) {
+
+        // default behavior
+        super.setBasicAppearance(node, isSelected, hasFocus);
+
+        // additional behavior
+        Color colorFocused = new Color(110, 200, 240);
+
+        if (hasFocus) {
+            this.setBackground(colorFocused);
+        }
     }
 }

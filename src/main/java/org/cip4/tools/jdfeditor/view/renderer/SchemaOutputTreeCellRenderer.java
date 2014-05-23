@@ -1,52 +1,55 @@
 package org.cip4.tools.jdfeditor.view.renderer;
 
+import org.apache.log4j.Logger;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.validate.JDFValidator;
 import org.cip4.tools.jdfeditor.Editor;
 import org.cip4.tools.jdfeditor.INIReader;
+import org.cip4.tools.jdfeditor.JDFTreeModel;
 import org.cip4.tools.jdfeditor.JDFTreeNode;
 
-import javax.swing.*;
+public class SchemaOutputTreeCellRenderer extends AbstractTreeCellRenderer {
 
-/**
- * @author Elena Skobchenko
- */
+    private static final Logger LOGGER = Logger.getLogger(SchemaOutputTreeCellRenderer.class);
 
-public class SchemaOutputTreeCellRenderer extends JDFTreeCellRenderer
-{
     private static final long serialVersionUID = 6261287268245030123L;
-    
-    
-    public SchemaOutputTreeCellRenderer()
 
-    {
-        super();
+    /**
+     * Default constructor.
+     */
+    public SchemaOutputTreeCellRenderer() {
     }
-    
+
     @Override
-	protected void setNodeIcon(JTree jdfTree,JDFTreeNode treeNode){
-        String n=treeNode.getName();
+    protected Logger getLogger() {
+        return LOGGER;
+    }
+
+    @Override
+    protected void setNodeIcon(JDFTreeNode node, JDFTreeModel model) {
+
+        String n=node.getName();
         INIReader iniFile= Editor.getIniFile();
-        if(treeNode.isElement())
+        if(node.isElement())
         {
-            KElement elem = treeNode.getElement();
+            KElement elem = node.getElement();
             String tts=JDFValidator.toMessageString(elem);
             if(tts!=null)
                setToolTipText(tts);
             
             if (n.equals("Error"))
             {
-                setIcon(loadImageIcon(ICON_NODE_ERR));
+                setIcon(loadImageIcon(TreeIcon.NODE_ERR));
             }
             else if (n.equals("SchemaValidationOutput"))
             {
                 if(elem!=null && !elem.getAttribute("ValidationResult",null,"").equals("Valid"))
                 {
-                    setIcon(loadImageIcon(ICON_NODE_ERR));
+                    setIcon(loadImageIcon(TreeIcon.NODE_ERR));
                 }
                 else
                 {
-                    setIcon(loadImageIcon(ICON_NODE_JDF));
+                    setIcon(loadImageIcon(TreeIcon.NODE_JDF));
                 }
                 
                 if(elem.getAttribute("Message")!=null)
@@ -57,7 +60,7 @@ public class SchemaOutputTreeCellRenderer extends JDFTreeCellRenderer
         }
         else // attributes
         {
-            setIcon(loadImageIcon(ICON_ATTR_DEFAULT));
+            setIcon(loadImageIcon(TreeIcon.ATTR_DEFAULT));
         }
     }       
     
