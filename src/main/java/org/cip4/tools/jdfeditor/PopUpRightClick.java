@@ -70,21 +70,6 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import java.awt.Color;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Enumeration;
-import java.util.Vector;
-
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JSeparator;
-import javax.swing.tree.TreePath;
-
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.core.KElement;
@@ -100,6 +85,18 @@ import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.jdflib.resource.devicecapability.JDFDeviceCap;
 import org.cip4.tools.jdfeditor.dialog.SaveAsJDFDialog;
 import org.cip4.tools.jdfeditor.dialog.SaveAsXJDFDialog;
+import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.service.SettingService;
+
+import javax.swing.*;
+import javax.swing.tree.TreePath;
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Enumeration;
+import java.util.Vector;
 
 /**
  * Class to implement all the menu bar and menu related stuff moved here from JDFFrame
@@ -108,9 +105,8 @@ import org.cip4.tools.jdfeditor.dialog.SaveAsXJDFDialog;
  */
 public class PopUpRightClick extends JPopupMenu implements ActionListener
 {
-	/**
-	 * 
-	 */
+	private SettingService settingService = new SettingService();
+
 	private static final long serialVersionUID = -8488973695389593826L;
 
 	private final JMenuItem m_copyPopupItem;
@@ -477,7 +473,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		final JDFFrame frame = Editor.getFrame();
 		final JDFTreeArea treeArea = frame.m_treeArea;
 
-		if (!iniFile.getReadOnly())
+		if (!settingService.getBoolean(SettingKey.GENERAL_READ_ONLY))
 		{
 			if (eSrc == m_cutPopupItem)
 			{

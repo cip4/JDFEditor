@@ -70,22 +70,16 @@
  */
 package org.cip4.tools.jdfeditor.dialog;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-
 import org.cip4.jdflib.extensions.xjdfwalker.XJDFToJDFConverter;
 import org.cip4.tools.jdfeditor.Editor;
 import org.cip4.tools.jdfeditor.INIReader;
+import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.service.SettingService;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Class that implements a "Save as XJDF..." dialog.
@@ -93,6 +87,8 @@ import org.cip4.tools.jdfeditor.INIReader;
  */
 public class SaveAsJDFDialog extends JDialog implements ActionListener
 {
+    SettingService settingService = new SettingService();
+
 	/**
 	 * 
 	 */
@@ -154,7 +150,7 @@ public class SaveAsJDFDialog extends JDialog implements ActionListener
 		setLocation(screenWidth / 4, screenHeight / 4);
 
 		cbExtRetainProduct.setSelected(conf.getFromXjdfRetainProduct());
-		cbTilde.setSelected(conf.getXjdfConvertTilde());
+		cbTilde.setSelected(settingService.getBoolean(SettingKey.XJDF_CONVERT_TILDE));
 		cbHeuristcLink.setSelected(conf.getFromXJDFHeuristicLink());
 
 		setVisible(true);
@@ -182,7 +178,7 @@ public class SaveAsJDFDialog extends JDialog implements ActionListener
 			conf.setFromXjdfRetainProduct(cbExtRetainProduct.isSelected());
 			conf.setFromXJDFHeuristicLink(cbHeuristcLink.isSelected());
 			choosedButton = BUTTON_OK;
-			conf.setXjdfConvertTilde(cbTilde.isSelected());
+            settingService.setBoolean(SettingKey.XJDF_CONVERT_TILDE, cbTilde.isSelected());
 		}
 		else if (e.getSource() == bCancel)
 		{
@@ -207,7 +203,7 @@ public class SaveAsJDFDialog extends JDialog implements ActionListener
 	public XJDFToJDFConverter getConverter()
 	{
 		final XJDFToJDFConverter c = new XJDFToJDFConverter(null);
-		c.setConvertTilde(conf.getXjdfConvertTilde());
+		c.setConvertTilde(settingService.getBoolean(SettingKey.XJDF_CONVERT_TILDE));
 		c.setCreateProduct(conf.getFromXjdfRetainProduct());
 		c.setHeuristicLink(conf.getFromXJDFHeuristicLink());
 		return c;

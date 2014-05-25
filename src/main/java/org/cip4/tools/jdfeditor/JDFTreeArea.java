@@ -71,52 +71,27 @@
 
 package org.cip4.tools.jdfeditor;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Toolkit;
+import org.cip4.jdflib.core.*;
+import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
+import org.cip4.jdflib.node.JDFNode;
+import org.cip4.jdflib.resource.*;
+import org.cip4.jdflib.resource.devicecapability.JDFDevCap;
+import org.cip4.jdflib.resource.devicecapability.JDFDevCaps;
+import org.cip4.jdflib.util.StringUtil;
+import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.service.SettingService;
+import org.cip4.tools.jdfeditor.view.renderer.JDFTreeCellRenderer;
+
+import javax.swing.*;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
+import java.awt.*;
 import java.awt.dnd.DropTarget;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.Enumeration;
-
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTree;
-import javax.swing.JViewport;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.ToolTipManager;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
-
-import org.cip4.jdflib.core.AttributeName;
-import org.cip4.jdflib.core.ElementName;
-import org.cip4.jdflib.core.JDFConstants;
-import org.cip4.jdflib.core.JDFElement;
-import org.cip4.jdflib.core.JDFException;
-import org.cip4.jdflib.core.JDFRefElement;
-import org.cip4.jdflib.core.JDFResourceLink;
-import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
-import org.cip4.jdflib.core.KElement;
-import org.cip4.jdflib.core.VElement;
-import org.cip4.jdflib.core.VString;
-import org.cip4.jdflib.node.JDFNode;
-import org.cip4.jdflib.resource.JDFCreated;
-import org.cip4.jdflib.resource.JDFDeleted;
-import org.cip4.jdflib.resource.JDFModified;
-import org.cip4.jdflib.resource.JDFPart;
-import org.cip4.jdflib.resource.JDFResource;
-import org.cip4.jdflib.resource.devicecapability.JDFDevCap;
-import org.cip4.jdflib.resource.devicecapability.JDFDevCaps;
-import org.cip4.jdflib.util.StringUtil;
-import org.cip4.tools.jdfeditor.view.renderer.JDFTreeCellRenderer;
 
 /**
  * This is a new dump for some of the JDFFrame classes that relate to the actual tree view
@@ -128,7 +103,9 @@ import org.cip4.tools.jdfeditor.view.renderer.JDFTreeCellRenderer;
  */
 public class JDFTreeArea extends JTextArea
 {
-	TreeSelectionListener m_treeSelectionListener;
+	SettingService settingService = new SettingService();
+
+    TreeSelectionListener m_treeSelectionListener;
 	private static final long serialVersionUID = 2036935468347224324L;
 	private final JScrollPane m_treeScroll;
 	JViewport m_treeView;
@@ -313,7 +290,7 @@ public class JDFTreeArea extends JTextArea
 			final JTree jdfTree = ed.getJDFTree();
 			final TreePath path = jdfTree.getPathForLocation(e.getX(), e.getY());
 
-			if ((SwingUtilities.isRightMouseButton(e) || e.isAltDown()) && path != null && !Editor.getIniFile().getReadOnly())
+			if ((SwingUtilities.isRightMouseButton(e) || e.isAltDown()) && path != null && !settingService.getBoolean(SettingKey.GENERAL_READ_ONLY))
 			{
 				jdfTree.removeTreeSelectionListener(m_treeSelectionListener);
 				ed.setSelectionPath(path, true);

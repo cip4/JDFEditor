@@ -75,7 +75,7 @@ import org.cip4.jdflib.core.JDFElement.EnumVersion;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.util.EnumUtil;
-import org.cip4.tools.jdfeditor.service.SettingKey;
+import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 
 import javax.swing.*;
@@ -290,29 +290,29 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private void init()
 	{
 		final INIReader iniFile = Editor.getIniFile();
-		this.currLang = settingService.getSetting(SettingKey.GENERAL_LANGUAGE);
+		this.currLang = settingService.getString(SettingKey.GENERAL_LANGUAGE);
 		this.currLNF = iniFile.getLookAndFeel();
-		this.currValidate = iniFile.getAutoVal();
-		this.currReadOnly = iniFile.getReadOnly();
+		this.currValidate = settingService.getBoolean(SettingKey.GENERAL_AUTO_VALIDATE);
+		this.currReadOnly = settingService.getBoolean(SettingKey.GENERAL_READ_ONLY);
 		this.currMethodSendToDevice = iniFile.getMethodSendToDevice();
 		longID = iniFile.getLongID();
-		useSchema = iniFile.getUseSchema();
+		useSchema = settingService.getBoolean(SettingKey.GENERAL_USE_SCHEMA);
 		schemaFile = iniFile.getSchemaURL();
-		currRemoveDefault = iniFile.getRemoveDefault();
-		currRemoveWhite = iniFile.getRemoveWhite();
-		currIndentSave = iniFile.getIndentSave();
-		currDispDefault = iniFile.getDisplayDefault();
+		currRemoveDefault = settingService.getBoolean(SettingKey.GENERAL_REMOVE_DEFAULT);
+		currRemoveWhite = settingService.getBoolean(SettingKey.GENERAL_REMOVE_WHITE);
+		currIndentSave = settingService.getBoolean(SettingKey.GENERAL_INDENT);
+		currDispDefault = settingService.getBoolean(SettingKey.GENERAL_DISPLAY_DEFAULT);
 		checkURL = iniFile.getCheckURL();
 
 		genericStrings = iniFile.getGenericAtts();
 		generateFull = iniFile.getGenerateFull();
-		normalizeOpen = iniFile.getNormalizeOpen();
+		normalizeOpen = settingService.getBoolean(SettingKey.GENERAL_NORMALIZE);
 		ignoreDefaults = iniFile.getIgnoreDefault();
 
 		validationVersion = iniFile.getDefaultVersion();
 		validationLevel = iniFile.getValidationLevel();
 		exportValidation = iniFile.getExportValidation();
-		misURL = iniFile.getMISURL();
+		misURL = settingService.getString(SettingKey.GOLDENTICKET_MISURL);
 
 		/*
 		 * BaseLevel=iniFile.getBaseLevel(); MISLevel=iniFile.getMISLevel(); JMFLevel=iniFile.getJMFLevel();
@@ -722,7 +722,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		bl.setBounds(10, y, d.width, d.height);
 		panel.add(bl);
 
-		BaseLevel = Editor.getIniFile().getBaseLevel();
+		BaseLevel = settingService.getInteger(SettingKey.GOLDENTICKET_BASELEVEL);
 		y += d.height + 3;
 		boxBaseLevel = new JComboBox(level1);
 		boxBaseLevel.setSelectedItem(String.valueOf(BaseLevel));
@@ -739,7 +739,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		ml.setBounds(10, y, d.width, d.height);
 		panel.add(ml);
 
-		MISLevel = Editor.getIniFile().getMISLevel();
+		MISLevel = settingService.getInteger(SettingKey.GOLDENTICKET_MISLEVEL);
 		y += d.height + 3;
 		boxMISLevel = new JComboBox(level2);
 		boxMISLevel.setSelectedItem(String.valueOf(MISLevel));
@@ -756,7 +756,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		jl.setBounds(10, y, d.width, d.height);
 		panel.add(jl);
 
-		JMFLevel = Editor.getIniFile().getJMFLevel();
+		JMFLevel = settingService.getInteger(SettingKey.GOLDENTICKET_JMFLEVEL);
 		y += d.height + 3;
 		boxJMFLevel = new JComboBox(level1);
 		boxJMFLevel.setSelectedItem(String.valueOf(JMFLevel));
@@ -1044,32 +1044,34 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	{
 		final INIReader iniFile = Editor.getIniFile();
 		validTab.writeToIni();
-		iniFile.setUseSchema(useSchema);
+        settingService.setBoolean(SettingKey.GENERAL_USE_SCHEMA, useSchema);
 		iniFile.setSchemaURL(getSchemaURL());
 
-		iniFile.setBaseLevel(getBaseLevel());
-		iniFile.setMISLevel(getMISLevel());
-		iniFile.setJMFLevel(getJMFLevel());
+        settingService.setInteger(SettingKey.GOLDENTICKET_BASELEVEL, getBaseLevel());
+        settingService.setInteger(SettingKey.GOLDENTICKET_MISLEVEL, getMISLevel());
+        settingService.setInteger(SettingKey.GOLDENTICKET_JMFLEVEL, getJMFLevel());
 
-        settingService.setSetting(SettingKey.GENERAL_LANGUAGE, getLanguage());
-		iniFile.setReadOnly(getReadOnly());
-		iniFile.setAutoVal(getAutoVal());
+        settingService.setString(SettingKey.GENERAL_LANGUAGE, getLanguage());
+        settingService.setBoolean(SettingKey.GENERAL_READ_ONLY, getReadOnly());
+        settingService.setBoolean(SettingKey.GENERAL_AUTO_VALIDATE, getAutoVal());
 		iniFile.setMethodSendToDevice(getMethodSendToDevice());
 		iniFile.setLookAndFeel(getLNF());
-		iniFile.setRemoveDefault(currRemoveDefault);
-		iniFile.setDisplayDefault(currDispDefault);
-		iniFile.setRemoveWhite(currRemoveWhite);
-		iniFile.setIndentSave(currIndentSave);
+        settingService.setBoolean(SettingKey.GENERAL_REMOVE_DEFAULT, currRemoveDefault);
+        settingService.setBoolean(SettingKey.GENERAL_DISPLAY_DEFAULT, currDispDefault);
+        settingService.setBoolean(SettingKey.GENERAL_REMOVE_WHITE, currRemoveWhite);
+        settingService.setBoolean(SettingKey.GENERAL_INDENT, currIndentSave);
 		iniFile.setCheckURL(checkURL);
 		iniFile.setLongID(longID);
 		iniFile.setGenerateFull(generateFull);
-		iniFile.setNormalizeOpen(normalizeOpen);
+        settingService.setBoolean(SettingKey.GENERAL_NORMALIZE, normalizeOpen);
 		iniFile.setIgnoreDefault(ignoreDefaults);
 		iniFile.setValidationLevel(validationLevel);
 		iniFile.setDefaultVersion(validationVersion);
 		iniFile.setExportValidation(exportValidation);
 		misURL = fieldMISURL.getText();
-		iniFile.setMISURL(misURL);
+
+        settingService.setString(SettingKey.GOLDENTICKET_MISURL, misURL);
+
 		genericStrings = fieldGenericStrings.getText();
 		final VString genericAttributes = new VString(genericStrings, null);
 		genericAttributes.unify();

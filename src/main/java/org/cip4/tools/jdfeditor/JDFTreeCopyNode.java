@@ -70,12 +70,14 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import javax.swing.JOptionPane;
-import javax.swing.tree.TreePath;
-
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
+import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.service.SettingService;
+
+import javax.swing.*;
+import javax.swing.tree.TreePath;
 
 /**
  * class to handle copy / paste actions from the frame
@@ -84,6 +86,7 @@ import org.cip4.jdflib.core.VElement;
  */
 public class JDFTreeCopyNode
 {
+    SettingService settingService = new SettingService();
 
 	private final JDFTreeNode treeNode;
 	private boolean m_isPastedBefore;
@@ -103,7 +106,6 @@ public class JDFTreeCopyNode
 	 * Method getChildrenForCopiedNode.
 	 * checks if the copied node has any children and inserts them into the
 	 * m_jdfTree
-	 * @param newChild
 	 * @param newNode
 	 */
 	private void getChildrenForCopiedNode(JDFTreeNode newNode)
@@ -124,7 +126,7 @@ public class JDFTreeCopyNode
 			model.insertNodeInto(childN, newNode, pos + i);
 
 			getChildrenForCopiedNode(childN);
-			if (Editor.getIniFile().getAutoVal())
+			if (settingService.getBoolean(SettingKey.GENERAL_AUTO_VALIDATE))
 				model.validate();
 		}
 	}
@@ -158,7 +160,7 @@ public class JDFTreeCopyNode
 				model.insertNodeInto(newNode, parentNode, parentNode.getChildCount());
 
 				getChildrenForCopiedNode(newNode);
-				if (Editor.getIniFile().getAutoVal())
+				if (settingService.getBoolean(SettingKey.GENERAL_AUTO_VALIDATE))
 					model.validate();
 			}
 			catch (Exception s)
@@ -199,7 +201,7 @@ public class JDFTreeCopyNode
 				model.insertNodeInto(newNode, parentNode, parentNode.getChildCount());
 
 				getChildrenForCopiedNode(newNode);
-				if (Editor.getIniFile().getAutoVal())
+				if (settingService.getBoolean(SettingKey.GENERAL_AUTO_VALIDATE))
 					model.validate();
 			}
 			catch (Exception s)

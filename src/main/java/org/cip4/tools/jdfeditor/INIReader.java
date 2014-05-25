@@ -111,16 +111,7 @@ public class INIReader
 	private final String urlSendToDevice = "SendToDevice/@URLSendTo";
 	private final String urlReturnToDevice = "SendToDevice/@URLReturnTo";
 	private final String longID = "General/@longID";
-	private final String normalizeOpen = "General/@NormalizeOpen";
 
-	private final String enableExtensions = "Extension/@enableExtensions";
-	private final String structuredCaps = "Extension/@StructuredCaps";
-	private final String xjdfSingleNode = "Extension/XJDF/@SingleNode";
-	private final String xjdfConvertStripping = "Extension/XJDF/@ConvertStripping";
-	private final String xjdfConvertTilde = "Extension/XJDF/@ConvertTilde";
-	private final String xjdfSpanAsAttribute = "Extension/XJDF/@SpanAsAttribute";
-	private final String xjdfMergeRunList = "Extension/XJDF/@MergeRunList";
-	private final String xjdfConvertLayoutPrep = "Extension/XJDF/@ConvertLayoutPrep";
 	private final String xjdfTypesafeJMF = "Extension/XJDF/@TypesafeJMF";
 	private final String fromXjdfRetainProduct = "Extension/XJDF/@FromXjdfRetainProduct";
 	private final String fromXJDFHeuristicLink = "Extension/XJDF/@FromXJDFHeuristicLink";
@@ -136,19 +127,12 @@ public class INIReader
 	private final String[] recentFiles = new String[5];
 	private final String recentDevCap = "RecentFiles/@recentDevCap";
 
-	private final String autoValidate = "ValidEdit/@autoValidate";
 	private final String exportValidate = "ValidEdit/@exportValidate";
 	private final String highlightFN = "ValidEdit/@highlightFN";
-	private final String readOnly = "ValidEdit/@readOnly";
 	private final String schemaURL = "ValidEdit/@schemaURL";
-	private final String useSchema = "ValidEdit/@useSchema";
 	private final String validVersion = "ValidEdit/@version";
 	private final String validLevel = "ValidEdit/@level";
-	private final String removeDefault = "ValidEdit/@removeDefault";
-	private final String displayDefault = "ValidEdit/@displayDefault";
 	private final String ignoreDefault = "ValidEdit/@ignoreDefault";
-	private final String removeWhite = "ValidEdit/@removeWhite";
-	private final String indentSave = "ValidEdit/@indentSave";
 	private final String checkURL = "ValidEdit/@checkURL";
 	private final String fixICSVersion = "ValidEdit/@fixICSVersion";
 	private final String convertLPP = "ValidEdit/@convertLPP";
@@ -159,10 +143,6 @@ public class INIReader
 	private final String generateFull = "Validate/@GenerateFull";
 	private final String genericAtts = "Validate/@genericAtts";
 
-	private final String misURL = "GoldenTicket/@misURL";
-	private final String BaseLevel = "GoldenTicket/@BaseLevel";
-	private final String MISLevel = "GoldenTicket/@MISLevel";
-	private final String JMFLevel = "GoldenTicket/@JMFLevel";
 
 	private XMLDoc xDoc; // The XMLDocument that represents the ini file
 
@@ -247,24 +227,6 @@ public class INIReader
 		setAttribute(genericAtts, StringUtil.setvString(s, " ", null, null));
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
-	public boolean getAutoVal()
-	{
-		return getAttribute(autoValidate, "").equals("on");
-	}
-
-	/**
-	 * 
-	 *  
-	 * @param bVal
-	 */
-	public void setAutoVal(final boolean bVal)
-	{
-		setAttribute(autoValidate, bVal ? "on" : "off");
-	}
 
 	/**
 	 * 
@@ -278,11 +240,6 @@ public class INIReader
 	public void setExportValidation(final boolean bVal)
 	{
 		setAttribute(exportValidate, bVal ? "on" : "off");
-	}
-
-	public void setReadOnly(final boolean bRO)
-	{
-		setAttribute(readOnly, bRO ? "on" : "off");
 	}
 
 	public String[] getRecentFiles()
@@ -335,22 +292,6 @@ public class INIReader
 	}
 
 	/**
-	 * @param schema
-	 */
-	public void setUseSchema(final boolean schema)
-	{
-		setAttribute(useSchema, schema ? "true" : "false");
-	}
-
-	/**
-	 * @return
-	 */
-	public boolean getUseSchema()
-	{
-		return getAttribute(useSchema, "false").equals("true");
-	}
-
-	/**
 	 * @param url
 	 */
 	public void setCheckURL(final boolean url)
@@ -398,49 +339,6 @@ public class INIReader
 		return getAttribute(checkURL, "false").equals("true");
 	}
 
-	/**
-	 * @param rem
-	 */
-	public void setRemoveWhite(final boolean rem)
-	{
-		setAttribute(removeWhite, rem ? "true" : "false");
-	}
-
-	/**
-	 * 
-	 * 
-	 * @return
-	 */
-	public boolean getRemoveWhite()
-	{
-		return getAttribute(removeWhite, "true").equals("true");
-	}
-
-	/**
-	 * 
-	 *  
-	 * @param rem
-	 */
-	public void setRemoveDefault(final boolean rem)
-	{
-		setAttribute(removeDefault, rem ? "true" : "false");
-	}
-
-	public boolean getRemoveDefault()
-	{
-		return getAttribute(removeDefault, "true").equals("true");
-	}
-
-	public void setDisplayDefault(final boolean rem)
-	{
-		setAttribute(displayDefault, rem ? "true" : "false");
-	}
-
-	public boolean getDisplayDefault()
-	{
-		return getAttribute(displayDefault, "true").equals("true");
-	}
-
 	public void setIgnoreDefault(final boolean rem)
 	{
 		setAttribute(ignoreDefault, rem ? "true" : "false");
@@ -466,24 +364,9 @@ public class INIReader
 		return true;
 	}
 
-	public void setEnableExtensions(final boolean b)
-	{
-		setAttribute(enableExtensions, b ? "true" : "false");
-	}
-
 	public boolean getStructuredCaps()
 	{
 		return true;
-	}
-
-	public void setStructuredCaps(final boolean b)
-	{
-		setAttribute(structuredCaps, b ? "true" : "false");
-	}
-
-	public boolean getReadOnly()
-	{
-		return getAttribute(readOnly, "").equalsIgnoreCase("on") ? true : false;
 	}
 
 	public boolean getAttr()
@@ -791,69 +674,12 @@ public class INIReader
 		setAttribute(generateFull, b ? "true" : "false");
 	}
 
-	/**
-	 * @return
-	 */
-	public boolean getNormalizeOpen()
-	{
-		return getAttribute(normalizeOpen, "true").equalsIgnoreCase("true") ? true : false;
-	}
-
-	public void setNormalizeOpen(final boolean bNormalizeOpen)
-	{
-		setAttribute(normalizeOpen, bNormalizeOpen ? "true" : "false");
-	}
-
-	/**
-	 * @return
-	 */
 	public boolean getWarnCheck()
 	{
 		final EnumValidationLevel level = getValidationLevel();
 		return !EnumValidationLevel.isNoWarn(level);
 	}
 
-	public void setMISURL(final String _misURL)
-	{
-		setAttribute(misURL, _misURL);
-	}
-
-	/**
-	 * @return
-	 */
-	public String getMISURL()
-	{
-		return getAttribute(misURL, null);
-	}
-
-	public void setBaseLevel(final int _baselevel)
-	{
-		setAttribute(BaseLevel, String.valueOf(_baselevel));
-	}
-
-	/**
-	 * @return
-	 */
-	public int getBaseLevel()
-	{
-		final String s = getAttribute(BaseLevel, null);
-		return StringUtil.parseInt(s, 1);
-
-	}
-
-	public void setMISLevel(final int _mislevel)
-	{
-		setAttribute(MISLevel, String.valueOf(_mislevel));
-	}
-
-	/**
-	 * @return
-	 */
-	public int getMISLevel()
-	{
-		final String s = getAttribute(MISLevel, null);
-		return StringUtil.parseInt(s, 1);
-	}
 
 	public void setJobIncrement(final int inc)
 	{
@@ -869,19 +695,7 @@ public class INIReader
 		return StringUtil.parseInt(s, 1);
 	}
 
-	public void setJMFLevel(final int _jmflevel)
-	{
-		setAttribute(JMFLevel, String.valueOf(_jmflevel));
-	}
 
-	/**
-	 * @return
-	 */
-	public int getJMFLevel()
-	{
-		final String s = getAttribute(JMFLevel, null);
-		return StringUtil.parseInt(s, 1);
-	}
 
 	@Override
 	public String toString()
@@ -903,71 +717,6 @@ public class INIReader
 	public boolean setPackageAll()
 	{
 		return getAttribute(packageAll, "true").equalsIgnoreCase("true") ? true : false;
-	}
-
-	public boolean getXjdfSingleNode()
-	{
-		return getAttribute(xjdfSingleNode, "false").equalsIgnoreCase("true") ? true : false;
-	}
-
-	public void setXjdfSingleNode(final boolean b)
-	{
-		setAttribute(xjdfSingleNode, b ? "true" : "false");
-	}
-
-	public boolean getXjdfConvertStripping()
-	{
-		return getAttribute(xjdfConvertStripping, "false").equalsIgnoreCase("true") ? true : false;
-	}
-
-	public void setXjdfConvertStripping(final boolean b)
-	{
-		setAttribute(xjdfConvertStripping, b ? "true" : "false");
-	}
-
-	public boolean getXjdfSpanAsAttribute()
-	{
-		return getAttribute(xjdfSpanAsAttribute, "false").equalsIgnoreCase("true") ? true : false;
-	}
-
-	public void setXjdfSpanAsAttribute(final boolean b)
-	{
-		setAttribute(xjdfSpanAsAttribute, b ? "true" : "false");
-	}
-
-	public boolean getXjdfMergeRunList()
-	{
-		return getAttribute(xjdfMergeRunList, "false").equalsIgnoreCase("true") ? true : false;
-	}
-
-	public void setXjdfMergeRunList(final boolean b)
-	{
-		setAttribute(xjdfMergeRunList, b ? "true" : "false");
-	}
-
-	/**
-	 * @return
-	 */
-	public boolean getXjdfConvertLOPrep()
-	{
-		return getAttribute(xjdfConvertLayoutPrep, "false").equalsIgnoreCase("true") ? true : false;
-	}
-
-	/**
-	 * @return
-	 */
-	public void setXjdfConvertLOPrep(final boolean b)
-	{
-		setAttribute(xjdfConvertLayoutPrep, b ? "true" : "false");
-	}
-
-	/**
-	 * if true, tildes are converte to two instances
-	 * @return
-	 */
-	public boolean getXjdfConvertTilde()
-	{
-		return getAttribute(xjdfConvertTilde, "false").equalsIgnoreCase("true") ? true : false;
 	}
 
 	/**
@@ -1008,15 +757,6 @@ public class INIReader
 		return getAttribute(fromXJDFHeuristicLink, "false").equalsIgnoreCase("true") ? true : false;
 	}
 
-	/**
-	 * 
-	 *  
-	 * @param b
-	 */
-	public void setXjdfConvertTilde(final boolean b)
-	{
-		setAttribute(xjdfConvertTilde, b ? "true" : "false");
-	}
 
 	public String getHttpStorePath()
 	{
@@ -1080,24 +820,6 @@ public class INIReader
 		}
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
-	public boolean getIndentSave()
-	{
-		return getAttribute(indentSave, "true").equals("true");
-	}
-
-	/**
-	 * 
-	 *  
-	 * @param indent
-	 */
-	public void setIndentSave(final boolean indent)
-	{
-		setAttribute(indentSave, indent ? "true" : "false");
-	}
 
 	/**
 	 * 

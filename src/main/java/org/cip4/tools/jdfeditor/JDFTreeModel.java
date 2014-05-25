@@ -70,29 +70,10 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Enumeration;
-import java.util.Vector;
-
-import javax.swing.JOptionPane;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
-
 import org.apache.commons.lang.ArrayUtils;
-import org.cip4.jdflib.core.AttributeName;
-import org.cip4.jdflib.core.ElementName;
-import org.cip4.jdflib.core.JDFConstants;
-import org.cip4.jdflib.core.JDFDoc;
-import org.cip4.jdflib.core.JDFElement;
+import org.cip4.jdflib.core.*;
 import org.cip4.jdflib.core.JDFElement.EnumNodeStatus;
-import org.cip4.jdflib.core.JDFException;
-import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
-import org.cip4.jdflib.core.KElement;
-import org.cip4.jdflib.core.VString;
-import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.datatypes.JDFAttributeMap;
 import org.cip4.jdflib.datatypes.VJDFAttributeMap;
 import org.cip4.jdflib.elementwalker.XPathWalker;
@@ -110,7 +91,17 @@ import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.jdflib.validate.JDFValidator;
 import org.cip4.tools.jdfeditor.extension.Caps;
+import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.service.SettingService;
 import org.w3c.dom.Attr;
+
+import javax.swing.*;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Enumeration;
+import java.util.Vector;
 
 /**
  * @author rainer prosi This is a new dump for some of the JDFFrame classes anything related to the abstract datamodel in the jdf tree belongs here TODO move
@@ -118,6 +109,8 @@ import org.w3c.dom.Attr;
  */
 public class JDFTreeModel extends DefaultTreeModel
 {
+
+    private SettingService settingService = new SettingService();
 
 	/**
 	 * Spawn informative TODO correctly dump into multiple file
@@ -267,7 +260,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		{
 			checkJDF.xmlOutputName = null;
 		}
-		if (iniFile.getUseSchema())
+		if (settingService.getBoolean(SettingKey.GENERAL_USE_SCHEMA))
 		{
 
 			File f = theDoc.getSchemaLocationFile(JDFElement.getSchemaURL());
@@ -356,7 +349,7 @@ public class JDFTreeModel extends DefaultTreeModel
 			insertInto(newNode, parentNode, parentNode.getIndex(beforeNode));
 
 			Editor.getFrame().updateViews(new TreePath(newNode.getPath()));
-			if (Editor.getIniFile().getAutoVal())
+			if (settingService.getBoolean(SettingKey.GENERAL_AUTO_VALIDATE))
 			{
 				validate();
 			}
@@ -665,7 +658,7 @@ public class JDFTreeModel extends DefaultTreeModel
 			return;
 		}
 
-		final boolean showDefaultAtts = iniFile.getDisplayDefault();
+		final boolean showDefaultAtts = settingService.getBoolean(SettingKey.GENERAL_DISPLAY_DEFAULT);
 		// get of 'elem' all not inherited attribute names
 		VString vAttNames = elem.getAttributeVector_KElement();
 
@@ -846,7 +839,6 @@ public class JDFTreeModel extends DefaultTreeModel
 	 * Inserts new ResourceLink JDFTreeNode into the m_jdfTree. If node had no ResourceLinkPool - creates it.
 	 * @param parentNode - JDFNode to add resource link to
 	 * @param node - JDFTreeNode representation of parentNode
-	 * @param hasResourceLinkPool - Has parentNode had a resourceLinkPool before action started? Importent for representation of m_jdfTree. ResourceLinkPool is
 	 * automatically added to parentNode but we need to insert it into m_model.
 	 * @param resLink - ResourceLink to insert
 	 * @returns created newLinkNode. null if operation was not completed successful
@@ -1003,7 +995,6 @@ public class JDFTreeModel extends DefaultTreeModel
 	/**
 	 * Method deleteNode. deletes the selected node in the m_jdfTree an removes it from the jdfDoc as well, note that it must reside in a valid tree to
 	 * correctly work
-	 * @param treePath
 	 */
 	public boolean deleteNode(final JDFTreeNode node, TreePath path)
 	{
@@ -1072,7 +1063,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	private void autoValidate()
 	{
-		if (Editor.getIniFile().getAutoVal())
+		if (settingService.getBoolean(SettingKey.GENERAL_AUTO_VALIDATE))
 		{
 			validate();
 		}
@@ -1181,7 +1172,6 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * get the ns uri for a given element or attribute name
-	 * @param element
 	 * @param selectedValue
 	 * @return
 	 */

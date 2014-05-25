@@ -84,6 +84,8 @@ import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.util.StringUtil;
+import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.service.SettingService;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -112,7 +114,9 @@ import java.util.Vector;
 
 public class JDFFrame extends JFrame implements ActionListener, DropTargetListener, DragSourceListener, DragGestureListener, ClipboardOwner
 {
-	/**
+	SettingService settingService = new SettingService();
+
+    /**
 	 * Comment for <code>serialVersionU
 	 * ID</code>
 	 */
@@ -491,7 +495,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		try
 		{
 			final INIReader m_iniFile = Editor.getIniFile();
-			setEnableOpen(!m_iniFile.getReadOnly());
+			setEnableOpen(!settingService.getBoolean(SettingKey.GENERAL_READ_ONLY));
 
 			m_treeArea.drawTreeView(eDoc);
 			m_topTabs.refreshView(eDoc);
@@ -649,7 +653,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		final EditorDocument doc = getEditorDoc();
 		if (doc != null)
 		{
-			if (!m_iniFile.getReadOnly() || !isDirty())
+			if (!settingService.getBoolean(SettingKey.GENERAL_READ_ONLY) || !isDirty())
 			{
 				String originalFileName = doc.getOriginalFileName();
 				if (originalFileName == null)
@@ -817,7 +821,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			}
 
 			final INIReader m_iniFile = Editor.getIniFile();
-			if (isDirty() && !m_iniFile.getReadOnly())
+			if (isDirty() && !settingService.getBoolean(SettingKey.GENERAL_READ_ONLY))
 			{
 				save = saveFileQuestion();
 			}
@@ -868,7 +872,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				textArea.setEditable(false);
 				new DropTarget(textArea, this);
 
-				if (!m_iniFile.getReadOnly())
+				if (!settingService.getBoolean(SettingKey.GENERAL_READ_ONLY))
 				{
 					setEnableClose();
 				}
@@ -911,7 +915,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			}
 
 			final INIReader m_iniFile = Editor.getIniFile();
-			setEnableOpen(!m_iniFile.getReadOnly());
+			setEnableOpen(!settingService.getBoolean(SettingKey.GENERAL_READ_ONLY));
 		}
 	}
 
@@ -1095,7 +1099,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		{
 			// TODO m_errorTabbedPane.copyValidationListToClipBoard();
 		}
-		else if (!m_iniFile.getReadOnly())
+		else if (!settingService.getBoolean(SettingKey.GENERAL_READ_ONLY))
 		{
 			if (eSrc == m_buttonBar.m_cutButton || eSrc == m_menuBar.m_cutItem)
 			{
@@ -1514,7 +1518,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				final int selIndex = m_topTabs.getSelectedIndex();
 
 				final INIReader m_iniFile = Editor.getIniFile();
-				if (!m_iniFile.getReadOnly())
+				if (!settingService.getBoolean(SettingKey.GENERAL_READ_ONLY))
 				{
 					m_menuBar.setEnabledInMenu(m_treeArea.getSelectionPath());
 				}

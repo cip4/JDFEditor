@@ -68,31 +68,10 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URLDecoder;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.mail.BodyPart;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.swing.JOptionPane;
-import javax.swing.tree.TreePath;
-
 import org.apache.log4j.Logger;
-import org.cip4.jdflib.core.AttributeName;
-import org.cip4.jdflib.core.JDFDoc;
-import org.cip4.jdflib.core.JDFElement;
+import org.cip4.jdflib.core.*;
 import org.cip4.jdflib.core.JDFElement.EnumValidationLevel;
-import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
-import org.cip4.jdflib.core.KElement;
-import org.cip4.jdflib.core.VElement;
-import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.jdflib.resource.JDFResource;
@@ -100,8 +79,20 @@ import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
+import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.streamloader.IStreamLoader;
 import org.cip4.tools.jdfeditor.streamloader.PluginLoader;
+
+import javax.mail.BodyPart;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.swing.*;
+import javax.swing.tree.TreePath;
+import java.io.*;
+import java.net.URLDecoder;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * static utilities for the editor
@@ -112,6 +103,8 @@ public class EditorUtils
 {
 	private static final Logger sm_log = Logger.getLogger(EditorUtils.class);
 	private static PluginLoader<IStreamLoader> pluginLoader = null;
+
+    private SettingService settingService = new SettingService();
 
 	/**
 	 * Check if a KElement is valid or not.
@@ -546,7 +539,9 @@ public class EditorUtils
 		File schemaloc = null;
 		final INIReader iniFile = Editor.getIniFile();
 
-		if (iniFile != null && iniFile.getUseSchema())
+
+
+		if (iniFile != null && new SettingService().getBoolean(SettingKey.GENERAL_USE_SCHEMA))
 		{
 			schemaloc = iniFile.getSchemaURL();
 		}
@@ -564,7 +559,7 @@ public class EditorUtils
 
 			final INIReader iniFile = Editor.getIniFile();
 
-			if (iniFile != null && iniFile.getNormalizeOpen())
+			if (iniFile != null && new SettingService().getBoolean(SettingKey.GENERAL_NORMALIZE))
 			{
 				jdfDoc.getRoot().sortChildren();
 			}

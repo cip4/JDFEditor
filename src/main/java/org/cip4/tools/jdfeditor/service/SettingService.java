@@ -5,6 +5,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
+import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.util.LocationUtil;
 
 import java.io.File;
@@ -70,25 +71,69 @@ public class SettingService {
     }
 
     /**
-     * Get a configuration setting by a key.
+     * Get a setting as String.
      *
-     * @param key The configuration key.
-     * @return The configuration setting value as String.
+     * @param key The setting key.
+     * @return The setting value as String.
      */
-    public String getSetting(SettingKey key) {
+    public String getString(SettingKey key) {
 
         return config.getString(key.getKey(), key.getDefaultValue());
     }
 
     /**
-     * Set a configuration setting by a key.
+     * Retruns a setting as boolean.
+     * @param key The setting key.
+     * @return The Setting value as boolean.
+     */
+    public boolean getBoolean(SettingKey key) {
+
+        String value = getString(key);
+        return Boolean.parseBoolean(value);
+    }
+
+    /**
+     * Retruns a setting as int.
+     * @param key The setting key.
+     * @return The Setting value as int.
+     */
+    public int getInteger(SettingKey key) {
+
+        String value = getString(key);
+        return Integer.parseInt(value);
+    }
+
+    /**
+     * Set a setting string by a key.
      *
      * @param key   The configuration key.
      * @param value The configuration setting value as String.
      */
-    public void setSetting(SettingKey key, String value) {
+    public void setString(SettingKey key, String value) {
 
         config.setProperty(key.getKey(), value);
+    }
+
+    /**
+     * Set a setting boolean by a key.
+     *
+     * @param key   The configuration key.
+     * @param value The configuration setting value as Boolean.
+     */
+    public void setBoolean(SettingKey key, boolean value) {
+
+        config.setProperty(key.getKey(), Boolean.toString(value));
+    }
+
+    /**
+     * Set a setting boolean by a key.
+     *
+     * @param key   The configuration key.
+     * @param value The configuration setting value as int.
+     */
+    public void setInteger(SettingKey key, int value) {
+
+        config.setProperty(key.getKey(), Integer.toString(value));
     }
 
     /**

@@ -70,24 +70,18 @@ package org.cip4.tools.jdfeditor;
  *  
  * 
  */
-import org.cip4.jdflib.extensions.XJDF20;
-import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.tools.jdfeditor.dialog.SaveAsJDFDialog;
 import org.cip4.tools.jdfeditor.dialog.SaveAsXJDFDialog;
+import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.service.SettingService;
 
-import java.awt.Dimension;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashSet;
-
-import javax.swing.Box;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 
 /**
  * 
@@ -97,6 +91,8 @@ import javax.swing.SwingUtilities;
  */
 public class EditorButtonBar extends JToolBar implements ActionListener
 {
+
+    private SettingService settingService = new SettingService();
 
 	JButton m_newButton;
 	JButton m_openButton;
@@ -234,7 +230,6 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 
 	/**
 	 * Creates a JButton with the default settings.
-	 * @param iconStr - The Path to the image file
 	 * @param tip     - The tool tip
 	 * @param enabled - If the button is enabled or disabled initially
 	 * @return The default JButton.
@@ -418,7 +413,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		{
 			m_frame.closeFile(1);
 		}
-		else if (!Editor.getIniFile().getReadOnly())
+		else if (!settingService.getBoolean(SettingKey.GENERAL_READ_ONLY))
 		{
 			if (eSrc == m_cutButton) // cut
 			{

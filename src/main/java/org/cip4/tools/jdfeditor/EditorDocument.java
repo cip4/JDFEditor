@@ -78,24 +78,25 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import java.io.File;
-import java.util.Enumeration;
-import java.util.Vector;
-
-import javax.mail.BodyPart;
-import javax.mail.Multipart;
-import javax.swing.JTree;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.TreePath;
-
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.UrlUtil;
+import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.service.SettingService;
+
+import javax.mail.BodyPart;
+import javax.mail.Multipart;
+import javax.swing.*;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.TreePath;
+import java.io.File;
+import java.util.Enumeration;
+import java.util.Vector;
 
 /**
  * this class manipulates the xml file internals
@@ -108,6 +109,8 @@ public class EditorDocument
 	 * this class collects all pointers to documents, trees, models etc and consolidates multi document functionality
 	 * 
 	 */
+    SettingService settingService = new SettingService();
+
 	private JDFDoc m_jdfDoc = null;
 	private JTree m_JDFTree = null;
 	// The model of the JDF
@@ -493,7 +496,7 @@ public class EditorDocument
 		root.add(new JDFTreeNode(doc.getRoot()));
 		m_model.buildModel((JDFTreeNode) root.getFirstChild());
 		m_model.addTreeModelListener(new MyTreeModelListener());
-		if (Editor.getIniFile().getAutoVal())
+		if (settingService.getBoolean(SettingKey.GENERAL_AUTO_VALIDATE))
 		{
 			m_model.validate();
 		}
@@ -578,15 +581,15 @@ public class EditorDocument
 		final INIReader ini = Editor.getIniFile();
 
 		final KElement e = m_jdfDoc.getRoot();
-		if (ini.getRemoveDefault() && (e instanceof JDFElement))
+		if (settingService.getBoolean(SettingKey.GENERAL_REMOVE_DEFAULT) && (e instanceof JDFElement))
 		{
 			((JDFElement) e).eraseDefaultAttributes(true);
 		}
-		if (ini.getRemoveWhite())
+		if (settingService.getBoolean(SettingKey.GENERAL_REMOVE_WHITE))
 		{
 			e.eraseEmptyNodes(true);
 		}
-		if (ini.getNormalizeOpen())
+		if (settingService.getBoolean(SettingKey.GENERAL_NORMALIZE))
 		{
 			e.sortChildren();
 			// String extension=UrlUtil.extension(file.getAbsolutePath().toLowerCase());
@@ -630,8 +633,8 @@ public class EditorDocument
 	private void writeToFile(File file)
 	{
 		final INIReader ini = Editor.getIniFile();
-		int indent = ini.getIndentSave() ? 2 : 0;
-		m_jdfDoc.write2File(file.getAbsolutePath(), indent, !ini.getIndentSave());
+		int indent = settingService.getBoolean(SettingKey.GENERAL_INDENT) ? 2 : 0;
+		m_jdfDoc.write2File(file.getAbsolutePath(), indent, !settingService.getBoolean(SettingKey.GENERAL_INDENT));
 	}
 
 	/**

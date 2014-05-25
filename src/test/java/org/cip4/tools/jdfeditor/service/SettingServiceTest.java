@@ -2,6 +2,7 @@ package org.cip4.tools.jdfeditor.service;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FilenameUtils;
+import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -70,7 +71,7 @@ public class SettingServiceTest {
 
         // act
         SettingService service = new SettingService();
-        service.setSetting(SettingKey.GENERAL_LANGUAGE, "de");
+        service.setString(SettingKey.GENERAL_LANGUAGE, "de");
 
         // assert
         File logFile = service.getLogFile();
@@ -98,13 +99,13 @@ public class SettingServiceTest {
         changeLogFileName(fileName);
 
         SettingService service = new SettingService();
-        service.setSetting(SettingKey.GENERAL_LANGUAGE, "de");
+        service.setString(SettingKey.GENERAL_LANGUAGE, "de");
 
         // act
         service = new SettingService();
 
         // assert
-        Assert.assertEquals("Language attribute is wrong.", "de", service.getSetting(SettingKey.GENERAL_LANGUAGE));
+        Assert.assertEquals("Language attribute is wrong.", "de", service.getString(SettingKey.GENERAL_LANGUAGE));
 
 
         service.getLogFile().delete();
@@ -125,11 +126,11 @@ public class SettingServiceTest {
 
         // act
         service = new SettingService();
-        service.setSetting(SettingKey.GENERAL_LANGUAGE, "tt");
+        service.setString(SettingKey.GENERAL_LANGUAGE, "tt");
         service = new SettingService();
-        service.setSetting(SettingKey.LOGGING_ENABLED, "dd");
+        service.setString(SettingKey.LOGGING_ENABLED, "dd");
         service = new SettingService();
-        service.setSetting(SettingKey.LOGGING_LEVEL, "yy");
+        service.setString(SettingKey.LOGGING_LEVEL, "yy");
 
 
         // assert
@@ -179,7 +180,7 @@ public class SettingServiceTest {
 
         // act
         service = new SettingService();
-        service.setSetting(SettingKey.GENERAL_LANGUAGE, "it");
+        service.setString(SettingKey.GENERAL_LANGUAGE, "it");
 
         // assert
         File logFile = service.getLogFile();

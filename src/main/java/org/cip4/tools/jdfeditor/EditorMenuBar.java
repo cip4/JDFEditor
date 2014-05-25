@@ -70,31 +70,20 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import java.awt.Color;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.File;
-
-import javax.swing.ImageIcon;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JSeparator;
-import javax.swing.KeyStroke;
-import javax.swing.tree.TreePath;
-
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourceLinkPool;
 import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.tools.jdfeditor.menu.HelpMenuItem;
+import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.service.SettingService;
+
+import javax.swing.*;
+import javax.swing.tree.TreePath;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File;
 
 /**
  * Class to implement all the menu bar and menu related stuff moved here from JDFFrame
@@ -109,6 +98,8 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	 * 
 	 */
 	private static final long serialVersionUID = -8488973695389593826L;
+
+    private SettingService settingService = new SettingService();
 
 	private JMenu m_insertElementMenu;
 	private JMenu m_resourceMenu;
@@ -790,7 +781,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		m_showInhAttrRadioItem.addActionListener(this);
 		m_validateMenu.add(m_showInhAttrRadioItem);
 
-		m_DispDefAttrRadioItem = new JRadioButtonMenuItem(Editor.getString("DisplayDefaultsKey"), m_iniFile.getDisplayDefault());
+		m_DispDefAttrRadioItem = new JRadioButtonMenuItem(Editor.getString("DisplayDefaultsKey"), settingService.getBoolean(SettingKey.GENERAL_DISPLAY_DEFAULT));
 		m_DispDefAttrRadioItem.addActionListener(this);
 		m_validateMenu.add(m_DispDefAttrRadioItem);
 
@@ -1111,7 +1102,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		}
 		if (eSrc == m_DispDefAttrRadioItem)
 		{
-			iniFile.setDisplayDefault(m_DispDefAttrRadioItem.isSelected());
+            settingService.setBoolean(SettingKey.GENERAL_DISPLAY_DEFAULT, m_DispDefAttrRadioItem.isSelected());
 			iniFile.writeINIFile();
 			if (getJDFDoc() != null)
 			{
