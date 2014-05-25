@@ -101,8 +101,9 @@ import java.util.List;
  */
 public class INIReader
 {
-	private final String language = "General/@language";
 	private final String lookAndFeel = "General/@lookAndFeel";
+
+
 	private final String methodSendToDevice = "SendToDevice/@Method";
 	private final String packageAll = "SendToDevice/@PackageAll";
 
@@ -185,19 +186,11 @@ public class INIReader
 		// If the Editor.ini file is not found, create a new default file and read it
 		catch (final Exception ex)
 		{
-			setLanguage("en"); // dummy to set up a minimal xml document
 			writeINIFile();
 			readINIFile();
 		}
 	}
 
-	/**
-	 * @return
-	 */
-	public String getLanguage()
-	{
-		return getAttribute(language, "en");
-	}
 
 	private String getAttribute(final String path, final String def)
 	{
@@ -745,11 +738,6 @@ public class INIReader
 			}
 		}
 		return -1;
-	}
-
-	public void setLanguage(final String _language)
-	{
-		setAttribute(language, _language);
 	}
 
 	private void setAttribute(final String xPath, final String attrib)

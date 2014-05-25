@@ -75,6 +75,8 @@ import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.*;
 import org.cip4.jdflib.jmf.JMFBuilder;
 import org.cip4.jdflib.util.logging.LogConfigurator;
+import org.cip4.tools.jdfeditor.service.SettingKey;
+import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.LocationUtil;
 
 import javax.swing.*;
@@ -94,6 +96,8 @@ import java.util.ResourceBundle;
  */
 public class Editor
 {
+    private SettingService settingService = new SettingService();
+
 	private static Editor my_Editor;
 	protected static JDFFrame my_Frame;
 	private static INIReader m_iniFile;
@@ -210,7 +214,7 @@ public class Editor
 	public void init(final File file)
 	{
 		m_iniFile = new INIReader();
-		final String language = m_iniFile.getLanguage();
+		final String language = settingService.getSetting(SettingKey.GENERAL_LANGUAGE);
 		final Locale currentLocale = new Locale(language, language.toUpperCase());
 
 		Locale.setDefault(currentLocale);

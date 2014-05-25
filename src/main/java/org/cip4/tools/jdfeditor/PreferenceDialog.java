@@ -75,6 +75,8 @@ import org.cip4.jdflib.core.JDFElement.EnumVersion;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.util.EnumUtil;
+import org.cip4.tools.jdfeditor.service.SettingKey;
+import org.cip4.tools.jdfeditor.service.SettingService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -100,6 +102,8 @@ import java.util.Vector;
 
 public class PreferenceDialog extends JTabbedPane implements ActionListener
 {
+	private SettingService settingService = new SettingService();
+
 	// TODO subclass
 	private class ValidationTab
 	{
@@ -208,6 +212,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	public PreferenceDialog()
 	{
 		super();
+
 		validTab = new ValidationTab();
 		init();
 	}
@@ -285,7 +290,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private void init()
 	{
 		final INIReader iniFile = Editor.getIniFile();
-		this.currLang = iniFile.getLanguage();
+		this.currLang = settingService.getSetting(SettingKey.GENERAL_LANGUAGE);
 		this.currLNF = iniFile.getLookAndFeel();
 		this.currValidate = iniFile.getAutoVal();
 		this.currReadOnly = iniFile.getReadOnly();
@@ -1046,7 +1051,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		iniFile.setMISLevel(getMISLevel());
 		iniFile.setJMFLevel(getJMFLevel());
 
-		iniFile.setLanguage(getLanguage());
+        settingService.setSetting(SettingKey.GENERAL_LANGUAGE, getLanguage());
 		iniFile.setReadOnly(getReadOnly());
 		iniFile.setAutoVal(getAutoVal());
 		iniFile.setMethodSendToDevice(getMethodSendToDevice());
