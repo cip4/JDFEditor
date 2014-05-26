@@ -20,6 +20,7 @@ public enum SettingKey {
     GENERAL_REMOVE_WHITE("general.remove.white", true),
     GENERAL_INDENT("general.indent", true),
     GENERAL_LONG_ID("general.long.id", false),
+    GENERAL_UPDATE_JOBID("general.update.jobid", false),
     GENERAL_USE_SCHEMA("general.use.schema", false),
     GOLDENTICKET_MISURL("goldenticket.misurl", null),
     GOLDENTICKET_BASELEVEL("goldenticket.baselevel", 1),

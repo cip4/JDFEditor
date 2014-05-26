@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -70,22 +70,38 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import org.cip4.jdflib.core.JDFElement.EnumValidationLevel;
-import org.cip4.jdflib.core.JDFElement.EnumVersion;
-import org.cip4.jdflib.core.KElement;
-import org.cip4.jdflib.core.VString;
-import org.cip4.jdflib.util.EnumUtil;
-import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
-import org.cip4.tools.jdfeditor.service.SettingService;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.Vector;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+
+import org.cip4.jdflib.core.JDFElement.EnumValidationLevel;
+import org.cip4.jdflib.core.JDFElement.EnumVersion;
+import org.cip4.jdflib.core.VString;
+import org.cip4.jdflib.util.EnumUtil;
+import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.service.SettingService;
 
 /**
  * @author Dr. Rainer Prosi, Heidelberger Druckmaschinen AG
@@ -102,7 +118,7 @@ import java.util.Vector;
 
 public class PreferenceDialog extends JTabbedPane implements ActionListener
 {
-	private SettingService settingService = new SettingService();
+	private final SettingService settingService = new SettingService();
 
 	// TODO subclass
 	private class ValidationTab
@@ -146,6 +162,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private JCheckBox boxRemDefault;
 	private JCheckBox boxDispDefault;
 	private JCheckBox boxLongID;
+	private JCheckBox boxUpdateJobID;
 	private JCheckBox boxRemWhite;
 	private JCheckBox boxCheckURL;
 	private JCheckBox boxGenerateFull;
@@ -183,6 +200,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private boolean currReadOnly;
 	private boolean normalizeOpen;
 	private boolean longID;
+	private boolean updateJobID;
 	private boolean enableExtensions;
 	private boolean structuredCaps;
 	private boolean generateFull;
@@ -264,7 +282,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	{
 		final JDFFrame f = Editor.getFrame();
 		final INIReader iniFile = Editor.getIniFile();
-        settingService.setString(SettingKey.GENERAL_LOOK, currLNF);
+		settingService.setString(SettingKey.GENERAL_LOOK, currLNF);
 		iniFile.writeINIFile();
 		f.applyLookAndFeel(this);
 	}
@@ -295,7 +313,8 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		this.currValidate = settingService.getBoolean(SettingKey.GENERAL_AUTO_VALIDATE);
 		this.currReadOnly = settingService.getBoolean(SettingKey.GENERAL_READ_ONLY);
 		this.currMethodSendToDevice = settingService.getString(SettingKey.GENERAL_LOOK);
-        longID = settingService.getBoolean(SettingKey.GENERAL_LONG_ID);
+		longID = settingService.getBoolean(SettingKey.GENERAL_LONG_ID);
+		updateJobID = settingService.getBoolean(SettingKey.GENERAL_UPDATE_JOBID);
 		useSchema = settingService.getBoolean(SettingKey.GENERAL_USE_SCHEMA);
 		schemaFile = iniFile.getSchemaURL();
 		currRemoveDefault = settingService.getBoolean(SettingKey.GENERAL_REMOVE_DEFAULT);
@@ -431,6 +450,13 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		boxLongID.setBounds(10, y, d.width, d.height);
 		boxLongID.addActionListener(this);
 		genPanel.add(boxLongID);
+
+		y += d.height + 3;
+		boxUpdateJobID = new JCheckBox(Editor.getString("UpdateJobIDKey"), updateJobID);
+		d = boxUpdateJobID.getPreferredSize();
+		boxUpdateJobID.setBounds(10, y, d.width, d.height);
+		boxUpdateJobID.addActionListener(this);
+		genPanel.add(boxUpdateJobID);
 
 		y += d.height + 3;
 		boxSchema = new JCheckBox(Editor.getString("UseSchemaKey"), useSchema);
@@ -976,6 +1002,10 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		{
 			longID = boxLongID.isSelected();
 		}
+		else if (source == boxUpdateJobID)
+		{
+			updateJobID = boxUpdateJobID.isSelected();
+		}
 		else if (source == boxIgnoreDefaults)
 		{
 			ignoreDefaults = boxIgnoreDefaults.isSelected();
@@ -1044,43 +1074,40 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	{
 		final INIReader iniFile = Editor.getIniFile();
 		validTab.writeToIni();
-        settingService.setBoolean(SettingKey.GENERAL_USE_SCHEMA, useSchema);
+		settingService.setBoolean(SettingKey.GENERAL_USE_SCHEMA, useSchema);
 		iniFile.setSchemaURL(getSchemaURL());
 
-        settingService.setInteger(SettingKey.GOLDENTICKET_BASELEVEL, getBaseLevel());
-        settingService.setInteger(SettingKey.GOLDENTICKET_MISLEVEL, getMISLevel());
-        settingService.setInteger(SettingKey.GOLDENTICKET_JMFLEVEL, getJMFLevel());
+		settingService.setInteger(SettingKey.GOLDENTICKET_BASELEVEL, getBaseLevel());
+		settingService.setInteger(SettingKey.GOLDENTICKET_MISLEVEL, getMISLevel());
+		settingService.setInteger(SettingKey.GOLDENTICKET_JMFLEVEL, getJMFLevel());
 
-        settingService.setString(SettingKey.GENERAL_LANGUAGE, getLanguage());
-        settingService.setBoolean(SettingKey.GENERAL_READ_ONLY, getReadOnly());
-        settingService.setBoolean(SettingKey.GENERAL_AUTO_VALIDATE, getAutoVal());
-        settingService.setString(SettingKey.SEND_METHOD, getMethodSendToDevice());
-        settingService.setString(SettingKey.GENERAL_LOOK, getLNF());
-        settingService.setBoolean(SettingKey.GENERAL_REMOVE_DEFAULT, currRemoveDefault);
-        settingService.setBoolean(SettingKey.GENERAL_DISPLAY_DEFAULT, currDispDefault);
-        settingService.setBoolean(SettingKey.GENERAL_REMOVE_WHITE, currRemoveWhite);
-        settingService.setBoolean(SettingKey.GENERAL_INDENT, currIndentSave);
+		settingService.setString(SettingKey.GENERAL_LANGUAGE, getLanguage());
+		settingService.setBoolean(SettingKey.GENERAL_READ_ONLY, getReadOnly());
+		settingService.setBoolean(SettingKey.GENERAL_AUTO_VALIDATE, getAutoVal());
+		settingService.setString(SettingKey.SEND_METHOD, getMethodSendToDevice());
+		settingService.setString(SettingKey.GENERAL_LOOK, getLNF());
+		settingService.setBoolean(SettingKey.GENERAL_REMOVE_DEFAULT, currRemoveDefault);
+		settingService.setBoolean(SettingKey.GENERAL_DISPLAY_DEFAULT, currDispDefault);
+		settingService.setBoolean(SettingKey.GENERAL_REMOVE_WHITE, currRemoveWhite);
+		settingService.setBoolean(SettingKey.GENERAL_INDENT, currIndentSave);
 		iniFile.setCheckURL(checkURL);
-        settingService.setBoolean(SettingKey.GENERAL_LONG_ID, longID);
+		settingService.setBoolean(SettingKey.GENERAL_LONG_ID, longID);
+		settingService.setBoolean(SettingKey.GENERAL_UPDATE_JOBID, updateJobID);
 		iniFile.setGenerateFull(generateFull);
-        settingService.setBoolean(SettingKey.GENERAL_NORMALIZE, normalizeOpen);
+		settingService.setBoolean(SettingKey.GENERAL_NORMALIZE, normalizeOpen);
 		iniFile.setIgnoreDefault(ignoreDefaults);
 		iniFile.setValidationLevel(validationLevel);
 		iniFile.setDefaultVersion(validationVersion);
 		iniFile.setExportValidation(exportValidation);
 		misURL = fieldMISURL.getText();
 
-        settingService.setString(SettingKey.GOLDENTICKET_MISURL, misURL);
+		settingService.setString(SettingKey.GOLDENTICKET_MISURL, misURL);
 
 		genericStrings = fieldGenericStrings.getText();
 		final VString genericAttributes = new VString(genericStrings, null);
 		genericAttributes.unify();
 		iniFile.setGenericAtts(genericAttributes);
 		iniFile.writeINIFile();
-		// TODO add checkbox
-
-		KElement.setLongID(settingService.getBoolean(SettingKey.GENERAL_LONG_ID));
-
 	}
 
 	/**

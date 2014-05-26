@@ -70,6 +70,26 @@
  */
 package org.cip4.tools.jdfeditor;
 
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import javax.mail.Multipart;
+import javax.swing.Box;
+import javax.swing.ButtonGroup;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFParser;
@@ -85,23 +105,12 @@ import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 
-import javax.mail.Multipart;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 /**
  * @author MRE (Institute for Print and Media Technology) History: 20040903 MRE send MIME multipart/related
  */
 public class SendToDevice extends JPanel implements ActionListener
 {
-    SettingService settingService = new SettingService();
+	SettingService settingService = new SettingService();
 
 	/**
 	 * Comment for <code>serialVersionUID</code>
@@ -220,16 +229,16 @@ public class SendToDevice extends JPanel implements ActionListener
 		if (eSrc == rbJMF || eSrc == rbMIME || eSrc == rbRawXML)
 		{
 			if (rbJMF.isSelected())
-                settingService.setString(SettingKey.SEND_METHOD, "JMF");
+				settingService.setString(SettingKey.SEND_METHOD, "JMF");
 			else if (rbMIME.isSelected())
-                settingService.setString(SettingKey.SEND_METHOD, "MIME");
+				settingService.setString(SettingKey.SEND_METHOD, "MIME");
 			else if (rbRawXML.isSelected())
-                settingService.setString(SettingKey.SEND_METHOD, "RAW");
+				settingService.setString(SettingKey.SEND_METHOD, "RAW");
 
 		}
 		else if (eSrc == rbPackageAll)
 		{
-            settingService.setBoolean(SettingKey.SEND_PACKAGE, rbPackageAll.isSelected());
+			settingService.setBoolean(SettingKey.SEND_PACKAGE, rbPackageAll.isSelected());
 		}
 	}
 
@@ -390,12 +399,15 @@ public class SendToDevice extends JPanel implements ActionListener
 	 */
 	private void updateJobID(final KElement root)
 	{
-		int inc = settingService.getInteger(SettingKey.SEND_JOB_INCREMENT);
-		inc = ++inc % 10000;
-        settingService.setInteger(SettingKey.SEND_JOB_INCREMENT, inc);
-		final String jobID = root.getAttribute(AttributeName.JOBID) + "." + inc;
-		final AttributeReplacer ar = new AttributeReplacer("JobID", jobID, null);
-		ar.replace(root);
+		if (settingService.getBoolean(SettingKey.GENERAL_UPDATE_JOBID))
+		{
+			int inc = settingService.getInteger(SettingKey.SEND_JOB_INCREMENT);
+			inc = ++inc % 10000;
+			settingService.setInteger(SettingKey.SEND_JOB_INCREMENT, inc);
+			final String jobID = root.getAttribute(AttributeName.JOBID) + "." + inc;
+			final AttributeReplacer ar = new AttributeReplacer("JobID", jobID, null);
+			ar.replace(root);
+		}
 	}
 
 	/**
@@ -411,6 +423,8 @@ public class SendToDevice extends JPanel implements ActionListener
 		{
 			return false;
 		}
+		KElement root = theDoc.getRoot();
+		updateJobID(root);
 
 		final HttpURLConnection con = theDoc.write2HTTPURL(url, null);
 
@@ -418,7 +432,9 @@ public class SendToDevice extends JPanel implements ActionListener
 		{
 			bSendTrue = con != null && con.getResponseCode() == 200;
 			if (bSendTrue)
+			{
 				createResponse(con);
+			}
 		}
 		catch (final IOException x)
 		{
@@ -476,11 +492,11 @@ public class SendToDevice extends JPanel implements ActionListener
 			final INIReader ini = Editor.getIniFile();
 			if (bReturn)
 			{
-                settingService.setString(SettingKey.SEND_URL_RETURN, urlText);
+				settingService.setString(SettingKey.SEND_URL_RETURN, urlText);
 			}
 			else
 			{
-                settingService.setString(SettingKey.SEND_URL_SEND, urlText);
+				settingService.setString(SettingKey.SEND_URL_SEND, urlText);
 			}
 		}
 		catch (final MalformedURLException e)
