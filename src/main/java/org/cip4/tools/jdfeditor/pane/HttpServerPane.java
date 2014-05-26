@@ -70,8 +70,24 @@
  */
 package org.cip4.tools.jdfeditor.pane;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.monitor.FileAlterationListener;
+import org.apache.commons.io.monitor.FileAlterationMonitor;
+import org.apache.commons.io.monitor.FileAlterationObserver;
+import org.apache.log4j.Logger;
+import org.cip4.jdflib.core.JDFParser;
+import org.cip4.jdflib.jmf.JDFJMF;
+import org.cip4.jdflib.jmf.JDFMessage;
+import org.cip4.tools.jdfeditor.Editor;
+import org.cip4.tools.jdfeditor.INIReader;
+import org.cip4.tools.jdfeditor.JDFFrame;
+import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.service.SettingService;
+import org.cip4.tools.jdfeditor.transport.HttpReceiver;
+
+import javax.swing.*;
+import javax.swing.table.TableRowSorter;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -87,35 +103,6 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.RowSorter;
-import javax.swing.SortOrder;
-import javax.swing.SpringLayout;
-import javax.swing.table.TableRowSorter;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.monitor.FileAlterationListener;
-import org.apache.commons.io.monitor.FileAlterationMonitor;
-import org.apache.commons.io.monitor.FileAlterationObserver;
-import org.apache.log4j.Logger;
-import org.cip4.jdflib.core.JDFParser;
-import org.cip4.jdflib.jmf.JDFJMF;
-import org.cip4.jdflib.jmf.JDFMessage;
-import org.cip4.tools.jdfeditor.Editor;
-import org.cip4.tools.jdfeditor.INIReader;
-import org.cip4.tools.jdfeditor.JDFFrame;
-import org.cip4.tools.jdfeditor.transport.HttpReceiver;
-
 /**
  * Class that implements a "HTTP server" tab/panel.
  *
@@ -124,6 +111,8 @@ public class HttpServerPane implements FileAlterationListener, ActionListener
 {
 	private static final Logger log = Logger.getLogger(HttpServerPane.class);
 	private static INIReader conf = Editor.getIniFile();
+
+    private SettingService settingService = new SettingService();
 
 	private final JDFFrame frame;
 
@@ -143,7 +132,7 @@ public class HttpServerPane implements FileAlterationListener, ActionListener
 	{
 		this.frame = frame;
 
-		File directory = new File(conf.getHttpStorePath());
+		File directory = new File(settingService.getString(SettingKey.HTTP_STORE_PATH));
 		FileAlterationObserver observer = new FileAlterationObserver(directory);
 		observer.addListener(this);
 
@@ -270,7 +259,7 @@ public class HttpServerPane implements FileAlterationListener, ActionListener
 		buttonSelectPath = new JButton("...");
 		buttonSelectPath.addActionListener(this);
 		pathPanel.add(buttonSelectPath);
-		labelStorePath = new JLabel(conf.getHttpStorePath());
+		labelStorePath = new JLabel(settingService.getString(SettingKey.HTTP_STORE_PATH));
 		pathPanel.add(labelStorePath);
 		rightBottomPanel.add(pathPanel, BorderLayout.SOUTH);
 
@@ -433,13 +422,13 @@ public class HttpServerPane implements FileAlterationListener, ActionListener
 		else if (e.getSource() == buttonSelectPath)
 		{
 			JFileChooser chooser = new JFileChooser();
-			chooser.setCurrentDirectory(new File(conf.getHttpStorePath()));
+			chooser.setCurrentDirectory(new File(settingService.getString(SettingKey.HTTP_STORE_PATH)));
 			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			chooser.setAcceptAllFileFilterUsed(false);
 			if (chooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION)
 			{
 				log.debug("getSelectedFile(): " + chooser.getSelectedFile());
-				conf.setHttpStorePath(chooser.getSelectedFile().getAbsolutePath());
+                settingService.setString(SettingKey.HTTP_STORE_PATH, chooser.getSelectedFile().getAbsolutePath());
 				labelStorePath.setText(chooser.getSelectedFile().getAbsolutePath());
 			}
 		}

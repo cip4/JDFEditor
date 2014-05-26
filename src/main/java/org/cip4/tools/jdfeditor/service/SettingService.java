@@ -17,7 +17,7 @@ public class SettingService {
 
     private static final Logger LOGGER = Logger.getLogger(SettingService.class);
 
-    private static String logFileName = "JDFEditor.conf";
+    private static String confFileName = "JDFEditor.conf";
 
     private final PropertiesConfiguration config;
 
@@ -40,7 +40,7 @@ public class SettingService {
         LOGGER.info("Initialize settings...");
 
         // path config file
-        File configFile = getLogFile();
+        File configFile = getConfFile();
 
         // config settings
         PropertiesConfiguration config;
@@ -140,7 +140,7 @@ public class SettingService {
      * Returns the path of the logfile.
      * @return Path to Logfile.
      */
-    public File getLogFile() {
-        return new File(FilenameUtils.concat(LocationUtil.getDirCIP4Tools(), logFileName));
+    public File getConfFile() {
+        return new File(FilenameUtils.concat(LocationUtil.getDirCIP4Tools(), confFileName));
     }
 }

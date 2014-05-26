@@ -298,7 +298,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		try
 		{
 			final INIReader m_iniFile = Editor.getIniFile();
-			UIManager.setLookAndFeel(m_iniFile.getLookAndFeel());
+			UIManager.setLookAndFeel(settingService.getString(SettingKey.GENERAL_LOOK));
 			m_buttonBar.removeAll();
 			m_buttonBar.drawButtonBar();
 			SwingUtilities.updateComponentTreeUI(JDFFrame.this);

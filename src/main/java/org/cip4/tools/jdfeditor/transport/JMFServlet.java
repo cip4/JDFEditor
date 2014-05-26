@@ -70,33 +70,24 @@
  */
 package org.cip4.tools.jdfeditor.transport;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
+import org.cip4.jdflib.core.JDFParser;
+import org.cip4.jdflib.core.VElement;
+import org.cip4.jdflib.jmf.JDFJMF;
+import org.cip4.jdflib.jmf.JDFMessage;
+import org.cip4.tools.jdfeditor.Editor;
+import org.cip4.tools.jdfeditor.INIReader;
+import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.service.SettingService;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
-import org.cip4.jdflib.core.JDFParser;
-import org.cip4.jdflib.core.KElement;
-import org.cip4.jdflib.core.VElement;
-import org.cip4.jdflib.jmf.JDFJMF;
-import org.cip4.jdflib.jmf.JDFMessage;
-import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
-import org.cip4.jdflib.jmf.JDFMessage.EnumType;
-import org.cip4.tools.jdfeditor.Editor;
-import org.cip4.tools.jdfeditor.INIReader;
-import org.w3c.dom.Node;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 
 public class JMFServlet extends HttpServlet {
@@ -104,6 +95,8 @@ public class JMFServlet extends HttpServlet {
 	private static INIReader conf = Editor.getIniFile();
 	private static String TIMESTAMP_PATTERN = "yyyy-MM-dd_hh-mm-ss-SSS";
 	private static int INDENT = 2;
+
+    private SettingService settingService = new SettingService();
 	
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
@@ -164,7 +157,8 @@ public class JMFServlet extends HttpServlet {
 			}
 			log.info("Save message to file: " + fileName);
 			
-			String fullPathFile = conf.getHttpStorePath() + File.separator + fileName;
+			String fullPathFile = settingService.getString(SettingKey.HTTP_STORE_PATH) + File.separator + fileName;
+
 			File f = new File(fullPathFile);
 			
 			FileUtils.writeStringToFile(f, tempRequestMessage.toDisplayXML(INDENT));

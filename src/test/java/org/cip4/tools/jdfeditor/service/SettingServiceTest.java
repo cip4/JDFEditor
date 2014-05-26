@@ -45,9 +45,9 @@ public class SettingServiceTest {
         SettingService service = new SettingService();
 
         // assert
-        File logFile = service.getLogFile();
+        File logFile = service.getConfFile();
 
-        Assert.assertEquals("Filename is wrong.", fileName, FilenameUtils.getName(service.getLogFile().getName()));
+        Assert.assertEquals("Filename is wrong.", fileName, FilenameUtils.getName(service.getConfFile().getName()));
         Assert.assertTrue("LogFile does not exist.", logFile.exists());
 
         PropertiesConfiguration config = new PropertiesConfiguration(logFile);
@@ -74,9 +74,9 @@ public class SettingServiceTest {
         service.setString(SettingKey.GENERAL_LANGUAGE, "de");
 
         // assert
-        File logFile = service.getLogFile();
+        File logFile = service.getConfFile();
 
-        Assert.assertEquals("Filename is wrong.", fileName, FilenameUtils.getName(service.getLogFile().getName()));
+        Assert.assertEquals("Filename is wrong.", fileName, FilenameUtils.getName(service.getConfFile().getName()));
         Assert.assertTrue("LogFile does not exist.", logFile.exists());
 
         PropertiesConfiguration config = new PropertiesConfiguration(logFile);
@@ -108,7 +108,7 @@ public class SettingServiceTest {
         Assert.assertEquals("Language attribute is wrong.", "de", service.getString(SettingKey.GENERAL_LANGUAGE));
 
 
-        service.getLogFile().delete();
+        service.getConfFile().delete();
     }
 
     /**
@@ -134,7 +134,7 @@ public class SettingServiceTest {
 
 
         // assert
-        File logFile = service.getLogFile();
+        File logFile = service.getConfFile();
 
         int lines = 0;
         BufferedReader br = new BufferedReader(new FileReader(logFile));
@@ -172,7 +172,7 @@ public class SettingServiceTest {
 
         SettingService service = new SettingService();
 
-        PropertiesConfiguration config = new PropertiesConfiguration(service.getLogFile());
+        PropertiesConfiguration config = new PropertiesConfiguration(service.getConfFile());
         config.clearProperty(SettingKey.GENERAL_LANGUAGE.getKey());
         config.save();
 
@@ -183,7 +183,7 @@ public class SettingServiceTest {
         service.setString(SettingKey.GENERAL_LANGUAGE, "it");
 
         // assert
-        File logFile = service.getLogFile();
+        File logFile = service.getConfFile();
 
         int lines = 0;
         BufferedReader br = new BufferedReader(new FileReader(logFile));

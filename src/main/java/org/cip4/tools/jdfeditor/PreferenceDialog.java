@@ -264,7 +264,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	{
 		final JDFFrame f = Editor.getFrame();
 		final INIReader iniFile = Editor.getIniFile();
-		iniFile.setLookAndFeel(currLNF);
+        settingService.setString(SettingKey.GENERAL_LOOK, currLNF);
 		iniFile.writeINIFile();
 		f.applyLookAndFeel(this);
 	}
@@ -291,11 +291,11 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	{
 		final INIReader iniFile = Editor.getIniFile();
 		this.currLang = settingService.getString(SettingKey.GENERAL_LANGUAGE);
-		this.currLNF = iniFile.getLookAndFeel();
+		this.currLNF = settingService.getString(SettingKey.GENERAL_LOOK);
 		this.currValidate = settingService.getBoolean(SettingKey.GENERAL_AUTO_VALIDATE);
 		this.currReadOnly = settingService.getBoolean(SettingKey.GENERAL_READ_ONLY);
-		this.currMethodSendToDevice = iniFile.getMethodSendToDevice();
-		longID = iniFile.getLongID();
+		this.currMethodSendToDevice = settingService.getString(SettingKey.GENERAL_LOOK);
+        longID = settingService.getBoolean(SettingKey.GENERAL_LONG_ID);
 		useSchema = settingService.getBoolean(SettingKey.GENERAL_USE_SCHEMA);
 		schemaFile = iniFile.getSchemaURL();
 		currRemoveDefault = settingService.getBoolean(SettingKey.GENERAL_REMOVE_DEFAULT);
@@ -1054,14 +1054,14 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
         settingService.setString(SettingKey.GENERAL_LANGUAGE, getLanguage());
         settingService.setBoolean(SettingKey.GENERAL_READ_ONLY, getReadOnly());
         settingService.setBoolean(SettingKey.GENERAL_AUTO_VALIDATE, getAutoVal());
-		iniFile.setMethodSendToDevice(getMethodSendToDevice());
-		iniFile.setLookAndFeel(getLNF());
+        settingService.setString(SettingKey.SEND_METHOD, getMethodSendToDevice());
+        settingService.setString(SettingKey.GENERAL_LOOK, getLNF());
         settingService.setBoolean(SettingKey.GENERAL_REMOVE_DEFAULT, currRemoveDefault);
         settingService.setBoolean(SettingKey.GENERAL_DISPLAY_DEFAULT, currDispDefault);
         settingService.setBoolean(SettingKey.GENERAL_REMOVE_WHITE, currRemoveWhite);
         settingService.setBoolean(SettingKey.GENERAL_INDENT, currIndentSave);
 		iniFile.setCheckURL(checkURL);
-		iniFile.setLongID(longID);
+        settingService.setBoolean(SettingKey.GENERAL_LONG_ID, longID);
 		iniFile.setGenerateFull(generateFull);
         settingService.setBoolean(SettingKey.GENERAL_NORMALIZE, normalizeOpen);
 		iniFile.setIgnoreDefault(ignoreDefaults);
@@ -1078,7 +1078,8 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		iniFile.setGenericAtts(genericAttributes);
 		iniFile.writeINIFile();
 		// TODO add checkbox
-		KElement.setLongID(iniFile.getLongID());
+
+		KElement.setLongID(settingService.getBoolean(SettingKey.GENERAL_LONG_ID));
 
 	}
 

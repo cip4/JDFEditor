@@ -167,7 +167,7 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 		cbExt4.setSelected(settingService.getBoolean(SettingKey.XJDF_CONVERT_RUNLIST));
 		cbLoPrep.setSelected(settingService.getBoolean(SettingKey.XJDF_CONVERT_LAYOUTPREP));
 		cbTilde.setSelected(settingService.getBoolean(SettingKey.XJDF_CONVERT_TILDE));
-		cbTypesafeJMF.setSelected(conf.getTypesafeJMF());
+		cbTypesafeJMF.setSelected(settingService.getBoolean(SettingKey.XJDF_TYPESAFE_JMF));
 
 		setVisible(true);
 	}
@@ -197,7 +197,7 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
             settingService.setBoolean(SettingKey.XJDF_CONVERT_RUNLIST, cbExt4.isSelected());
             settingService.setBoolean(SettingKey.XJDF_CONVERT_LAYOUTPREP, cbLoPrep.isSelected());
             settingService.setBoolean(SettingKey.XJDF_CONVERT_TILDE, cbTilde.isSelected());
-			conf.setTypesafeJMF(cbTypesafeJMF.isSelected());
+            settingService.setBoolean(SettingKey.XJDF_TYPESAFE_JMF,cbTypesafeJMF.isSelected());
 
 			choosedButton = BUTTON_OK;
 			dispose();

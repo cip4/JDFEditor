@@ -220,7 +220,7 @@ public class Editor
 		Locale.setDefault(currentLocale);
 		m_littleBundle = ResourceBundle.getBundle("org.cip4.tools.jdfeditor.messages.JDFEditor", currentLocale);
 		final INIReader iniFile = Editor.getIniFile();
-		final String currentLookAndFeel = iniFile.getLookAndFeel();
+		final String currentLookAndFeel = settingService.getString(SettingKey.GENERAL_LOOK);
 
 		try
 		{
@@ -237,7 +237,7 @@ public class Editor
 		// read the initialization stuff
 		JDFAudit.setStaticAgentName(getEditorName());
 		JDFAudit.setStaticAgentVersion(getEditorVersion());
-		KElement.setLongID(m_iniFile.getLongID());
+		KElement.setLongID(settingService.getBoolean(SettingKey.GENERAL_LONG_ID));
 		JDFElement.setDefaultJDFVersion(m_iniFile.getDefaultVersion());
 		JDFParser.m_searchStream = true;
 

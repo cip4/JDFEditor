@@ -149,9 +149,9 @@ public class SaveAsJDFDialog extends JDialog implements ActionListener
 		setSize(screenWidth / 4, screenHeight / 4);
 		setLocation(screenWidth / 4, screenHeight / 4);
 
-		cbExtRetainProduct.setSelected(conf.getFromXjdfRetainProduct());
+		cbExtRetainProduct.setSelected(settingService.getBoolean(SettingKey.XJDF_FROM_RETAIN_PRODUCT));
 		cbTilde.setSelected(settingService.getBoolean(SettingKey.XJDF_CONVERT_TILDE));
-		cbHeuristcLink.setSelected(conf.getFromXJDFHeuristicLink());
+		cbHeuristcLink.setSelected(settingService.getBoolean(SettingKey.XJDF_FROM_HEURISTIC_LINK));
 
 		setVisible(true);
 	}
@@ -175,8 +175,8 @@ public class SaveAsJDFDialog extends JDialog implements ActionListener
 	{
 		if (e.getSource() == bOK)
 		{
-			conf.setFromXjdfRetainProduct(cbExtRetainProduct.isSelected());
-			conf.setFromXJDFHeuristicLink(cbHeuristcLink.isSelected());
+            settingService.setBoolean(SettingKey.XJDF_FROM_RETAIN_PRODUCT, cbExtRetainProduct.isSelected());
+            settingService.setBoolean(SettingKey.XJDF_FROM_HEURISTIC_LINK, cbHeuristcLink.isSelected());
 			choosedButton = BUTTON_OK;
             settingService.setBoolean(SettingKey.XJDF_CONVERT_TILDE, cbTilde.isSelected());
 		}
@@ -204,8 +204,8 @@ public class SaveAsJDFDialog extends JDialog implements ActionListener
 	{
 		final XJDFToJDFConverter c = new XJDFToJDFConverter(null);
 		c.setConvertTilde(settingService.getBoolean(SettingKey.XJDF_CONVERT_TILDE));
-		c.setCreateProduct(conf.getFromXjdfRetainProduct());
-		c.setHeuristicLink(conf.getFromXJDFHeuristicLink());
+		c.setCreateProduct(settingService.getBoolean(SettingKey.XJDF_FROM_RETAIN_PRODUCT));
+		c.setHeuristicLink(settingService.getBoolean(SettingKey.XJDF_FROM_HEURISTIC_LINK));
 		return c;
 	}
 

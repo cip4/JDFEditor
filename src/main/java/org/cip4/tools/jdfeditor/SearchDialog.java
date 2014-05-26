@@ -70,31 +70,21 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import java.awt.Component;
-import java.awt.FlowLayout;
+import org.cip4.jdflib.util.ContainerUtil;
+import org.cip4.jdflib.util.StringUtil;
+import org.cip4.tools.jdfeditor.dialog.SearchComboBoxModel;
+import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.service.SettingService;
+
+import javax.swing.*;
+import javax.swing.tree.TreePath;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JSeparator;
-import javax.swing.tree.TreePath;
-
-import org.cip4.jdflib.util.ContainerUtil;
-import org.cip4.jdflib.util.StringUtil;
-import org.cip4.tools.jdfeditor.dialog.SearchComboBoxModel;
 
 /**
  * Class that implements "Find" dialog.
@@ -109,6 +99,8 @@ public class SearchDialog extends JDialog implements ActionListener
 	private static final long serialVersionUID = -5193131794786297752L;
 
 	private String searchComponent;
+
+    private SettingService settingService = new SettingService();
 
 	/**
 	 * @param sComp the searchComponent
@@ -188,11 +180,11 @@ public class SearchDialog extends JDialog implements ActionListener
 		middleBox.add(new JSeparator());
 		m_IgnoreCase = new JCheckBox(Editor.getString("ignoreCase"));
 		m_IgnoreCase.addActionListener(this);
-		m_IgnoreCase.setSelected(conf.getFindCaseSensitive());
+		m_IgnoreCase.setSelected(settingService.getBoolean(SettingKey.FIND_CASE_SENSITIVE));
 		m_IgnoreCase.setAlignmentX(Component.LEFT_ALIGNMENT); // I'm confused why right???
 		m_Wrap = new JCheckBox(Editor.getString("wrap"));
 		m_Wrap.addActionListener(this);
-		m_Wrap.setSelected(conf.getFindWrap());
+		m_Wrap.setSelected(settingService.getBoolean(SettingKey.FIND_WRAP));
 		m_Wrap.setAlignmentX(Component.LEFT_ALIGNMENT); // I'm confused why right???
 		middleBox.add(m_IgnoreCase);
 		middleBox.add(m_Wrap);
@@ -245,11 +237,11 @@ public class SearchDialog extends JDialog implements ActionListener
 		}
 		else if (eSrc == m_IgnoreCase)
 		{
-			conf.setFindCaseSensitive(m_IgnoreCase.isSelected());
+			settingService.setBoolean(SettingKey.FIND_CASE_SENSITIVE, m_IgnoreCase.isSelected());
 		}
 		else if (eSrc == m_Wrap)
 		{
-			conf.setFindWrap(m_Wrap.isSelected());
+            settingService.setBoolean(SettingKey.FIND_WRAP, m_Wrap.isSelected());
 		}
 	}
 

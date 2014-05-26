@@ -70,26 +70,6 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import javax.mail.Multipart;
-import javax.swing.Box;
-import javax.swing.ButtonGroup;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFParser;
@@ -102,12 +82,27 @@ import org.cip4.jdflib.jmf.JDFQueueSubmissionParams;
 import org.cip4.jdflib.jmf.JDFReturnQueueEntryParams;
 import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.UrlUtil;
+import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.service.SettingService;
+
+import javax.mail.Multipart;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * @author MRE (Institute for Print and Media Technology) History: 20040903 MRE send MIME multipart/related
  */
 public class SendToDevice extends JPanel implements ActionListener
 {
+    SettingService settingService = new SettingService();
+
 	/**
 	 * Comment for <code>serialVersionUID</code>
 	 */
@@ -158,11 +153,11 @@ public class SendToDevice extends JPanel implements ActionListener
 			rbRawXML = new JRadioButton(Editor.getString("sendMethodRaw"));
 			rbPackageAll = new JRadioButton(Editor.getString("PackageAll"));
 			cbReturn = new JCheckBox(Editor.getString("returnJMF"));
-			if (iniFile.getMethodSendToDevice().equals("MIME"))
+			if (settingService.getString(SettingKey.SEND_METHOD).equals("MIME"))
 			{
 				rbMIME.setSelected(true);
 			}
-			else if (iniFile.getMethodSendToDevice().equals("JMF"))
+			else if (settingService.getString(SettingKey.SEND_METHOD).equals("JMF"))
 			{
 				rbJMF.setSelected(true);
 			}
@@ -190,9 +185,9 @@ public class SendToDevice extends JPanel implements ActionListener
 			SendMethodBox.add(rbPackageAll);
 			add(SendMethodBox);
 			add(cbReturn);
-			urlReturn = initURL(Editor.getString("returnToURL"), iniFile.getURLReturnToDevice());
+			urlReturn = initURL(Editor.getString("returnToURL"), settingService.getString(SettingKey.SEND_URL_RETURN));
 		}
-		urlPath = initURL(Editor.getString("pathToURL"), iniFile.getURLSendToDevice());
+		urlPath = initURL(Editor.getString("pathToURL"), settingService.getString(SettingKey.SEND_URL_SEND));
 	}
 
 	/**
@@ -225,25 +220,22 @@ public class SendToDevice extends JPanel implements ActionListener
 		if (eSrc == rbJMF || eSrc == rbMIME || eSrc == rbRawXML)
 		{
 			if (rbJMF.isSelected())
-				ini.setMethodSendToDevice("JMF");
+                settingService.setString(SettingKey.SEND_METHOD, "JMF");
 			else if (rbMIME.isSelected())
-				ini.setMethodSendToDevice("MIME");
+                settingService.setString(SettingKey.SEND_METHOD, "MIME");
 			else if (rbRawXML.isSelected())
-				ini.setMethodSendToDevice("RAW");
+                settingService.setString(SettingKey.SEND_METHOD, "RAW");
 
 		}
 		else if (eSrc == rbPackageAll)
 		{
-			ini.setPackageAll(rbPackageAll.isSelected());
+            settingService.setBoolean(SettingKey.SEND_PACKAGE, rbPackageAll.isSelected());
 		}
 	}
 
 	/**
 	 * sendJMFJDFmime sends the actual open JDF as a MIME multipart/related message to the given URL
 	 * 
-	 * @param url
-	 * @param bMime
-	 * @param returnURL
 	 * @return true if success
 	 */
 	private boolean sendJDF()
@@ -341,7 +333,6 @@ public class SendToDevice extends JPanel implements ActionListener
 	/**
 	 * @param url
 	 * @param bMime
-	 * @param returnURL
 	 * @return true if success
 	 */
 	private boolean returnJDFFromDevice(final URL url, final boolean bMime, final boolean packageAll)
@@ -399,10 +390,9 @@ public class SendToDevice extends JPanel implements ActionListener
 	 */
 	private void updateJobID(final KElement root)
 	{
-		final INIReader ir = Editor.getIniFile();
-		int inc = ir.getJobIncrement();
+		int inc = settingService.getInteger(SettingKey.SEND_JOB_INCREMENT);
 		inc = ++inc % 10000;
-		ir.setJobIncrement(inc);
+        settingService.setInteger(SettingKey.SEND_JOB_INCREMENT, inc);
 		final String jobID = root.getAttribute(AttributeName.JOBID) + "." + inc;
 		final AttributeReplacer ar = new AttributeReplacer("JobID", jobID, null);
 		ar.replace(root);
@@ -486,11 +476,11 @@ public class SendToDevice extends JPanel implements ActionListener
 			final INIReader ini = Editor.getIniFile();
 			if (bReturn)
 			{
-				ini.setURLReturnToDevice(urlText);
+                settingService.setString(SettingKey.SEND_URL_RETURN, urlText);
 			}
 			else
 			{
-				ini.setURLSendToDevice(urlText);
+                settingService.setString(SettingKey.SEND_URL_SEND, urlText);
 			}
 		}
 		catch (final MalformedURLException e)
