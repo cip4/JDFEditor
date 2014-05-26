@@ -1,73 +1,4 @@
-/*
- *
- * The CIP4 Software License, Version 1.0
- *
- *
- * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
- * reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
- *
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in
- *    the documentation and/or other materials provided with the
- *    distribution.
- *
- * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
- *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
- *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
- *    Alternately, this acknowledgment may appear in the software itself,
- *    if and wherever such third-party acknowledgments normally appear.
- *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
- *    Processes in  Prepress, Press and Postpress" must
- *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
- *    permission, please contact info@cip4.org.
- *
- * 5. Products derived from this software may not be called "CIP4",
- *    nor may "CIP4" appear in their name, without prior written
- *    permission of the CIP4 organization
- *
- * Usage of this software in commercial products is subject to restrictions. For
- * details please consult info@cip4.org.
- *
- * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED.  IN NO EVENT SHALL THE INTERNATIONAL COOPERATION FOR
- * THE INTEGRATION OF PROCESSES IN PREPRESS, PRESS AND POSTPRESS OR
- * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
- * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
- * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- * ====================================================================
- *
- * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
- * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
- * Integration of Processes in  Prepress, Press and Postpress , please see
- * <http://www.cip4.org/>.
- *  
- * 
- */
+
 package org.cip4.tools.jdfeditor;
 
 import org.apache.commons.io.FileUtils;
@@ -79,50 +10,18 @@ import org.cip4.jdflib.core.JDFElement.EnumVersion;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.tools.jdfeditor.dialog.SearchComboBoxModel;
 
-import javax.swing.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
- * INI_Reader.java
- * @author SvenoniusI
- * 
- * History
- * 20040906 MRE methods for send to device added
- * 
- * File includes path for display icons in the JDFEditor.
- */
-
 /**
- * @author Dr. Rainer Prosi, Heidelberger Druckmaschinen AG
- * 
- * 13.02.2009
+ * ...born 2 die... (refactored by SettingService)
  */
 public class INIReader
 {
-	private final String lookAndFeel = "General/@lookAndFeel";
-
-
-	private final String methodSendToDevice = "SendToDevice/@Method";
-	private final String packageAll = "SendToDevice/@PackageAll";
-
-	private final String incSendToDevice = "SendToDevice/@JobIncrement";
-	private final String urlSendToDevice = "SendToDevice/@URLSendTo";
-	private final String urlReturnToDevice = "SendToDevice/@URLReturnTo";
-	private final String longID = "General/@longID";
-
-	private final String xjdfTypesafeJMF = "Extension/XJDF/@TypesafeJMF";
-	private final String fromXjdfRetainProduct = "Extension/XJDF/@FromXjdfRetainProduct";
-	private final String fromXJDFHeuristicLink = "Extension/XJDF/@FromXJDFHeuristicLink";
-
-	//	HTTP server settings
-	private final String httpStorePath = "HTTPserver/@StorePath";
 
 	//	Find dialog
 	private final String findPattern = "Find/@Pattern-";
-	private final String findCaseSensitive = "Find/@CaseSensitive";
-	private final String findWrap = "Find/@Wrap";
 
 	private final String[] recentFiles = new String[5];
 	private final String recentDevCap = "RecentFiles/@recentDevCap";
@@ -181,31 +80,7 @@ public class INIReader
 		return xDoc.getRoot().getXPathAttribute(path, def);
 	}
 
-	/**
-	 * @return
-	 */
-	public String getLookAndFeel()
-	{
 
-		return getAttribute(lookAndFeel, UIManager.getSystemLookAndFeelClassName());
-	}
-
-	/**
-	 * @return
-	 */
-//	public int getFontSize()
-//	{
-//		final String s = getAttribute(fontSize, "10");
-//		return Integer.parseInt(s);
-//	}
-
-	/**
-	 * @return
-	 */
-//	public String getFontName()
-//	{
-//		return getAttribute(fontName, null);
-//	}
 
 	/**
 	 * @return
@@ -389,36 +264,6 @@ public class INIReader
 		setAttribute(inheritedAttr, b ? "on" : "off");
 	}
 
-	public String getMethodSendToDevice()
-	{
-		return getAttribute(methodSendToDevice, "MIME");
-	}
-
-	public void setMethodSendToDevice(final String method)
-	{
-		setAttribute(methodSendToDevice, method);
-	}
-
-	public String getURLSendToDevice()
-	{
-		return getAttribute(urlSendToDevice, "http://");
-	}
-
-	public void setURLSendToDevice(final String url)
-	{
-		setAttribute(urlSendToDevice, url);
-	}
-
-	public String getURLReturnToDevice()
-	{
-		return getAttribute(urlReturnToDevice, "http://");
-	}
-
-	public void setURLReturnToDevice(final String url)
-	{
-		setAttribute(urlReturnToDevice, url);
-	}
-
 	/**
 	 * 
 	 *  
@@ -515,18 +360,6 @@ public class INIReader
 
 		String pathFile = FilenameUtils.concat(pathDir, "JDFEditor.ini");
 		return pathFile;
-
-		//		this.settingsFile = new File(pathFile);
-		//		
-		//		
-		//		final String path = System.getProperty("user.home");
-		//		final File iniDir = new File(path + File.separator + "CIP4Editor");
-		//		if (!iniDir.exists())
-		//		{
-		//			iniDir.mkdir();
-		//		}
-		//		final String iniPath = iniDir.getPath() + File.separator + "Editor.ini";
-		//		return iniPath;
 	}
 
 	/**
@@ -640,26 +473,6 @@ public class INIReader
 		}
 	}
 
-	public void setLookAndFeel(final String lnf)
-	{
-		setAttribute(lookAndFeel, lnf);
-	}
-
-	/**
-	 * @return
-	 */
-	public boolean getLongID()
-	{
-		return getAttribute(longID, "true").equalsIgnoreCase("true") ? true : false;
-	}
-
-	/**
-	 * @param b
-	 */
-	public void setLongID(final boolean b)
-	{
-		setAttribute(longID, b ? "true" : "false");
-	}
 
 	/**
 	 * @return
@@ -681,112 +494,12 @@ public class INIReader
 	}
 
 
-	public void setJobIncrement(final int inc)
-	{
-		setAttribute(incSendToDevice, String.valueOf(inc));
-	}
-
-	/**
-	 * @return
-	 */
-	public int getJobIncrement()
-	{
-		final String s = getAttribute(incSendToDevice, null);
-		return StringUtil.parseInt(s, 1);
-	}
-
-
-
 	@Override
 	public String toString()
 	{
 		return xDoc == null ? "null ini file " : "INUReader: " + xDoc.toString();
 	}
 
-	/**
-	 * @param b
-	 */
-	public void setPackageAll(final boolean b)
-	{
-		setAttribute(packageAll, b ? "true" : "false");
-	}
-
-	/**
-	 * @return
-	 */
-	public boolean setPackageAll()
-	{
-		return getAttribute(packageAll, "true").equalsIgnoreCase("true") ? true : false;
-	}
-
-	/**
-	 *  
-	 * @param selected
-	 */
-	public void setFromXjdfRetainProduct(boolean selected)
-	{
-		setAttribute(fromXjdfRetainProduct, selected ? "true" : "false");
-	}
-
-	/**
-	 * 
-	 *  
-	 * @return
-	 */
-	public boolean getFromXjdfRetainProduct()
-	{
-		return getAttribute(fromXjdfRetainProduct, "false").equalsIgnoreCase("true") ? true : false;
-	}
-
-	/**
-	 *  
-	 * @param selected
-	 */
-	public void setFromXJDFHeuristicLink(boolean selected)
-	{
-		setAttribute(fromXJDFHeuristicLink, selected ? "true" : "false");
-	}
-
-	/**
-	 * 
-	 *  
-	 * @return
-	 */
-	public boolean getFromXJDFHeuristicLink()
-	{
-		return getAttribute(fromXJDFHeuristicLink, "false").equalsIgnoreCase("true") ? true : false;
-	}
-
-
-	public String getHttpStorePath()
-	{
-		return getAttribute(httpStorePath, "/var/tmp/JDFEditor/ReceivedMessages/");
-	}
-
-	public void setHttpStorePath(final String p)
-	{
-		setAttribute(httpStorePath, p);
-	}
-
-	public boolean getFindCaseSensitive()
-	{
-		return getAttribute(findCaseSensitive, "true").equalsIgnoreCase("true") ? true : false;
-	}
-
-	public void setFindCaseSensitive(final boolean p)
-	{
-		setAttribute(findCaseSensitive, p ? "true" : "false");
-	}
-
-	public boolean getFindWrap()
-	{
-		return getAttribute(findWrap, "true").equalsIgnoreCase("true") ? true : false;
-	}
-
-	public void setFindWrap(final boolean p)
-	{
-		setAttribute(findWrap, p ? "true" : "false");
-	}
 
 	/**
 	 * 
@@ -821,23 +534,5 @@ public class INIReader
 	}
 
 
-	/**
-	 * 
-	 * @return
-	 */
-	public boolean getTypesafeJMF()
-	{
-		return getAttribute(xjdfTypesafeJMF, "true").equals("true");
-	}
-
-	/**
-	 * 
-	 *  
-	 * @param indent
-	 */
-	public void setTypesafeJMF(final boolean indent)
-	{
-		setAttribute(xjdfTypesafeJMF, indent ? "true" : "false");
-	}
 
 }
