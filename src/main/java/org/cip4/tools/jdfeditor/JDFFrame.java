@@ -391,7 +391,9 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				final VString vs = StringUtil.tokenize(exportDialog.generAttrString, " ", false);
 				vs.unify();
 				final INIReader m_iniFile = Editor.getIniFile();
-				m_iniFile.setGenericAtts(vs);
+
+                String s = StringUtil.setvString(vs, " ", null, null);
+                settingService.setString(SettingKey.VALIDATION_GENERIC_ATTR, s);
 				clearViews();
 				readFile(fileToOpen);
 			}

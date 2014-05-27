@@ -89,6 +89,8 @@ import org.cip4.jdflib.core.JDFConstants;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.node.JDFNode;
+import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.service.SettingService;
 
 /**
  * spawnDialog.java
@@ -98,6 +100,9 @@ import org.cip4.jdflib.node.JDFNode;
 public class ExportDialog extends JPanel implements ActionListener
 {
 	private static final long serialVersionUID = -267165456151780440L;
+
+    private SettingService settingService = new SettingService();
+
 	private JTextField idPath;
 	private JTextField generAttrField;
 	String generAttrString;
@@ -116,7 +121,7 @@ public class ExportDialog extends JPanel implements ActionListener
 	{
 		super();
 		this.originalFile = new File(jdfRoot.getOwnerDocument_KElement().getOriginalFileName());
-		generAttrString = Editor.getIniFile().getGenericAtts();
+		generAttrString = settingService.getString(SettingKey.VALIDATION_GENERIC_ATTR);
 		JDFFrame frame = Editor.getFrame();
 		init();
 		final String[] options = { Editor.getString("OkKey"), Editor.getString("CancelKey") };
@@ -250,7 +255,6 @@ public class ExportDialog extends JPanel implements ActionListener
 	/**
 	 * Create the default file name including its absolute path. The String addOn
 	 * is added just ahead of the file's extension.
-	 * @param addOn - The String to add to the original file name.
 	 * @return The file name with the addon.
 	 */
 	private String createFileName(String addBefore)

@@ -238,7 +238,7 @@ public class Editor
 		JDFAudit.setStaticAgentName(getEditorName());
 		JDFAudit.setStaticAgentVersion(getEditorVersion());
 		KElement.setLongID(settingService.getBoolean(SettingKey.GENERAL_LONG_ID));
-		JDFElement.setDefaultJDFVersion(m_iniFile.getDefaultVersion());
+		JDFElement.setDefaultJDFVersion(JDFElement.EnumVersion.getEnum(settingService.getString(SettingKey.VALIDATION_VERSION)));
 		JDFParser.m_searchStream = true;
 
 		try

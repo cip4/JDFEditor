@@ -70,19 +70,6 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Vector;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.tree.TreePath;
-
 import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFElement.EnumVersion;
@@ -91,6 +78,15 @@ import org.cip4.jdflib.elementwalker.FixVersion;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFAuditPool;
 import org.cip4.jdflib.resource.JDFModified;
+import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.service.SettingService;
+
+import javax.swing.*;
+import javax.swing.tree.TreePath;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Vector;
 
 /**
  * class to update the version of a jdf or jmf<br/>
@@ -106,6 +102,8 @@ public class FixVersionDialog extends JPanel implements ActionListener
 	 * Comment for <code>serialVersionUID</code>
 	 */
 	private static final long serialVersionUID = -276165456151780040L;
+
+    private SettingService settingService = new SettingService();
 
 	private boolean bVersionKeyChosen = false;
 	private JComboBox chooseVersion;
@@ -129,11 +127,11 @@ public class FixVersionDialog extends JPanel implements ActionListener
 		if (option == JOptionPane.OK_OPTION)
 		{
 			bVersionKeyChosen = true;
-			final INIReader ir = Editor.getIniFile();
-			ir.setConvertLPP(bConvertLPP);
-			ir.setFixICSVersion(bFixICSVersion);
-			ir.setDefaultVersion(version);
-			ir.writeINIFile();
+
+            settingService.setBoolean(SettingKey.VALIDATION_CONVERT_LPP, bConvertLPP);
+            settingService.setBoolean(SettingKey.VALIDATION_FIX_ICS_VERSION, bFixICSVersion);
+            settingService.setString(SettingKey.VALIDATION_VERSION, version.getName());
+
 		}
 		else if (option == JOptionPane.CANCEL_OPTION)
 		{
@@ -150,9 +148,9 @@ public class FixVersionDialog extends JPanel implements ActionListener
 		final JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(2, 1, 0, 5));
 		final INIReader ir = Editor.getIniFile();
-		final EnumVersion defVersion = ir.getDefaultVersion();
-		bConvertLPP = ir.getConvertLPP();
-		bFixICSVersion = ir.getFixICSVersion();
+		final EnumVersion defVersion = EnumVersion.getEnum(settingService.getString(SettingKey.VALIDATION_VERSION));
+		bConvertLPP = settingService.getBoolean(SettingKey.VALIDATION_CONVERT_LPP);
+		bFixICSVersion = settingService.getBoolean(SettingKey.VALIDATION_FIX_ICS_VERSION);
 		version = defVersion;
 		addOptionPanel(panel);
 		addVersionPannel(panel, defVersion);

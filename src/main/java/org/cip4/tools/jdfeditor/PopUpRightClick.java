@@ -326,10 +326,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		// TODO add spawn
 		if (elem instanceof JDFNode)
 		{
-			if (ini.getEnableExtensions())
-			{
-				m_saveXJDF = addMenuItem("SaveXJDFKey");
-			}
+			m_saveXJDF = addMenuItem("SaveXJDFKey");
 			m_normalize = addMenuItem("NormalizeKey");
 			m_spawn = addMenuItem("SpawnKey");
 			m_unspawn = addMenuItem("UnspawnKey");
@@ -349,11 +346,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		else if (elem instanceof JDFJMF)
 		{
 			m_sendMessage = addMenuItem("SendJMF");
-			if (ini.getEnableExtensions())
-			{
-				m_saveXJDF = addMenuItem("SaveXJDFKey");
-				//				m_saveJDF = addMenuItem("SaveJDFKey");
-			}
+			m_saveXJDF = addMenuItem("SaveXJDFKey");
 			add(separator);
 		}
 		else if (elem != null && XJDF20.rootName.equals(elem.getLocalName()))
@@ -587,7 +580,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		}
 		else if (eSrc == m_saveXJDFCaps)
 		{
-			Editor.getModel().saveAsXJDFCaps(treeArea.getSelectionPath(), iniFile.getStructuredCaps());
+			Editor.getModel().saveAsXJDFCaps(treeArea.getSelectionPath(), true);
 		}
 		else if (eSrc == m_spawn)
 		{

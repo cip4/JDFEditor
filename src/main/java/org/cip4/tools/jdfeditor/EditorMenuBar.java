@@ -767,17 +767,17 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 		m_validateMenu.add(new JSeparator());
 
-		m_highlightFNRadioItem = new JRadioButtonMenuItem(Editor.getString("ValidationFSKey"), m_iniFile.getHighlight());
+		m_highlightFNRadioItem = new JRadioButtonMenuItem(Editor.getString("ValidationFSKey"), settingService.getBoolean(SettingKey.VALIDATION_HIGHTLIGHT_FN));
 		m_highlightFNRadioItem.addActionListener(this);
 		m_validateMenu.add(m_highlightFNRadioItem);
 
 		m_validateMenu.add(new JSeparator());
 
-		m_showAttrRadioItem = new JRadioButtonMenuItem(Editor.getString("ShowAttrKey"), m_iniFile.getAttr());
+		m_showAttrRadioItem = new JRadioButtonMenuItem(Editor.getString("ShowAttrKey"), settingService.getBoolean(SettingKey.TREEVIEW_ATTRIBUTE));
 		m_showAttrRadioItem.addActionListener(this);
 		m_validateMenu.add(m_showAttrRadioItem);
 
-		m_showInhAttrRadioItem = new JRadioButtonMenuItem(Editor.getString("ShowInhAttrKey"), m_iniFile.getInhAttr());
+		m_showInhAttrRadioItem = new JRadioButtonMenuItem(Editor.getString("ShowInhAttrKey"), settingService.getBoolean(SettingKey.TREEVIEW_ATTRIBUTE_INHERITED));
 		m_showInhAttrRadioItem.addActionListener(this);
 		m_validateMenu.add(m_showInhAttrRadioItem);
 
@@ -1092,7 +1092,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		final JDFTreeArea ta = frame.m_treeArea;
 		if (eSrc == m_showInhAttrRadioItem)
 		{
-			iniFile.setInhAttr(m_showInhAttrRadioItem.isSelected());
+            settingService.setBoolean(SettingKey.TREEVIEW_ATTRIBUTE_INHERITED, m_showInhAttrRadioItem.isSelected());
 			iniFile.writeINIFile();
 			if (getJDFDoc() != null)
 			{
@@ -1119,7 +1119,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		}
 		else if (eSrc == m_highlightFNRadioItem)
 		{
-			iniFile.setHighlight(m_highlightFNRadioItem.isSelected());
+            settingService.setBoolean(SettingKey.VALIDATION_HIGHTLIGHT_FN, m_highlightFNRadioItem.isSelected());
 			iniFile.writeINIFile();
 		}
 		else if (eSrc == m_nextItem)
@@ -1216,9 +1216,9 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 			m_DispDefAttrRadioItem.setEnabled(true);
 		}
 
-		iniFile.setAttr(m_showInhAttrRadioItem.isSelected());
-		iniFile.setAttr(m_DispDefAttrRadioItem.isSelected());
-		iniFile.setAttr(m_showAttrRadioItem.isSelected());
+        settingService.setBoolean(SettingKey.TREEVIEW_ATTRIBUTE, m_showAttrRadioItem.isSelected());
+        settingService.setBoolean(SettingKey.GENERAL_DISPLAY_DEFAULT, m_DispDefAttrRadioItem.isSelected());
+        settingService.setBoolean(SettingKey.TREEVIEW_ATTRIBUTE_INHERITED, m_showInhAttrRadioItem.isSelected());
 		iniFile.writeINIFile();
 		if (getJDFDoc() != null)
 		{

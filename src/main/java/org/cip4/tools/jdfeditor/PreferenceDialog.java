@@ -70,38 +70,22 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import org.cip4.jdflib.core.JDFElement.EnumValidationLevel;
+import org.cip4.jdflib.core.JDFElement.EnumVersion;
+import org.cip4.jdflib.core.VString;
+import org.cip4.jdflib.util.EnumUtil;
+import org.cip4.jdflib.util.StringUtil;
+import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.service.SettingService;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.Vector;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-
-import org.cip4.jdflib.core.JDFElement.EnumValidationLevel;
-import org.cip4.jdflib.core.JDFElement.EnumVersion;
-import org.cip4.jdflib.core.VString;
-import org.cip4.jdflib.util.EnumUtil;
-import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
-import org.cip4.tools.jdfeditor.service.SettingService;
 
 /**
  * @author Dr. Rainer Prosi, Heidelberger Druckmaschinen AG
@@ -316,21 +300,21 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		longID = settingService.getBoolean(SettingKey.GENERAL_LONG_ID);
 		updateJobID = settingService.getBoolean(SettingKey.GENERAL_UPDATE_JOBID);
 		useSchema = settingService.getBoolean(SettingKey.GENERAL_USE_SCHEMA);
-		schemaFile = iniFile.getSchemaURL();
+		schemaFile = new File(settingService.getString(SettingKey.VALIDATION_SCHEMA_URL));
 		currRemoveDefault = settingService.getBoolean(SettingKey.GENERAL_REMOVE_DEFAULT);
 		currRemoveWhite = settingService.getBoolean(SettingKey.GENERAL_REMOVE_WHITE);
 		currIndentSave = settingService.getBoolean(SettingKey.GENERAL_INDENT);
 		currDispDefault = settingService.getBoolean(SettingKey.GENERAL_DISPLAY_DEFAULT);
-		checkURL = iniFile.getCheckURL();
+		checkURL = settingService.getBoolean(SettingKey.VALIDATION_CHECK_URL);;
 
-		genericStrings = iniFile.getGenericAtts();
-		generateFull = iniFile.getGenerateFull();
+		genericStrings = settingService.getString(SettingKey.VALIDATION_GENERIC_ATTR);
+		generateFull = settingService.getBoolean(SettingKey.VALIDATION_GENERATE_FULL);
 		normalizeOpen = settingService.getBoolean(SettingKey.GENERAL_NORMALIZE);
-		ignoreDefaults = iniFile.getIgnoreDefault();
+		ignoreDefaults = settingService.getBoolean(SettingKey.VALIDATION_IGNORE_DEFAULT);
 
-		validationVersion = iniFile.getDefaultVersion();
-		validationLevel = iniFile.getValidationLevel();
-		exportValidation = iniFile.getExportValidation();
+		validationVersion = EnumVersion.getEnum(settingService.getString(SettingKey.VALIDATION_VERSION));
+		validationLevel = EnumValidationLevel.getEnum(settingService.getString(SettingKey.VALIDATION_LEVEL));
+		exportValidation = settingService.getBoolean(SettingKey.VALIDATION_EXPORT);
 		misURL = settingService.getString(SettingKey.GOLDENTICKET_MISURL);
 
 		/*
@@ -1075,7 +1059,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		final INIReader iniFile = Editor.getIniFile();
 		validTab.writeToIni();
 		settingService.setBoolean(SettingKey.GENERAL_USE_SCHEMA, useSchema);
-		iniFile.setSchemaURL(getSchemaURL());
+        settingService.setString(SettingKey.VALIDATION_SCHEMA_URL, getSchemaURL().getAbsolutePath());
 
 		settingService.setInteger(SettingKey.GOLDENTICKET_BASELEVEL, getBaseLevel());
 		settingService.setInteger(SettingKey.GOLDENTICKET_MISLEVEL, getMISLevel());
@@ -1090,15 +1074,15 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		settingService.setBoolean(SettingKey.GENERAL_DISPLAY_DEFAULT, currDispDefault);
 		settingService.setBoolean(SettingKey.GENERAL_REMOVE_WHITE, currRemoveWhite);
 		settingService.setBoolean(SettingKey.GENERAL_INDENT, currIndentSave);
-		iniFile.setCheckURL(checkURL);
+        settingService.setBoolean(SettingKey.VALIDATION_CHECK_URL, checkURL);
 		settingService.setBoolean(SettingKey.GENERAL_LONG_ID, longID);
 		settingService.setBoolean(SettingKey.GENERAL_UPDATE_JOBID, updateJobID);
-		iniFile.setGenerateFull(generateFull);
+        settingService.setBoolean(SettingKey.VALIDATION_GENERATE_FULL, generateFull);
 		settingService.setBoolean(SettingKey.GENERAL_NORMALIZE, normalizeOpen);
-		iniFile.setIgnoreDefault(ignoreDefaults);
-		iniFile.setValidationLevel(validationLevel);
-		iniFile.setDefaultVersion(validationVersion);
-		iniFile.setExportValidation(exportValidation);
+        settingService.setBoolean(SettingKey.VALIDATION_IGNORE_DEFAULT, ignoreDefaults);
+        settingService.setString(SettingKey.VALIDATION_LEVEL, validationLevel.getName());
+        settingService.setString(SettingKey.VALIDATION_VERSION, validationVersion.getName());
+        settingService.setBoolean(SettingKey.VALIDATION_EXPORT, exportValidation);
 		misURL = fieldMISURL.getText();
 
 		settingService.setString(SettingKey.GOLDENTICKET_MISURL, misURL);
@@ -1106,7 +1090,9 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		genericStrings = fieldGenericStrings.getText();
 		final VString genericAttributes = new VString(genericStrings, null);
 		genericAttributes.unify();
-		iniFile.setGenericAtts(genericAttributes);
+
+        String s = StringUtil.setvString(genericAttributes, " ", null, null);
+        settingService.setString(SettingKey.VALIDATION_GENERIC_ATTR, s);
 		iniFile.writeINIFile();
 	}
 

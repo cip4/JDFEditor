@@ -243,16 +243,16 @@ public class JDFTreeModel extends DefaultTreeModel
 		final JDFValidator checkJDF = new JDFValidator();
 		checkJDF.setPrint(false);
 		checkJDF.bQuiet = true;
-		checkJDF.level = iniFile.getValidationLevel();
+        checkJDF.level = JDFElement.EnumValidationLevel.getEnum(settingService.getString(SettingKey.VALIDATION_LEVEL));
 		checkJDF.bMultiID = true;
-		checkJDF.setWarning(iniFile.getWarnCheck());
+		checkJDF.setWarning(!JDFElement.EnumValidationLevel.isNoWarn(checkJDF.level));
 		XMLDoc schemaValidationResult = null;
 
-		checkJDF.setIgnorePrivate(!iniFile.getHighlight());
-		checkJDF.bWarnDanglingURL = iniFile.getCheckURL();
+		checkJDF.setIgnorePrivate(!settingService.getBoolean(SettingKey.VALIDATION_HIGHTLIGHT_FN));
+		checkJDF.bWarnDanglingURL = settingService.getBoolean(SettingKey.VALIDATION_CHECK_URL);
 
 		final String fn = theDoc.getOriginalFileName();
-		if (iniFile.getExportValidation())
+		if (settingService.getBoolean(SettingKey.VALIDATION_EXPORT))
 		{
 			checkJDF.xmlOutputName = UrlUtil.newExtension(fn, ".validate.xml");
 		}
@@ -266,7 +266,7 @@ public class JDFTreeModel extends DefaultTreeModel
 			File f = theDoc.getSchemaLocationFile(JDFElement.getSchemaURL());
 			if (!UrlUtil.isFileOK(f))
 			{
-				f = iniFile.getSchemaURL();
+				f = new File(settingService.getString(SettingKey.VALIDATION_SCHEMA_URL));
 			}
 
 			if (UrlUtil.isFileOK(f))
@@ -307,7 +307,7 @@ public class JDFTreeModel extends DefaultTreeModel
 			}
 			else
 			{
-				iniFile.setSchemaURL(null);
+                settingService.setString(SettingKey.VALIDATION_SCHEMA_URL, null);
 			}
 		}
 		// TODO addFile
@@ -653,7 +653,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	{
 		final KElement elem = node.getElement();
 		final INIReader iniFile = Editor.getIniFile();
-		if (iniFile.getAttr() == false)
+		if (settingService.getBoolean(SettingKey.TREEVIEW_ATTRIBUTE) == false)
 		{
 			return;
 		}
@@ -683,7 +683,7 @@ public class JDFTreeModel extends DefaultTreeModel
 					setAttribute(node, AttributeName.ID, id, null, true);
 
 			}
-			if (!m_ignoreAttributes && (elem instanceof JDFResource && iniFile.getInhAttr()))
+			if (!m_ignoreAttributes && (elem instanceof JDFResource && settingService.getBoolean(SettingKey.TREEVIEW_ATTRIBUTE_INHERITED)))
 			{
 
 				// Create a vector with all the attribute names including the inherited attributes
@@ -1330,7 +1330,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 		final JDFDoc d = new JDFDoc("JDF");
 		final JDFNode n = d.getJDFRoot();
-		dc.setDefaultsFromCaps(n, true, Editor.getIniFile().getGenerateFull());
+		dc.setDefaultsFromCaps(n, true, settingService.getBoolean(SettingKey.VALIDATION_GENERATE_FULL));
 		final String fnNew = UrlUtil.newExtension(fn, ".generated.JDF");
 		d.write2File(fnNew, 2, false);
 		Editor.getFrame().readFile(new File(fnNew));

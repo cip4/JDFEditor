@@ -70,37 +70,8 @@ package org.cip4.tools.jdfeditor;
  *  
  * 
  */
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.io.File;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
-
-import org.cip4.jdflib.core.AttributeName;
-import org.cip4.jdflib.core.ElementName;
-import org.cip4.jdflib.core.JDFDoc;
+import org.cip4.jdflib.core.*;
 import org.cip4.jdflib.core.JDFElement.EnumValidationLevel;
-import org.cip4.jdflib.core.JDFParser;
-import org.cip4.jdflib.core.KElement;
-import org.cip4.jdflib.core.VElement;
-import org.cip4.jdflib.core.VString;
-import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.datatypes.JDFBaseDataTypes.EnumFitsValue;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFResponse;
@@ -109,6 +80,16 @@ import org.cip4.jdflib.resource.JDFDevice;
 import org.cip4.jdflib.resource.devicecapability.JDFDeviceCap;
 import org.cip4.jdflib.util.EnumUtil;
 import org.cip4.jdflib.util.UrlUtil;
+import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.service.SettingService;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.io.File;
 
 /**
  * DeviceCapsDialog.java
@@ -121,6 +102,8 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 	 * Comment for <code>serialVersionUID</code>
 	 */
 	private static final long serialVersionUID = -267165456151780040L;
+
+    private SettingService settingService = new SettingService();
 
 	private JTextField idPath;
 	private JButton browse;
@@ -149,8 +132,8 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 		KElement docRoot = doc.getRoot();
 
 		idFile = iniFile.getRecentDevCap();
-		ignoreDefaults = iniFile.getIgnoreDefault();
-		ignoreExtensions = !Editor.getIniFile().getHighlight();
+		ignoreDefaults = settingService.getBoolean(SettingKey.VALIDATION_IGNORE_DEFAULT);
+		ignoreExtensions = ! settingService.getBoolean(SettingKey.VALIDATION_HIGHTLIGHT_FN);
 
 		init();
 		final String[] options = { Editor.getString("OkKey"), Editor.getString("CancelKey") };
@@ -226,7 +209,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 								{
 									final JDFResponse respKnownMessages = (JDFResponse) ms.getParentNode_KElement();
 									executableJDF = null;
-									bugReport = JDFDeviceCap.getJMFInfo((JDFJMF) docRoot, respKnownMessages, testlists, validationLevel, !Editor.getIniFile().getHighlight());
+									bugReport = JDFDeviceCap.getJMFInfo((JDFJMF) docRoot, respKnownMessages, testlists, validationLevel, ! settingService.getBoolean(SettingKey.VALIDATION_HIGHTLIGHT_FN));
 
 								}
 								if (bugReport != (null))

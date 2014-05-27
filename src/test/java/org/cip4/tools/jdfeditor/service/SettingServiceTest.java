@@ -3,6 +3,7 @@ package org.cip4.tools.jdfeditor.service;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FilenameUtils;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.util.LocationUtil;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -18,15 +19,31 @@ import java.lang.reflect.Field;
  */
 public class SettingServiceTest {
 
+    private String CONF_FILE_NAME;
+
+    private SettingService settingService;
+
+    private File confFile;
 
     @Before
     public void setUp() throws Exception {
 
+        // change logfile name
+        CONF_FILE_NAME = "log.test";
+        changeLogFileName(CONF_FILE_NAME);
+
+        new File(FilenameUtils.concat(LocationUtil.getDirCIP4Tools(), CONF_FILE_NAME)).delete();
+
+        // new service instance
+        settingService = new SettingService();
+        confFile = settingService.getConfFile();
     }
 
     @After
     public void tearDown() throws Exception {
 
+        // clean up
+        confFile.delete();
     }
 
     /**
@@ -37,25 +54,17 @@ public class SettingServiceTest {
     public void testCreateSettingFile() throws Exception {
 
         // arrange
-        String fileName = "log.test";
-        changeLogFileName(fileName);
-
 
         // act
-        SettingService service = new SettingService();
 
         // assert
-        File logFile = service.getConfFile();
+        Assert.assertEquals("Filename is wrong.", CONF_FILE_NAME, FilenameUtils.getName(settingService.getConfFile().getName()));
+        Assert.assertTrue("LogFile does not exist.", confFile.exists());
 
-        Assert.assertEquals("Filename is wrong.", fileName, FilenameUtils.getName(service.getConfFile().getName()));
-        Assert.assertTrue("LogFile does not exist.", logFile.exists());
-
-        PropertiesConfiguration config = new PropertiesConfiguration(logFile);
+        PropertiesConfiguration config = new PropertiesConfiguration(confFile);
         String language = (String) config.getProperty(SettingKey.GENERAL_LANGUAGE.getKey());
 
         Assert.assertEquals("Language attribute is wrong.", "en", language);
-
-        logFile.delete();
     }
 
     /**
@@ -66,25 +75,20 @@ public class SettingServiceTest {
     public void testChangeExistingAttribute() throws Exception {
 
         // arrange
-        String fileName = "log.test";
-        changeLogFileName(fileName);
 
         // act
-        SettingService service = new SettingService();
-        service.setString(SettingKey.GENERAL_LANGUAGE, "de");
+        settingService.setString(SettingKey.GENERAL_LANGUAGE, "de");
 
         // assert
-        File logFile = service.getConfFile();
+        File logFile = settingService.getConfFile();
 
-        Assert.assertEquals("Filename is wrong.", fileName, FilenameUtils.getName(service.getConfFile().getName()));
+        Assert.assertEquals("Filename is wrong.", CONF_FILE_NAME, FilenameUtils.getName(settingService.getConfFile().getName()));
         Assert.assertTrue("LogFile does not exist.", logFile.exists());
 
         PropertiesConfiguration config = new PropertiesConfiguration(logFile);
         String language = (String) config.getProperty(SettingKey.GENERAL_LANGUAGE.getKey());
 
         Assert.assertEquals("Language attribute is wrong.", "de", language);
-
-        logFile.delete();
     }
 
     /**
@@ -95,20 +99,13 @@ public class SettingServiceTest {
     public void testChangeExistingAttributeReload() throws Exception {
 
         // arrange
-        String fileName = "log.test";
-        changeLogFileName(fileName);
-
-        SettingService service = new SettingService();
-        service.setString(SettingKey.GENERAL_LANGUAGE, "de");
+        settingService.setString(SettingKey.GENERAL_LANGUAGE, "de");
 
         // act
-        service = new SettingService();
+        settingService = new SettingService();
 
         // assert
-        Assert.assertEquals("Language attribute is wrong.", "de", service.getString(SettingKey.GENERAL_LANGUAGE));
-
-
-        service.getConfFile().delete();
+        Assert.assertEquals("Language attribute is wrong.", "de", settingService.getString(SettingKey.GENERAL_LANGUAGE));
     }
 
     /**
@@ -119,22 +116,18 @@ public class SettingServiceTest {
     public void testMultiThreading() throws Exception {
 
         // arrange
-        String fileName = "log.test";
-        changeLogFileName(fileName);
-
-        SettingService service;
 
         // act
-        service = new SettingService();
-        service.setString(SettingKey.GENERAL_LANGUAGE, "tt");
-        service = new SettingService();
-        service.setString(SettingKey.LOGGING_ENABLED, "dd");
-        service = new SettingService();
-        service.setString(SettingKey.LOGGING_LEVEL, "yy");
+        settingService = new SettingService();
+        settingService.setString(SettingKey.GENERAL_LANGUAGE, "tt");
+        settingService = new SettingService();
+        settingService.setString(SettingKey.LOGGING_ENABLED, "dd");
+        settingService = new SettingService();
+        settingService.setString(SettingKey.LOGGING_LEVEL, "yy");
 
 
         // assert
-        File logFile = service.getConfFile();
+        File logFile = settingService.getConfFile();
 
         int lines = 0;
         BufferedReader br = new BufferedReader(new FileReader(logFile));
@@ -142,7 +135,15 @@ public class SettingServiceTest {
             lines++;
         }
 
-        Assert.assertEquals("Number of lines is wrong.", SettingKey.values().length, lines);
+        int cntKeys = 0;
+
+        for(int i = 0; i < SettingKey.values().length; i ++) {
+            if(SettingKey.values()[i].getDefaultValue() != null) {
+                cntKeys ++;
+            }
+        }
+
+        Assert.assertEquals("Number of lines is wrong.", cntKeys, lines);
 
         PropertiesConfiguration config = new PropertiesConfiguration(logFile);
 
@@ -167,23 +168,18 @@ public class SettingServiceTest {
     public void testChangeMissingAttribute() throws Exception {
 
         // arrange
-        String fileName = "log.test";
-        changeLogFileName(fileName);
-
-        SettingService service = new SettingService();
-
-        PropertiesConfiguration config = new PropertiesConfiguration(service.getConfFile());
+        PropertiesConfiguration config = new PropertiesConfiguration(settingService.getConfFile());
         config.clearProperty(SettingKey.GENERAL_LANGUAGE.getKey());
         config.save();
 
         Assert.assertFalse("Config file still contains language.", config.containsKey(SettingKey.GENERAL_LANGUAGE.getKey()));
 
         // act
-        service = new SettingService();
-        service.setString(SettingKey.GENERAL_LANGUAGE, "it");
+        settingService = new SettingService();
+        settingService.setString(SettingKey.GENERAL_LANGUAGE, "it");
 
         // assert
-        File logFile = service.getConfFile();
+        File logFile = settingService.getConfFile();
 
         int lines = 0;
         BufferedReader br = new BufferedReader(new FileReader(logFile));
@@ -191,7 +187,15 @@ public class SettingServiceTest {
             lines++;
         }
 
-        Assert.assertEquals("Number of lines is wrong.", SettingKey.values().length, lines);
+        int cntKeys = 0;
+
+        for(int i = 0; i < SettingKey.values().length; i ++) {
+            if(SettingKey.values()[i].getDefaultValue() != null) {
+                cntKeys ++;
+            }
+        }
+
+        Assert.assertEquals("Number of lines is wrong.", cntKeys, lines);
 
         config = new PropertiesConfiguration(logFile);
         String language = (String) config.getProperty(SettingKey.GENERAL_LANGUAGE.getKey());
@@ -209,7 +213,7 @@ public class SettingServiceTest {
      */
     private void changeLogFileName(String newName) throws Exception {
 
-        Field field = SettingService.class.getDeclaredField("logFileName");
+        Field field = SettingService.class.getDeclaredField("confFileName");
         field.setAccessible(true);
         field.set(null, newName);
     }

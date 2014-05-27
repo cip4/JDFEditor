@@ -543,7 +543,7 @@ public class EditorUtils
 
 		if (iniFile != null && new SettingService().getBoolean(SettingKey.GENERAL_USE_SCHEMA))
 		{
-			schemaloc = iniFile.getSchemaURL();
+			schemaloc =  new File(new SettingService().getString(SettingKey.VALIDATION_SCHEMA_URL));
 		}
 
 		return (schemaloc);

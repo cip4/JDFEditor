@@ -4,10 +4,9 @@ package org.cip4.tools.jdfeditor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.cip4.jdflib.core.*;
-import org.cip4.jdflib.core.JDFElement.EnumValidationLevel;
-import org.cip4.jdflib.core.JDFElement.EnumVersion;
-import org.cip4.jdflib.util.StringUtil;
+import org.cip4.jdflib.core.JDFParser;
+import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.tools.jdfeditor.dialog.SearchComboBoxModel;
 
 import java.io.File;
@@ -26,21 +25,21 @@ public class INIReader
 	private final String[] recentFiles = new String[5];
 	private final String recentDevCap = "RecentFiles/@recentDevCap";
 
-	private final String exportValidate = "ValidEdit/@exportValidate";
-	private final String highlightFN = "ValidEdit/@highlightFN";
-	private final String schemaURL = "ValidEdit/@schemaURL";
-	private final String validVersion = "ValidEdit/@version";
-	private final String validLevel = "ValidEdit/@level";
-	private final String ignoreDefault = "ValidEdit/@ignoreDefault";
-	private final String checkURL = "ValidEdit/@checkURL";
-	private final String fixICSVersion = "ValidEdit/@fixICSVersion";
-	private final String convertLPP = "ValidEdit/@convertLPP";
-
-	private final String attribute = "TreeView/@attribute";
-	private final String inheritedAttr = "TreeView/@inheritedAttr";
-
-	private final String generateFull = "Validate/@GenerateFull";
-	private final String genericAtts = "Validate/@genericAtts";
+//	private final String exportValidate = "ValidEdit/@exportValidate";
+//	private final String highlightFN = "ValidEdit/@highlightFN";
+//	private final String schemaURL = "ValidEdit/@schemaURL";
+//	private final String validVersion = "ValidEdit/@version";
+//	private final String validLevel = "ValidEdit/@level";
+//	private final String ignoreDefault = "ValidEdit/@ignoreDefault";
+//	private final String checkURL = "ValidEdit/@checkURL";
+//	private final String fixICSVersion = "ValidEdit/@fixICSVersion";
+//	private final String convertLPP = "ValidEdit/@convertLPP";
+//
+//	private final String attribute = "TreeView/@attribute";
+//	private final String inheritedAttr = "TreeView/@inheritedAttr";
+//
+//  private final String generateFull = "Validate/@GenerateFull";
+//	private final String genericAtts = "Validate/@genericAtts";
 
 
 	private XMLDoc xDoc; // The XMLDocument that represents the ini file
@@ -81,42 +80,6 @@ public class INIReader
 	}
 
 
-
-	/**
-	 * @return
-	 */
-	public String getGenericAtts()
-	{
-		final String defaultGenerics = "ID Type JobID JobPartID ProductID CustomerID SpawnIDs" + " Class Status PartIDKeys xmlns xmlns:xsi xsi:Type"
-				+ " SettingsPolicy BestEffortExceptions" + " OperatorInterventionExceptions" + " MustHonorExceptions" + " DocIndex Locked DescriptiveName Brand";
-
-		final String s = getAttribute(genericAtts, defaultGenerics);
-		return s;
-	}
-
-	/**
-	 * @param s
-	 */
-	public void setGenericAtts(final VString s)
-	{
-		setAttribute(genericAtts, StringUtil.setvString(s, " ", null, null));
-	}
-
-
-	/**
-	 * 
-	 * @return
-	 */
-	public boolean getExportValidation()
-	{
-		return getAttribute(exportValidate, "").equals("on");
-	}
-
-	public void setExportValidation(final boolean bVal)
-	{
-		setAttribute(exportValidate, bVal ? "on" : "off");
-	}
-
 	public String[] getRecentFiles()
 	{
 		return this.recentFiles;
@@ -144,172 +107,20 @@ public class INIReader
 		return new File(s);
 	}
 
-	public void setSchemaURL(final File schema)
-	{
-		if (schema == null)
-		{
-			setAttribute(schemaURL, null);
-		}
-		else
-		{
-			setAttribute(schemaURL, schema.getAbsolutePath());
-		}
-	}
 
-	public File getSchemaURL()
-	{
-		final String s = getAttribute(schemaURL, null);
-		if (s == null)
-		{
-			return null;
-		}
-		return new File(s);
-	}
-
-	/**
-	 * @param url
-	 */
-	public void setCheckURL(final boolean url)
-	{
-		setAttribute(checkURL, url ? "true" : "false");
-	}
-
-	/**
-	 * @return
-	 */
-	public boolean getFixICSVersion()
-	{
-		return getAttribute(fixICSVersion, "false").equals("true");
-	}
-
-	/**
-	 * @param ics
-	 */
-	public void setFixICSVersion(final boolean ics)
-	{
-		setAttribute(fixICSVersion, ics ? "true" : "false");
-	}
-
-	/**
-	 * @return
-	 */
-	public boolean getConvertLPP()
-	{
-		return getAttribute(convertLPP, "false").equals("true");
-	}
-
-	/**
-	 * @param ics
-	 */
-	public void setConvertLPP(final boolean ics)
-	{
-		setAttribute(convertLPP, ics ? "true" : "false");
-	}
-
-	/**
-	 * @return
-	 */
-	public boolean getCheckURL()
-	{
-		return getAttribute(checkURL, "false").equals("true");
-	}
-
-	public void setIgnoreDefault(final boolean rem)
-	{
-		setAttribute(ignoreDefault, rem ? "true" : "false");
-	}
-
-	public boolean getIgnoreDefault()
-	{
-		return getAttribute(ignoreDefault, "true").equals("true");
-	}
-
-	public boolean getHighlight()
-	{
-		return getAttribute(highlightFN, "").equalsIgnoreCase("on") ? true : false;
-	}
-
-	public void setHighlight(final boolean b)
-	{
-		setAttribute(highlightFN, b ? "on" : "off");
-	}
-
-	public boolean getEnableExtensions()
-	{
-		return true;
-	}
-
-	public boolean getStructuredCaps()
-	{
-		return true;
-	}
-
-	public boolean getAttr()
-	{
-		return getAttribute(attribute, "on").equalsIgnoreCase("on") ? true : false;
-	}
-
-	public void setAttr(final boolean b)
-	{
-		setAttribute(attribute, b ? "on" : "off");
-	}
-
-	public boolean getInhAttr()
-	{
-		return getAttribute(inheritedAttr, "on").equalsIgnoreCase("on") ? true : false;
-	}
-
-	public void setInhAttr(final boolean b)
-	{
-		setAttribute(inheritedAttr, b ? "on" : "off");
-	}
-
-	/**
-	 * 
-	 *  
-	 * @return
-	 */
-	public EnumValidationLevel getValidationLevel()
-	{
-		final String s = getAttribute(validLevel, JDFConstants.VALIDATIONLEVEL_RECURSIVECOMPLETE);
-		return EnumValidationLevel.getEnum(s);
-	}
-
-	/**
-	 * 
-	 *  
-	 * @param level
-	 */
-	public void setValidationLevel(final EnumValidationLevel level)
-	{
-		setAttribute(validLevel, level.getName());
-	}
 
 	static private String defaultVersion = "1.5";
 
-	/**
-	 * 
-	 * @return the default version for new files, initialization, fixing to etc
-	 */
-	public EnumVersion getDefaultVersion()
-	{
-		final String s = getAttribute(validVersion, defaultVersion);
-		return EnumVersion.getEnum(s);
-	}
 
-	/**
-	 * 
-	 * @param v the default version for new files, initialization, fixing to etc
-	 */
-	public void setDefaultVersion(final EnumVersion v)
-	{
-		setAttribute(validVersion, v == null ? defaultVersion : v.getName());
-		if (v != null)
-		{
-			JDFElement.setDefaultJDFVersion(v);
-		}
-
-	}
+	// public void setDefaultVersion(final EnumVersion v)
+//	{
+//		setAttribute(validVersion, v == null ? defaultVersion : v.getName());
+//		if (v != null)
+//		{
+//			JDFElement.setDefaultJDFVersion(v);
+//		}
+//
+//	}
 
 	private void readINIFile()
 	{
@@ -474,31 +285,14 @@ public class INIReader
 	}
 
 
-	/**
-	 * @return
-	 */
-	public boolean getGenerateFull()
-	{
-		return getAttribute(generateFull, "true").equalsIgnoreCase("true") ? true : false;
-	}
 
-	public void setGenerateFull(final boolean b)
-	{
-		setAttribute(generateFull, b ? "true" : "false");
-	}
-
-	public boolean getWarnCheck()
-	{
-		final EnumValidationLevel level = getValidationLevel();
-		return !EnumValidationLevel.isNoWarn(level);
-	}
+//	public boolean getWarnCheck()
+//	{
+//		final EnumValidationLevel level = getValidationLevel();
+//		return !EnumValidationLevel.isNoWarn(level);
+//	}
 
 
-	@Override
-	public String toString()
-	{
-		return xDoc == null ? "null ini file " : "INUReader: " + xDoc.toString();
-	}
 
 
 	/**
