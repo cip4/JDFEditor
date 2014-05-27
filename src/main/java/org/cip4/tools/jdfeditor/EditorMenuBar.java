@@ -298,7 +298,13 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 			}
 			else if (eSrc == m_devcapOpenMenu)
 			{
-				final File f = iniFile.getRecentDevCap();
+                String s = settingService.getString(SettingKey.RECENT_DEV_CAP);
+                File f = null;
+
+                if(s != null) {
+                    f = new File(s);
+                }
+
 				if (f != null)
 					openRecentFile(f);
 				else
@@ -323,7 +329,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 			m_newItem.setEnabled(mode);
 			m_closeItem.setEnabled(true);
 			m_closeAllItem.setEnabled(true);
-			m_devcapOpenMenu.setEnabled(Editor.getIniFile().getRecentDevCap() != null);
+			m_devcapOpenMenu.setEnabled(settingService.getString(SettingKey.RECENT_DEV_CAP) != null);
 			m_saveAsItem.setEnabled(mode);
 			m_saveItem.setEnabled(mode);
 		}

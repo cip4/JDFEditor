@@ -9,7 +9,7 @@ import javax.swing.*;
  */
 public enum SettingKey {
 
-    FIND_PATTERN("find.pattern", ""),
+    FIND_PATTERN("find.pattern", null),
     FIND_CASE_SENSITIVE("find.case.sensitive", true),
     FIND_WRAP("find.warp", true),
 
@@ -35,6 +35,8 @@ public enum SettingKey {
 
     LOGGING_LEVEL("logging.level", "INFO"),
     LOGGING_ENABLED("logging.enabled", true),
+
+    RECENT_DEV_CAP("recent.dev.cap", null),
 
     SEND_METHOD("send.method", "MIME"),
     SEND_PACKAGE("send.package", true),

@@ -70,6 +70,7 @@
  */
 package org.cip4.tools.jdfeditor;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.cip4.jdflib.util.ContainerUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.tools.jdfeditor.dialog.SearchComboBoxModel;
@@ -82,6 +83,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
@@ -145,10 +147,18 @@ public class SearchDialog extends JDialog implements ActionListener
 		box2.add(findLabel);
 
 		searchComboBoxModel = new SearchComboBoxModel();
-		List<String> findPattern = conf.getFindPattern();
-		searchComboBoxModel.addAll(findPattern);
-		if (findPattern != null && findPattern.size() > 0)
-			searchComboBoxModel.setSelectedItem(findPattern.get(findPattern.size() - 1));
+
+		String findPattern = settingService.getString(SettingKey.FIND_PATTERN); // conf.getFindPattern();
+
+        List<String> findItems = new ArrayList<String>();
+
+        if(findPattern != null || findPattern == "") {
+            CollectionUtils.addAll(findItems, findPattern.split(";"));
+        }
+
+		searchComboBoxModel.addAll(findItems);
+		if (findPattern != null && findItems.size() > 0)
+			searchComboBoxModel.setSelectedItem(findItems.get(findItems.size() - 1));
 		searchComboBox = new JComboBox(searchComboBoxModel);
 
 		searchComboBox.setEditable(true);

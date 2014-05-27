@@ -70,17 +70,17 @@
  */
 package org.cip4.tools.jdfeditor.dialog;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.swing.AbstractListModel;
-import javax.swing.ComboBoxModel;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.cip4.tools.jdfeditor.Editor;
 import org.cip4.tools.jdfeditor.INIReader;
+import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.service.SettingService;
+
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /** 
  * @author rainer prosi
@@ -88,7 +88,9 @@ import org.cip4.tools.jdfeditor.INIReader;
  */
 public class SearchComboBoxModel extends AbstractListModel implements ComboBoxModel
 {
-	/**
+	private SettingService settingService = new SettingService();
+
+    /**
 	 * 	Max number of strings in combobox
 	 */
 	public static int MAX_ELEMENTS = 5;
@@ -131,7 +133,22 @@ public class SearchComboBoxModel extends AbstractListModel implements ComboBoxMo
 			log.debug("elements: " + elements);
 		}
 		fireContentsChanged(this, 0, elements.size());
-		conf.setFindPattern(elements);
+
+        String findPattern = null;
+
+        for(int i = 0; i < elements.size() && i < 5 ; i ++) {
+
+            if(i == 0) {
+                findPattern = elements.get(i);
+
+            } else {
+                findPattern += ";" + elements.get(i);
+
+            }
+        }
+
+        settingService.setString(SettingKey.FIND_PATTERN, findPattern);
+
 	}
 
 	/**

@@ -3,15 +3,11 @@ package org.cip4.tools.jdfeditor;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
 import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.XMLDoc;
-import org.cip4.tools.jdfeditor.dialog.SearchComboBoxModel;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * ...born 2 die... (refactored by SettingService)
@@ -19,27 +15,8 @@ import java.util.List;
 public class INIReader
 {
 
-	//	Find dialog
-	private final String findPattern = "Find/@Pattern-";
 
 	private final String[] recentFiles = new String[5];
-	private final String recentDevCap = "RecentFiles/@recentDevCap";
-
-//	private final String exportValidate = "ValidEdit/@exportValidate";
-//	private final String highlightFN = "ValidEdit/@highlightFN";
-//	private final String schemaURL = "ValidEdit/@schemaURL";
-//	private final String validVersion = "ValidEdit/@version";
-//	private final String validLevel = "ValidEdit/@level";
-//	private final String ignoreDefault = "ValidEdit/@ignoreDefault";
-//	private final String checkURL = "ValidEdit/@checkURL";
-//	private final String fixICSVersion = "ValidEdit/@fixICSVersion";
-//	private final String convertLPP = "ValidEdit/@convertLPP";
-//
-//	private final String attribute = "TreeView/@attribute";
-//	private final String inheritedAttr = "TreeView/@inheritedAttr";
-//
-//  private final String generateFull = "Validate/@GenerateFull";
-//	private final String genericAtts = "Validate/@genericAtts";
 
 
 	private XMLDoc xDoc; // The XMLDocument that represents the ini file
@@ -85,42 +62,6 @@ public class INIReader
 		return this.recentFiles;
 	}
 
-	public void setRecentDevCap(final File devCapFile)
-	{
-		if (devCapFile == null)
-		{
-			setAttribute(recentDevCap, null);
-		}
-		else
-		{
-			setAttribute(recentDevCap, devCapFile.getAbsolutePath());
-		}
-	}
-
-	public File getRecentDevCap()
-	{
-		final String s = getAttribute(recentDevCap, null);
-		if (s == null)
-		{
-			return null;
-		}
-		return new File(s);
-	}
-
-
-
-	static private String defaultVersion = "1.5";
-
-
-	// public void setDefaultVersion(final EnumVersion v)
-//	{
-//		setAttribute(validVersion, v == null ? defaultVersion : v.getName());
-//		if (v != null)
-//		{
-//			JDFElement.setDefaultJDFVersion(v);
-//		}
-//
-//	}
 
 	private void readINIFile()
 	{
@@ -216,7 +157,7 @@ public class INIReader
 	 * @param s - The path to the file
 	 * @param exist - Do the path already exists?
 	 */
-	void updateOrder(final String s, final boolean exist)
+	public void updateOrder(final String s, final boolean exist)
 	{
 		final String[] tmpFiles = new String[5];
 
@@ -255,7 +196,7 @@ public class INIReader
 	 * @param s - The path to the file
 	 * @return The position in the m_recentFiles String[] as an integer.
 	 */
-	public int pathNamePosition(final String s)
+	private int pathNamePosition(final String s)
 	{
 		for (int i = 0; i < nrOfRecentFiles(); i++)
 		{
@@ -283,50 +224,6 @@ public class INIReader
 			root.setXPathAttribute(xPath, attrib);
 		}
 	}
-
-
-
-//	public boolean getWarnCheck()
-//	{
-//		final EnumValidationLevel level = getValidationLevel();
-//		return !EnumValidationLevel.isNoWarn(level);
-//	}
-
-
-
-
-	/**
-	 * 
-	 *  
-	 * @return
-	 */
-	public List<String> getFindPattern()
-	{
-		List<String> res = new ArrayList<String>();
-		for (int i = 0; i < SearchComboBoxModel.MAX_ELEMENTS; i++)
-		{
-			String pattern = getAttribute(findPattern + i, "");
-			if (StringUtils.isNotBlank(pattern))
-			{
-				res.add(pattern);
-			}
-		}
-		return res;
-	}
-
-	/**
-	 * 
-	 *  
-	 * @param patternList
-	 */
-	public void setFindPattern(List<String> patternList)
-	{
-		for (int i = 0; i < patternList.size(); i++)
-		{
-			setAttribute(findPattern + i, patternList.get(i));
-		}
-	}
-
 
 
 }

@@ -131,7 +131,16 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 		JDFFrame parent = Editor.getFrame();
 		KElement docRoot = doc.getRoot();
 
-		idFile = iniFile.getRecentDevCap();
+		// idFile = iniFile.getRecentDevCap();
+        String s = settingService.getString(SettingKey.RECENT_DEV_CAP);
+        File f = null;
+
+        if(s != null) {
+            f = new File(s);
+        }
+
+        idFile = f;
+
 		ignoreDefaults = settingService.getBoolean(SettingKey.VALIDATION_IGNORE_DEFAULT);
 		ignoreExtensions = ! settingService.getBoolean(SettingKey.VALIDATION_HIGHTLIGHT_FN);
 
@@ -147,7 +156,14 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 			{
 				idFile = tmpFile;
 				final JDFParser parser = new JDFParser();
-				iniFile.setRecentDevCap(idFile);
+
+                String recentDevCap = null;
+
+                if(idFile != null) {
+                    recentDevCap = idFile.getAbsolutePath();
+                }
+
+                settingService.setString(SettingKey.RECENT_DEV_CAP, recentDevCap);
 
 				try
 				{
