@@ -72,8 +72,6 @@ package org.cip4.tools.jdfeditor.dialog;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
-import org.cip4.tools.jdfeditor.Editor;
-import org.cip4.tools.jdfeditor.INIReader;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 
@@ -109,9 +107,6 @@ public class SearchComboBoxModel extends AbstractListModel implements ComboBoxMo
 	}
 
 	private static final Logger log = Logger.getLogger(SearchComboBoxModel.class);
-
-	private static INIReader conf = Editor.getIniFile();
-
 	private List<String> elements = new ArrayList<String>();
 	private String selectedItem;
 

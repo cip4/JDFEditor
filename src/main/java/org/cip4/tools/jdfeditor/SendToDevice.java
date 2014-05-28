@@ -70,26 +70,6 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import javax.mail.Multipart;
-import javax.swing.Box;
-import javax.swing.ButtonGroup;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFParser;
@@ -104,6 +84,17 @@ import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
+
+import javax.mail.Multipart;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * @author MRE (Institute for Print and Media Technology) History: 20040903 MRE send MIME multipart/related
@@ -150,8 +141,6 @@ public class SendToDevice extends JPanel implements ActionListener
 		final JLabel urlText = new JLabel(Editor.getString("setURL"));
 		urlText.setVerticalAlignment(SwingConstants.BOTTOM);
 		add(urlText);
-
-		final INIReader iniFile = Editor.getIniFile();
 
 		if (jmf == null)
 		{
@@ -224,7 +213,6 @@ public class SendToDevice extends JPanel implements ActionListener
 	@Override
 	public void actionPerformed(final ActionEvent e)
 	{
-		final INIReader ini = Editor.getIniFile();
 		final Object eSrc = e.getSource();
 		if (eSrc == rbJMF || eSrc == rbMIME || eSrc == rbRawXML)
 		{
@@ -489,7 +477,6 @@ public class SendToDevice extends JPanel implements ActionListener
 		try
 		{
 			url = new URL(urlText);
-			final INIReader ini = Editor.getIniFile();
 			if (bReturn)
 			{
 				settingService.setString(SettingKey.SEND_URL_RETURN, urlText);
@@ -534,8 +521,6 @@ public class SendToDevice extends JPanel implements ActionListener
 		sLabel += "\n\nURL= " + url.toExternalForm();
 		if (bSendTrue)
 		{
-			final INIReader iniFile = Editor.getIniFile();
-			iniFile.writeINIFile();
 			JOptionPane.showMessageDialog(Editor.getFrame(), sLabel, "", JOptionPane.INFORMATION_MESSAGE);
 		}
 		else

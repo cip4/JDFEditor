@@ -79,7 +79,6 @@ import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFMessage;
 import org.cip4.tools.jdfeditor.Editor;
-import org.cip4.tools.jdfeditor.INIReader;
 import org.cip4.tools.jdfeditor.JDFFrame;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
@@ -110,8 +109,6 @@ import java.util.List;
 public class HttpServerPane implements FileAlterationListener, ActionListener
 {
 	private static final Logger log = Logger.getLogger(HttpServerPane.class);
-	private static INIReader conf = Editor.getIniFile();
-
     private SettingService settingService = new SettingService();
 
 	private final JDFFrame frame;

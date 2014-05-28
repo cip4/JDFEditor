@@ -265,9 +265,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private void applyLnF()
 	{
 		final JDFFrame f = Editor.getFrame();
-		final INIReader iniFile = Editor.getIniFile();
 		settingService.setString(SettingKey.GENERAL_LOOK, currLNF);
-		iniFile.writeINIFile();
 		f.applyLookAndFeel(this);
 	}
 
@@ -291,7 +289,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
 	private void init()
 	{
-		final INIReader iniFile = Editor.getIniFile();
 		this.currLang = settingService.getString(SettingKey.GENERAL_LANGUAGE);
 		this.currLNF = settingService.getString(SettingKey.GENERAL_LOOK);
 		this.currValidate = settingService.getBoolean(SettingKey.GENERAL_AUTO_VALIDATE);
@@ -1056,7 +1053,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
 	public void writeToIni()
 	{
-		final INIReader iniFile = Editor.getIniFile();
 		validTab.writeToIni();
 		settingService.setBoolean(SettingKey.GENERAL_USE_SCHEMA, useSchema);
         settingService.setString(SettingKey.VALIDATION_SCHEMA_URL, getSchemaURL().getAbsolutePath());
@@ -1093,7 +1089,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
         String s = StringUtil.setvString(genericAttributes, " ", null, null);
         settingService.setString(SettingKey.VALIDATION_GENERIC_ATTR, s);
-		iniFile.writeINIFile();
 	}
 
 	/**

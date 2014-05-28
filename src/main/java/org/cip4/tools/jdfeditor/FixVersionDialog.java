@@ -147,7 +147,6 @@ public class FixVersionDialog extends JPanel implements ActionListener
 	{
 		final JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(2, 1, 0, 5));
-		final INIReader ir = Editor.getIniFile();
 		final EnumVersion defVersion = EnumVersion.getEnum(settingService.getString(SettingKey.VALIDATION_VERSION));
 		bConvertLPP = settingService.getBoolean(SettingKey.VALIDATION_CONVERT_LPP);
 		bFixICSVersion = settingService.getBoolean(SettingKey.VALIDATION_FIX_ICS_VERSION);

@@ -78,6 +78,7 @@ import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.tools.jdfeditor.menu.HelpMenuItem;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
+import org.cip4.tools.jdfeditor.util.RecentFileUtil;
 
 import javax.swing.*;
 import javax.swing.tree.TreePath;
@@ -206,10 +207,9 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 			{
 				final String s = fileToSave.getAbsolutePath();
 
-				final INIReader m_iniFile = Editor.getIniFile();
-				if (m_iniFile.nrOfRecentFiles() != 1)
+				if (RecentFileUtil.nrOfRecentFiles() != 1)
 				{
-					m_iniFile.updateOrder(s, true);
+                    RecentFileUtil.updateOrder(s, true);
 				}
 			}
 			else
@@ -225,25 +225,24 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		 */
 		protected void updateRecentFilesMenu(final String pathName)
 		{
-			final INIReader iniReader = Editor.getIniFile();
-			final boolean exist = iniReader.pathNameExists(pathName);
+			final boolean exist = RecentFileUtil.pathNameExists(pathName);
 
-			iniReader.updateOrder(pathName, exist);
+            RecentFileUtil.updateOrder(pathName, exist);
 
-			if (iniReader.nrOfRecentFiles() != 0)
+			if (RecentFileUtil.nrOfRecentFiles() != 0)
 			{
 				m_recentFilesMenu.setEnabled(true);
-				for (int i = 0; i < iniReader.nrOfRecentFiles(); i++)
+				for (int i = 0; i < RecentFileUtil.nrOfRecentFiles(); i++)
 				{
 					if (m_subMenuItem[i] == null)
 					{
-						m_subMenuItem[i] = new JMenuItem(iniReader.getRecentFiles()[i]);
+						m_subMenuItem[i] = new JMenuItem(RecentFileUtil.getRecentFiles()[i]);
 						m_subMenuItem[i].addActionListener(this);
 						m_recentFilesMenu.add(m_subMenuItem[i]);
 					}
 					else
 					{
-						m_subMenuItem[i].setText(iniReader.getRecentFiles()[i]);
+						m_subMenuItem[i].setText(RecentFileUtil.getRecentFiles()[i]);
 					}
 				}
 			}
@@ -262,7 +261,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		{
 			Editor.setCursor(1, null);
 			final Object eSrc = e.getSource();
-			final INIReader iniFile = Editor.getIniFile();
 			final JDFFrame frame = Editor.getFrame();
 
 			/*
@@ -758,7 +756,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	private JMenu drawValidateMenu()
 	{
 		final int menuKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
-		final INIReader m_iniFile = Editor.getIniFile();
 		final JDFFrame m_frame = Editor.getFrame();
 
 		m_validateMenu = new JMenu(Editor.getString("ValidateKey"));
@@ -826,7 +823,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	public String[] recentFiles()
 	{
 		int l = 0;
-		final String[] v = Editor.getIniFile().getRecentFiles();
+		final String[] v = RecentFileUtil.getRecentFiles();
 		for (int i = 0; i < v.length; i++)
 		{
 			if (v[i] != null)
@@ -1093,13 +1090,11 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	{
 		Editor.setCursor(1, null);
 		final Object eSrc = e.getSource();
-		final INIReader iniFile = Editor.getIniFile();
 		final JDFFrame frame = Editor.getFrame();
 		final JDFTreeArea ta = frame.m_treeArea;
 		if (eSrc == m_showInhAttrRadioItem)
 		{
             settingService.setBoolean(SettingKey.TREEVIEW_ATTRIBUTE_INHERITED, m_showInhAttrRadioItem.isSelected());
-			iniFile.writeINIFile();
 			if (getJDFDoc() != null)
 			{
 				ta.drawTreeView(frame.getEditorDoc());
@@ -1109,7 +1104,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		if (eSrc == m_DispDefAttrRadioItem)
 		{
             settingService.setBoolean(SettingKey.GENERAL_DISPLAY_DEFAULT, m_DispDefAttrRadioItem.isSelected());
-			iniFile.writeINIFile();
 			if (getJDFDoc() != null)
 			{
 				ta.drawTreeView(frame.getEditorDoc());
@@ -1126,7 +1120,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		else if (eSrc == m_highlightFNRadioItem)
 		{
             settingService.setBoolean(SettingKey.VALIDATION_HIGHTLIGHT_FN, m_highlightFNRadioItem.isSelected());
-			iniFile.writeINIFile();
 		}
 		else if (eSrc == m_nextItem)
 		{
@@ -1205,7 +1198,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	 */
 	private void toggleAttributes()
 	{
-		final INIReader iniFile = Editor.getIniFile();
 		final JDFFrame frame = Editor.getFrame();
 		final JDFTreeArea ta = frame.m_treeArea;
 
@@ -1225,7 +1217,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
         settingService.setBoolean(SettingKey.TREEVIEW_ATTRIBUTE, m_showAttrRadioItem.isSelected());
         settingService.setBoolean(SettingKey.GENERAL_DISPLAY_DEFAULT, m_DispDefAttrRadioItem.isSelected());
         settingService.setBoolean(SettingKey.TREEVIEW_ATTRIBUTE_INHERITED, m_showInhAttrRadioItem.isSelected());
-		iniFile.writeINIFile();
 		if (getJDFDoc() != null)
 		{
 			ta.drawTreeView(frame.getEditorDoc());

@@ -86,6 +86,7 @@ import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
+import org.cip4.tools.jdfeditor.util.RecentFileUtil;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -271,7 +272,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		}
 		else
 		{
-			final String recentFile = Editor.getIniFile().getRecentFiles()[0];
+			final String recentFile = RecentFileUtil.getRecentFiles()[0];
 			if (recentFile != null)
 			{
 				fileToSave = new File(recentFile);
@@ -297,7 +298,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	{
 		try
 		{
-			final INIReader m_iniFile = Editor.getIniFile();
 			UIManager.setLookAndFeel(settingService.getString(SettingKey.GENERAL_LOOK));
 			m_buttonBar.removeAll();
 			m_buttonBar.drawButtonBar();
@@ -390,7 +390,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			{
 				final VString vs = StringUtil.tokenize(exportDialog.generAttrString, " ", false);
 				vs.unify();
-				final INIReader m_iniFile = Editor.getIniFile();
 
                 String s = StringUtil.setvString(vs, " ", null, null);
                 settingService.setString(SettingKey.VALIDATION_GENERIC_ATTR, s);
@@ -496,7 +495,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		Editor.setCursor(1, null);
 		try
 		{
-			final INIReader m_iniFile = Editor.getIniFile();
 			setEnableOpen(!settingService.getBoolean(SettingKey.GENERAL_READ_ONLY));
 
 			m_treeArea.drawTreeView(eDoc);
@@ -651,7 +649,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	public int saveFileQuestion()
 	{
 		int save = JOptionPane.YES_OPTION;
-		final INIReader m_iniFile = Editor.getIniFile();
 		final EditorDocument doc = getEditorDoc();
 		if (doc != null)
 		{
@@ -822,7 +819,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				break;
 			}
 
-			final INIReader m_iniFile = Editor.getIniFile();
 			if (isDirty() && !settingService.getBoolean(SettingKey.GENERAL_READ_ONLY))
 			{
 				save = saveFileQuestion();
@@ -837,7 +833,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				final String originalFileName = doc.getOriginalFileName();
 				if (originalFileName != null && !originalFileName.startsWith("Untitled"))
 				{
-					m_iniFile.writeINIFile();
 					m_menuBar.updateRecentFilesMenu(originalFileName);
 				}
 
@@ -916,7 +911,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				newGoldenTicket();
 			}
 
-			final INIReader m_iniFile = Editor.getIniFile();
 			setEnableOpen(!settingService.getBoolean(SettingKey.GENERAL_READ_ONLY));
 		}
 	}
@@ -1034,7 +1028,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	public void actionPerformed(final ActionEvent e)
 	{
 		Editor.setCursor(1, null);
-		final INIReader m_iniFile = Editor.getIniFile();
 
 		final Object eSrc = e.getSource();
 		if (eSrc == m_menuBar.m_exportItem)
@@ -1043,7 +1036,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		}
 		else if (eSrc == m_menuBar.m_quitItem)
 		{
-			m_iniFile.writeINIFile();
 			if (closeFile(9999) != JOptionPane.CANCEL_OPTION)
 			{
 				System.exit(0);
@@ -1519,7 +1511,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 				final int selIndex = m_topTabs.getSelectedIndex();
 
-				final INIReader m_iniFile = Editor.getIniFile();
 				if (!settingService.getBoolean(SettingKey.GENERAL_READ_ONLY))
 				{
 					m_menuBar.setEnabledInMenu(m_treeArea.getSelectionPath());
@@ -1654,9 +1645,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			{
 				m_buttonBar.m_validateButton.setEnabled(false);
 			}
-
-			final INIReader m_iniFile = Editor.getIniFile();
-			m_iniFile.writeINIFile();
 		}
 	}
 

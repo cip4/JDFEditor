@@ -72,7 +72,6 @@ package org.cip4.tools.jdfeditor.dialog;
 
 import org.cip4.jdflib.extensions.XJDF20;
 import org.cip4.tools.jdfeditor.Editor;
-import org.cip4.tools.jdfeditor.INIReader;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 
@@ -108,11 +107,6 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 	private final JCheckBox cbTypesafeJMF;
 	private int choosedButton = BUTTON_CANCEL;
 
-	private static INIReader conf = Editor.getIniFile();
-
-	/**
-	 * 
-	 */
 	public SaveAsXJDFDialog()
 	{
 		setTitle(Editor.getString("SaveAsXJDFKey"));

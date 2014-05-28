@@ -537,11 +537,8 @@ public class EditorUtils
 	static File getSchemaLoc()
 	{
 		File schemaloc = null;
-		final INIReader iniFile = Editor.getIniFile();
 
-
-
-		if (iniFile != null && new SettingService().getBoolean(SettingKey.GENERAL_USE_SCHEMA))
+		if (new SettingService().getBoolean(SettingKey.GENERAL_USE_SCHEMA))
 		{
 			schemaloc =  new File(new SettingService().getString(SettingKey.VALIDATION_SCHEMA_URL));
 		}
@@ -557,9 +554,7 @@ public class EditorUtils
 		{
 			jdfDoc.clearDirtyIDs();
 
-			final INIReader iniFile = Editor.getIniFile();
-
-			if (iniFile != null && new SettingService().getBoolean(SettingKey.GENERAL_NORMALIZE))
+			if (new SettingService().getBoolean(SettingKey.GENERAL_NORMALIZE))
 			{
 				jdfDoc.getRoot().sortChildren();
 			}

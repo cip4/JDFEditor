@@ -77,7 +77,7 @@ import org.cip4.jdflib.jmf.JMFBuilder;
 import org.cip4.jdflib.util.logging.LogConfigurator;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
-import org.cip4.tools.jdfeditor.util.LocationUtil;
+import org.cip4.tools.jdfeditor.util.DirectoryUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -100,7 +100,6 @@ public class Editor
 
 	private static Editor my_Editor;
 	protected static JDFFrame my_Frame;
-	private static INIReader m_iniFile;
 	private static Log log = null;
 
 	/*
@@ -196,7 +195,7 @@ public class Editor
 	public Editor()
 	{
 		// log file location
-        String pathDir = LocationUtil.getDirCIP4Tools();
+        String pathDir = DirectoryUtil.getDirCIP4Tools();
 		new File(pathDir).mkdirs();
 
 		LogConfigurator.configureLog(pathDir, "JDFEditor.log");
@@ -213,13 +212,11 @@ public class Editor
 	 */
 	public void init(final File file)
 	{
-		m_iniFile = new INIReader();
 		final String language = settingService.getString(SettingKey.GENERAL_LANGUAGE);
 		final Locale currentLocale = new Locale(language, language.toUpperCase());
 
 		Locale.setDefault(currentLocale);
 		m_littleBundle = ResourceBundle.getBundle("org.cip4.tools.jdfeditor.messages.JDFEditor", currentLocale);
-		final INIReader iniFile = Editor.getIniFile();
 		final String currentLookAndFeel = settingService.getString(SettingKey.GENERAL_LOOK);
 
 		try
@@ -253,7 +250,6 @@ public class Editor
 				{
 					if (my_Frame.closeFile(999) != JOptionPane.CANCEL_OPTION)
 					{
-						getIniFile().writeINIFile();
 						System.exit(0);
 						e.getID(); // make compile happy
 					}
@@ -313,15 +309,6 @@ public class Editor
 	public static EditorDocument getEditorDoc()
 	{
 		return my_Frame.getEditorDoc();
-	}
-
-	/**
-	 * Method getFrame.
-	 * @return JDFFrame
-	 */
-	public static INIReader getIniFile()
-	{
-		return m_iniFile;
 	}
 
 	/**

@@ -239,7 +239,6 @@ public class JDFTreeModel extends DefaultTreeModel
 			return false;
 		}
 
-		final INIReader iniFile = Editor.getIniFile();
 		final JDFValidator checkJDF = new JDFValidator();
 		checkJDF.setPrint(false);
 		checkJDF.bQuiet = true;
@@ -652,7 +651,6 @@ public class JDFTreeModel extends DefaultTreeModel
 	public void addNodeAttributes(final JDFTreeNode node)
 	{
 		final KElement elem = node.getElement();
-		final INIReader iniFile = Editor.getIniFile();
 		if (settingService.getBoolean(SettingKey.TREEVIEW_ATTRIBUTE) == false)
 		{
 			return;

@@ -3,8 +3,6 @@ import org.apache.log4j.Logger;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.validate.JDFValidator;
-import org.cip4.tools.jdfeditor.Editor;
-import org.cip4.tools.jdfeditor.INIReader;
 import org.cip4.tools.jdfeditor.JDFTreeModel;
 import org.cip4.tools.jdfeditor.JDFTreeNode;
 
@@ -33,8 +31,6 @@ public class DCOutputTreeCellRenderer extends AbstractTreeCellRenderer
 
     @Override
     protected void setNodeIcon(JDFTreeNode node, JDFTreeModel model) {
-
-        final INIReader iniFile= Editor.getIniFile();
 
         final String nodeName=node.getName();
         KElement elem = node.getElement();

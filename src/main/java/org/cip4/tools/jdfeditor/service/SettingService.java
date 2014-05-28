@@ -6,7 +6,7 @@ import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
-import org.cip4.tools.jdfeditor.util.LocationUtil;
+import org.cip4.tools.jdfeditor.util.DirectoryUtil;
 
 import java.io.File;
 
@@ -141,6 +141,6 @@ public class SettingService {
      * @return Path to Logfile.
      */
     public File getConfFile() {
-        return new File(FilenameUtils.concat(LocationUtil.getDirCIP4Tools(), confFileName));
+        return new File(FilenameUtils.concat(DirectoryUtil.getDirCIP4Tools(), confFileName));
     }
 }

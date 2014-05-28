@@ -72,7 +72,6 @@ package org.cip4.tools.jdfeditor.dialog;
 
 import org.cip4.jdflib.extensions.xjdfwalker.XJDFToJDFConverter;
 import org.cip4.tools.jdfeditor.Editor;
-import org.cip4.tools.jdfeditor.INIReader;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 
@@ -104,11 +103,6 @@ public class SaveAsJDFDialog extends JDialog implements ActionListener
 	private final JCheckBox cbHeuristcLink;
 	private int choosedButton = BUTTON_CANCEL;
 
-	private static INIReader conf = Editor.getIniFile();
-
-	/**
-	 * 
-	 */
 	public SaveAsJDFDialog()
 	{
 		setTitle(Editor.getString("SaveJDFKey"));

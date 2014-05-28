@@ -3,7 +3,7 @@ package org.cip4.tools.jdfeditor.service;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FilenameUtils;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
-import org.cip4.tools.jdfeditor.util.LocationUtil;
+import org.cip4.tools.jdfeditor.util.DirectoryUtil;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -32,7 +32,7 @@ public class SettingServiceTest {
         CONF_FILE_NAME = "log.test";
         changeLogFileName(CONF_FILE_NAME);
 
-        new File(FilenameUtils.concat(LocationUtil.getDirCIP4Tools(), CONF_FILE_NAME)).delete();
+        new File(FilenameUtils.concat(DirectoryUtil.getDirCIP4Tools(), CONF_FILE_NAME)).delete();
 
         // new service instance
         settingService = new SettingService();

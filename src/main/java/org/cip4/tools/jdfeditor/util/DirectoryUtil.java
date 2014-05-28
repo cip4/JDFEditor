@@ -6,7 +6,7 @@ import org.apache.commons.io.FilenameUtils;
 /**
  * Util class for defining generic locations on a file system.
  */
-public class LocationUtil {
+public class DirectoryUtil {
 
     /**
      * Returns the location of the JDFEditor folder in the CIP4Tool folder.

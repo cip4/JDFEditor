@@ -233,7 +233,6 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 
 		final JDFTreeNode node = (JDFTreeNode) path.getLastPathComponent();
 		final KElement elem = (node.isElement()) ? node.getElement() : null;
-		final INIReader ini = Editor.getIniFile();
 
 		final JMenu insertPopupMenu = new JMenu(Editor.getString("InsertElKey"));
 		insertPopupMenu.setEnabled(elem != null);
@@ -462,7 +461,6 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		Editor.setCursor(1, null);
 
 		final Object eSrc = e.getSource();
-		final INIReader iniFile = Editor.getIniFile();
 		final JDFFrame frame = Editor.getFrame();
 		final JDFTreeArea treeArea = frame.m_treeArea;
 

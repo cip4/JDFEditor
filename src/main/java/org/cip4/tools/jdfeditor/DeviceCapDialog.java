@@ -127,7 +127,6 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 	public DeviceCapDialog(final JDFDoc doc)
 	{
 		super();
-		final INIReader iniFile = Editor.getIniFile();
 		JDFFrame parent = Editor.getFrame();
 		KElement docRoot = doc.getRoot();
 

@@ -578,8 +578,6 @@ public class EditorDocument
 			file = new File(getSaveFileName());
 		}
 
-		final INIReader ini = Editor.getIniFile();
-
 		final KElement e = m_jdfDoc.getRoot();
 		if (settingService.getBoolean(SettingKey.GENERAL_REMOVE_DEFAULT) && (e instanceof JDFElement))
 		{
@@ -632,7 +630,6 @@ public class EditorDocument
 	 */
 	private void writeToFile(File file)
 	{
-		final INIReader ini = Editor.getIniFile();
 		int indent = settingService.getBoolean(SettingKey.GENERAL_INDENT) ? 2 : 0;
 		m_jdfDoc.write2File(file.getAbsolutePath(), indent, !settingService.getBoolean(SettingKey.GENERAL_INDENT));
 	}

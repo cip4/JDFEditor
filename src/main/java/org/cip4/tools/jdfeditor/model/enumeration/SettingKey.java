@@ -37,6 +37,7 @@ public enum SettingKey {
     LOGGING_ENABLED("logging.enabled", true),
 
     RECENT_DEV_CAP("recent.dev.cap", null),
+    RECENT_FILES("recent.files", null),
 
     SEND_METHOD("send.method", "MIME"),
     SEND_PACKAGE("send.package", true),

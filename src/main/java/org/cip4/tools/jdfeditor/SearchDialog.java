@@ -124,8 +124,6 @@ public class SearchDialog extends JDialog implements ActionListener
 	private Vector<JDFTreeNode> m_LastResults = null;
 	private int lastPos;
 
-	private static INIReader conf = Editor.getIniFile();
-
 	/**
 	 * Constructor for SearchDialog.
 	 * @param _searchComponent
