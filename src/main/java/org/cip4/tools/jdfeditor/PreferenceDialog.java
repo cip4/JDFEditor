@@ -77,6 +77,7 @@ import org.cip4.jdflib.util.EnumUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
+import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -123,12 +124,12 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	 */
 	private static final long serialVersionUID = 1350654061722234773L;
 
-	final private ImageIcon sweFlag = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "SwedishFlag.gif");
-	final private ImageIcon engFlag = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "GreatBrittainFlag.gif");
-	final private ImageIcon freFlag = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "FrenchFlag.gif");
-	final private ImageIcon gerFlag = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "GermanFlag.gif");
-	final private ImageIcon spaFlag = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "SpanishFlag.gif");
-	final private ImageIcon japFlag = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "JapanFlag.gif");
+	final private ImageIcon sweFlag = Editor.getImageIcon(Editor.ICONS_PATH + "SwedishFlag.gif");
+	final private ImageIcon engFlag = Editor.getImageIcon(Editor.ICONS_PATH + "GreatBrittainFlag.gif");
+	final private ImageIcon freFlag = Editor.getImageIcon(Editor.ICONS_PATH + "FrenchFlag.gif");
+	final private ImageIcon gerFlag = Editor.getImageIcon(Editor.ICONS_PATH + "GermanFlag.gif");
+	final private ImageIcon spaFlag = Editor.getImageIcon(Editor.ICONS_PATH + "SpanishFlag.gif");
+	final private ImageIcon japFlag = Editor.getImageIcon(Editor.ICONS_PATH + "JapanFlag.gif");
 
 	protected JPanel[] panels;
 
@@ -302,7 +303,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		currRemoveWhite = settingService.getBoolean(SettingKey.GENERAL_REMOVE_WHITE);
 		currIndentSave = settingService.getBoolean(SettingKey.GENERAL_INDENT);
 		currDispDefault = settingService.getBoolean(SettingKey.GENERAL_DISPLAY_DEFAULT);
-		checkURL = settingService.getBoolean(SettingKey.VALIDATION_CHECK_URL);;
+		checkURL = settingService.getBoolean(SettingKey.VALIDATION_CHECK_URL);
 
 		genericStrings = settingService.getString(SettingKey.VALIDATION_GENERIC_ATTR);
 		generateFull = settingService.getBoolean(SettingKey.VALIDATION_GENERATE_FULL);
@@ -358,7 +359,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
 	private void prepareTab(final int n, final JPanel gen, final String resKey)
 	{
-		final String resString = Editor.getString(resKey);
+		final String resString = ResourceBundleUtil.getMessage(resKey);
 		this.addTab(resString, null, gen, resString);
 		this.setComponentAt(n, gen);
 		panels[n] = gen;
@@ -374,73 +375,73 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		main.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
 
 		final JPanel genPanel = new JPanel(null);
-		genPanel.setBorder(BorderFactory.createTitledBorder(Editor.getString("GeneralOptionsKey")));
+		genPanel.setBorder(BorderFactory.createTitledBorder(ResourceBundleUtil.getMessage("GeneralOptionsKey")));
 
 		int y = 30;
-		boxReadOnly = new JCheckBox(Editor.getString("OpenReadOnlyKey"), currReadOnly);
+		boxReadOnly = new JCheckBox(ResourceBundleUtil.getMessage("OpenReadOnlyKey"), currReadOnly);
 		Dimension d = boxReadOnly.getPreferredSize();
 		boxReadOnly.setBounds(10, y, d.width, d.height);
 		boxReadOnly.addActionListener(this);
 		genPanel.add(boxReadOnly);
 
 		y += d.height + 3;
-		boxNormalizeOpen = new JCheckBox(Editor.getString("NormalizeOpenKey"), normalizeOpen);
+		boxNormalizeOpen = new JCheckBox(ResourceBundleUtil.getMessage("NormalizeOpenKey"), normalizeOpen);
 		d = boxNormalizeOpen.getPreferredSize();
 		boxNormalizeOpen.setBounds(10, y, d.width, d.height);
 		boxNormalizeOpen.addActionListener(this);
 		genPanel.add(boxNormalizeOpen);
 
 		y += d.height + 3;
-		boxValOpen = new JCheckBox(Editor.getString("OpenAutoValKey"), currValidate);
+		boxValOpen = new JCheckBox(ResourceBundleUtil.getMessage("OpenAutoValKey"), currValidate);
 		d = boxValOpen.getPreferredSize();
 		boxValOpen.setBounds(10, y, d.width, d.height);
 		boxValOpen.addActionListener(this);
 		genPanel.add(boxValOpen);
 
 		y += d.height + 3;
-		boxDispDefault = new JCheckBox(Editor.getString("DisplayDefaultsKey"), currDispDefault);
+		boxDispDefault = new JCheckBox(ResourceBundleUtil.getMessage("DisplayDefaultsKey"), currDispDefault);
 		d = boxDispDefault.getPreferredSize();
 		boxDispDefault.setBounds(10, y, d.width, d.height);
 		boxDispDefault.addActionListener(this);
 		genPanel.add(boxDispDefault);
 
 		y += d.height + 3;
-		boxRemDefault = new JCheckBox(Editor.getString("SaveRemoveDefaultsKey"), currRemoveDefault);
+		boxRemDefault = new JCheckBox(ResourceBundleUtil.getMessage("SaveRemoveDefaultsKey"), currRemoveDefault);
 		d = boxRemDefault.getPreferredSize();
 		boxRemDefault.setBounds(10, y, d.width, d.height);
 		boxRemDefault.addActionListener(this);
 		genPanel.add(boxRemDefault);
 
 		y += d.height + 3;
-		boxRemWhite = new JCheckBox(Editor.getString("SaveRemoveWhiteKey"), currRemoveWhite);
+		boxRemWhite = new JCheckBox(ResourceBundleUtil.getMessage("SaveRemoveWhiteKey"), currRemoveWhite);
 		d = boxRemWhite.getPreferredSize();
 		boxRemWhite.setBounds(10, y, d.width, d.height);
 		boxRemWhite.addActionListener(this);
 		genPanel.add(boxRemWhite);
 
 		y += d.height + 3;
-		cboxIndentSave = new JCheckBox(Editor.getString("IndentSave"), currIndentSave);
+		cboxIndentSave = new JCheckBox(ResourceBundleUtil.getMessage("IndentSave"), currIndentSave);
 		d = cboxIndentSave.getPreferredSize();
 		cboxIndentSave.setBounds(10, y, d.width, d.height);
 		cboxIndentSave.addActionListener(this);
 		genPanel.add(cboxIndentSave);
 
 		y += d.height + 3;
-		boxLongID = new JCheckBox(Editor.getString("LongIDKey"), longID);
+		boxLongID = new JCheckBox(ResourceBundleUtil.getMessage("LongIDKey"), longID);
 		d = boxLongID.getPreferredSize();
 		boxLongID.setBounds(10, y, d.width, d.height);
 		boxLongID.addActionListener(this);
 		genPanel.add(boxLongID);
 
 		y += d.height + 3;
-		boxUpdateJobID = new JCheckBox(Editor.getString("UpdateJobIDKey"), updateJobID);
+		boxUpdateJobID = new JCheckBox(ResourceBundleUtil.getMessage("UpdateJobIDKey"), updateJobID);
 		d = boxUpdateJobID.getPreferredSize();
 		boxUpdateJobID.setBounds(10, y, d.width, d.height);
 		boxUpdateJobID.addActionListener(this);
 		genPanel.add(boxUpdateJobID);
 
 		y += d.height + 3;
-		boxSchema = new JCheckBox(Editor.getString("UseSchemaKey"), useSchema);
+		boxSchema = new JCheckBox(ResourceBundleUtil.getMessage("UseSchemaKey"), useSchema);
 		boxSchema.addActionListener(this);
 		d = boxSchema.getPreferredSize();
 		boxSchema.setBounds(10, y, d.width, d.height);
@@ -457,7 +458,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		schemaPath.setBounds(10, y, d.width, d.height);
 		genPanel.add(schemaPath);
 
-		schemaBrowse = new JButton(Editor.getString("BrowseKey"));
+		schemaBrowse = new JButton(ResourceBundleUtil.getMessage("BrowseKey"));
 		schemaBrowse.setPreferredSize(new Dimension(85, 22));
 		schemaBrowse.addActionListener(this);
 		d = schemaBrowse.getPreferredSize();
@@ -481,7 +482,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
 		final Box northBox = Box.createHorizontalBox();
 		northBox.add(Box.createHorizontalStrut(10));
-		final String txt = "<html><br>" + Editor.getString("LanguageTitleKey") + "<br></html>";
+		final String txt = "<html><br>" + ResourceBundleUtil.getMessage("LanguageTitleKey") + "<br></html>";
 		final JLabel text = new JLabel(txt, SwingConstants.LEFT);
 		northBox.add(text);
 
@@ -491,7 +492,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		main.add(Box.createHorizontalStrut(5), BorderLayout.WEST);
 
 		final JPanel langPanel = new JPanel(null);
-		langPanel.setBorder(BorderFactory.createTitledBorder(Editor.getString("LangSelectKey")));
+		langPanel.setBorder(BorderFactory.createTitledBorder(ResourceBundleUtil.getMessage("LangSelectKey")));
 
 		int y = 30;
 		final Box sweBox = createRadioLang(swe, sweFlag, "sv", y);
@@ -525,7 +526,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
 		final Box northBox = Box.createHorizontalBox();
 		northBox.add(Box.createHorizontalStrut(10));
-		final String txt = "<html><br>" + Editor.getString("LnFTitleKey") + "<br></html>";
+		final String txt = "<html><br>" + ResourceBundleUtil.getMessage("LnFTitleKey") + "<br></html>";
 		final JLabel text = new JLabel(txt, SwingConstants.LEFT);
 		northBox.add(text);
 
@@ -536,7 +537,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
 		final JPanel lnfPanel = new JPanel();
 		lnfPanel.setLayout(null);
-		lnfPanel.setBorder(BorderFactory.createTitledBorder(Editor.getString("LnFSelectKey")));
+		lnfPanel.setBorder(BorderFactory.createTitledBorder(ResourceBundleUtil.getMessage("LnFSelectKey")));
 		int y = 30;
 
 		for (int i = 0; i < aLnF.length; i++)
@@ -559,7 +560,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 			lnfPanel.add(jrb);
 			y += d.height + 10;
 		}
-		applyLnFButton = new JButton(Editor.getString("ApplyKey"));
+		applyLnFButton = new JButton(ResourceBundleUtil.getMessage("ApplyKey"));
 		final Dimension d = applyLnFButton.getPreferredSize();
 		applyLnFButton.setBounds(20, y + 10, d.width, d.height);
 		applyLnFButton.addActionListener(this);
@@ -579,7 +580,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		main.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
 
 		final JPanel dirPanel = new JPanel(null);
-		dirPanel.setBorder(BorderFactory.createTitledBorder(Editor.getString("DefaultDirsKey")));
+		dirPanel.setBorder(BorderFactory.createTitledBorder(ResourceBundleUtil.getMessage("DefaultDirsKey")));
 
 		main.add(dirPanel, BorderLayout.CENTER);
 
@@ -596,10 +597,10 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		main.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
 
 		final JPanel panel = new JPanel(null);
-		panel.setBorder(BorderFactory.createTitledBorder(Editor.getString("ValidateKey")));
+		panel.setBorder(BorderFactory.createTitledBorder(ResourceBundleUtil.getMessage("ValidateKey")));
 
 		int y = 30;
-		final JLabel label = new JLabel(Editor.getString("DevCapGenericAttrKey"));
+		final JLabel label = new JLabel(ResourceBundleUtil.getMessage("DevCapGenericAttrKey"));
 		Dimension d = label.getPreferredSize();
 		label.setBounds(10, y, d.width, d.height);
 		panel.add(label);
@@ -616,28 +617,28 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		panel.add(fieldGenericStrings);
 		y += 30;
 
-		boxGenerateFull = new JCheckBox(Editor.getString("GenerateFullKey"), generateFull);
+		boxGenerateFull = new JCheckBox(ResourceBundleUtil.getMessage("GenerateFullKey"), generateFull);
 		d = boxGenerateFull.getPreferredSize();
 		boxGenerateFull.setBounds(10, y, d.width, d.height);
 		boxGenerateFull.addActionListener(this);
 		panel.add(boxGenerateFull);
 
 		y += d.height + 3;
-		boxCheckURL = new JCheckBox(Editor.getString("CheckURLKey"), checkURL);
+		boxCheckURL = new JCheckBox(ResourceBundleUtil.getMessage("CheckURLKey"), checkURL);
 		d = boxCheckURL.getPreferredSize();
 		boxCheckURL.setBounds(10, y, d.width, d.height);
 		boxCheckURL.addActionListener(this);
 		panel.add(boxCheckURL);
 
 		y += d.height + 3;
-		boxIgnoreDefaults = new JCheckBox(Editor.getString("IgnoreDefaultsKey"), ignoreDefaults);
+		boxIgnoreDefaults = new JCheckBox(ResourceBundleUtil.getMessage("IgnoreDefaultsKey"), ignoreDefaults);
 		d = boxIgnoreDefaults.getPreferredSize();
 		boxIgnoreDefaults.setBounds(10, y, d.width, d.height);
 		boxIgnoreDefaults.addActionListener(this);
 		panel.add(boxIgnoreDefaults);
 
 		y += d.height + 3;
-		boxExportValidation = new JCheckBox(Editor.getString("ExportValidationKey"), exportValidation);
+		boxExportValidation = new JCheckBox(ResourceBundleUtil.getMessage("ExportValidationKey"), exportValidation);
 		d = boxExportValidation.getPreferredSize();
 		boxExportValidation.setBounds(10, y, d.width, d.height);
 		boxExportValidation.addActionListener(this);
@@ -651,7 +652,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		d = chooseValidLevel.getPreferredSize();
 
 		final JPanel validLevelPanel = new JPanel();
-		validLevelPanel.setBorder(BorderFactory.createTitledBorder(Editor.getString("ValidationLevelKey")));
+		validLevelPanel.setBorder(BorderFactory.createTitledBorder(ResourceBundleUtil.getMessage("ValidationLevelKey")));
 		validLevelPanel.add(chooseValidLevel);
 		d = validLevelPanel.getPreferredSize();
 		validLevelPanel.setBounds(10, y, d.width, d.height);
@@ -693,11 +694,11 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		main.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
 
 		final JPanel panel = new JPanel(null);
-		panel.setBorder(BorderFactory.createTitledBorder(Editor.getString("GoldenTicketKey")));
+		panel.setBorder(BorderFactory.createTitledBorder(ResourceBundleUtil.getMessage("GoldenTicketKey")));
 
 		// Adds the MISURL to the GoldenTicket Tab
 		int y = 30;
-		final JLabel label = new JLabel(Editor.getString("MISURLKey"));
+		final JLabel label = new JLabel(ResourceBundleUtil.getMessage("MISURLKey"));
 		Dimension d = label.getPreferredSize();
 		label.setBounds(10, y, d.width, d.height);
 		panel.add(label);
@@ -724,7 +725,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
 		// Allow user to enter default Base ICS Level
 		final JLabel bl = new JLabel();
-		bl.setText(Editor.getString("BaseLevelKey"));
+		bl.setText(ResourceBundleUtil.getMessage("BaseLevelKey"));
 		d = bl.getPreferredSize();
 		bl.setBounds(10, y, d.width, d.height);
 		panel.add(bl);
@@ -741,7 +742,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
 		// Allow user to enter default MIS ICS Level
 		final JLabel ml = new JLabel();
-		ml.setText(Editor.getString("MISLevelKey"));
+		ml.setText(ResourceBundleUtil.getMessage("MISLevelKey"));
 		d = ml.getPreferredSize();
 		ml.setBounds(10, y, d.width, d.height);
 		panel.add(ml);
@@ -758,7 +759,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
 		// Allow user to enter default JMF ICS Level
 		final JLabel jl = new JLabel();
-		jl.setText(Editor.getString("JMFLevelKey"));
+		jl.setText(ResourceBundleUtil.getMessage("JMFLevelKey"));
 		d = jl.getPreferredSize();
 		jl.setBounds(10, y, d.width, d.height);
 		panel.add(jl);
@@ -783,27 +784,27 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
 		if (language.equalsIgnoreCase("sv"))
 		{
-			langStr = Editor.getString("SwedishKey");
+			langStr = ResourceBundleUtil.getMessage("SwedishKey");
 		}
 		else if (language.equalsIgnoreCase("en"))
 		{
-			langStr = Editor.getString("EnglishKey");
+			langStr = ResourceBundleUtil.getMessage("EnglishKey");
 		}
 		else if (language.equalsIgnoreCase("de"))
 		{
-			langStr = Editor.getString("GermanKey");
+			langStr = ResourceBundleUtil.getMessage("GermanKey");
 		}
 		else if (language.equalsIgnoreCase("es"))
 		{
-			langStr = Editor.getString("SpanishKey");
+			langStr = ResourceBundleUtil.getMessage("SpanishKey");
 		}
 		else if (language.equalsIgnoreCase("fr"))
 		{
-			langStr = Editor.getString("FrenchKey");
+			langStr = ResourceBundleUtil.getMessage("FrenchKey");
 		}
 		else if (language.equalsIgnoreCase("jp"))
 		{
-			langStr = Editor.getString("JapaneseKey");
+			langStr = ResourceBundleUtil.getMessage("JapaneseKey");
 		}
 
 		final boolean sel = language.equalsIgnoreCase(currLang);
@@ -846,13 +847,13 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		main.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
 
 		final JPanel sendPanel = new JPanel(null);
-		sendPanel.setBorder(BorderFactory.createTitledBorder(Editor.getString("DefaultSendToDeviceKey")));
+		sendPanel.setBorder(BorderFactory.createTitledBorder(ResourceBundleUtil.getMessage("DefaultSendToDeviceKey")));
 
 		if (getMethodSendToDevice().equals("JMF"))
 		{
 			selected = true;
 		}
-		final JRadioButton jrbSendJMF = new JRadioButton(Editor.getString("sendMethodJMF"), selected);
+		final JRadioButton jrbSendJMF = new JRadioButton(ResourceBundleUtil.getMessage("sendMethodJMF"), selected);
 		Dimension d = jrbSendJMF.getPreferredSize();
 		jrbSendJMF.setBounds(10, 40, d.width, d.height);
 		bgSendToDevice.add(jrbSendJMF);
@@ -870,7 +871,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		{
 			selected = true;
 		}
-		final JRadioButton jrbSendMIME = new JRadioButton(Editor.getString("sendMethodMIME"), selected);
+		final JRadioButton jrbSendMIME = new JRadioButton(ResourceBundleUtil.getMessage("sendMethodMIME"), selected);
 		d = jrbSendMIME.getPreferredSize();
 		jrbSendMIME.setBounds(10, 60, d.width, d.height);
 		bgSendToDevice.add(jrbSendMIME);
@@ -888,7 +889,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		{
 			selected = true;
 		}
-		final JRadioButton jrbSendUser = new JRadioButton(Editor.getString("sendMethodUser"), selected);
+		final JRadioButton jrbSendUser = new JRadioButton(ResourceBundleUtil.getMessage("sendMethodUser"), selected);
 		d = jrbSendUser.getPreferredSize();
 		jrbSendUser.setBounds(10, 80, d.width, d.height);
 		bgSendToDevice.add(jrbSendUser);

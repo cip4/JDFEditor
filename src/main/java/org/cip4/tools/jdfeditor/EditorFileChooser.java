@@ -70,12 +70,12 @@
 */
 package org.cip4.tools.jdfeditor;
 
-import java.io.File;
-
-import javax.swing.JFileChooser;
-
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.util.StringUtil;
+import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+
+import javax.swing.*;
+import java.io.File;
 
 /**
  * generic file chooser for the editor
@@ -100,9 +100,9 @@ public class EditorFileChooser extends JFileChooser
 
 	private void init(File file, String fileTypes)
 	{
-		setApproveButtonText(Editor.getString("OkKey"));
+		setApproveButtonText(ResourceBundleUtil.getMessage("OkKey"));
 		setApproveButtonMnemonic('O');
-		setDialogTitle(Editor.getString("BrowseKey"));
+		setDialogTitle(ResourceBundleUtil.getMessage("BrowseKey"));
 		setFileSelectionMode(JFileChooser.FILES_ONLY);
 		setMultiSelectionEnabled(false);
 		setFilters(fileTypes);

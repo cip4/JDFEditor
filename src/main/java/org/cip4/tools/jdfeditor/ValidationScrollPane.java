@@ -71,25 +71,19 @@ package org.cip4.tools.jdfeditor;
  * 
  */
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Toolkit;
+import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+
+import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Enumeration;
-
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTree;
-import javax.swing.SwingUtilities;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
 
 /**
  * 
@@ -144,7 +138,7 @@ public class ValidationScrollPane extends JScrollPane
 
 		if (!node.isLeaf())
 		{
-			JMenuItem xpandDevCapOutput = new JMenuItem(Editor.getString("ExpandKey"));
+			JMenuItem xpandDevCapOutput = new JMenuItem(ResourceBundleUtil.getMessage("ExpandKey"));
 			xpandDevCapOutput.addActionListener(new ActionListener()
 			{
 				@Override
@@ -165,7 +159,7 @@ public class ValidationScrollPane extends JScrollPane
 			rightMenu.add(xpandDevCapOutput);
 			xpandDevCapOutput.setEnabled(true);
 
-			JMenuItem collapseDevCapOutput = new JMenuItem(Editor.getString("CollapseKey"));
+			JMenuItem collapseDevCapOutput = new JMenuItem(ResourceBundleUtil.getMessage("CollapseKey"));
 			collapseDevCapOutput.addActionListener(new ActionListener()
 			{
 				@Override

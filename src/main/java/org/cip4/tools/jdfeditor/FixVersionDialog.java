@@ -80,6 +80,7 @@ import org.cip4.jdflib.pool.JDFAuditPool;
 import org.cip4.jdflib.resource.JDFModified;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
+import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
 
 import javax.swing.*;
 import javax.swing.tree.TreePath;
@@ -121,7 +122,7 @@ public class FixVersionDialog extends JPanel implements ActionListener
 		super();
 
 		init();
-		final String[] options = { Editor.getString("FixVersionKey"), Editor.getString("CancelKey") };
+		final String[] options = { ResourceBundleUtil.getMessage("FixVersionKey"), ResourceBundleUtil.getMessage("CancelKey") };
 		final int option = JOptionPane.showOptionDialog(Editor.getFrame(), this, "Fix Version in file", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
 		if (option == JOptionPane.OK_OPTION)
@@ -167,10 +168,10 @@ public class FixVersionDialog extends JPanel implements ActionListener
 		final JPanel optionPanel = new JPanel();
 		optionPanel.setLayout(new GridLayout(3, 1, 0, 5));
 		panel.add(optionPanel);
-		cbConvertLPP = new JCheckBox(Editor.getString("convertLPP"), bConvertLPP);
+		cbConvertLPP = new JCheckBox(ResourceBundleUtil.getMessage("convertLPP"), bConvertLPP);
 		cbConvertLPP.addActionListener(this);
 		optionPanel.add(cbConvertLPP);
-		cbFixICS = new JCheckBox(Editor.getString("fixICSVersion"), bFixICSVersion);
+		cbFixICS = new JCheckBox(ResourceBundleUtil.getMessage("fixICSVersion"), bFixICSVersion);
 		cbFixICS.addActionListener(this);
 		optionPanel.add(cbFixICS);
 	}
@@ -287,7 +288,7 @@ public class FixVersionDialog extends JPanel implements ActionListener
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, Editor.getString("FixVersionErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), Editor.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, ResourceBundleUtil.getMessage("FixVersionErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceBundleUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 

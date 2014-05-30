@@ -75,6 +75,7 @@ import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
+import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
 
 import javax.swing.*;
 import javax.swing.tree.TreePath;
@@ -166,7 +167,7 @@ public class JDFTreeCopyNode
 			catch (Exception s)
 			{
 				s.printStackTrace();
-				JOptionPane.showMessageDialog(m_frame, Editor.getString("NodeInsertErrorKey"), Editor.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(m_frame, ResourceBundleUtil.getMessage("NodeInsertErrorKey"), ResourceBundleUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 			}
 		}
 		else
@@ -207,7 +208,7 @@ public class JDFTreeCopyNode
 			catch (Exception s)
 			{
 				s.printStackTrace();
-				JOptionPane.showMessageDialog(m_frame, Editor.getString("NodeInsertErrorKey"), Editor.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(m_frame, ResourceBundleUtil.getMessage("NodeInsertErrorKey"), ResourceBundleUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 			}
 		}
 		else

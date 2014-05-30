@@ -1,22 +1,5 @@
 package org.cip4.tools.jdfeditor;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFException;
 import org.cip4.jdflib.core.JDFParser;
@@ -25,6 +8,13 @@ import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.util.JDFMerge;
 import org.cip4.jdflib.util.UrlUtil;
+import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 
 /**
  * MergeDialog.java
@@ -59,7 +49,7 @@ public class MergeDialog extends JPanel implements ActionListener
 
 		init();
 
-		final String[] options = { Editor.getString("OkKey"), Editor.getString("CancelKey") };
+		final String[] options = { ResourceBundleUtil.getMessage("OkKey"), ResourceBundleUtil.getMessage("CancelKey") };
 
 		final int option = JOptionPane.showOptionDialog(parFrame, this, "Merge", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
@@ -92,29 +82,29 @@ public class MergeDialog extends JPanel implements ActionListener
 					if (successful)
 					{
 						final JPanel panel = new JPanel();
-						panel.setBorder(BorderFactory.createTitledBorder(Editor.getString("MergingCompletedKey")));
-						final JLabel label = new JLabel(Editor.getString("MessageOpenMergedFileKey"));
+						panel.setBorder(BorderFactory.createTitledBorder(ResourceBundleUtil.getMessage("MergingCompletedKey")));
+						final JLabel label = new JLabel(ResourceBundleUtil.getMessage("MessageOpenMergedFileKey"));
 						panel.add(label);
 
-						JOptionPane.showMessageDialog(this, label, Editor.getString("MergingCompletedKey"), JOptionPane.INFORMATION_MESSAGE);
+						JOptionPane.showMessageDialog(this, label, ResourceBundleUtil.getMessage("MergingCompletedKey"), JOptionPane.INFORMATION_MESSAGE);
 					}
 					else
 					{
-						JOptionPane.showMessageDialog(parFrame, Editor.getString("MergingFailedKey"), "Error", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(parFrame, ResourceBundleUtil.getMessage("MergingFailedKey"), "Error", JOptionPane.ERROR_MESSAGE);
 
 						file = null;
 					}
 				}
 				else
 				{
-					JOptionPane.showMessageDialog(parFrame, Editor.getString("MergingFailedKey"), "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(parFrame, ResourceBundleUtil.getMessage("MergingFailedKey"), "Error", JOptionPane.ERROR_MESSAGE);
 					file = null;
 				}
 
 			}
 			else
 			{
-				JOptionPane.showMessageDialog(parFrame, Editor.getString("MergingAcceptFileFailedKey"), "Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(parFrame, ResourceBundleUtil.getMessage("MergingAcceptFileFailedKey"), "Error", JOptionPane.ERROR_MESSAGE);
 				file = null;
 			}
 
@@ -132,14 +122,14 @@ public class MergeDialog extends JPanel implements ActionListener
 		constraints = new GridBagConstraints();
 		constraints.fill = GridBagConstraints.HORIZONTAL;
 		constraints.insets = new Insets(3, 5, 3, 5);
-		setBorder(BorderFactory.createTitledBorder(Editor.getString("SpawnedInputKey")));
+		setBorder(BorderFactory.createTitledBorder(ResourceBundleUtil.getMessage("SpawnedInputKey")));
 
-		final JLabel mergeLabel = new JLabel(EditorUtils.displayPathName(file, Editor.getString("SpawnedInputKey").length()));
+		final JLabel mergeLabel = new JLabel(EditorUtils.displayPathName(file, ResourceBundleUtil.getMessage("SpawnedInputKey").length()));
 		constraints.gridwidth = GridBagConstraints.REMAINDER;
 		layout.setConstraints(mergeLabel, constraints);
 		add(mergeLabel);
 
-		final JLabel idLabel = new JLabel(Editor.getString("SpawnedJDFKey"));
+		final JLabel idLabel = new JLabel(ResourceBundleUtil.getMessage("SpawnedJDFKey"));
 		constraints.insets = new Insets(10, 5, 3, 5);
 		layout.setConstraints(idLabel, constraints);
 		add(idLabel);
@@ -149,7 +139,7 @@ public class MergeDialog extends JPanel implements ActionListener
 		idBox.add(idPath);
 		idBox.add(Box.createHorizontalStrut(10));
 
-		browse = new JButton(Editor.getString("BrowseKey"));
+		browse = new JButton(ResourceBundleUtil.getMessage("BrowseKey"));
 		browse.setPreferredSize(new Dimension(85, 22));
 		browse.addActionListener(this);
 		idBox.add(browse);
@@ -191,7 +181,7 @@ public class MergeDialog extends JPanel implements ActionListener
 			}
 			else if (option == JFileChooser.ERROR_OPTION)
 			{
-				JOptionPane.showMessageDialog(parFrame, Editor.getString("MergingAcceptFileFailedKey"), "Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(parFrame, ResourceBundleUtil.getMessage("MergingAcceptFileFailedKey"), "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}

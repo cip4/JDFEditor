@@ -70,22 +70,18 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.util.Enumeration;
-
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.JTree;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.TreePath;
-
 import org.cip4.jdflib.core.KElement;
 import org.cip4.tools.jdfeditor.pane.HttpServerPane;
+import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
+
+import javax.swing.*;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.TreePath;
+import java.awt.*;
+import java.util.Enumeration;
 
 // TODO
 //import tcpmon.MainWindow;
@@ -124,15 +120,15 @@ public class EditorTabbedPaneB extends JTabbedPane
 		setBorder(BorderFactory.createLineBorder(Color.black));
 
 		m_validErrScroll = new CheckJDFScrollPane(m_frame);
-		addTab(Editor.getString("ValidationResultKey"), null, m_validErrScroll, Editor.getString("ValidationResultKey"));
+		addTab(ResourceBundleUtil.getMessage("ValidationResultKey"), null, m_validErrScroll, ResourceBundleUtil.getMessage("ValidationResultKey"));
 		setComponentAt(m_VAL_ERRORS_INDEX, m_validErrScroll);
 
 		m_SchemaErrScroll = new SchemaScrollPane(m_frame);
-		addTab(Editor.getString("SchemaOutputKey"), null, m_SchemaErrScroll, Editor.getString("SchemaOutputKey"));
+		addTab(ResourceBundleUtil.getMessage("SchemaOutputKey"), null, m_SchemaErrScroll, ResourceBundleUtil.getMessage("SchemaOutputKey"));
 		setComponentAt(m_SCHEMA_ERRORS_INDEX, m_SchemaErrScroll);
 
 		m_devCapErrScroll = new JDFDevCapErrScrollPane(m_frame);
-		addTab(Editor.getString("DevCapOutputKey"), null, m_devCapErrScroll, Editor.getString("DevCapOutputKey"));
+		addTab(ResourceBundleUtil.getMessage("DevCapOutputKey"), null, m_devCapErrScroll, ResourceBundleUtil.getMessage("DevCapOutputKey"));
 		setComponentAt(m_DC_ERRORS_INDEX, m_devCapErrScroll);
 
 		//        XML Editor tab
@@ -143,11 +139,11 @@ public class EditorTabbedPaneB extends JTabbedPane
 		//		MainWindow mWindow = new MainWindow();
 		//		Container c = mWindow.getContentPane();
 		//		JScrollPane tcpMonScrPane = new JScrollPane(c);
-		//		addTab(Editor.getString("TCPMon"), null, tcpMonScrPane, Editor.getString("TCPMon"));
+		//		addTab(ResourceUtil.getMessage("TCPMon"), null, tcpMonScrPane, ResourceUtil.getMessage("TCPMon"));
 
 		//		HTTP server tab
 		HttpServerPane httpPanel = new HttpServerPane(m_frame);
-		addTab(Editor.getString("HTTPserver"), null, httpPanel.createPane(), Editor.getString("HTTPserver"));
+		addTab(ResourceBundleUtil.getMessage("HTTPserver"), null, httpPanel.createPane(), ResourceBundleUtil.getMessage("HTTPserver"));
 	}
 
 	private RSyntaxTextArea createXMLPane()
@@ -160,7 +156,7 @@ public class EditorTabbedPaneB extends JTabbedPane
 		xmlArea.setEditable(false);
 		RTextScrollPane sp = new RTextScrollPane(xmlArea);
 		xmlEditorPanel.add(sp);
-		addTab(Editor.getString("XmlEditor"), null, xmlEditorPanel, Editor.getString("XmlEditor"));
+		addTab(ResourceBundleUtil.getMessage("XmlEditor"), null, xmlEditorPanel, ResourceBundleUtil.getMessage("XmlEditor"));
 		return xmlArea;
 	}
 

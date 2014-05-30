@@ -79,6 +79,7 @@ import org.cip4.jdflib.jmf.JDFMessage;
 import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
 import org.cip4.jdflib.jmf.JDFMessage.EnumType;
 import org.cip4.jdflib.jmf.JDFMessageService;
+import org.cip4.jdflib.jmf.JMFBuilder;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourceLinkPool;
 import org.cip4.jdflib.pool.JDFResourcePool;
@@ -87,6 +88,7 @@ import org.cip4.tools.jdfeditor.dialog.SaveAsJDFDialog;
 import org.cip4.tools.jdfeditor.dialog.SaveAsXJDFDialog;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
+import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
 
 import javax.swing.*;
 import javax.swing.tree.TreePath;
@@ -184,7 +186,11 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 				f = EnumFamily.Command;
 			}
 
-			final JDFJMF jmf = Editor.getEditor().getJMFBuilder().newJMF(f, mService.getType());
+
+            JMFBuilder b = new JMFBuilder();
+            b.setSenderID("JDFEditor");
+
+			final JDFJMF jmf = b.newJMF(f, mService.getType());
 			JDFDoc doc = jmf.getOwnerDocument_JDFElement();
 			doc.setOriginalFileName("Auto" + mService.getType() + ".jmf");
 			final JDFMessage m = jmf.getMessageElement(f, EnumType.getEnum(mService.getType()), 0);
@@ -234,7 +240,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		final JDFTreeNode node = (JDFTreeNode) path.getLastPathComponent();
 		final KElement elem = (node.isElement()) ? node.getElement() : null;
 
-		final JMenu insertPopupMenu = new JMenu(Editor.getString("InsertElKey"));
+		final JMenu insertPopupMenu = new JMenu(ResourceBundleUtil.getMessage("InsertElKey"));
 		insertPopupMenu.setEnabled(elem != null);
 
 		final JMenuItem xpath = new JMenuItem(node.getXPath());
@@ -244,57 +250,57 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		add(size);
 		add(separator);
 
-		m_insertElemBeforePopupItem = new JMenuItem(Editor.getString("BeforeKey"));
+		m_insertElemBeforePopupItem = new JMenuItem(ResourceBundleUtil.getMessage("BeforeKey"));
 		m_insertElemBeforePopupItem.addActionListener(this);
 		insertPopupMenu.add(m_insertElemBeforePopupItem);
 
-		m_insertElemIntoPopupItem = new JMenuItem(Editor.getString("IntoKey"));
+		m_insertElemIntoPopupItem = new JMenuItem(ResourceBundleUtil.getMessage("IntoKey"));
 		m_insertElemIntoPopupItem.addActionListener(this);
 		insertPopupMenu.add(m_insertElemIntoPopupItem);
 
-		m_insertElemAfterPopupItem = new JMenuItem(Editor.getString("AfterKey"));
+		m_insertElemAfterPopupItem = new JMenuItem(ResourceBundleUtil.getMessage("AfterKey"));
 		m_insertElemAfterPopupItem.addActionListener(this);
 		insertPopupMenu.add(m_insertElemAfterPopupItem);
 
 		add(insertPopupMenu);
 
-		final JMenu resMenu = new JMenu(Editor.getString("InsertResKey"));
+		final JMenu resMenu = new JMenu(ResourceBundleUtil.getMessage("InsertResKey"));
 		resMenu.setEnabled((elem instanceof JDFNode) || (elem instanceof JDFResourcePool));
 
-		m_insertInResPopupItem = new JMenuItem(Editor.getString("InputResourceKey"));
+		m_insertInResPopupItem = new JMenuItem(ResourceBundleUtil.getMessage("InputResourceKey"));
 		m_insertInResPopupItem.addActionListener(this);
 		resMenu.add(m_insertInResPopupItem);
 
-		m_insertOutResPopupItem = new JMenuItem(Editor.getString("OutputResourceKey"));
+		m_insertOutResPopupItem = new JMenuItem(ResourceBundleUtil.getMessage("OutputResourceKey"));
 		m_insertOutResPopupItem.addActionListener(this);
 		resMenu.add(m_insertOutResPopupItem);
 
 		resMenu.add(separator);
 
-		m_insertResPopupItem = new JMenuItem(Editor.getString("ResourceKey"));
+		m_insertResPopupItem = new JMenuItem(ResourceBundleUtil.getMessage("ResourceKey"));
 		m_insertResPopupItem.addActionListener(this);
 		resMenu.add(m_insertResPopupItem);
 
 		add(resMenu);
 
-		final JMenu resLinkMenu = new JMenu(Editor.getString("InsertResLinkKey"));
+		final JMenu resLinkMenu = new JMenu(ResourceBundleUtil.getMessage("InsertResLinkKey"));
 		resLinkMenu.setEnabled((elem instanceof JDFNode) || (elem instanceof JDFResourceLinkPool));
 
-		m_insertInResLinkPopupItem = new JMenuItem(Editor.getString("ResourceInLinkKey"));
+		m_insertInResLinkPopupItem = new JMenuItem(ResourceBundleUtil.getMessage("ResourceInLinkKey"));
 		m_insertInResLinkPopupItem.addActionListener(this);
 		resLinkMenu.add(m_insertInResLinkPopupItem);
 
-		m_insertOutResLinkPopupItem = new JMenuItem(Editor.getString("ResourceOutLinkKey"));
+		m_insertOutResLinkPopupItem = new JMenuItem(ResourceBundleUtil.getMessage("ResourceOutLinkKey"));
 		m_insertOutResLinkPopupItem.addActionListener(this);
 		resLinkMenu.add(m_insertOutResLinkPopupItem);
 
 		add(resLinkMenu);
 
-		m_insertAttrPopupItem = new JMenuItem(Editor.getString("InsertAttKey"));
+		m_insertAttrPopupItem = new JMenuItem(ResourceBundleUtil.getMessage("InsertAttKey"));
 		m_insertAttrPopupItem.addActionListener(this);
 		add(m_insertAttrPopupItem);
 
-		m_insertTextPopupItem = new JMenuItem(Editor.getString("InsertTextKey"));
+		m_insertTextPopupItem = new JMenuItem(ResourceBundleUtil.getMessage("InsertTextKey"));
 		m_insertTextPopupItem.addActionListener(this);
 		add(m_insertTextPopupItem);
 
@@ -363,7 +369,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 
 	private JMenuItem addMenuItem(final String key)
 	{
-		final JMenuItem item = new JMenuItem(Editor.getString(key));
+		final JMenuItem item = new JMenuItem(ResourceBundleUtil.getMessage(key));
 		item.addActionListener(this);
 		add(item);
 		return item;

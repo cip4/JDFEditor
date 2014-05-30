@@ -2,6 +2,7 @@ package org.cip4.tools.jdfeditor;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
+import org.cip4.jdflib.core.JDFAudit;
 import org.cip4.tools.jdfeditor.util.DirectoryUtil;
 
 import java.io.File;
@@ -11,13 +12,22 @@ import java.io.File;
  */
 public class App {
 
+    public static final String APP_NAME = "CIP4 JDF Editor -- Copyright (c) 2001-2014 CIP4";
+
+    public static final String APP_VERSION = "Estimated Build Date After May 14 2014";
+
+    public static final String APP_RELEASE_DATE = "";
+
+    public static final String JDFLIBJ_VERSION = JDFAudit.software();
+
+    public static final String JDFLIBJ_RELEASE_DATE = "";
+
     /**
      * Application main entrance point.
      * @param args
      */
     public static void main(final String[] args)
     {
-
         // apple menu compatibility
         System.setProperty("apple.laf.useScreenMenuBar", "true");
 

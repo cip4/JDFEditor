@@ -70,22 +70,14 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
+import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.HashMap;
-
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 /**
  * DeviceCapsDialog.java
@@ -132,7 +124,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		JDFFrame parent = Editor.getFrame();
 
 		init();
-		final String[] options = { Editor.getString("OkKey"), Editor.getString("CancelKey") };
+		final String[] options = { ResourceBundleUtil.getMessage("OkKey"), ResourceBundleUtil.getMessage("CancelKey") };
 
 		final int option = JOptionPane.showOptionDialog(parent, this, "Golden Ticket File Creation", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
@@ -166,12 +158,12 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		setLayout(outLayout);
 		final GridBagLayout inLayout = new GridBagLayout();
 		panel.setLayout(new GridLayout(4, 1));
-		panel.setBorder(BorderFactory.createTitledBorder(Editor.getString("GTInputKey")));
+		panel.setBorder(BorderFactory.createTitledBorder(ResourceBundleUtil.getMessage("GTInputKey")));
 
 		//Golden Ticket Chooser
 		JPanel gtChooser = new JPanel();
 		gtChooser.setLayout(inLayout);
-		gtChooser.setBorder(BorderFactory.createTitledBorder(Editor.getString("GTFileKey")));
+		gtChooser.setBorder(BorderFactory.createTitledBorder(ResourceBundleUtil.getMessage("GTFileKey")));
 		outLayout.setConstraints(gtChooser, outConstraints);
 
 		initGTLabels(panel, gtChooser);
@@ -179,7 +171,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		//MIS Level
 		JPanel MISLevel = new JPanel();
 		MISLevel.setLayout(inLayout);
-		MISLevel.setBorder(BorderFactory.createTitledBorder(Editor.getString("MISLevelKey")));
+		MISLevel.setBorder(BorderFactory.createTitledBorder(ResourceBundleUtil.getMessage("MISLevelKey")));
 		outLayout.setConstraints(MISLevel, outConstraints);
 
 		misICSLevel1 = new JComboBox(l2);
@@ -191,7 +183,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		//JMF Level
 		JPanel JMFLevel = new JPanel();
 		JMFLevel.setLayout(inLayout);
-		JMFLevel.setBorder(BorderFactory.createTitledBorder(Editor.getString("JMFLevelKey")));
+		JMFLevel.setBorder(BorderFactory.createTitledBorder(ResourceBundleUtil.getMessage("JMFLevelKey")));
 		outLayout.setConstraints(JMFLevel, outConstraints);
 
 		jmfICSLevel1 = new JComboBox(l1);
@@ -203,7 +195,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		//GT Level
 		JPanel GTLevel = new JPanel();
 		GTLevel.setLayout(inLayout);
-		GTLevel.setBorder(BorderFactory.createTitledBorder(Editor.getString("GTLevelKey")));
+		GTLevel.setBorder(BorderFactory.createTitledBorder(ResourceBundleUtil.getMessage("GTLevelKey")));
 		outLayout.setConstraints(GTLevel, outConstraints);
 
 		gtICSLevel = new JComboBox(l1);
@@ -224,7 +216,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		labelMap = new HashMap<String, String>();
 		for (int i = 0; i < gt.length; i++)
 		{
-			gtDisplay[i] = Editor.getString(gt[i]);
+			gtDisplay[i] = ResourceBundleUtil.getMessage(gt[i]);
 			labelMap.put(gtDisplay[i], gt[i]);
 		}
 		goldenTicketLabel = new JComboBox(gtDisplay);

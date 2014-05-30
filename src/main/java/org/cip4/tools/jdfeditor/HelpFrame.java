@@ -70,25 +70,11 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
 
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.SwingConstants;
-import javax.swing.WindowConstants;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 
 /**
  * @author ThunellE AnderssonA
@@ -117,15 +103,15 @@ public class HelpFrame extends JFrame
 	private final String[] titles = { "Element", "JDF Element", "RefElement", "Element with Error", "Attribute", "Inherited Attribute", "PartIDKey Attribute",
 			"Inherited PartIDKey Attribute", "Attriubte with Error" };
 
-	ImageIcon imgUp = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "UpButton.gif");
-	ImageIcon imgVal = Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "RevalidateButton.gif");
+	ImageIcon imgUp = Editor.getImageIcon(Editor.ICONS_PATH + "UpButton.gif");
+	ImageIcon imgVal = Editor.getImageIcon(Editor.ICONS_PATH + "RevalidateButton.gif");
 
-	private final ImageIcon[] icons = { Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ElemIcon.gif"),
-			Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "JDFElemIcon.gif"), Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "rRefElemIcon.gif"),
-			Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ErrorElemIcon.gif"), Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "AttIconSelected.gif"),
-			Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "InhAttIconSelected.gif"), Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "PartIDKeysAttIconSelected.gif"),
-			Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "InhPartIDKeysAttIconSelected.gif"),
-			Editor.getImageIcon(getClass(), Editor.ICONS_PATH + "ErrorAttIconSelected.gif") };
+	private final ImageIcon[] icons = { Editor.getImageIcon(Editor.ICONS_PATH + "ElemIcon.gif"),
+            Editor.getImageIcon(Editor.ICONS_PATH + "JDFElemIcon.gif"), Editor.getImageIcon(Editor.ICONS_PATH + "rRefElemIcon.gif"),
+            Editor.getImageIcon(Editor.ICONS_PATH + "ErrorElemIcon.gif"), Editor.getImageIcon(Editor.ICONS_PATH + "AttIconSelected.gif"),
+            Editor.getImageIcon(Editor.ICONS_PATH + "InhAttIconSelected.gif"), Editor.getImageIcon(Editor.ICONS_PATH + "PartIDKeysAttIconSelected.gif"),
+            Editor.getImageIcon(Editor.ICONS_PATH + "InhPartIDKeysAttIconSelected.gif"),
+            Editor.getImageIcon(Editor.ICONS_PATH + "ErrorAttIconSelected.gif") };
 
 	String startTags = "<html><font size=2 color=black face=verdana> ";
 	String startTagsLarge = "<html><font size=3 color=black face=verdana><b> ";
@@ -142,7 +128,7 @@ public class HelpFrame extends JFrame
 	public HelpFrame()
 	{
 		super();
-		this.setTitle(Editor.getString("HelpCIP4Key"));
+		this.setTitle(ResourceBundleUtil.getMessage("HelpCIP4Key"));
 		final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		this.setBounds(d.width / 3, 0, d.width * 2 / 3, d.height - 30);
 		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -179,7 +165,7 @@ public class HelpFrame extends JFrame
 		leftScroll.getVerticalScrollBar().setUnitIncrement(20);
 		leftScroll.getHorizontalScrollBar().setUnitIncrement(20);
 
-		final JLabel leftLabel = new JLabel(startTagsLarge + Editor.getString("ContentsKey") + endTags);
+		final JLabel leftLabel = new JLabel(startTagsLarge + ResourceBundleUtil.getMessage("ContentsKey") + endTags);
 		leftLabel.setBackground(Color.white);
 		leftLabel.setBorder(BorderFactory.createLineBorder(Color.black));
 
@@ -210,8 +196,8 @@ public class HelpFrame extends JFrame
 		final int x = 10;
 		int y = 10;
 		int w = 0;
-		final String[] labelStrings = { Editor.getString("GettingStartedKey"), Editor.getString("ViewKey"), Editor.getString("EditKey"), Editor.getString("ValidateCertKey"),
-				Editor.getString("DevelopmentNotesKey") };
+		final String[] labelStrings = { ResourceBundleUtil.getMessage("GettingStartedKey"), ResourceBundleUtil.getMessage("ViewKey"), ResourceBundleUtil.getMessage("EditKey"), ResourceBundleUtil.getMessage("ValidateCertKey"),
+				ResourceBundleUtil.getMessage("DevelopmentNotesKey") };
 
 		final JPanel leftPanel = new JPanel(null);
 		final Dimension d = new Dimension(this.getSize());
@@ -246,7 +232,7 @@ public class HelpFrame extends JFrame
 	{
 		final JPanel rp = new JPanel(null);
 
-		final JLabel textLabel = createDefaultLabel(startTags + Editor.getString("RightView") + endTags);
+		final JLabel textLabel = createDefaultLabel(startTags + ResourceBundleUtil.getMessage("RightView") + endTags);
 
 		final Dimension d = textLabel.getPreferredSize();
 
@@ -275,7 +261,7 @@ public class HelpFrame extends JFrame
 	{
 		final JPanel rp = new JPanel(null);
 
-		final JLabel startLabel = createDefaultLabel(startTags + Editor.getString("GettingStarted") + endTags);
+		final JLabel startLabel = createDefaultLabel(startTags + ResourceBundleUtil.getMessage("GettingStarted") + endTags);
 
 		final Dimension d = startLabel.getPreferredSize();
 
@@ -285,7 +271,7 @@ public class HelpFrame extends JFrame
 		rp.setPreferredSize(new Dimension(d.width + 40, d.height + 40));
 		rightScroll.getViewport().setView(rp);
 
-		rightLabel.setText(startTagsLarge + Editor.getString("GettingStartedKey") + endTags);
+		rightLabel.setText(startTagsLarge + ResourceBundleUtil.getMessage("GettingStartedKey") + endTags);
 	}
 
 	/**
@@ -299,7 +285,7 @@ public class HelpFrame extends JFrame
 
 		final JPanel rp = new JPanel(null);
 
-		final JLabel treeLabel = createDefaultLabel(startTags + Editor.getString("TreeView") + endTags);
+		final JLabel treeLabel = createDefaultLabel(startTags + ResourceBundleUtil.getMessage("TreeView") + endTags);
 
 		Dimension d = treeLabel.getPreferredSize();
 
@@ -321,7 +307,7 @@ public class HelpFrame extends JFrame
 			y += d.height + 5;
 		}
 
-		final JLabel errorLabel = createDefaultLabel(startTags + Editor.getString("ErrorView") + endTags);
+		final JLabel errorLabel = createDefaultLabel(startTags + ResourceBundleUtil.getMessage("ErrorView") + endTags);
 
 		d = errorLabel.getPreferredSize();
 
@@ -331,7 +317,7 @@ public class HelpFrame extends JFrame
 
 		y += d.height;
 
-		final JLabel inOutLabel = createDefaultLabel(startTags + Editor.getString("InOutView") + endTags);
+		final JLabel inOutLabel = createDefaultLabel(startTags + ResourceBundleUtil.getMessage("InOutView") + endTags);
 
 		d = inOutLabel.getPreferredSize();
 
@@ -341,7 +327,7 @@ public class HelpFrame extends JFrame
 
 		y += d.height;
 
-		final JLabel procLabel = createDefaultLabel(startTags + Editor.getString("ProcessView") + endTags);
+		final JLabel procLabel = createDefaultLabel(startTags + ResourceBundleUtil.getMessage("ProcessView") + endTags);
 
 		d = procLabel.getPreferredSize();
 
@@ -351,7 +337,7 @@ public class HelpFrame extends JFrame
 
 		y += d.height;
 
-		final JLabel procIcon = new JLabel(startTagsSmall + Editor.getString("GoUpInProcessViewKey") + endTags, imgUp, SwingConstants.LEFT);
+		final JLabel procIcon = new JLabel(startTagsSmall + ResourceBundleUtil.getMessage("GoUpInProcessViewKey") + endTags, imgUp, SwingConstants.LEFT);
 		procIcon.setHorizontalTextPosition(SwingConstants.LEFT);
 		procIcon.setBackground(Color.white);
 		procIcon.setOpaque(true);
@@ -364,7 +350,7 @@ public class HelpFrame extends JFrame
 
 		y += d.height;
 
-		final JLabel comLabel = createDefaultLabel(startTags + Editor.getString("CommentView") + endTags);
+		final JLabel comLabel = createDefaultLabel(startTags + ResourceBundleUtil.getMessage("CommentView") + endTags);
 
 		d = comLabel.getPreferredSize();
 
@@ -379,7 +365,7 @@ public class HelpFrame extends JFrame
 
 		rightScroll.getViewport().setView(rp);
 
-		rightLabel.setText(startTagsLarge + Editor.getString("ViewKey") + endTags);
+		rightLabel.setText(startTagsLarge + ResourceBundleUtil.getMessage("ViewKey") + endTags);
 	}
 
 	/**
@@ -406,7 +392,7 @@ public class HelpFrame extends JFrame
 	{
 		final JPanel rp = new JPanel(null);
 
-		final JLabel editLabel = createDefaultLabel(startTags + Editor.getString("EditView") + endTags);
+		final JLabel editLabel = createDefaultLabel(startTags + ResourceBundleUtil.getMessage("EditView") + endTags);
 
 		final Dimension d = editLabel.getPreferredSize();
 
@@ -416,7 +402,7 @@ public class HelpFrame extends JFrame
 		rp.setPreferredSize(new Dimension(d.width + 40, d.height + 40));
 		rightScroll.getViewport().setView(rp);
 
-		rightLabel.setText(startTagsLarge + Editor.getString("EditKey") + endTags);
+		rightLabel.setText(startTagsLarge + ResourceBundleUtil.getMessage("EditKey") + endTags);
 	}
 
 	/**
@@ -430,7 +416,7 @@ public class HelpFrame extends JFrame
 
 		final JPanel rp = new JPanel(null);
 
-		final JLabel validLabel = createDefaultLabel(startTags + Editor.getString("ValidationView") + endTags);
+		final JLabel validLabel = createDefaultLabel(startTags + ResourceBundleUtil.getMessage("ValidationView") + endTags);
 
 		Dimension d = validLabel.getPreferredSize();
 
@@ -440,7 +426,7 @@ public class HelpFrame extends JFrame
 
 		y += d.height;
 
-		final JLabel validIcon = new JLabel(startTagsSmall + Editor.getString("ValidateToolTipKey") + endTags, imgVal, SwingConstants.LEFT);
+		final JLabel validIcon = new JLabel(startTagsSmall + ResourceBundleUtil.getMessage("ValidateToolTipKey") + endTags, imgVal, SwingConstants.LEFT);
 		validIcon.setHorizontalTextPosition(SwingConstants.LEFT);
 		validIcon.setBackground(Color.white);
 		validIcon.setOpaque(true);
@@ -459,7 +445,7 @@ public class HelpFrame extends JFrame
 
 		//Certification help
 
-		final JLabel certLabel = createDefaultLabel(startTags + Editor.getString("CertificationView") + endTags);
+		final JLabel certLabel = createDefaultLabel(startTags + ResourceBundleUtil.getMessage("CertificationView") + endTags);
 
 		Dimension c = certLabel.getPreferredSize();
 
@@ -469,7 +455,7 @@ public class HelpFrame extends JFrame
 
 		y += c.height;
 
-		rightLabel.setText(startTagsLarge + Editor.getString("ValidateCertKey") + endTags);
+		rightLabel.setText(startTagsLarge + ResourceBundleUtil.getMessage("ValidateCertKey") + endTags);
 	}
 
 	/**
@@ -479,7 +465,7 @@ public class HelpFrame extends JFrame
 	{
 		final JPanel rp = new JPanel(null);
 
-		final JLabel devLabel = createDefaultLabel(startTags + Editor.getString("FurtherDevView") + endTags);
+		final JLabel devLabel = createDefaultLabel(startTags + ResourceBundleUtil.getMessage("FurtherDevView") + endTags);
 
 		final Dimension d = devLabel.getPreferredSize();
 
@@ -489,7 +475,7 @@ public class HelpFrame extends JFrame
 		rp.setPreferredSize(new Dimension(d.width + 40, d.height + 40));
 		rightScroll.getViewport().setView(rp);
 
-		rightLabel.setText(startTagsLarge + Editor.getString("DevelopmentNotesKey") + endTags);
+		rightLabel.setText(startTagsLarge + ResourceBundleUtil.getMessage("DevelopmentNotesKey") + endTags);
 	}
 
 	/**
@@ -507,28 +493,28 @@ public class HelpFrame extends JFrame
 		{
 			if (e.getSource() == helpLabels[0])
 			{
-				helpLabels[0].setText(startTagsSmall + Editor.getString("GettingStartedKey") + endTags);
+				helpLabels[0].setText(startTagsSmall + ResourceBundleUtil.getMessage("GettingStartedKey") + endTags);
 				helpGettingStarted();
 			}
 			else if (e.getSource() == helpLabels[1])
 			{
-				helpLabels[1].setText(startTagsSmall + Editor.getString("ViewKey") + endTags);
+				helpLabels[1].setText(startTagsSmall + ResourceBundleUtil.getMessage("ViewKey") + endTags);
 				helpViews();
 			}
 			else if (e.getSource() == helpLabels[2])
 			{
-				helpLabels[2].setText(startTagsSmall + Editor.getString("EditKey") + endTags);
+				helpLabels[2].setText(startTagsSmall + ResourceBundleUtil.getMessage("EditKey") + endTags);
 				helpEditing();
 			}
 			else if (e.getSource() == helpLabels[3])
 			{
 				//make "ValidateKey" = Validate and Certification
-				helpLabels[3].setText(startTagsSmall + Editor.getString("ValidateCertKey") + endTags);
+				helpLabels[3].setText(startTagsSmall + ResourceBundleUtil.getMessage("ValidateCertKey") + endTags);
 				helpValidation();
 			}
 			else if (e.getSource() == helpLabels[4])
 			{
-				helpLabels[4].setText(startTagsSmall + Editor.getString("DevelopmentNotesKey") + endTags);
+				helpLabels[4].setText(startTagsSmall + ResourceBundleUtil.getMessage("DevelopmentNotesKey") + endTags);
 				helpFurtherDevelopment();
 			}
 		}
@@ -539,23 +525,23 @@ public class HelpFrame extends JFrame
 			Editor.setCursor(2, (Component) e.getSource());
 			if (e.getSource() == helpLabels[0])
 			{
-				helpLabels[0].setText(startTagsSmallSel + Editor.getString("GettingStartedKey") + endTags);
+				helpLabels[0].setText(startTagsSmallSel + ResourceBundleUtil.getMessage("GettingStartedKey") + endTags);
 			}
 			else if (e.getSource() == helpLabels[1])
 			{
-				helpLabels[1].setText(startTagsSmallSel + Editor.getString("ViewKey") + endTags);
+				helpLabels[1].setText(startTagsSmallSel + ResourceBundleUtil.getMessage("ViewKey") + endTags);
 			}
 			else if (e.getSource() == helpLabels[2])
 			{
-				helpLabels[2].setText(startTagsSmallSel + Editor.getString("EditKey") + endTags);
+				helpLabels[2].setText(startTagsSmallSel + ResourceBundleUtil.getMessage("EditKey") + endTags);
 			}
 			else if (e.getSource() == helpLabels[3])
 			{
-				helpLabels[3].setText(startTagsSmallSel + Editor.getString("ValidateCertKey") + endTags);
+				helpLabels[3].setText(startTagsSmallSel + ResourceBundleUtil.getMessage("ValidateCertKey") + endTags);
 			}
 			else if (e.getSource() == helpLabels[4])
 			{
-				helpLabels[4].setText(startTagsSmallSel + Editor.getString("DevelopmentNotesKey") + endTags);
+				helpLabels[4].setText(startTagsSmallSel + ResourceBundleUtil.getMessage("DevelopmentNotesKey") + endTags);
 			}
 		}
 
@@ -566,23 +552,23 @@ public class HelpFrame extends JFrame
 
 			if (e.getSource() == helpLabels[0])
 			{
-				helpLabels[0].setText(startTagsSmall + Editor.getString("GettingStartedKey") + endTags);
+				helpLabels[0].setText(startTagsSmall + ResourceBundleUtil.getMessage("GettingStartedKey") + endTags);
 			}
 			else if (e.getSource() == helpLabels[1])
 			{
-				helpLabels[1].setText(startTagsSmall + Editor.getString("ViewKey") + endTags);
+				helpLabels[1].setText(startTagsSmall + ResourceBundleUtil.getMessage("ViewKey") + endTags);
 			}
 			else if (e.getSource() == helpLabels[2])
 			{
-				helpLabels[2].setText(startTagsSmall + Editor.getString("EditKey") + endTags);
+				helpLabels[2].setText(startTagsSmall + ResourceBundleUtil.getMessage("EditKey") + endTags);
 			}
 			else if (e.getSource() == helpLabels[3])
 			{
-				helpLabels[3].setText(startTagsSmall + Editor.getString("ValidateCertKey") + endTags);
+				helpLabels[3].setText(startTagsSmall + ResourceBundleUtil.getMessage("ValidateCertKey") + endTags);
 			}
 			else if (e.getSource() == helpLabels[4])
 			{
-				helpLabels[4].setText(startTagsSmall + Editor.getString("DevelopmentNotesKey") + endTags);
+				helpLabels[4].setText(startTagsSmall + ResourceBundleUtil.getMessage("DevelopmentNotesKey") + endTags);
 			}
 		}
 	}

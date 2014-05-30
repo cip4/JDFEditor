@@ -70,10 +70,10 @@
  */
 package org.cip4.tools.jdfeditor;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cip4.jdflib.core.*;
-import org.cip4.jdflib.jmf.JMFBuilder;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 
@@ -83,12 +83,11 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
-import java.net.URL;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
- *
+ * Main class of JDFEditor.
  */
 public class Editor
 {
@@ -96,31 +95,42 @@ public class Editor
 
     private SettingService settingService = new SettingService();
 
-	private static Editor my_Editor;
-
 	protected static JDFFrame my_Frame;
 
 	static final String ICONS_PATH = "/org/cip4/tools/jdfeditor/icons/";
 
-	static ImageIcon getImageIcon(final Class<?> myClass, final String resString)
+    /**
+     * Default constructor.
+     */
+    public Editor() {
+    }
+
+    /**
+     * Returns a resource as ImageIcon object.
+     * @param res Resource String of Icon.
+     * @return The ImageIcon object.
+     */
+	static ImageIcon getImageIcon(String res)
 	{
-		final URL url = myClass.getResource(resString);
-		ImageIcon imIc = null;
-		if (url != null)
-		{
-			imIc = new ImageIcon(url);
-		}
-		if (imIc == null || imIc.getIconHeight() <= 0)
-		{
-			imIc = new ImageIcon("." + resString);
-		}
-		return imIc;
+        // load icon
+        ImageIcon imageIcon = null;
+        InputStream is = Editor.class.getResourceAsStream(res);
+
+        try {
+            byte[] bytes = IOUtils.toByteArray(is);
+            imageIcon = new ImageIcon(bytes);
+
+        } catch (IOException e) {
+            LOGGER.error("Error during loading ImageIcon", e);
+        }
+
+        // return icon
+		return imageIcon;
 	}
 
-	// ////////////////////////////////////////////////////////////////
 	/**
-	 * set the cursor to wait or ready
-	 * @param iWait 0=ready 1=wait 2=hand
+	 * Sets the cursor to wait or ready
+	 * @param iWait 0 = ready; 1 = wait; 2 = hand
 	 * @param parentComponent the parent frame to set the cursor in, if null use the main frame
 	 */
 	static void setCursor(final int iWait, Component parentComponent)
@@ -145,91 +155,56 @@ public class Editor
 		}
 	}
 
-	private ResourceBundle m_littleBundle;
-
-	/**
-	 * Default constructor.
-	 */
-	public Editor()
-	{
-        my_Editor = this;
-	}
-
 	/**
 	 * Method instantiate the editor window
 	 * @param file the file to open initially
 	 */
 	public void init(final File file)
 	{
-		final String language = settingService.getString(SettingKey.GENERAL_LANGUAGE);
-		final Locale currentLocale = new Locale(language, language.toUpperCase());
-
-		Locale.setDefault(currentLocale);
-		m_littleBundle = ResourceBundle.getBundle("org.cip4.tools.jdfeditor.messages.JDFEditor", currentLocale);
-		final String currentLookAndFeel = settingService.getString(SettingKey.GENERAL_LOOK);
-
-		try
-		{
+		try	{
+            String currentLookAndFeel = settingService.getString(SettingKey.GENERAL_LOOK);
 			UIManager.setLookAndFeel(currentLookAndFeel);
-		}
-		catch (final Exception e)
-		{
-			//
+		} catch (final Exception e)	{
+            LOGGER.error("Error during setting 'Look and Feel' of JDFEditor.", e);
 		}
 
-		my_Frame = new JDFFrame();
+		my_Frame = new JDFFrame(this);
 		setCursor(0, null);
 
 		// read the initialization stuff
-		JDFAudit.setStaticAgentName(getEditorName());
+		JDFAudit.setStaticAgentName(App.APP_NAME);
 		JDFAudit.setStaticAgentVersion(getEditorVersion());
 		KElement.setLongID(settingService.getBoolean(SettingKey.GENERAL_LONG_ID));
 		JDFElement.setDefaultJDFVersion(JDFElement.EnumVersion.getEnum(settingService.getString(SettingKey.VALIDATION_VERSION)));
 		JDFParser.m_searchStream = true;
 
-		try
-		{
-			my_Frame.drawWindow();
-			my_Frame.setBackground(Color.white);
-			my_Frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-			final WindowListener winLis = new WindowAdapter()
-			{
-				@Override
-				public void windowClosing(final WindowEvent e)
-				{
-					if (my_Frame.closeFile(999) != JOptionPane.CANCEL_OPTION)
-					{
-						System.exit(0);
-						e.getID(); // make compile happy
-					}
-				}
-			};
-			my_Frame.addWindowListener(winLis);
-			my_Frame.setIconImage(Toolkit.getDefaultToolkit().getImage(Editor.class.getResource("/org/cip4/tools/jdfeditor/jdfeditor_128.png")));
+        my_Frame.drawWindow();
+        my_Frame.setBackground(Color.white);
+        my_Frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        final WindowListener winLis = new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(final WindowEvent e)
+            {
+                if (my_Frame.closeFile(999) != JOptionPane.CANCEL_OPTION)
+                {
+                    System.exit(0);
+                    e.getID(); // make compile happy
+                }
+            }
+        };
+        my_Frame.addWindowListener(winLis);
+        my_Frame.setIconImage(Toolkit.getDefaultToolkit().getImage(Editor.class.getResource("/org/cip4/tools/jdfeditor/jdfeditor_128.png")));
 
-			// this is only for the PC version
-			if (file != null)
-			{
-				final boolean b = my_Frame.readFile(file);
-				if (b)
-				{
-					my_Frame.m_menuBar.updateRecentFilesMenu(file.toString());
-				}
-			}
-		}
-		catch (final Exception e)
-		{
-			LOGGER.error("Error initializing Editor", e);
-		}
-	}
-
-	/**
-	 * Method getEditor.
-	 * @return Editor
-	 */
-	public static Editor getEditor()
-	{
-		return my_Editor;
+        // this is only for the PC version
+        if (file != null)
+        {
+            final boolean b = my_Frame.readFile(file);
+            if (b)
+            {
+                my_Frame.m_menuBar.updateRecentFilesMenu(file.toString());
+            }
+        }
 	}
 
 	/**
@@ -242,16 +217,6 @@ public class Editor
 	}
 
 	/**
-	 * Method getString
-	 * @param key
-	 * @return ResourceBundle the static resource bundle
-	 */
-	public static String getString(String key)
-	{
-		return my_Editor.m_littleBundle.getString(key);
-	}
-
-	/**
 	 * get the JDFDoc of the currently displayed JDF
 	 * @return the JDFDoc that is currently being displayed
 	 */
@@ -261,59 +226,17 @@ public class Editor
 	}
 
 	/**
-	 * @return the about text
-	 */
-	public String getAboutText()
-	{
-		final String about = getEditorName() + "\n" + getEditorVersion() + "\nInternational Cooperation for Integration of Processes in Prepress, Press and Postpress,\n"
-				+ "hereinafter referred to as CIP4. All Rights Reserved\n\n"
-				+ "Authors: Anna Andersson, Evelina Thunell, Ingemar Svenonius, Elena Skobchenko, Rainer Prosi, Alex Khilov, Stefan Meissner\n\n"
-				+ "The APPLICATION is provided 'as is', without warranty of any kind, express, implied, or\n"
-				+ "otherwise, including but not limited to the warranties of merchantability,fitness for a\n"
-				+ "particular purpose and noninfringement. In no event will CIP4 be liable, for any claim,\n"
-				+ "damages or other liability whether in an action of contract, tort or otherwise, arising\n"
-				+ "from, out of, or in connection with the APPLICATION or the use or other dealings in the\n" + "APPLICATION.";
-		return about;
-	}
-
-	/**
-	 * 
-	 * @return the name of the editor
-	 */
-	public String getEditorName()
-	{
-		return "CIP4 JDF Editor -- Copyright (c) 2001-2014 CIP4";
-	}
-
-	/**
-	 * 
-	 * @return the editor build date
-	 */
-	public String getEditorBuildDate()
-	{
-		return "Estimated Build Date After May 14 2014";
-	}
-
-	/**
-	 * 
-	 * @return the editor version
+	 * Returns the Version of the JDFLibJ.
+	 * @return The version number of JDFLibJ.
 	 */
 	public String getEditorVersion()
 	{
 		return "Build version " + JDFAudit.software();
 	}
 
-	JMFBuilder getJMFBuilder()
-	{
-		JMFBuilder b = new JMFBuilder();
-		b.setSenderID("JDFEditor");
-
-		return b;
-	}
-
 	/**
-	 * get the model associated with the currently displayed document
-	 * @return the data model
+	 * Get the model associated with the currently displayed document.
+	 * @return The data model
 	 */
 	public static JDFTreeModel getModel()
 	{
@@ -329,8 +252,6 @@ public class Editor
 		final EditorDocument ed = getEditorDoc();
 		ed.setModel(m_model);
 	}
-
-	// /////////////////////////////////////////////////////////////
 
 	/**
 	 * get the JDFDoc of the currently displayed JDF
@@ -349,6 +270,4 @@ public class Editor
 	{
 		return my_Frame.m_treeArea;
 	}
-
-	// /////////////////////////////////////////////////////////////
 }

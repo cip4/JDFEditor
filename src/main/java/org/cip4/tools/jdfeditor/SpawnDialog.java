@@ -69,27 +69,18 @@ package org.cip4.tools.jdfeditor;
  *
  *
  */
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 import org.cip4.jdflib.core.JDFConstants;
 import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.util.JDFSpawn;
+import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 
 /**
  * spawnDialog.java
@@ -133,7 +124,7 @@ public class SpawnDialog extends JPanel implements ActionListener
 
 		init();
 
-		final String[] options = { Editor.getString("OkKey"), Editor.getString("CancelKey") };
+		final String[] options = { ResourceBundleUtil.getMessage("OkKey"), ResourceBundleUtil.getMessage("CancelKey") };
 
 		final int option = JOptionPane.showOptionDialog(parFrame, this, "Spawn", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
@@ -153,7 +144,7 @@ public class SpawnDialog extends JPanel implements ActionListener
 
 			if (newPartFile == null || newRootFile == null)
 			{
-				JOptionPane.showMessageDialog(parFrame, Editor.getString("SpawningFailedKey"), "Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(parFrame, ResourceBundleUtil.getMessage("SpawningFailedKey"), "Error", JOptionPane.ERROR_MESSAGE);
 				bOK = false;
 			}
 			else
@@ -199,14 +190,14 @@ public class SpawnDialog extends JPanel implements ActionListener
 		constraints = new GridBagConstraints();
 		constraints.fill = GridBagConstraints.HORIZONTAL;
 		constraints.insets = new Insets(3, 5, 3, 5);
-		setBorder(BorderFactory.createTitledBorder(Editor.getString("SpawnedOutputKey")));
+		setBorder(BorderFactory.createTitledBorder(ResourceBundleUtil.getMessage("SpawnedOutputKey")));
 
-		final JLabel mergeLabel = new JLabel(EditorUtils.displayPathName(originalFile, Editor.getString("SpawnedOutputKey").length()));
+		final JLabel mergeLabel = new JLabel(EditorUtils.displayPathName(originalFile, ResourceBundleUtil.getMessage("SpawnedOutputKey").length()));
 		constraints.gridwidth = GridBagConstraints.REMAINDER;
 		layout.setConstraints(mergeLabel, constraints);
 		add(mergeLabel);
 
-		final JLabel idLabel = new JLabel(Editor.getString("SpawnedJDFKey"));
+		final JLabel idLabel = new JLabel(ResourceBundleUtil.getMessage("SpawnedJDFKey"));
 		constraints.insets = new Insets(10, 5, 3, 5);
 		layout.setConstraints(idLabel, constraints);
 		add(idLabel);
@@ -221,7 +212,7 @@ public class SpawnDialog extends JPanel implements ActionListener
 		idBox.add(idPath);
 		idBox.add(Box.createHorizontalStrut(10));
 
-		browse1 = new JButton(Editor.getString("BrowseKey"));
+		browse1 = new JButton(ResourceBundleUtil.getMessage("BrowseKey"));
 		browse1.setPreferredSize(new Dimension(85, 22));
 		browse1.addActionListener(this);
 		idBox.add(browse1);
@@ -230,7 +221,7 @@ public class SpawnDialog extends JPanel implements ActionListener
 		layout.setConstraints(idBox, constraints);
 		add(idBox);
 
-		final JLabel rLabel = new JLabel(Editor.getString("MainJDFKey"));
+		final JLabel rLabel = new JLabel(ResourceBundleUtil.getMessage("MainJDFKey"));
 		constraints.insets = new Insets(10, 5, 3, 5);
 		layout.setConstraints(rLabel, constraints);
 		add(rLabel);
@@ -245,7 +236,7 @@ public class SpawnDialog extends JPanel implements ActionListener
 		idBox2.add(rootPath);
 		idBox2.add(Box.createHorizontalStrut(10));
 
-		browse2 = new JButton(Editor.getString("BrowseKey"));
+		browse2 = new JButton(ResourceBundleUtil.getMessage("BrowseKey"));
 		browse2.setPreferredSize(new Dimension(85, 22));
 		browse2.addActionListener(this);
 		idBox2.add(browse2);

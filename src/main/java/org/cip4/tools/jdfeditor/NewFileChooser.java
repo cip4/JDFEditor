@@ -70,14 +70,12 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import java.awt.GridLayout;
+import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.ButtonGroup;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 
 /**
  * @author ThunellE AnderssonA
@@ -121,26 +119,26 @@ public class NewFileChooser extends JPanel implements ActionListener
 		/*
 		* Need to add this getString "Golden Ticket" b/c it states right now Do you want to create a new JDF or JMF file?
 		*/
-		final JLabel label = new JLabel(Editor.getString("ChooseNewFileKey"));
+		final JLabel label = new JLabel(ResourceBundleUtil.getMessage("ChooseNewFileKey"));
 		add(label);
 
 		fileTypeGroup = new ButtonGroup();
 
-		radioJDFButton = new JRadioButton(Editor.getString("NewJDFKey"));
-		radioJDFButton.setActionCommand(Editor.getString("NewJDFKey"));
+		radioJDFButton = new JRadioButton(ResourceBundleUtil.getMessage("NewJDFKey"));
+		radioJDFButton.setActionCommand(ResourceBundleUtil.getMessage("NewJDFKey"));
 		radioJDFButton.addActionListener(this);
 		radioJDFButton.setSelected(true);
 		add(radioJDFButton);
 		fileTypeGroup.add(radioJDFButton);
 
-		radioJMFButton = new JRadioButton(Editor.getString("NewJMFKey"));
-		radioJMFButton.setActionCommand(Editor.getString("NewJMFKey"));
+		radioJMFButton = new JRadioButton(ResourceBundleUtil.getMessage("NewJMFKey"));
+		radioJMFButton.setActionCommand(ResourceBundleUtil.getMessage("NewJMFKey"));
 		radioJMFButton.addActionListener(this);
 		add(radioJMFButton);
 		fileTypeGroup.add(radioJMFButton);
 
-		radioGTButton = new JRadioButton(Editor.getString("NewGoldenTicket"));
-		radioGTButton.setActionCommand(Editor.getString("NewGoldenTicket"));
+		radioGTButton = new JRadioButton(ResourceBundleUtil.getMessage("NewGoldenTicket"));
+		radioGTButton.setActionCommand(ResourceBundleUtil.getMessage("NewGoldenTicket"));
 		radioGTButton.addActionListener(this);
 		add(radioGTButton);
 		fileTypeGroup.add(radioGTButton);

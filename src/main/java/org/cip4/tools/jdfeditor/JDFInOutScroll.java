@@ -71,36 +71,22 @@ package org.cip4.tools.jdfeditor;
  * 
  */
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.Enumeration;
-import java.util.Stack;
-
-import javax.swing.Box;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTree;
-import javax.swing.SwingUtilities;
-import javax.swing.ToolTipManager;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
-
-import org.cip4.jdflib.core.AttributeName;
-import org.cip4.jdflib.core.ElementName;
-import org.cip4.jdflib.core.JDFConstants;
-import org.cip4.jdflib.core.JDFResourceLink;
-import org.cip4.jdflib.core.KElement;
-import org.cip4.jdflib.core.VElement;
+import org.cip4.jdflib.core.*;
 import org.cip4.jdflib.datatypes.JDFAttributeMap;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourceLinkPool;
 import org.cip4.jdflib.resource.JDFResource;
+import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
 import org.cip4.tools.jdfeditor.view.renderer.JDFResourceTreeCellRenderer;
+
+import javax.swing.*;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Enumeration;
+import java.util.Stack;
 
 /**
  * 
@@ -480,7 +466,7 @@ public class JDFInOutScroll extends JScrollPane
 			}
 			if (!found)
 			{
-				((JLabel) ((Box) ((Box) m_frame.m_dialog.getContentPane().getComponent(1)).getComponent(7)).getComponent(1)).setText(Editor.getString("StringNotFoundKey"));
+				((JLabel) ((Box) ((Box) m_frame.m_dialog.getContentPane().getComponent(1)).getComponent(7)).getComponent(1)).setText(ResourceBundleUtil.getMessage("StringNotFoundKey"));
 			}
 		}
 		Editor.setCursor(0, null);
@@ -600,7 +586,7 @@ public class JDFInOutScroll extends JScrollPane
 
 				if (kElement instanceof JDFNode)
 				{
-					mTitle = Editor.getString("JDFElementKey");
+					mTitle = ResourceBundleUtil.getMessage("JDFElementKey");
 					isJDFNode = true;
 					final JDFNode n = (JDFNode) kElement;
 
@@ -611,8 +597,8 @@ public class JDFInOutScroll extends JScrollPane
 						{
 							final VElement resourceLinks = resourceLinkPool.getPoolChildren(null, null, null);
 
-							lTitle = Editor.getString("InputResourceKey");
-							rTitle = Editor.getString("OutputResourceKey");
+							lTitle = ResourceBundleUtil.getMessage("InputResourceKey");
+							rTitle = ResourceBundleUtil.getMessage("OutputResourceKey");
 
 							for (int i = 0; i < resourceLinks.size(); i++)
 							{
@@ -630,9 +616,9 @@ public class JDFInOutScroll extends JScrollPane
 				{
 					final JDFResource r = (JDFResource) kElement;
 
-					mTitle = Editor.getString("ResourceKey");
-					rTitle = Editor.getString("JDFConsumerKey");
-					lTitle = Editor.getString("JDFProducerKey");
+					mTitle = ResourceBundleUtil.getMessage("ResourceKey");
+					rTitle = ResourceBundleUtil.getMessage("JDFConsumerKey");
+					lTitle = ResourceBundleUtil.getMessage("JDFProducerKey");
 					if (root instanceof JDFNode) // not in JMF
 					{
 						String id = r.getID();

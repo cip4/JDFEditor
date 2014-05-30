@@ -1,65 +1,58 @@
 package org.cip4.tools.jdfeditor;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.print.PageFormat;
-import java.awt.print.Printable;
-import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.print.PrintService;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
-import javax.swing.RepaintManager;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 
 /*
  * PrintUtilities.java
  * @author SvenoniusI
  */
 
-public class PrintDialog implements Printable
-{
+public class PrintDialog implements Printable {
+    private final Logger LOGGER = LogManager.getLogger(PrintDialog.class);
+
     private Component comp;
 
-    public static void printIt(Component c)
-    {
+    public static void printIt(Component c) {
         new PrintDialog(c).print();
     }
 
-    public PrintDialog(Component _comp)
-    {
+    public PrintDialog(Component _comp) {
         this.comp = _comp;
     }
 
-    private void print()
-    {        
+    private void print() {
         final PrinterJob pj = PrinterJob.getPrinterJob();
         pj.setPrintable(this);
         final PrintService[] ps = PrinterJob.lookupPrintServices();
 
         final PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
 
-        if (ps.length > 0)
-        {
-            try
-            {
+        if (ps.length > 0) {
+            try {
                 pj.setPrintService(ps[0]);
-                if(pj.printDialog(pras))
+                if (pj.printDialog(pras))
                     pj.print(pras);
-            }
-            catch (PrinterException pe)
-            {
-                System.err.println(pe);
+            } catch (PrinterException pe) {
+                LOGGER.error("Print error.", pe);
             }
         }
     }
-    
-    public int print(Graphics g, PageFormat pf, int pI)
-    {
+
+    public int print(Graphics g, PageFormat pf, int pI) {
         int result = NO_SUCH_PAGE;
-        
-        if (pI <= 0)
-        {
+
+        if (pI <= 0) {
             final Graphics2D gfx = (Graphics2D) g;
             final double f = getScalingFactor(pf);
             gfx.translate(pf.getImageableX(), pf.getImageableY());
@@ -70,36 +63,36 @@ public class PrintDialog implements Printable
 
             result = PAGE_EXISTS;
         }
-        
+
         return result;
     }
+
     /**
      * Get the scaling factor used in the paint method to get the correct
      * size of the component that is going to be printed.
+     *
      * @param p - The page format
      * @return The scaling factor as a double.
      */
-    private double getScalingFactor(PageFormat p)
-    {
+    private double getScalingFactor(PageFormat p) {
         final double hFac = p.getImageableHeight() / comp.getSize().getHeight();
         final double wFac = p.getImageableWidth() / comp.getSize().getWidth();
-                
+
         return hFac < wFac ? hFac : wFac;
     }
+
     /**
-     *  Double buffering is turned off to enhance quality and speed.
+     * Double buffering is turned off to enhance quality and speed.
      */
-    private static void disableDoubleBuffering(Component c)
-    {
+    private static void disableDoubleBuffering(Component c) {
         final RepaintManager manager = RepaintManager.currentManager(c);
         manager.setDoubleBufferingEnabled(false);
     }
 
     /**
      * Turns double buffering on.
-     * */
-    private static void enableDoubleBuffering(Component c)
-    {
+     */
+    private static void enableDoubleBuffering(Component c) {
         final RepaintManager manager = RepaintManager.currentManager(c);
         manager.setDoubleBufferingEnabled(true);
     }

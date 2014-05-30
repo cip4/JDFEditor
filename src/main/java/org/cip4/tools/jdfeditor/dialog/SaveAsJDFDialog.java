@@ -71,9 +71,9 @@
 package org.cip4.tools.jdfeditor.dialog;
 
 import org.cip4.jdflib.extensions.xjdfwalker.XJDFToJDFConverter;
-import org.cip4.tools.jdfeditor.Editor;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
+import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -105,16 +105,16 @@ public class SaveAsJDFDialog extends JDialog implements ActionListener
 
 	public SaveAsJDFDialog()
 	{
-		setTitle(Editor.getString("SaveJDFKey"));
+		setTitle(ResourceBundleUtil.getMessage("SaveJDFKey"));
 		setModal(true);
 		setLayout(new BorderLayout());
 
 		JPanel checkboxesPanel = new JPanel();
 		checkboxesPanel.setLayout(new BoxLayout(checkboxesPanel, BoxLayout.Y_AXIS));
 
-		cbExtRetainProduct = new JCheckBox(Editor.getString("RetainProductKey"));
-		cbHeuristcLink = new JCheckBox(Editor.getString("FromXJDFHeuristicLink"));
-		cbTilde = new JCheckBox(Editor.getString("RemoveTildeFromRange"));
+		cbExtRetainProduct = new JCheckBox(ResourceBundleUtil.getMessage("RetainProductKey"));
+		cbHeuristcLink = new JCheckBox(ResourceBundleUtil.getMessage("FromXJDFHeuristicLink"));
+		cbTilde = new JCheckBox(ResourceBundleUtil.getMessage("RemoveTildeFromRange"));
 
 		checkboxesPanel.add(cbExtRetainProduct);
 		checkboxesPanel.add(cbTilde);
@@ -126,7 +126,7 @@ public class SaveAsJDFDialog extends JDialog implements ActionListener
 
 		bOK = new JButton("OK");
 		bOK.addActionListener(this);
-		bCancel = new JButton(Editor.getString("CancelKey"));
+		bCancel = new JButton(ResourceBundleUtil.getMessage("CancelKey"));
 		bCancel.addActionListener(this);
 
 		buttonsPanel.add(bOK);

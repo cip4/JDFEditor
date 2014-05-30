@@ -93,6 +93,7 @@ import org.cip4.jdflib.validate.JDFValidator;
 import org.cip4.tools.jdfeditor.extension.Caps;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
+import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
 import org.w3c.dom.Attr;
 
 import javax.swing.*;
@@ -144,7 +145,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		}
 		catch (final Exception e)
 		{
-			JOptionPane.showMessageDialog(frame, Editor.getString("SpawnErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), Editor.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(frame, ResourceBundleUtil.getMessage("SpawnErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceBundleUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -178,7 +179,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(frame, Editor.getString("SpawnErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), Editor.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(frame, ResourceBundleUtil.getMessage("SpawnErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceBundleUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -201,7 +202,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(frame, Editor.getString("MergeErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), Editor.getString("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(frame, ResourceBundleUtil.getMessage("MergeErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceBundleUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -927,11 +928,11 @@ public class JDFTreeModel extends DefaultTreeModel
 			final KElement parent = node.getElement();
 			final String[] possibleValues = EditorUtils.getAttributeOptions(parent);
 
-			selectedName = (String) JOptionPane.showInputDialog(m_frame, Editor.getString("ChooseNewAttTypeKey"), Editor.getString("RenameKey"), JOptionPane.PLAIN_MESSAGE, null, possibleValues, possibleValues[0]);
+			selectedName = (String) JOptionPane.showInputDialog(m_frame, ResourceBundleUtil.getMessage("ChooseNewAttTypeKey"), ResourceBundleUtil.getMessage("RenameKey"), JOptionPane.PLAIN_MESSAGE, null, possibleValues, possibleValues[0]);
 
 			if (selectedName != null && selectedName.equals("Other.."))
 			{
-				selectedName = JOptionPane.showInputDialog(m_frame, Editor.getString("InsertNewAttTypeKey"), Editor.getString("InsertNewAttTypeKey"), JOptionPane.PLAIN_MESSAGE);
+				selectedName = JOptionPane.showInputDialog(m_frame, ResourceBundleUtil.getMessage("InsertNewAttTypeKey"), ResourceBundleUtil.getMessage("InsertNewAttTypeKey"), JOptionPane.PLAIN_MESSAGE);
 			}
 		}
 
@@ -1135,7 +1136,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 		final KElement element = node.getElement();
 		final String[] possibleValues = EditorUtils.getAttributeOptions(element);
-		final String attName = Editor.getString("ChooseNewAttTypeKey");
+		final String attName = ResourceBundleUtil.getMessage("ChooseNewAttTypeKey");
 		String selectedValue = (String) JOptionPane.showInputDialog(m_frame, attName, attName, JOptionPane.PLAIN_MESSAGE, null, possibleValues, possibleValues[0]);
 
 		if (selectedValue != null && selectedValue.equals("Other.."))
@@ -1181,7 +1182,7 @@ public class JDFTreeModel extends DefaultTreeModel
 			ns = parentElement.getNamespaceURIFromPrefix(ns);
 			if (ns == null)
 			{
-				ns = JOptionPane.showInputDialog(Editor.getFrame(), Editor.getString("ChoosePrefixKey"), "");
+				ns = JOptionPane.showInputDialog(Editor.getFrame(), ResourceBundleUtil.getMessage("ChoosePrefixKey"), "");
 			}
 			if (ns == null || ns.equals(JDFConstants.EMPTYSTRING))
 			{

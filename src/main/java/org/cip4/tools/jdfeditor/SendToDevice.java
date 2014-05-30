@@ -84,6 +84,7 @@ import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
+import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
 
 import javax.mail.Multipart;
 import javax.swing.*;
@@ -138,7 +139,7 @@ public class SendToDevice extends JPanel implements ActionListener
 	{
 		final JDFDoc d = Editor.getJDFDoc();
 		final JDFJMF jmf = d == null ? null : d.getJMFRoot();
-		final JLabel urlText = new JLabel(Editor.getString("setURL"));
+		final JLabel urlText = new JLabel(ResourceBundleUtil.getMessage("setURL"));
 		urlText.setVerticalAlignment(SwingConstants.BOTTOM);
 		add(urlText);
 
@@ -146,11 +147,11 @@ public class SendToDevice extends JPanel implements ActionListener
 		{
 			// RadioButtons to choose sending JDF with QueueSubmissionParams
 			// and URL or as a multipart/related MIME message
-			rbJMF = new JRadioButton(Editor.getString("sendMethodJMF"));
-			rbMIME = new JRadioButton(Editor.getString("sendMethodMIME"));
-			rbRawXML = new JRadioButton(Editor.getString("sendMethodRaw"));
-			rbPackageAll = new JRadioButton(Editor.getString("PackageAll"));
-			cbReturn = new JCheckBox(Editor.getString("returnJMF"));
+			rbJMF = new JRadioButton(ResourceBundleUtil.getMessage("sendMethodJMF"));
+			rbMIME = new JRadioButton(ResourceBundleUtil.getMessage("sendMethodMIME"));
+			rbRawXML = new JRadioButton(ResourceBundleUtil.getMessage("sendMethodRaw"));
+			rbPackageAll = new JRadioButton(ResourceBundleUtil.getMessage("PackageAll"));
+			cbReturn = new JCheckBox(ResourceBundleUtil.getMessage("returnJMF"));
 			if (settingService.getString(SettingKey.SEND_METHOD).equals("MIME"))
 			{
 				rbMIME.setSelected(true);
@@ -173,7 +174,7 @@ public class SendToDevice extends JPanel implements ActionListener
 			sendMethodGroup.add(rbRawXML);
 			sendMethodGroup.add(rbPackageAll);
 
-			final JLabel rbLabel = new JLabel(Editor.getString("sendMethod"));
+			final JLabel rbLabel = new JLabel(ResourceBundleUtil.getMessage("sendMethod"));
 			final Box SendMethodBox = Box.createHorizontalBox();
 
 			SendMethodBox.add(rbLabel);
@@ -183,9 +184,9 @@ public class SendToDevice extends JPanel implements ActionListener
 			SendMethodBox.add(rbPackageAll);
 			add(SendMethodBox);
 			add(cbReturn);
-			urlReturn = initURL(Editor.getString("returnToURL"), settingService.getString(SettingKey.SEND_URL_RETURN));
+			urlReturn = initURL(ResourceBundleUtil.getMessage("returnToURL"), settingService.getString(SettingKey.SEND_URL_RETURN));
 		}
-		urlPath = initURL(Editor.getString("pathToURL"), settingService.getString(SettingKey.SEND_URL_SEND));
+		urlPath = initURL(ResourceBundleUtil.getMessage("pathToURL"), settingService.getString(SettingKey.SEND_URL_SEND));
 	}
 
 	/**
@@ -505,9 +506,9 @@ public class SendToDevice extends JPanel implements ActionListener
 		}
 		// get the URL to send to and call the CommunicationController
 		boolean bSendTrue = false;
-		final String[] options = { Editor.getString("OkKey"), Editor.getString("CancelKey") };
+		final String[] options = { ResourceBundleUtil.getMessage("OkKey"), ResourceBundleUtil.getMessage("CancelKey") };
 
-		final int option = JOptionPane.showOptionDialog(Editor.getFrame(), this, Editor.getString("JDFSendToDevice"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+		final int option = JOptionPane.showOptionDialog(Editor.getFrame(), this, ResourceBundleUtil.getMessage("JDFSendToDevice"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
 		if (option == JOptionPane.OK_OPTION)
 		{
@@ -516,7 +517,7 @@ public class SendToDevice extends JPanel implements ActionListener
 		}
 
 		// show success in a popup window
-		String sLabel = (bSendTrue) ? Editor.getString("JDFSent") : Editor.getString("JDFNotSent");
+		String sLabel = (bSendTrue) ? ResourceBundleUtil.getMessage("JDFSent") : ResourceBundleUtil.getMessage("JDFNotSent");
 		URL url = getURL(false);
 		sLabel += "\n\nURL= " + url.toExternalForm();
 		if (bSendTrue)
