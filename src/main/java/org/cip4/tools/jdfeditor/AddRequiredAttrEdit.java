@@ -70,11 +70,10 @@
 */
 package org.cip4.tools.jdfeditor;
 
-import java.util.Vector;
-
 import javax.swing.tree.TreePath;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
+import java.util.Vector;
 
 /**
  * AddRequiredAttrEdit.java
@@ -85,7 +84,9 @@ public class AddRequiredAttrEdit extends EditorUndoableEdit
 	private static final long serialVersionUID = -2778264565816334345L;
 
 	private final TreePath path;
+
 	private final JDFTreeNode intoNode;
+
 	private final Vector<JDFTreeNode> addedVector;
 
 	/**

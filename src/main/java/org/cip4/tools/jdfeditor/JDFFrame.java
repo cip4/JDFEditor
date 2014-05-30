@@ -70,8 +70,8 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cip4.jdflib.core.*;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.core.XMLDocUserData.EnumDirtyPolicy;
@@ -115,7 +115,9 @@ import java.util.Vector;
 
 public class JDFFrame extends JFrame implements ActionListener, DropTargetListener, DragSourceListener, DragGestureListener, ClipboardOwner
 {
-	SettingService settingService = new SettingService();
+    private static final Logger LOGGER = LogManager.getLogger(JDFFrame.class);
+
+    SettingService settingService = new SettingService();
 
     /**
 	 * Comment for <code>serialVersionU
@@ -162,8 +164,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	UndoAction undoAction = new UndoAction();
 	RedoAction redoAction = new RedoAction();
 
-	private final Log log;
-
 	/**
 	 * constructor of the frame
 	 * 
@@ -173,8 +173,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		super("CIP4 JDF Editor");
         enableOSXFullscreen(this);
 
-		// dirty hack to avoid npe
-		log = LogFactory.getLog(getClass());
 		Editor.my_Frame = this;
 		final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds(0, 0, d.width, d.height - 30);
@@ -1766,7 +1764,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		}
 		catch (final UnsupportedFlavorException ufe)
 		{
-			log.error("data flavor not supported", ufe);
+			LOGGER.error("data flavor not supported", ufe);
 			e.rejectDrop();
 		}
 	}

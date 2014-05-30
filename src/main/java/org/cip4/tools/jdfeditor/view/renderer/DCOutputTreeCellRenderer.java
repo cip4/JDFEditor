@@ -1,5 +1,7 @@
 package org.cip4.tools.jdfeditor.view.renderer;
-import org.apache.log4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.validate.JDFValidator;
@@ -12,7 +14,7 @@ import org.cip4.tools.jdfeditor.JDFTreeNode;
 
 public class DCOutputTreeCellRenderer extends AbstractTreeCellRenderer
 {
-    private static final Logger LOGGER = Logger.getLogger(DCOutputTreeCellRenderer.class);
+    private static final Logger LOGGER = LogManager.getLogger(DCOutputTreeCellRenderer.class);
 
     private static final long serialVersionUID = 626128726824503000L;
 

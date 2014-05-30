@@ -71,7 +71,8 @@
 package org.cip4.tools.jdfeditor.dialog;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 
@@ -106,7 +107,8 @@ public class SearchComboBoxModel extends AbstractListModel implements ComboBoxMo
 		super();
 	}
 
-	private static final Logger log = Logger.getLogger(SearchComboBoxModel.class);
+	private static final Logger LOGGER = LogManager.getLogger(SearchComboBoxModel.class);
+
 	private List<String> elements = new ArrayList<String>();
 	private String selectedItem;
 
@@ -125,7 +127,7 @@ public class SearchComboBoxModel extends AbstractListModel implements ComboBoxMo
 		{
 			String[] newElements = (String[]) ArrayUtils.subarray(elements.toArray(new String[0]), elements.size() - MAX_ELEMENTS, elements.size());
 			elements = Arrays.asList(newElements);
-			log.debug("elements: " + elements);
+			LOGGER.debug("elements: " + elements);
 		}
 		fireContentsChanged(this, 0, elements.size());
 

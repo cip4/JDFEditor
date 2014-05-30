@@ -71,7 +71,8 @@
 package org.cip4.tools.jdfeditor.transport;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.jmf.JDFJMF;
@@ -89,7 +90,9 @@ import java.util.Date;
 
 
 public class JMFServlet extends HttpServlet {
-	private static final Logger log = Logger.getLogger(JMFServlet.class);
+
+	private static final Logger LOGGER = LogManager.getLogger(JMFServlet.class);
+
 	private static String TIMESTAMP_PATTERN = "yyyy-MM-dd_hh-mm-ss-SSS";
 	private static int INDENT = 2;
 
@@ -97,12 +100,12 @@ public class JMFServlet extends HttpServlet {
 	
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
-		log.debug("received doPost: " + this);
+		LOGGER.debug("received doPost: " + this);
 		try {
 			processMessage(req, res);
 		} catch (Exception e) {
 			String err = "The request body could not be processed. Maybe it did not contain JMF or JDF?";
-			log.error(err, e);
+			LOGGER.error(err, e);
 			e.printStackTrace();
 			res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, err + e);
 		}
@@ -113,7 +116,7 @@ public class JMFServlet extends HttpServlet {
 		String msg = "Received HTTP GET request from "
 				+ req.getHeader("User-Agent") + " @ " + req.getRemoteHost()
 				+ " (" + req.getRemoteAddr() + "). Request ignored.";
-		log.warn(msg);
+		LOGGER.warn(msg);
 		res.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, "HTTP GET not implemented.");
 	}
 	
@@ -121,28 +124,28 @@ public class JMFServlet extends HttpServlet {
 		String msg = "Receiving message from " + req.getHeader("User-Agent")
 				+ " @ " + req.getRemoteHost() + " (" + req.getRemoteAddr()
 				+ ")...";
-		log.debug(msg);
+		LOGGER.debug(msg);
 //		Build incoming Message
 		final String messageBody = toString(req.getInputStream());
-		log.debug("Incoming message body: \n" + messageBody);
+		LOGGER.debug("Incoming message body: \n" + messageBody);
 		String contentType = req.getHeader("Content-type");
-		log.debug("contentType: " + contentType);
+		LOGGER.debug("contentType: " + contentType);
 		
 		JDFJMF jmf = new JDFParser().parseString(messageBody).getJMFRoot();
 		VElement e = jmf.getMessageVector(null, null);
-		log.debug("e.size: " + e.size());
+		LOGGER.debug("e.size: " + e.size());
 		
 		for (int i = 0; i < e.size(); i++) {
 			JDFMessage currMessage = jmf.getMessageElement(null, null, i);
 			String type = currMessage.getType();
-			log.debug("currMessage type: " + type);
+			LOGGER.debug("currMessage type: " + type);
 			
 			JDFJMF tempRequestMessage = (JDFJMF) jmf.clone();
 			JDFMessage tempMessageFamily = (JDFMessage) currMessage.clone();
 			
 			tempRequestMessage.removeChildren(null, null, null); // remove all children
 			tempRequestMessage.appendChild(tempMessageFamily);
-			log.debug("tempRequestMessage: \n" + tempRequestMessage.toDisplayXML(INDENT));
+			LOGGER.debug("tempRequestMessage: \n" + tempRequestMessage.toDisplayXML(INDENT));
 			
 			Date today = Calendar.getInstance().getTime();
 			SimpleDateFormat formatter = new SimpleDateFormat(TIMESTAMP_PATTERN);
@@ -152,14 +155,14 @@ public class JMFServlet extends HttpServlet {
 			} else {
 				fileName += "-" + type + ".jmf";
 			}
-			log.info("Save message to file: " + fileName);
+			LOGGER.info("Save message to file: " + fileName);
 			
 			String fullPathFile = settingService.getString(SettingKey.HTTP_STORE_PATH) + File.separator + fileName;
 
 			File f = new File(fullPathFile);
 			
 			FileUtils.writeStringToFile(f, tempRequestMessage.toDisplayXML(INDENT));
-			log.info("Message saved as: " + fullPathFile);
+			LOGGER.info("Message saved as: " + fullPathFile);
 		}
 		
 	}

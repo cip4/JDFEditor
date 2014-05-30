@@ -68,7 +68,8 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cip4.jdflib.core.*;
 import org.cip4.jdflib.core.JDFElement.EnumValidationLevel;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
@@ -101,7 +102,8 @@ import java.util.List;
  */
 public class EditorUtils
 {
-	private static final Logger sm_log = Logger.getLogger(EditorUtils.class);
+	private static final Logger LOGGER = LogManager.getLogger(EditorUtils.class);
+
 	private static PluginLoader<IStreamLoader> pluginLoader = null;
 
     private SettingService settingService = new SettingService();
@@ -596,7 +598,7 @@ public class EditorUtils
 			File fileAppDir = new File(".");
 			String strAppPath = EditorUtils.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 			strAppPath = URLDecoder.decode(strAppPath, StringUtil.UTF8);
-			sm_log.info("application path: " + strAppPath);
+			LOGGER.info("application path: " + strAppPath);
 			final File fileApp = new File(strAppPath);
 			if (fileApp.exists() && fileApp.isFile())
 			{
@@ -604,7 +606,7 @@ public class EditorUtils
 			}
 
 			final File filePluginDir = new File(fileAppDir, "plugins");
-			sm_log.info("found plugin directory: " + filePluginDir.getAbsolutePath());
+			LOGGER.info("found plugin directory: " + filePluginDir.getAbsolutePath());
 			pluginLoader = new PluginLoader<IStreamLoader>(IStreamLoader.class, filePluginDir);
 		}
 

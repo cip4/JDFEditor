@@ -70,14 +70,12 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cip4.jdflib.core.*;
 import org.cip4.jdflib.jmf.JMFBuilder;
-import org.cip4.jdflib.util.logging.LogConfigurator;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
-import org.cip4.tools.jdfeditor.util.DirectoryUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -86,32 +84,22 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
- * @author AnderssA ThunellE
- * 
+ *
  */
 public class Editor
 {
+    private static final Logger LOGGER = LogManager.getLogger(Editor.class);
+
     private SettingService settingService = new SettingService();
 
 	private static Editor my_Editor;
+
 	protected static JDFFrame my_Frame;
-	private static Log log = null;
 
-	/*
-	 * This package is found under JDFEditor in the src/java section. It contains all of the icons associated with the JDFEditor. For your icons to appear,
-	 * remember to refresh the package. To change the icons in the Menu bar, go to EditorButton.java. To change the icons in the tree mode, error icons, go to
-	 * INIReader.java. If you would like to change the appearance of how the menu items appear, go to JDFEditor_(Language want, i.e. en)_.properties located
-	 * under org.cip4.jdfeditor.messages package.
-	 */
-
-	/**
-	 * 
-	 */
 	static final String ICONS_PATH = "/org/cip4/tools/jdfeditor/icons/";
 
 	static ImageIcon getImageIcon(final Class<?> myClass, final String resString)
@@ -127,36 +115,6 @@ public class Editor
 			imIc = new ImageIcon("." + resString);
 		}
 		return imIc;
-	}
-
-	/**
-	 * @param args
-	 */
-	// ////////////////////////////////////////////////////////////////
-	public static void main(final String[] args)
-	{
-
-        // apple menu compatibility
-        System.setProperty("apple.laf.useScreenMenuBar", "true");
-
-		File file = null;
-		// mac may have 2nd argument
-		for (int i = args.length - 1; i >= 0; i--)
-		{
-			if (!args[i].startsWith("-"))
-			{
-				file = new File(args[i]);
-				if (file.canRead())
-				{
-					break;
-				}
-				file = null;
-			}
-		}
-		my_Editor = new Editor();
-
-		log.info("Main arguments: " + Arrays.toString(args) + " file=" + file);
-		my_Editor.init(file);
 	}
 
 	// ////////////////////////////////////////////////////////////////
@@ -190,20 +148,11 @@ public class Editor
 	private ResourceBundle m_littleBundle;
 
 	/**
-	 * 
+	 * Default constructor.
 	 */
 	public Editor()
 	{
-		// log file location
-        String pathDir = DirectoryUtil.getDirCIP4Tools();
-		new File(pathDir).mkdirs();
-
-		LogConfigurator.configureLog(pathDir, "JDFEditor.log");
-
-		if (log == null)
-			log = LogFactory.getLog(Editor.class);
-		log.info("Starting editor");
-		// nothing to do here (yet)
+        my_Editor = this;
 	}
 
 	/**
@@ -270,7 +219,7 @@ public class Editor
 		}
 		catch (final Exception e)
 		{
-			log.error("error initializing Editor", e);
+			LOGGER.error("Error initializing Editor", e);
 		}
 	}
 

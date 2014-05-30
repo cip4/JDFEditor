@@ -4,7 +4,8 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.util.DirectoryUtil;
 
@@ -15,7 +16,7 @@ import java.io.File;
  */
 public class SettingService {
 
-    private static final Logger LOGGER = Logger.getLogger(SettingService.class);
+    private static final Logger LOGGER = LogManager.getLogger(SettingService.class.getName());
 
     private static String confFileName = "JDFEditor.conf";
 

@@ -93,7 +93,8 @@ import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.TreePath;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFException;
@@ -113,7 +114,7 @@ import org.cip4.jdflib.resource.JDFResource;
 
 public class ProcessPanel extends JPanel
 {
-	private static final Logger log = Logger.getLogger(ProcessPanel.class);
+	private static final Logger LOGGER = LogManager.getLogger(ProcessPanel.class);
 
 	class PartListener extends MouseAdapter
 	{

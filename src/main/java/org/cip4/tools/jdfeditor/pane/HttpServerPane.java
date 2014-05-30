@@ -74,7 +74,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.monitor.FileAlterationListener;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFMessage;
@@ -108,7 +109,8 @@ import java.util.List;
  */
 public class HttpServerPane implements FileAlterationListener, ActionListener
 {
-	private static final Logger log = Logger.getLogger(HttpServerPane.class);
+	private static final Logger LOGGER = LogManager.getLogger(HttpServerPane.class);
+
     private SettingService settingService = new SettingService();
 
 	private final JDFFrame frame;
@@ -223,13 +225,13 @@ public class HttpServerPane implements FileAlterationListener, ActionListener
 				{
 					JTable target = (JTable) e.getSource();
 					int row = target.getSelectedRow();
-					log.debug("row: " + row);
+					LOGGER.debug("row: " + row);
 					if (row == -1)
 						return;
 					int modelRow = target.convertRowIndexToModel(row);
-					log.debug("modelRow: " + modelRow);
+					LOGGER.debug("modelRow: " + modelRow);
 					MessageBean msg = tableModel.getItem(modelRow);
-					log.debug("file to load: " + msg.getFilePathName());
+					LOGGER.debug("file to load: " + msg.getFilePathName());
 					File f = new File(msg.getFilePathName());
 					frame.readFile(f);
 				}
@@ -289,15 +291,15 @@ public class HttpServerPane implements FileAlterationListener, ActionListener
 				{
 					InetAddress address = inetAddress.nextElement();
 					//                    if (address.isLoopbackAddress()) continue;
-					log.debug("host address: " + address.getHostAddress());
+					LOGGER.debug("host address: " + address.getHostAddress());
 					ipComboBox.addItem(address.getHostAddress());
 				}
-				log.debug("------- next interface");
+				LOGGER.debug("------- next interface");
 			}
 		}
 		catch (SocketException e)
 		{
-			log.error("Snafu filling addresses", e);
+			LOGGER.error("Snafu filling addresses", e);
 		}
 	}
 
@@ -337,7 +339,7 @@ public class HttpServerPane implements FileAlterationListener, ActionListener
 	@Override
 	public void onFileCreate(File f)
 	{
-		log.debug("file created: " + f.getAbsolutePath());
+		LOGGER.debug("file created: " + f.getAbsolutePath());
 
 		String senderId = "none";
 		String type = "---";
@@ -424,7 +426,7 @@ public class HttpServerPane implements FileAlterationListener, ActionListener
 			chooser.setAcceptAllFileFilterUsed(false);
 			if (chooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION)
 			{
-				log.debug("getSelectedFile(): " + chooser.getSelectedFile());
+				LOGGER.debug("getSelectedFile(): " + chooser.getSelectedFile());
                 settingService.setString(SettingKey.HTTP_STORE_PATH, chooser.getSelectedFile().getAbsolutePath());
 				labelStorePath.setText(chooser.getSelectedFile().getAbsolutePath());
 			}

@@ -70,16 +70,20 @@
  */
 package org.cip4.tools.jdfeditor.pane;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.table.AbstractTableModel;
-
-import org.apache.log4j.Logger;
 
 public class MessageTableModel extends AbstractTableModel {
-	private static final Logger log = Logger.getLogger(MessageTableModel.class);
+
+	private static final Logger LOGGER = LogManager.getLogger(MessageTableModel.class);
+
 	private String[] columnNames = {"Sender ID", "Message Type", "Time Received", "Size"};
+
 	private List<MessageBean> data = new ArrayList<MessageBean>();
 	
 	
@@ -104,7 +108,7 @@ public class MessageTableModel extends AbstractTableModel {
 		} else if (columnIndex == 3) {
 			return data.get(rowIndex).getSize();
 		} else {
-			log.error("No column available: " + columnIndex);
+			LOGGER.error("No column available: " + columnIndex);
 			return "";
 		}
 	}

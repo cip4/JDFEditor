@@ -71,6 +71,9 @@ package org.cip4.tools.jdfeditor.streamloader;
  * 
  */
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -84,7 +87,6 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.apache.log4j.Logger;
 
 /**
  * Class PluginLoader
@@ -92,9 +94,10 @@ import org.apache.log4j.Logger;
  */
 public class PluginLoader<I>
 {
-	private static final Logger sm_log = Logger.getLogger(PluginLoader.class);
+	private static final Logger LOGGER = LogManager.getLogger(PluginLoader.class);
 
 	private static final String PLUGIN_FILE_EXT = ".jar";
+
 	private static final String CLASS_EXT = ".class";
 
 	private final Class<I> m_interf;
@@ -164,7 +167,7 @@ public class PluginLoader<I>
 
 					catch (IOException ex)
 					{
-						sm_log.error("failed loading plugin " + file.getAbsolutePath(), ex);
+						LOGGER.error("failed loading plugin " + file.getAbsolutePath(), ex);
 					}
 				}
 			}
@@ -229,7 +232,7 @@ public class PluginLoader<I>
 
 					catch (Exception ex)
 					{
-						sm_log.error("failed reading plugin " + file.getAbsolutePath(), ex);
+						LOGGER.error("failed reading plugin " + file.getAbsolutePath(), ex);
 					}
 				}
 			}

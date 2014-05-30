@@ -70,7 +70,8 @@
  */
 package org.cip4.tools.jdfeditor.transport;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.mortbay.http.HttpContext;
 import org.mortbay.http.SocketListener;
 import org.mortbay.jetty.Server;
@@ -81,7 +82,7 @@ import org.mortbay.jetty.servlet.ServletHttpContext;
 
 
 public class HttpReceiver {
-	private static final Logger log = Logger.getLogger(HttpReceiver.class);
+	private static final Logger LOGGER = LogManager.getLogger(HttpReceiver.class);
 	private Server server;
 	
 	private static HttpReceiver instance;
@@ -110,7 +111,7 @@ public class HttpReceiver {
 	
 	public synchronized void startServer(String host, int port, 
 			String jmfContextPath) throws Exception {
-		log.info("Starting HTTP server on " + host + ":" + port + jmfContextPath);
+		LOGGER.info("Starting HTTP server on " + host + ":" + port + jmfContextPath);
 		
 		server = new Server();
 		SocketListener listener = new SocketListener();
@@ -128,7 +129,7 @@ public class HttpReceiver {
         context.addHandler(servlets);
         
         server.start();
-        log.info("HTTP server started.");
+        LOGGER.info("HTTP server started.");
 	}
 	
 	public synchronized void stopServer() {
