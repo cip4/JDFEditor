@@ -5,10 +5,11 @@
 	<artifactId>JDFEditor</artifactId>
 	<version>2.4-SNAPSHOT</version>
 	<name>CIP4 JDFEditor</name>
-	<description>CIP4 JDF-Editor</description>
+	<description>CIP4 JDFEditor</description>
 	<properties>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<buildDirectory>${project.basedir}/target</buildDirectory>
 	</properties>
 	<scm>
@@ -62,6 +63,12 @@
 	<build>
 		<directory>${buildDirectory}</directory>
 		<finalName>${project.name} ${project.version}</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -70,17 +77,6 @@
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.13</version>
-				<configuration>
-					<encoding>UTF-8</encoding>
-					<inputEncoding>UTF-8</inputEncoding>
-					<outputEncoding>UTF-8</outputEncoding>
-					<argLine>-Xmx512m -Dfile.encoding=UTF-8</argLine>
 				</configuration>
 			</plugin>
 			<plugin>

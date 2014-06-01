@@ -1055,7 +1055,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		}
 		else if (eSrc == m_menuBar.m_versionItem)
 		{
-			JOptionPane.showMessageDialog(this, App.APP_NAME + "\n" + App.APP_VERSION + "\nJDF 1.4 compatible version\n" + "Schema JDF_1.4.xsd\n"
+			JOptionPane.showMessageDialog(this, App.APP_NAME + "\n" + App.APP_VERSION + " (" + App.APP_RELEASE_DATE + ")\n"
 					+ this.editor.getEditorVersion(), "Version", JOptionPane.INFORMATION_MESSAGE);
 		}
 		else if (eSrc == m_menuBar.m_findItem)
