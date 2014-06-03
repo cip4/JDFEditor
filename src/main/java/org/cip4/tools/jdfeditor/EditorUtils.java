@@ -85,6 +85,7 @@ import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.streamloader.IStreamLoader;
 import org.cip4.tools.jdfeditor.streamloader.PluginLoader;
 import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.mail.BodyPart;
 import javax.mail.MessagingException;
@@ -244,11 +245,11 @@ public class EditorUtils
 	public static String chooseElementName(final KElement parentElement)
 	{
 		final String validValues[] = EditorUtils.getElementOptions(parentElement);
-		String selectedElementName = (String) JOptionPane.showInputDialog(Editor.getFrame(), "Choose an element to insert", "Insert new element", JOptionPane.PLAIN_MESSAGE, null, validValues, validValues[0]);
+		String selectedElementName = (String) JOptionPane.showInputDialog(MainView.getFrame(), "Choose an element to insert", "Insert new element", JOptionPane.PLAIN_MESSAGE, null, validValues, validValues[0]);
 
 		if (selectedElementName != null && selectedElementName.equals("Other.."))
 		{
-			selectedElementName = JOptionPane.showInputDialog(Editor.getFrame(), "Choose element name", "");
+			selectedElementName = JOptionPane.showInputDialog(MainView.getFrame(), "Choose element name", "");
 		}
 		return selectedElementName;
 	}
@@ -302,7 +303,7 @@ public class EditorUtils
 		JDFTreeNode node;
 		if (path == null)
 		{
-			node = (JDFTreeNode) Editor.getModel().getRootNode().getFirstChild();
+			node = (JDFTreeNode) MainView.getModel().getRootNode().getFirstChild();
 		}
 		else
 		{
@@ -359,7 +360,7 @@ public class EditorUtils
 	 */
 	public static void errorBox(final String errorKey, String addedString)
 	{
-		final JDFFrame frame = Editor.getFrame();
+		final JDFFrame frame = MainView.getFrame();
 		if (addedString == null)
 		{
 			addedString = "";
@@ -562,7 +563,7 @@ public class EditorUtils
 				jdfDoc.getRoot().sortChildren();
 			}
 
-			final JDFFrame frame = Editor.getFrame();
+			final JDFFrame frame = MainView.getFrame();
 			frame.setJDFDoc(jdfDoc, packageName);
 			edidoc = frame.getEditorDoc();
 		}

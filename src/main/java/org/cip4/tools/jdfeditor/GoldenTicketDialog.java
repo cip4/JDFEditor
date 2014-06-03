@@ -71,6 +71,7 @@
 package org.cip4.tools.jdfeditor;
 
 import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -121,7 +122,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 	public GoldenTicketDialog()
 	{
 		super();
-		JDFFrame parent = Editor.getFrame();
+		JDFFrame parent = MainView.getFrame();
 
 		init();
 		final String[] options = { ResourceBundleUtil.getMessage("OkKey"), ResourceBundleUtil.getMessage("CancelKey") };
@@ -234,7 +235,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 	public void actionPerformed(ActionEvent e)
 	{
 		final Object source = e.getSource();
-		JDFFrame parent = Editor.getFrame();
+		JDFFrame parent = MainView.getFrame();
 		if (source == browse)
 		{
 			final EditorFileChooser files = new EditorFileChooser(idFile, "xml jdf");

@@ -70,6 +70,8 @@
  */
 package org.cip4.tools.jdfeditor;
 
+import org.cip4.tools.jdfeditor.view.MainView;
+
 import javax.swing.tree.TreePath;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
@@ -98,7 +100,7 @@ public class RenameNodeEdit extends EditorUndoableEdit
         if(_overwriteNodeValue!=null)
             overwriteNodeName=_previousNodeName;
         overwriteNodeValue=_overwriteNodeValue;
-        Editor.getFrame().updateViews(path);
+        MainView.getFrame().updateViews(path);
         canUndo=canRedo=true;
     }
     
@@ -112,15 +114,15 @@ public class RenameNodeEdit extends EditorUndoableEdit
         }
         else 
         {
-            node=Editor.getModel().renameAttribute(node,previousNodeName);
+            node= MainView.getModel().renameAttribute(node,previousNodeName);
             if(overwriteNodeName!=null && !overwriteNodeName.equals(previousNodeName))
             {
-                Editor.getModel().setAttribute((JDFTreeNode)node.getParent(), overwriteNodeName, overwriteNodeValue, null, false);
+                MainView.getModel().setAttribute((JDFTreeNode)node.getParent(), overwriteNodeName, overwriteNodeValue, null, false);
             }
                 
         }
         previousNodeName=keep;
-        Editor.getFrame().updateViews(path);
+        MainView.getFrame().updateViews(path);
     }
     
     @Override

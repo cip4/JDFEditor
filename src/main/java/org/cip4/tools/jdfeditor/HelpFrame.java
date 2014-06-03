@@ -71,6 +71,7 @@
 package org.cip4.tools.jdfeditor;
 
 import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -103,15 +104,15 @@ public class HelpFrame extends JFrame
 	private final String[] titles = { "Element", "JDF Element", "RefElement", "Element with Error", "Attribute", "Inherited Attribute", "PartIDKey Attribute",
 			"Inherited PartIDKey Attribute", "Attriubte with Error" };
 
-	ImageIcon imgUp = Editor.getImageIcon(Editor.ICONS_PATH + "UpButton.gif");
-	ImageIcon imgVal = Editor.getImageIcon(Editor.ICONS_PATH + "RevalidateButton.gif");
+	ImageIcon imgUp = MainView.getImageIcon(MainView.ICONS_PATH + "UpButton.gif");
+	ImageIcon imgVal = MainView.getImageIcon(MainView.ICONS_PATH + "RevalidateButton.gif");
 
-	private final ImageIcon[] icons = { Editor.getImageIcon(Editor.ICONS_PATH + "ElemIcon.gif"),
-            Editor.getImageIcon(Editor.ICONS_PATH + "JDFElemIcon.gif"), Editor.getImageIcon(Editor.ICONS_PATH + "rRefElemIcon.gif"),
-            Editor.getImageIcon(Editor.ICONS_PATH + "ErrorElemIcon.gif"), Editor.getImageIcon(Editor.ICONS_PATH + "AttIconSelected.gif"),
-            Editor.getImageIcon(Editor.ICONS_PATH + "InhAttIconSelected.gif"), Editor.getImageIcon(Editor.ICONS_PATH + "PartIDKeysAttIconSelected.gif"),
-            Editor.getImageIcon(Editor.ICONS_PATH + "InhPartIDKeysAttIconSelected.gif"),
-            Editor.getImageIcon(Editor.ICONS_PATH + "ErrorAttIconSelected.gif") };
+	private final ImageIcon[] icons = { MainView.getImageIcon(MainView.ICONS_PATH + "ElemIcon.gif"),
+            MainView.getImageIcon(MainView.ICONS_PATH + "JDFElemIcon.gif"), MainView.getImageIcon(MainView.ICONS_PATH + "rRefElemIcon.gif"),
+            MainView.getImageIcon(MainView.ICONS_PATH + "ErrorElemIcon.gif"), MainView.getImageIcon(MainView.ICONS_PATH + "AttIconSelected.gif"),
+            MainView.getImageIcon(MainView.ICONS_PATH + "InhAttIconSelected.gif"), MainView.getImageIcon(MainView.ICONS_PATH + "PartIDKeysAttIconSelected.gif"),
+            MainView.getImageIcon(MainView.ICONS_PATH + "InhPartIDKeysAttIconSelected.gif"),
+            MainView.getImageIcon(MainView.ICONS_PATH + "ErrorAttIconSelected.gif") };
 
 	String startTags = "<html><font size=2 color=black face=verdana> ";
 	String startTagsLarge = "<html><font size=3 color=black face=verdana><b> ";
@@ -522,7 +523,7 @@ public class HelpFrame extends JFrame
 		@Override
 		public void mouseEntered(MouseEvent e)
 		{
-			Editor.setCursor(2, (Component) e.getSource());
+			MainView.setCursor(2, (Component) e.getSource());
 			if (e.getSource() == helpLabels[0])
 			{
 				helpLabels[0].setText(startTagsSmallSel + ResourceBundleUtil.getMessage("GettingStartedKey") + endTags);
@@ -548,7 +549,7 @@ public class HelpFrame extends JFrame
 		@Override
 		public void mouseExited(MouseEvent e)
 		{
-			Editor.setCursor(0, (Component) e.getSource());
+			MainView.setCursor(0, (Component) e.getSource());
 
 			if (e.getSource() == helpLabels[0])
 			{

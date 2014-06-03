@@ -89,6 +89,7 @@ import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.RecentFileUtil;
 import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -121,7 +122,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
     SettingService settingService = new SettingService();
 
-    private final Editor editor;
+    private final MainView editor;
 
     /**
 	 * Comment for <code>serialVersionU
@@ -172,14 +173,14 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 * constructor of the frame
 	 * 
 	 */
-	public JDFFrame(Editor editor)
+	public JDFFrame(MainView editor)
 	{
 		super("CIP4 JDF Editor");
         enableOSXFullscreen(this);
 
         this.editor = editor;
 
-		Editor.my_Frame = this;
+		MainView.my_Frame = this;
 		final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds(0, 0, d.width, d.height - 30);
 		m_menuBar = new EditorMenuBar();
@@ -206,12 +207,12 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 */
 	public void drawWindow()
 	{
-		Editor.setCursor(1, null);
+		MainView.setCursor(1, null);
 		this.setJMenuBar(m_menuBar.drawMenu());
 		this.getContentPane().add(drawBoxContent());
 		this.setEnableClose();
 		this.setVisible(true);
-		Editor.setCursor(0, null);
+		MainView.setCursor(0, null);
 	}
 
 	/**
@@ -455,7 +456,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				if (eDoc == null)
 				{
 					EditorUtils.errorBox("FileNotOpenKey", ": " + fileToRead.getName() + "!");
-					Editor.setCursor(0, Editor.getFrame());
+					MainView.setCursor(0, MainView.getFrame());
 				}
 				else
 				{
@@ -496,7 +497,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			path = eDoc.getLastSelection();
 		}
 
-		Editor.setCursor(1, null);
+		MainView.setCursor(1, null);
 		try
 		{
 			setEnableOpen(!settingService.getBoolean(SettingKey.GENERAL_READ_ONLY));
@@ -522,7 +523,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		}
 		finally
 		{
-			Editor.setCursor(0, null);
+			MainView.setCursor(0, null);
 		}
 	}
 
@@ -1039,7 +1040,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	@Override
 	public void actionPerformed(final ActionEvent e)
 	{
-		Editor.setCursor(1, null);
+		MainView.setCursor(1, null);
 
 		final Object eSrc = e.getSource();
 		if (eSrc == m_menuBar.m_exportItem)
@@ -1175,7 +1176,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				refresh();
 			}
 		}
-		Editor.setCursor(0, null);
+		MainView.setCursor(0, null);
 	}
 
 	/**
@@ -1253,7 +1254,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 */
 	public void updateViews(final TreePath path)
 	{
-		Editor.setCursor(1, null);
+		MainView.setCursor(1, null);
 		m_treeArea.repaint();
 		final EditorDocument ed = getEditorDoc();
 		if (path != null && ed != null)
@@ -1263,7 +1264,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			tree.scrollPathToVisible(path);
 			tree.setSelectionPath(path);
 		}
-		Editor.setCursor(0, null);
+		MainView.setCursor(0, null);
 	}
 
 	class CutItemEdit extends DeleteItemEdit

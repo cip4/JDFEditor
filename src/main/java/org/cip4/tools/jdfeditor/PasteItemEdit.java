@@ -1,4 +1,6 @@
 package org.cip4.tools.jdfeditor;
+import org.cip4.tools.jdfeditor.view.MainView;
+
 import javax.swing.tree.TreePath;
 import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotRedoException;
@@ -24,7 +26,7 @@ public class PasteItemEdit extends AbstractUndoableEdit
             final JDFTreeNode _intoNode,  
             final JDFTreeNode _pasteNode) 
     {
-        JDFFrame parFrame=Editor.getFrame();
+        JDFFrame parFrame= MainView.getFrame();
         path = treePath;
         intoNode = _intoNode;
         pasteNode = _pasteNode;
@@ -38,7 +40,7 @@ public class PasteItemEdit extends AbstractUndoableEdit
     @Override
 	public void undo() throws CannotUndoException 
     { 
-        JDFFrame parFrame=Editor.getFrame();
+        JDFFrame parFrame= MainView.getFrame();
         success = parFrame.getModel().deleteItem(pasteNodePath);
         pasteNodePath = null;
         parFrame.updateViews(path); 
@@ -47,7 +49,7 @@ public class PasteItemEdit extends AbstractUndoableEdit
     @Override
 	public void redo() throws CannotRedoException 
     {
-        JDFFrame parFrame=Editor.getFrame();
+        JDFFrame parFrame= MainView.getFrame();
         if (!pasteNode.isElement())
         {
             parFrame.getModel().setAttribute(intoNode, pasteNode.getName(), pasteNode.getValue(), null, false);

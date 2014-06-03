@@ -74,6 +74,7 @@ import javax.swing.tree.TreePath;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
+import org.cip4.tools.jdfeditor.view.MainView;
 import org.w3c.dom.Attr;
 
 /**
@@ -94,7 +95,7 @@ public class ModifyAttrEdit extends EditorUndoableEdit
 		path = treePath;
 		previousValue = previousVal;
 		attrNode = _attrNode;
-		Editor.getFrame().updateViews(path);
+		MainView.getFrame().updateViews(path);
 		canUndo = canRedo = true;
 	}
 
@@ -106,7 +107,7 @@ public class ModifyAttrEdit extends EditorUndoableEdit
 		atr.setNodeValue(previousValue);
 		previousValue = keep;
 		//        attrNode.setUserObject(atr);
-		Editor.getFrame().updateViews(path);
+		MainView.getFrame().updateViews(path);
 	}
 
 	@Override

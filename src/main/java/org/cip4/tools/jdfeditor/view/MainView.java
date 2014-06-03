@@ -68,12 +68,14 @@
  *  
  * 
  */
-package org.cip4.tools.jdfeditor;
+package org.cip4.tools.jdfeditor.view;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cip4.jdflib.core.*;
+import org.cip4.tools.jdfeditor.*;
+import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 
@@ -89,20 +91,32 @@ import java.io.InputStream;
 /**
  * Main class of JDFEditor.
  */
-public class Editor
+public class MainView
 {
-    private static final Logger LOGGER = LogManager.getLogger(Editor.class);
+    private static final Logger LOGGER = LogManager.getLogger(MainView.class);
 
     private SettingService settingService = new SettingService();
 
-	protected static JDFFrame my_Frame;
+    private MainController mainController;
 
-	static final String ICONS_PATH = "/org/cip4/tools/jdfeditor/icons/";
+
+	public static JDFFrame my_Frame;
+
+	public static final String ICONS_PATH = "/org/cip4/tools/jdfeditor/icons/";
 
     /**
      * Default constructor.
      */
-    public Editor() {
+    public MainView() {
+    }
+
+    /**
+     * Register a MainController for this view (MVC Pattern)
+     * @param mainController The MainController for this view.
+     */
+    public void registerController(final MainController mainController) {
+
+        this.mainController = mainController;
     }
 
     /**
@@ -110,11 +124,11 @@ public class Editor
      * @param res Resource String of Icon.
      * @return The ImageIcon object.
      */
-	static ImageIcon getImageIcon(String res)
+	public static ImageIcon getImageIcon(String res)
 	{
         // load icon
         ImageIcon imageIcon = null;
-        InputStream is = Editor.class.getResourceAsStream(res);
+        InputStream is = MainView.class.getResourceAsStream(res);
 
         try {
             byte[] bytes = IOUtils.toByteArray(is);
@@ -133,7 +147,7 @@ public class Editor
 	 * @param iWait 0 = ready; 1 = wait; 2 = hand
 	 * @param parentComponent the parent frame to set the cursor in, if null use the main frame
 	 */
-	static void setCursor(final int iWait, Component parentComponent)
+	public static void setCursor(final int iWait, Component parentComponent)
 	{
 		if (parentComponent == null)
 		{
@@ -159,7 +173,7 @@ public class Editor
 	 * Method instantiate the editor window
 	 * @param file the file to open initially
 	 */
-	public void init(final File file)
+	public void display(final File file)
 	{
 		try	{
             String currentLookAndFeel = settingService.getString(SettingKey.GENERAL_LOOK);
@@ -194,7 +208,7 @@ public class Editor
             }
         };
         my_Frame.addWindowListener(winLis);
-        my_Frame.setIconImage(Toolkit.getDefaultToolkit().getImage(Editor.class.getResource("/org/cip4/tools/jdfeditor/jdfeditor_128.png")));
+        my_Frame.setIconImage(Toolkit.getDefaultToolkit().getImage(MainView.class.getResource("/org/cip4/tools/jdfeditor/jdfeditor_128.png")));
 
         // this is only for the PC version
         if (file != null)

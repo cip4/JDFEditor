@@ -81,6 +81,7 @@ import org.cip4.jdflib.util.StringUtil;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.view.MainView;
 import org.cip4.tools.jdfeditor.view.renderer.JDFTreeCellRenderer;
 
 import javax.swing.*;
@@ -359,7 +360,7 @@ public class JDFTreeArea extends JTextArea
 
 	protected void modifyAttribute()
 	{
-		final TreePath path = Editor.getEditorDoc().getSelectionPath();
+		final TreePath path = MainView.getEditorDoc().getSelectionPath();
 		if (path != null)
 		{
 			final JDFTreeNode attrNode = (JDFTreeNode) path.getLastPathComponent();
@@ -398,8 +399,8 @@ public class JDFTreeArea extends JTextArea
 				}
 				if ((selectedValue != null) && !(selectedValue.equals(oldVal)))
 				{
-					Editor.getModel().setAttribute((JDFTreeNode) attrNode.getParent(), attributeName, selectedValue, null, false);
-					Editor.getModel().nodeChanged(attrNode);
+					MainView.getModel().setAttribute((JDFTreeNode) attrNode.getParent(), attributeName, selectedValue, null, false);
+					MainView.getModel().nodeChanged(attrNode);
 				}
 			}
 
@@ -436,7 +437,7 @@ public class JDFTreeArea extends JTextArea
 				beforeNode = (JDFTreeNode) beforeNode.getNextSibling();
 			}
 
-			final JDFTreeModel model = Editor.getModel();
+			final JDFTreeModel model = MainView.getModel();
 			model.insertElementBefore(parentNode, beforeNode);
 		}
 	}
@@ -449,7 +450,7 @@ public class JDFTreeArea extends JTextArea
 	{
 		if (path != null && !path.equals(JDFConstants.EMPTYSTRING))
 		{
-			final JDFTreeNode theRoot = (JDFTreeNode) Editor.getModel().getRootNode().getFirstChild();
+			final JDFTreeNode theRoot = (JDFTreeNode) MainView.getModel().getRootNode().getFirstChild();
 
 			if (path.equals(theRoot.getXPath()))
 			{
@@ -570,7 +571,7 @@ public class JDFTreeArea extends JTextArea
 			return;
 		}
 
-		final JDFTreeNode theRoot = (JDFTreeNode) Editor.getModel().getRootNode().getFirstChild();
+		final JDFTreeNode theRoot = (JDFTreeNode) MainView.getModel().getRootNode().getFirstChild();
 
 		boolean bRoot = false;
 		final Enumeration e = theRoot.depthFirstEnumeration();
@@ -596,7 +597,7 @@ public class JDFTreeArea extends JTextArea
 				{
 					if (searchNode.isInherited())
 					{
-						nodeFound = Editor.getModel().getInhNode(node, searchNode);
+						nodeFound = MainView.getModel().getInhNode(node, searchNode);
 					}
 				}
 			}
@@ -618,7 +619,7 @@ public class JDFTreeArea extends JTextArea
 	 */
 	synchronized public void findXPathElem()
 	{
-		final EditorDocument ed = Editor.getEditorDoc();
+		final EditorDocument ed = MainView.getEditorDoc();
 		if (ed == null)
 		{
 			return;
@@ -732,7 +733,7 @@ public class JDFTreeArea extends JTextArea
 					final JDFResourceLink resLink = jdfNode.linkResource(resource, usage, null);
 					if (resLink != null)
 					{
-						final JDFTreeNode resLinkNode = Editor.getModel().insertNewResourceLinkNode(jdfNode, node, hasResourceLinkPool, resLink);
+						final JDFTreeNode resLinkNode = MainView.getModel().insertNewResourceLinkNode(jdfNode, node, hasResourceLinkPool, resLink);
 						if (resLinkNode != null)
 						{
 							final InsertResourceLinkEdit edit = new InsertResourceLinkEdit(m_frame, jdfNode, node, hasResourceLinkPool, resLink, resLinkNode);
@@ -788,14 +789,14 @@ public class JDFTreeArea extends JTextArea
 					{
 						usage = input ? EnumUsage.Input : EnumUsage.Output;
 					}
-					resNode = Editor.getModel().insertNewResourceNode(jdfNode, node, selectedResource, hasResourcePool, usage);
+					resNode = MainView.getModel().insertNewResourceNode(jdfNode, node, selectedResource, hasResourcePool, usage);
 					if (withLink)
 					{
 						final VElement v = jdfNode.getResourceLinkPool().getPoolChildren(selectedResource + "Link", null, "");
 						if (v.size() > 0)
 						{
 							final JDFResourceLink resLink = (JDFResourceLink) v.get(v.size() - 1);
-							resLinkNode = Editor.getModel().insertNewResourceLinkNode(jdfNode, node, hasResourceLinkPool, resLink);
+							resLinkNode = MainView.getModel().insertNewResourceLinkNode(jdfNode, node, hasResourceLinkPool, resLink);
 						}
 					}
 					if (resNode != null) // resLinkNode may be == null in case when withLink == false
@@ -817,11 +818,11 @@ public class JDFTreeArea extends JTextArea
 	 */
 	public void insertAttrItem()
 	{
-		final TreePath path = Editor.getEditorDoc().getSelectionPath();
+		final TreePath path = MainView.getEditorDoc().getSelectionPath();
 		if (path != null)
 		{
 			final JDFTreeNode intoNode = (JDFTreeNode) path.getLastPathComponent();
-			final JDFTreeNode attrNode = Editor.getModel().insertAttributeIntoDoc(intoNode);
+			final JDFTreeNode attrNode = MainView.getModel().insertAttributeIntoDoc(intoNode);
 			if (attrNode != null)
 			{
 				final InsertAttrEdit edit = new InsertAttrEdit(path, attrNode);
@@ -834,7 +835,7 @@ public class JDFTreeArea extends JTextArea
 
 	private JTree getJDFTree()
 	{
-		final EditorDocument ed = Editor.getEditorDoc();
+		final EditorDocument ed = MainView.getEditorDoc();
 		return ed == null ? null : ed.getJDFTree();
 	}
 

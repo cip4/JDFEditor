@@ -76,6 +76,7 @@ import org.cip4.jdflib.core.VElement;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.swing.*;
 import javax.swing.tree.TreePath;
@@ -116,7 +117,7 @@ public class JDFTreeCopyNode
 
 		final VElement children = newChild.getChildElementVector(null, null, null, true, 0, false);
 
-		final JDFTreeModel model = Editor.getModel();
+		final JDFTreeModel model = MainView.getModel();
 		for (int i = 0; i < children.size(); i++)
 		{
 			final KElement childElm = children.item(i);
@@ -143,7 +144,7 @@ public class JDFTreeCopyNode
 		JDFTreeNode parentNode = (JDFTreeNode) path.getLastPathComponent();
 		JDFTreeNode newNode = null;
 		KElement parentElement = parentNode.getElement();
-		final JDFFrame m_frame = Editor.getFrame();
+		final JDFFrame m_frame = MainView.getFrame();
 		final JDFTreeModel model = m_frame.getModel();
 		if (treeNode.isElement())
 		{
@@ -189,7 +190,7 @@ public class JDFTreeCopyNode
 		JDFTreeNode parentNode = (JDFTreeNode) path.getLastPathComponent();
 		JDFTreeNode newNode = null;
 		KElement parentElement = parentNode.getElement();
-		final JDFFrame m_frame = Editor.getFrame();
+		final JDFFrame m_frame = MainView.getFrame();
 		final JDFTreeModel model = m_frame.getModel();
 		if (treeNode.isElement())
 		{

@@ -79,6 +79,7 @@ import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourceLinkPool;
 import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.swing.*;
 import javax.swing.tree.TreePath;
@@ -146,7 +147,7 @@ public class ProcessPanel extends JPanel
 	public void paintComponent(Graphics g)
 	{
 		super.paintComponent(g);
-		final EditorDocument editorDoc = Editor.getEditorDoc();
+		final EditorDocument editorDoc = MainView.getEditorDoc();
 		if (editorDoc == null)
 			return;
 		double zoom = editorDoc.getZoom();
@@ -181,7 +182,7 @@ public class ProcessPanel extends JPanel
 				g.drawString(s[i], parentPart.getxPos() + xMarg, parentPart.getyPos() + yMarg);
 			}
 
-			double zoom = Editor.getEditorDoc().getZoom();
+			double zoom = MainView.getEditorDoc().getZoom();
 			parentPart.setBounds((int) (parentPart.getxPos() * zoom), (int) (parentPart.getyPos() * zoom), (int) (parentPart.rawWidth * zoom), (int) (parentPart.rawHeight * zoom));
 			add(parentPart, -1);
 
@@ -314,7 +315,7 @@ public class ProcessPanel extends JPanel
 				g.drawString(s[j], part.getxPos() + xMarg, part.getyPos() + yMarg);
 			}
 
-			double zoom = Editor.getEditorDoc().getZoom();
+			double zoom = MainView.getEditorDoc().getZoom();
 			part.setBounds((int) (part.getxPos() * zoom), (int) (part.getyPos() * zoom), (int) (part.rawWidth * zoom), (int) (part.rawHeight * zoom));
 			add(part, 0);
 		}
@@ -402,7 +403,7 @@ public class ProcessPanel extends JPanel
 	 */
 	public void zoom(char c)
 	{
-		final EditorDocument editorDoc = Editor.getEditorDoc();
+		final EditorDocument editorDoc = MainView.getEditorDoc();
 		if (editorDoc == null)
 			return;
 		double zoom = editorDoc.getZoom();
@@ -421,7 +422,7 @@ public class ProcessPanel extends JPanel
 
 			zoom = wFactor < hFactor ? wFactor : hFactor;
 		}
-		Editor.getFrame().m_buttonBar.setEnableZoom(zoom);
+		MainView.getFrame().m_buttonBar.setEnableZoom(zoom);
 		revalidate();
 		d.width *= zoom;
 		d.height *= zoom;
@@ -477,7 +478,7 @@ public class ProcessPanel extends JPanel
 	{
 		if (element == null)
 			return;
-		JDFFrame m_frame = Editor.getFrame();
+		JDFFrame m_frame = MainView.getFrame();
 		if (element instanceof JDFNode)
 		{
 			removeAll();
@@ -495,12 +496,12 @@ public class ProcessPanel extends JPanel
 	void initProcessView()
 	{
 		clear();
-		JDFFrame m_frame = Editor.getFrame();
-		EditorDocument ed = Editor.getEditorDoc();
+		JDFFrame m_frame = MainView.getFrame();
+		EditorDocument ed = MainView.getEditorDoc();
 		if (ed == null)
 			return;
 
-		EditorDocument eDoc = Editor.getEditorDoc();
+		EditorDocument eDoc = MainView.getEditorDoc();
 
 		KElement kElement;
 
@@ -593,7 +594,7 @@ public class ProcessPanel extends JPanel
 			s.printStackTrace();
 		}
 		if (node != null)
-			Editor.getFrame().m_treeArea.findNode(node);
+			MainView.getFrame().m_treeArea.findNode(node);
 	}
 
 	/**
@@ -650,7 +651,7 @@ public class ProcessPanel extends JPanel
 	{
 		if (rootJDF == null)
 			return;
-		Editor.setCursor(1, null);
+		MainView.setCursor(1, null);
 		clear();
 
 		preparePopUp();
@@ -677,7 +678,7 @@ public class ProcessPanel extends JPanel
 
 		setPreferredSize(calcSize());
 		repaint();
-		Editor.setCursor(0, null);
+		MainView.setCursor(0, null);
 	}
 
 	/**

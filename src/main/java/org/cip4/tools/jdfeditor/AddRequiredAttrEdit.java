@@ -70,6 +70,8 @@
 */
 package org.cip4.tools.jdfeditor;
 
+import org.cip4.tools.jdfeditor.view.MainView;
+
 import javax.swing.tree.TreePath;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
@@ -103,7 +105,7 @@ public class AddRequiredAttrEdit extends EditorUndoableEdit
 
 		this.intoNode = intoNod;
 		this.addedVector = addedVect;
-		Editor.getFrame().updateViews(path);
+		MainView.getFrame().updateViews(path);
 	}
 
 	/**
@@ -116,9 +118,9 @@ public class AddRequiredAttrEdit extends EditorUndoableEdit
 		for (int i = 0; i < addedVector.size(); i++)
 		{
 			JDFTreeNode attrNode = addedVector.elementAt(i);
-			Editor.getModel().deleteNode(attrNode, null);
+			MainView.getModel().deleteNode(attrNode, null);
 		}
-		Editor.getFrame().updateViews(path);
+		MainView.getFrame().updateViews(path);
 		super.undo();
 	}
 
@@ -132,10 +134,10 @@ public class AddRequiredAttrEdit extends EditorUndoableEdit
 		for (int i = 0; i < addedVector.size(); i++)
 		{
 			JDFTreeNode attrNode = addedVector.elementAt(i);
-			attrNode = Editor.getModel().setAttribute(intoNode, attrNode.getName(), attrNode.getValue(), null, false);
+			attrNode = MainView.getModel().setAttribute(intoNode, attrNode.getName(), attrNode.getValue(), null, false);
 			addedVector.setElementAt(attrNode, i);
 		}
-		Editor.getFrame().updateViews(path);
+		MainView.getFrame().updateViews(path);
 		super.redo();
 	}
 

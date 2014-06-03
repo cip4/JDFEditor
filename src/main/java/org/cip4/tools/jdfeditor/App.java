@@ -3,6 +3,7 @@ package org.cip4.tools.jdfeditor;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.cip4.jdflib.core.JDFAudit;
+import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.util.DirectoryUtil;
 
 import java.io.File;
@@ -58,9 +59,13 @@ public class App {
             }
         }
 
+        // show main view
+        MainController mainController = new MainController();
+        mainController.displayForm();
+
         // start editor
-        Editor editor = new Editor();
-        editor.init(file);
+        // MainView editor = new MainView();
+        // editor.init(file);
     }
 
     /**

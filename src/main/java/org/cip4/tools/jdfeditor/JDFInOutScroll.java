@@ -77,6 +77,7 @@ import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourceLinkPool;
 import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.view.MainView;
 import org.cip4.tools.jdfeditor.view.renderer.JDFResourceTreeCellRenderer;
 
 import javax.swing.*;
@@ -173,7 +174,7 @@ public class JDFInOutScroll extends JScrollPane
 
 		m_inOutArea.repaint();
 		getViewport().add(m_inOutArea, null);
-		final JDFFrame m_frame = Editor.getFrame();
+		final JDFFrame m_frame = MainView.getFrame();
 		final EditorTabbedPaneA editorTabbedPaneA = m_frame.m_topTabs;
 		editorTabbedPaneA.setComponentAt(editorTabbedPaneA.m_IO_INDEX, this);
 		editorTabbedPaneA.setSelectedIndex(editorTabbedPaneA.m_IO_INDEX);
@@ -244,8 +245,8 @@ public class JDFInOutScroll extends JScrollPane
 	 */
 	public void findStringInNeighbourTree(final String inString, final boolean forwardDirection, final boolean bIgnoreCase)
 	{
-		Editor.setCursor(1, null);
-		final JDFFrame m_frame = Editor.getFrame();
+		MainView.setCursor(1, null);
+		final JDFFrame m_frame = MainView.getFrame();
 		if (m_frame.m_searchTree != null && m_searchInOutNode != null && inString != null && !inString.equals(JDFConstants.EMPTYSTRING))
 		{
 			boolean found = false;
@@ -469,7 +470,7 @@ public class JDFInOutScroll extends JScrollPane
 				((JLabel) ((Box) ((Box) m_frame.m_dialog.getContentPane().getComponent(1)).getComponent(7)).getComponent(1)).setText(ResourceBundleUtil.getMessage("StringNotFoundKey"));
 			}
 		}
-		Editor.setCursor(0, null);
+		MainView.setCursor(0, null);
 	}
 
 	public JTree findIt()
@@ -538,7 +539,7 @@ public class JDFInOutScroll extends JScrollPane
 	{
 		if (eDoc == null)
 		{
-			eDoc = Editor.getEditorDoc();
+			eDoc = MainView.getEditorDoc();
 		}
 
 		if (eDoc == null)
@@ -546,11 +547,11 @@ public class JDFInOutScroll extends JScrollPane
 			return;
 		}
 
-		Editor.setCursor(1, null);
+		MainView.setCursor(1, null);
 		final TreePath path = eDoc.getSelectionPath();
 
 		JDFTreeNode node = null;
-		final JDFFrame m_frame = Editor.getFrame();
+		final JDFFrame m_frame = MainView.getFrame();
 
 		if (path != null)
 		{
@@ -563,7 +564,7 @@ public class JDFInOutScroll extends JScrollPane
 		}
 		if (node == null)
 		{
-			Editor.setCursor(0, null);
+			MainView.setCursor(0, null);
 			return;
 		}
 
@@ -645,7 +646,7 @@ public class JDFInOutScroll extends JScrollPane
 				}
 			}
 		}
-		Editor.setCursor(0, null);
+		MainView.setCursor(0, null);
 	}
 
 	/**
@@ -670,7 +671,7 @@ public class JDFInOutScroll extends JScrollPane
 
 				if (SwingUtilities.isLeftMouseButton(e) && !e.isControlDown())
 				{
-					final JDFFrame m_frame = Editor.getFrame();
+					final JDFFrame m_frame = MainView.getFrame();
 
 					final TreePath path = tree.getSelectionPath();
 					if (path != null)
@@ -688,7 +689,7 @@ public class JDFInOutScroll extends JScrollPane
 
 						if (node.isElement())
 						{
-							final JDFFrame m_frame = Editor.getFrame();
+							final JDFFrame m_frame = MainView.getFrame();
 
 							m_frame.m_treeArea.findNode(node);
 							clearInOutView();

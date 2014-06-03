@@ -85,6 +85,7 @@ import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.mail.Multipart;
 import javax.swing.*;
@@ -137,7 +138,7 @@ public class SendToDevice extends JPanel implements ActionListener
 	 */
 	private void init()
 	{
-		final JDFDoc d = Editor.getJDFDoc();
+		final JDFDoc d = MainView.getJDFDoc();
 		final JDFJMF jmf = d == null ? null : d.getJMFRoot();
 		final JLabel urlText = new JLabel(ResourceBundleUtil.getMessage("setURL"));
 		urlText.setVerticalAlignment(SwingConstants.BOTTOM);
@@ -244,7 +245,7 @@ public class SendToDevice extends JPanel implements ActionListener
 			EditorUtils.errorBox("ErrorSendDevice", "URL =null");
 		}
 		// create a JMF message
-		final EditorDocument editorDoc = Editor.getEditorDoc();
+		final EditorDocument editorDoc = MainView.getEditorDoc();
 		final JDFDoc theDoc = editorDoc.getJDFDoc();
 		final JDFJMF theJMF = theDoc.getJMFRoot();
 		if (theJMF != null || isRaw())
@@ -280,7 +281,7 @@ public class SendToDevice extends JPanel implements ActionListener
 		}
 		int rc = -2;
 		String message = "Snafu";
-		final EditorDocument editorDoc = Editor.getEditorDoc();
+		final EditorDocument editorDoc = MainView.getEditorDoc();
 		if (editorDoc == null)
 		{
 			return false;
@@ -341,7 +342,7 @@ public class SendToDevice extends JPanel implements ActionListener
 		final JDFReturnQueueEntryParams rqp = command.appendReturnQueueEntryParams();
 		int rc = -2;
 		String message = "Snafu";
-		final EditorDocument editorDoc = Editor.getEditorDoc();
+		final EditorDocument editorDoc = MainView.getEditorDoc();
 		if (editorDoc == null)
 		{
 			return false;
@@ -406,7 +407,7 @@ public class SendToDevice extends JPanel implements ActionListener
 	private boolean sendRaw(final URL url)
 	{
 		boolean bSendTrue = true;
-		final EditorDocument editorDoc = Editor.getEditorDoc();
+		final EditorDocument editorDoc = MainView.getEditorDoc();
 		final JDFDoc theDoc = editorDoc == null ? null : editorDoc.getJDFDoc();
 		if (theDoc == null)
 		{
@@ -443,14 +444,14 @@ public class SendToDevice extends JPanel implements ActionListener
 			final JDFDoc d2 = new JDFParser().parseStream(con.getInputStream());
 			if (d2 != null)
 			{
-				String newFileName = Editor.getEditorDoc().getOriginalFileName();
+				String newFileName = MainView.getEditorDoc().getOriginalFileName();
 				newFileName = UrlUtil.newExtension(newFileName, ".resp.jmf");
 				d2.write2File(newFileName, 2, true);
-				Editor.getFrame().readFile(new File(newFileName));
+				MainView.getFrame().readFile(new File(newFileName));
 			}
 			else
 			{
-				JOptionPane.showMessageDialog(Editor.getFrame(), "No Message Response recieved");
+				JOptionPane.showMessageDialog(MainView.getFrame(), "No Message Response recieved");
 			}
 		}
 	}
@@ -500,7 +501,7 @@ public class SendToDevice extends JPanel implements ActionListener
 	 */
 	public void trySend()
 	{
-		if (Editor.getEditorDoc() == null)
+		if (MainView.getEditorDoc() == null)
 		{
 			return;
 		}
@@ -508,7 +509,7 @@ public class SendToDevice extends JPanel implements ActionListener
 		boolean bSendTrue = false;
 		final String[] options = { ResourceBundleUtil.getMessage("OkKey"), ResourceBundleUtil.getMessage("CancelKey") };
 
-		final int option = JOptionPane.showOptionDialog(Editor.getFrame(), this, ResourceBundleUtil.getMessage("JDFSendToDevice"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+		final int option = JOptionPane.showOptionDialog(MainView.getFrame(), this, ResourceBundleUtil.getMessage("JDFSendToDevice"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
 		if (option == JOptionPane.OK_OPTION)
 		{
@@ -522,11 +523,11 @@ public class SendToDevice extends JPanel implements ActionListener
 		sLabel += "\n\nURL= " + url.toExternalForm();
 		if (bSendTrue)
 		{
-			JOptionPane.showMessageDialog(Editor.getFrame(), sLabel, "", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(MainView.getFrame(), sLabel, "", JOptionPane.INFORMATION_MESSAGE);
 		}
 		else
 		{
-			JOptionPane.showMessageDialog(Editor.getFrame(), sLabel, "SNAFU", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(MainView.getFrame(), sLabel, "SNAFU", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 

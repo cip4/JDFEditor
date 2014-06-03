@@ -76,6 +76,7 @@ import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.swing.*;
 import javax.swing.tree.TreePath;
@@ -160,7 +161,7 @@ public class EditorTabbedPaneA extends JTabbedPane
 			{
 				e.getID(); // fool compiler
 				onSelect();
-				EditorDocument ed = Editor.getEditorDoc();
+				EditorDocument ed = MainView.getEditorDoc();
 				if (ed != null)
 					ed.setTopTab(getSelectedIndex());
 			}
@@ -175,7 +176,7 @@ public class EditorTabbedPaneA extends JTabbedPane
 	 */
 	public boolean processAreaIsNull()
 	{
-		if (m_pArea == null || getSelectedIndex() != m_PROC_INDEX || Editor.getFrame().m_treeArea.getTreeView().getComponent(0).getClass().equals(JTextArea.class))
+		if (m_pArea == null || getSelectedIndex() != m_PROC_INDEX || MainView.getFrame().m_treeArea.getTreeView().getComponent(0).getClass().equals(JTextArea.class))
 			return true;
 
 		return false;
@@ -189,7 +190,7 @@ public class EditorTabbedPaneA extends JTabbedPane
 	public boolean inOutIsNull()
 	{
 		if (m_inOutScrollPane.m_inOutArea == null || getSelectedIndex() != m_IO_INDEX
-				|| Editor.getFrame().m_treeArea.getTreeView().getComponent(0).getClass().equals(JTextArea.class))
+				|| MainView.getFrame().m_treeArea.getTreeView().getComponent(0).getClass().equals(JTextArea.class))
 			return true;
 
 		return false;
@@ -200,7 +201,7 @@ public class EditorTabbedPaneA extends JTabbedPane
 	 */
 	void showComment()
 	{
-		JDFFrame m_frame = Editor.getFrame();
+		JDFFrame m_frame = MainView.getFrame();
 
 		EditorDocument ed = m_frame.getEditorDoc();
 		if (ed.getSelectionPath() != null)
@@ -285,7 +286,7 @@ public class EditorTabbedPaneA extends JTabbedPane
 	{
 		final int selectedIndex = getSelectedIndex();
 		final boolean bProcSel = selectedIndex == m_PROC_INDEX;
-		JDFFrame m_frame = Editor.getFrame();
+		JDFFrame m_frame = MainView.getFrame();
 		m_frame.m_buttonBar.setEnableZoom(1.1);
 		if (bProcSel)
 		{

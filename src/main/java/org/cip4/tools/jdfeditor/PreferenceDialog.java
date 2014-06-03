@@ -78,6 +78,7 @@ import org.cip4.jdflib.util.StringUtil;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -124,12 +125,12 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	 */
 	private static final long serialVersionUID = 1350654061722234773L;
 
-	final private ImageIcon sweFlag = Editor.getImageIcon(Editor.ICONS_PATH + "SwedishFlag.gif");
-	final private ImageIcon engFlag = Editor.getImageIcon(Editor.ICONS_PATH + "GreatBrittainFlag.gif");
-	final private ImageIcon freFlag = Editor.getImageIcon(Editor.ICONS_PATH + "FrenchFlag.gif");
-	final private ImageIcon gerFlag = Editor.getImageIcon(Editor.ICONS_PATH + "GermanFlag.gif");
-	final private ImageIcon spaFlag = Editor.getImageIcon(Editor.ICONS_PATH + "SpanishFlag.gif");
-	final private ImageIcon japFlag = Editor.getImageIcon(Editor.ICONS_PATH + "JapanFlag.gif");
+	final private ImageIcon sweFlag = MainView.getImageIcon(MainView.ICONS_PATH + "SwedishFlag.gif");
+	final private ImageIcon engFlag = MainView.getImageIcon(MainView.ICONS_PATH + "GreatBrittainFlag.gif");
+	final private ImageIcon freFlag = MainView.getImageIcon(MainView.ICONS_PATH + "FrenchFlag.gif");
+	final private ImageIcon gerFlag = MainView.getImageIcon(MainView.ICONS_PATH + "GermanFlag.gif");
+	final private ImageIcon spaFlag = MainView.getImageIcon(MainView.ICONS_PATH + "SpanishFlag.gif");
+	final private ImageIcon japFlag = MainView.getImageIcon(MainView.ICONS_PATH + "JapanFlag.gif");
 
 	protected JPanel[] panels;
 
@@ -265,7 +266,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
 	private void applyLnF()
 	{
-		final JDFFrame f = Editor.getFrame();
+		final JDFFrame f = MainView.getFrame();
 		settingService.setString(SettingKey.GENERAL_LOOK, currLNF);
 		f.applyLookAndFeel(this);
 	}
@@ -331,7 +332,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
 	private void drawPane()
 	{
-		Editor.setCursor(0, null);
+		MainView.setCursor(0, null);
 
 		panels = new JPanel[10];
 		int n = 0;
@@ -358,7 +359,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		final JPanel goldenTicket = createGoldenTicketPref();
 		prepareTab(n++, goldenTicket, "GoldenTicketKey");
 
-		Editor.setCursor(0, null);
+		MainView.setCursor(0, null);
 	}
 
 	private void prepareTab(final int n, final JPanel gen, final String resKey)

@@ -81,6 +81,7 @@ import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.RecentFileUtil;
 import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.swing.*;
 import javax.swing.tree.TreePath;
@@ -202,8 +203,8 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		 */
 		private void openRecentFile(final File fileToSave)
 		{
-			Editor.setCursor(1, null);
-			final boolean b = Editor.getFrame().readFile(fileToSave);
+			MainView.setCursor(1, null);
+			final boolean b = MainView.getFrame().readFile(fileToSave);
 
 			if (b)
 			{
@@ -218,7 +219,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 			{
 				EditorUtils.errorBox("OpenJDFErrorKey", fileToSave.getPath().toString());
 			}
-			Editor.setCursor(0, null);
+			MainView.setCursor(0, null);
 		}
 
 		/**
@@ -261,9 +262,9 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
-			Editor.setCursor(1, null);
+			MainView.setCursor(1, null);
 			final Object eSrc = e.getSource();
-			final JDFFrame frame = Editor.getFrame();
+			final JDFFrame frame = MainView.getFrame();
 
 			/*
 			 * Action that is performed when select File->New
@@ -278,23 +279,23 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 			}
 			else if (eSrc == m_closeItem)
 			{
-				Editor.getFrame().closeFile(1);
+				MainView.getFrame().closeFile(1);
 			}
 			else if (eSrc == m_closeAllItem)
 			{
-				Editor.getFrame().closeFile(99999);
+				MainView.getFrame().closeFile(99999);
 			}
 			else if (eSrc == m_saveAsItem)
 			{
-				Editor.getFrame().saveAs();
+				MainView.getFrame().saveAs();
 			}
 			else if (eSrc == m_saveItem)
 			{
-				Editor.getFrame().save();
+				MainView.getFrame().save();
 			}
 			else if (eSrc == m_csvItem)
 			{
-				Editor.getModel().saveAsCSV(null);
+				MainView.getModel().saveAsCSV(null);
 			}
 			else if (eSrc == m_devcapOpenMenu)
 			{
@@ -320,7 +321,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 					openRecentFile(new File(newFile));
 				}
 			}
-			Editor.setCursor(0, null);
+			MainView.setCursor(0, null);
 		}
 
 		protected void setEnableOpen(final boolean mode)
@@ -341,7 +342,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		protected void drawFileMenu()
 		{
 			final Color menuColor = getBackground();
-			final JDFFrame m_frame = Editor.getFrame();
+			final JDFFrame m_frame = MainView.getFrame();
 			final Menu_MouseListener menuListener = new Menu_MouseListener();
 			final int menuKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
@@ -442,7 +443,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	 */
 	private JMenu drawEditMenu()
 	{
-		final JDFFrame frame = Editor.getFrame();
+		final JDFFrame frame = MainView.getFrame();
 		final Menu_MouseListener menuListener = new Menu_MouseListener();
 		final int menuKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
@@ -518,7 +519,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	 */
 	private JMenu drawHelpMenu()
 	{
-		final JDFFrame m_frame = Editor.getFrame();
+		final JDFFrame m_frame = MainView.getFrame();
 		final Menu_MouseListener menuListener = new Menu_MouseListener();
 		final int menuKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
@@ -613,7 +614,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	{
 		final Menu_MouseListener menuListener = new Menu_MouseListener();
 
-		final JDFFrame m_frame = Editor.getFrame();
+		final JDFFrame m_frame = MainView.getFrame();
 		m_insertMenu = new JMenu(ResourceBundleUtil.getMessage("main.menu.insert"));
 		m_insertMenu.setBorderPainted(false);
 		m_insertMenu.addMouseListener(menuListener);
@@ -689,7 +690,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	{
 		final Menu_MouseListener menuListener = new Menu_MouseListener();
 
-		final JDFFrame m_frame = Editor.getFrame();
+		final JDFFrame m_frame = MainView.getFrame();
 		m_toolsMenu = new JMenu(ResourceBundleUtil.getMessage("main.menu.tools"));
 		m_toolsMenu.setBorderPainted(false);
 		m_toolsMenu.addMouseListener(menuListener);
@@ -754,7 +755,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	private JMenu drawValidateMenu()
 	{
 		final int menuKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
-		final JDFFrame m_frame = Editor.getFrame();
+		final JDFFrame m_frame = MainView.getFrame();
 
 		m_validateMenu = new JMenu(ResourceBundleUtil.getMessage("main.menu.tools.validate"));
 		m_validateMenu.setBorderPainted(false);
@@ -861,7 +862,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	 */
 	public void updateWindowsMenu()
 	{
-		final JDFFrame m_frame = Editor.getFrame();
+		final JDFFrame m_frame = MainView.getFrame();
 		if (m_frame.m_DocPos >= 0)
 		{
 			JMenuItem mwindows[] = null;
@@ -921,7 +922,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 	protected void setEnabledInMenu(final TreePath path)
 	{
-		final JDFFrame m_frame = Editor.getFrame();
+		final JDFFrame m_frame = MainView.getFrame();
 		final JDFTreeNode node = (JDFTreeNode) path.getLastPathComponent();
 		final JDFTreeNode parNode = (JDFTreeNode) node.getParent();
 		Object parent = null;
@@ -1084,9 +1085,9 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	@Override
 	public void actionPerformed(final ActionEvent e)
 	{
-		Editor.setCursor(1, null);
+		MainView.setCursor(1, null);
 		final Object eSrc = e.getSource();
-		final JDFFrame frame = Editor.getFrame();
+		final JDFFrame frame = MainView.getFrame();
 		final JDFTreeArea ta = frame.m_treeArea;
 		if (eSrc == m_showInhAttrRadioItem)
 		{
@@ -1124,41 +1125,41 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		/*
 		 * Action that is performed when select File->New
 		 */
-		else if (eSrc == m_QuickValidateItem && Editor.getModel() != null)
+		else if (eSrc == m_QuickValidateItem && MainView.getModel() != null)
 		{
-			Editor.getModel().validate();
+			MainView.getModel().validate();
 		}
 		else if (eSrc == m_deleteItem)
 		{
-			Editor.getModel().deleteSelectedNodes();
+			MainView.getModel().deleteSelectedNodes();
 		}
 		else if (eSrc == m_fixCleanupItem)
 		{
-			Editor.getFrame().cleanupSelected();
+			MainView.getFrame().cleanupSelected();
 		}
 		else if (eSrc == m_removeExtenisionItem)
 		{
-			Editor.getFrame().removeExtensionsfromSelected();
+			MainView.getFrame().removeExtensionsfromSelected();
 		}
 		else if (eSrc == m_findXPathItem)
 		{
-			Editor.getFrame().m_treeArea.findXPathElem();
+			MainView.getFrame().m_treeArea.findXPathElem();
 		}
 		else if (eSrc == m_spawnItem)
 		{
-			Editor.getModel().spawn(false);
+			MainView.getModel().spawn(false);
 		}
 		else if (eSrc == m_spawnInformItem)
 		{
-			Editor.getModel().spawn(true);
+			MainView.getModel().spawn(true);
 		}
 		else if (eSrc == m_mergeItem)
 		{
-			Editor.getModel().merge();
+			MainView.getModel().merge();
 		}
 		else if (eSrc == m_aboutItem)
 		{
-			final ImageIcon imgCIP = Editor.getImageIcon(Editor.ICONS_PATH + "CIP4.gif");
+			final ImageIcon imgCIP = MainView.getImageIcon(MainView.ICONS_PATH + "CIP4.gif");
 
 			final String about = getAboutText();
 			JOptionPane.showMessageDialog(this, about, "CIP4 JDF Editor", JOptionPane.INFORMATION_MESSAGE, imgCIP);
@@ -1172,7 +1173,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
                     LOGGER.error("Error opening Online Help.", ex);
                 }
             } else {
-                final ImageIcon imgCIP = Editor.getImageIcon(Editor.ICONS_PATH + "CIP4.gif");
+                final ImageIcon imgCIP = MainView.getImageIcon(MainView.ICONS_PATH + "CIP4.gif");
                 JOptionPane.showMessageDialog(this, "see http://cip4.org/jdfeditor", "CIP4 JDF Editor", JOptionPane.INFORMATION_MESSAGE, imgCIP);
             }
 		}
@@ -1188,12 +1189,12 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 			{
 				if (eSrc == m_Windows[i])
 				{
-					Editor.getFrame().nextFile(i);
+					MainView.getFrame().nextFile(i);
 				}
 			}
 		}
 
-		Editor.setCursor(0, null);
+		MainView.setCursor(0, null);
 
 	}
 
@@ -1218,7 +1219,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	 */
 	private void toggleAttributes()
 	{
-		final JDFFrame frame = Editor.getFrame();
+		final JDFFrame frame = MainView.getFrame();
 		final JDFTreeArea ta = frame.m_treeArea;
 
 		if (!m_showAttrRadioItem.isSelected())
@@ -1247,7 +1248,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 	private JDFDoc getJDFDoc()
 	{
-		final EditorDocument ed = Editor.getFrame().getEditorDoc();
+		final EditorDocument ed = MainView.getFrame().getEditorDoc();
 		return ed == null ? null : ed.getJDFDoc();
 	}
 
@@ -1281,7 +1282,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		if (option == JOptionPane.OK_OPTION)
 		{
 			pd.writeToIni();
-			final EditorDocument ed = Editor.getEditorDoc();
+			final EditorDocument ed = MainView.getEditorDoc();
 			if (ed != null && ed.getJDFTree() != null)
 			{
 				ed.getJDFTree().repaint();

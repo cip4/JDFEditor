@@ -75,6 +75,7 @@ import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.util.JDFSpawn;
 import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -117,7 +118,7 @@ public class SpawnDialog extends JPanel implements ActionListener
 		super();
 		this.selectedJDF = selectJDF;
 		this.originalFile = new File(selectJDF.getOwnerDocument_KElement().getOriginalFileName());
-		this.parFrame = Editor.getFrame();
+		this.parFrame = MainView.getFrame();
 
 		final XMLDoc originalDoc = selectJDF.getOwnerDocument_KElement();
 		this.originalJDF = (JDFNode) originalDoc.getRoot();

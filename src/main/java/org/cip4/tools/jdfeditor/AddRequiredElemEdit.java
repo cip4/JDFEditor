@@ -77,6 +77,7 @@ import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
 import org.cip4.jdflib.core.KElement;
+import org.cip4.tools.jdfeditor.view.MainView;
 
 /**
  * AddRequiredElemEdit.java
@@ -104,7 +105,7 @@ public class AddRequiredElemEdit extends EditorUndoableEdit
 		this.intoNode = _intoNode;
 		this.addedVector = _addedVector;
 		canUndo = _addedVector.size() > 0;
-		Editor.getFrame().updateViews(path);
+		MainView.getFrame().updateViews(path);
 	}
 
 	/**
@@ -118,9 +119,9 @@ public class AddRequiredElemEdit extends EditorUndoableEdit
 		{
 			JDFTreeNode elemNode = addedVector.elementAt(i);
 			TreePath elemPath = new TreePath(elemNode.getPath());
-			Editor.getModel().deleteItem(elemPath);
+			MainView.getModel().deleteItem(elemPath);
 		}
-		Editor.getFrame().updateViews(path);
+		MainView.getFrame().updateViews(path);
 		super.undo();
 	}
 
@@ -136,10 +137,10 @@ public class AddRequiredElemEdit extends EditorUndoableEdit
 		{
 			JDFTreeNode elemNode = addedVector.elementAt(i);
 			KElement element = elemNode.getElement();
-			Editor.getModel().insertInto(elemNode, intoNode, -1);
+			MainView.getModel().insertInto(elemNode, intoNode, -1);
 			intoElement.appendChild(element);
 		}
-		Editor.getFrame().updateViews(path);
+		MainView.getFrame().updateViews(path);
 		super.redo();
 	}
 

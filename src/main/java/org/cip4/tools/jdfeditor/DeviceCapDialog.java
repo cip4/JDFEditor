@@ -84,6 +84,7 @@ import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -129,7 +130,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 	public DeviceCapDialog(final JDFDoc doc)
 	{
 		super();
-		JDFFrame parent = Editor.getFrame();
+		JDFFrame parent = MainView.getFrame();
 		KElement docRoot = doc.getRoot();
 
 		// idFile = iniFile.getRecentDevCap();
@@ -184,7 +185,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 						}
 						else
 						{
-							Editor.setCursor(1, null);
+							MainView.setCursor(1, null);
 							if (docRoot instanceof JDFNode)
 							{
 								final JDFDevice device = (JDFDevice) jmfRoot.getXPathElement("Response/DeviceList/DeviceInfo/Device");
@@ -253,7 +254,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 				JOptionPane.showMessageDialog(parent, "File is not accepted", "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		}
-		Editor.setCursor(0, null);
+		MainView.setCursor(0, null);
 	}
 
 	/**
@@ -373,7 +374,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 	public void actionPerformed(ActionEvent e)
 	{
 		final Object source = e.getSource();
-		JDFFrame parent = Editor.getFrame();
+		JDFFrame parent = MainView.getFrame();
 		if (source == browse)
 		{
 			final EditorFileChooser files = new EditorFileChooser(idFile, "xml jdf");

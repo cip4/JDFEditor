@@ -9,6 +9,7 @@ import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.util.JDFMerge;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -43,7 +44,7 @@ public class MergeDialog extends JPanel implements ActionListener
 	public MergeDialog(final JDFNode jdfRoot)
 	{
 		super();
-		this.parFrame = Editor.getFrame();
+		this.parFrame = MainView.getFrame();
 		final XMLDoc originalDoc = jdfRoot.getOwnerDocument_KElement();
 		this.file = new File(originalDoc.getOriginalFileName());
 

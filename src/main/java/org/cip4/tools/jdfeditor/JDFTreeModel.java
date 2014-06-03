@@ -94,6 +94,7 @@ import org.cip4.tools.jdfeditor.extension.Caps;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.view.MainView;
 import org.w3c.dom.Attr;
 
 import javax.swing.*;
@@ -119,12 +120,12 @@ public class JDFTreeModel extends DefaultTreeModel
 	 */
 	void spawn(final boolean bSpawnInformative)
 	{
-		final EditorDocument ed = Editor.getEditorDoc();
+		final EditorDocument ed = MainView.getEditorDoc();
 		if (ed == null)
 		{
 			return;
 		}
-		JDFFrame frame = Editor.getFrame();
+		JDFFrame frame = MainView.getFrame();
 		try
 		{
 			final JDFTreeNode node = (JDFTreeNode) ed.getSelectionPath().getLastPathComponent();
@@ -154,12 +155,12 @@ public class JDFTreeModel extends DefaultTreeModel
 	 */
 	void unspawn()
 	{
-		final EditorDocument ed = Editor.getEditorDoc();
+		final EditorDocument ed = MainView.getEditorDoc();
 		if (ed == null)
 		{
 			return;
 		}
-		JDFFrame frame = Editor.getFrame();
+		JDFFrame frame = MainView.getFrame();
 		try
 		{
 			final JDFTreeNode node = (JDFTreeNode) ed.getSelectionPath().getLastPathComponent();
@@ -188,15 +189,15 @@ public class JDFTreeModel extends DefaultTreeModel
 	 */
 	void merge()
 	{
-		JDFFrame frame = Editor.getFrame();
+		JDFFrame frame = MainView.getFrame();
 		try
 		{
-			final MergeDialog mergeResult = new MergeDialog(Editor.getJDFDoc().getJDFRoot());
+			final MergeDialog mergeResult = new MergeDialog(MainView.getJDFDoc().getJDFRoot());
 
 			final File f = mergeResult.getFileToSave();
 			if (f != null)
 			{
-				frame.refreshView(Editor.getEditorDoc(), null);
+				frame.refreshView(MainView.getEditorDoc(), null);
 			}
 		}
 		catch (final Exception e)
@@ -233,7 +234,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	{
 		Runtime.getRuntime().gc(); // clean up before validating
 		// this may be what needs to be done (i.e. getFrame()) for the variables in other methods that are being moved from JDFFrame to here.
-		final JDFFrame m_frame = Editor.getFrame();
+		final JDFFrame m_frame = MainView.getFrame();
 		final JDFDoc theDoc = m_frame.getJDFDoc();
 		if (theDoc == null)
 		{
@@ -315,7 +316,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 		m_frame.m_errorTabbedPane.m_validErrScroll.drawCheckJDFOutputTree(validationResult);
 		m_frame.m_errorTabbedPane.m_SchemaErrScroll.drawSchemaOutputTree(schemaValidationResult);
-		Editor.getEditorDoc().getJDFTree().repaint();
+		MainView.getEditorDoc().getJDFTree().repaint();
 		m_frame.m_treeArea.goToPath(m_frame.m_treeArea.getSelectionPath());
 		return validationResult.getRoot().getFirstChildElement().getBoolAttribute("IsValid", null, true);
 	}
@@ -348,13 +349,13 @@ public class JDFTreeModel extends DefaultTreeModel
 			addRequiredElements(newNode);
 			insertInto(newNode, parentNode, parentNode.getIndex(beforeNode));
 
-			Editor.getFrame().updateViews(new TreePath(newNode.getPath()));
+			MainView.getFrame().updateViews(new TreePath(newNode.getPath()));
 			if (settingService.getBoolean(SettingKey.GENERAL_AUTO_VALIDATE))
 			{
 				validate();
 			}
 			final InsertElementEdit edit = new InsertElementEdit(beforeNode, newNode, "Insert Element");
-			Editor.getFrame().undoSupport.postEdit(edit);
+			MainView.getFrame().undoSupport.postEdit(edit);
 		}
 	}
 
@@ -898,7 +899,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		final JDFTreeNode node = (JDFTreeNode) path.getLastPathComponent();
 		final KElement originalElement = node.getElement();
 		String selectedName = null;
-		final JDFFrame m_frame = Editor.getFrame();
+		final JDFFrame m_frame = MainView.getFrame();
 		if (node.isElement())
 		{
 			final KElement parentElement = originalElement.getParentNode_KElement();
@@ -965,10 +966,10 @@ public class JDFTreeModel extends DefaultTreeModel
 	 */
 	public void deleteSelectedNodes()
 	{
-		final TreePath[] paths = Editor.getEditorDoc().getSelectionPaths();
+		final TreePath[] paths = MainView.getEditorDoc().getSelectionPaths();
 		if (paths != null)
 		{
-			final JDFFrame m_frame = Editor.getFrame();
+			final JDFFrame m_frame = MainView.getFrame();
 			for (int i = paths.length - 1; i >= 0; i--)
 			{
 				final DeleteItemEdit edit = new DeleteItemEdit(paths[i]);
@@ -1046,7 +1047,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		}
 		autoValidate();
 
-		final JDFFrame m_frame = Editor.getFrame();
+		final JDFFrame m_frame = MainView.getFrame();
 		final EditorDocument ed = m_frame.getEditorDoc();
 		final JTree jtree = ed.getJDFTree();
 		m_frame.m_topTabs.m_inOutScrollPane.clearInOutView();
@@ -1132,7 +1133,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		{
 			node = (JDFTreeNode) node.getParent();
 		}
-		final JDFFrame m_frame = Editor.getFrame();
+		final JDFFrame m_frame = MainView.getFrame();
 
 		final KElement element = node.getElement();
 		final String[] possibleValues = EditorUtils.getAttributeOptions(element);
@@ -1182,7 +1183,7 @@ public class JDFTreeModel extends DefaultTreeModel
 			ns = parentElement.getNamespaceURIFromPrefix(ns);
 			if (ns == null)
 			{
-				ns = JOptionPane.showInputDialog(Editor.getFrame(), ResourceBundleUtil.getMessage("ChoosePrefixKey"), "");
+				ns = JOptionPane.showInputDialog(MainView.getFrame(), ResourceBundleUtil.getMessage("ChoosePrefixKey"), "");
 			}
 			if (ns == null || ns.equals(JDFConstants.EMPTYSTRING))
 			{
@@ -1205,7 +1206,7 @@ public class JDFTreeModel extends DefaultTreeModel
 			return;
 		}
 		final KElement e = node.getElement();
-		final EditorDocument eDoc = Editor.getEditorDoc();
+		final EditorDocument eDoc = MainView.getEditorDoc();
 		final String fn = eDoc.getOriginalFileName();
 		KElement xJDF = null;
 		if (e instanceof JDFNode)
@@ -1221,7 +1222,7 @@ public class JDFTreeModel extends DefaultTreeModel
 			final XMLDoc d = xJDF.getOwnerDocument_KElement();
 			final String fnNew = UrlUtil.newExtension(fn, XJDF20.getExtension());
 			d.write2File(fnNew, 2, false);
-			Editor.getFrame().readFile(new File(fnNew));
+			MainView.getFrame().readFile(new File(fnNew));
 		}
 	}
 
@@ -1240,7 +1241,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		{
 			return;
 		}
-		final EditorDocument eDoc = Editor.getEditorDoc();
+		final EditorDocument eDoc = MainView.getEditorDoc();
 		String fn = eDoc.getOriginalFileName();
 		fn = UrlUtil.newExtension(fn, "csv");
 
@@ -1274,14 +1275,14 @@ public class JDFTreeModel extends DefaultTreeModel
 			return;
 		}
 		final KElement e = node.getElement();
-		final EditorDocument eDoc = Editor.getEditorDoc();
+		final EditorDocument eDoc = MainView.getEditorDoc();
 		final String fn = eDoc.getOriginalFileName();
 		final JDFDoc d = c.convert(e);
 		if (d != null)
 		{
 			final String fnNew = UrlUtil.newExtension(fn, ".xjdf.jdf");
 			d.write2File(fnNew, 2, false);
-			Editor.getFrame().readFile(new File(fnNew));
+			MainView.getFrame().readFile(new File(fnNew));
 		}
 		else
 		{
@@ -1303,14 +1304,14 @@ public class JDFTreeModel extends DefaultTreeModel
 			return;
 		}
 		final KElement e = node.getElement();
-		final EditorDocument eDoc = Editor.getEditorDoc();
+		final EditorDocument eDoc = MainView.getEditorDoc();
 		final String fn = eDoc.getOriginalFileName();
 		final KElement caps = new Caps(e).createCaps(structuredCaps);
 		final XMLDoc d = caps.getOwnerDocument_KElement();
 		final String fnNew = UrlUtil.newExtension(fn, "cap");
 		d.write2File(fnNew, 2, false);
 		// VString badCaps=Caps.getBadAttributes(d, e);
-		Editor.getFrame().readFile(new File(fnNew));
+		MainView.getFrame().readFile(new File(fnNew));
 	}
 
 	/**
@@ -1324,7 +1325,7 @@ public class JDFTreeModel extends DefaultTreeModel
 			return;
 		}
 		final JDFDeviceCap dc = (JDFDeviceCap) node.getElement();
-		final EditorDocument eDoc = Editor.getEditorDoc();
+		final EditorDocument eDoc = MainView.getEditorDoc();
 		final String fn = eDoc.getOriginalFileName();
 
 		final JDFDoc d = new JDFDoc("JDF");
@@ -1332,7 +1333,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		dc.setDefaultsFromCaps(n, true, settingService.getBoolean(SettingKey.VALIDATION_GENERATE_FULL));
 		final String fnNew = UrlUtil.newExtension(fn, ".generated.JDF");
 		d.write2File(fnNew, 2, false);
-		Editor.getFrame().readFile(new File(fnNew));
+		MainView.getFrame().readFile(new File(fnNew));
 	}
 
 	/**
@@ -1350,7 +1351,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		{
 			e.sortChildren();
 		}
-		Editor.getFrame().refreshView(null, selectionPath);
+		MainView.getFrame().refreshView(null, selectionPath);
 
 	}
 

@@ -81,6 +81,7 @@ import org.cip4.jdflib.resource.JDFModified;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.swing.*;
 import javax.swing.tree.TreePath;
@@ -123,7 +124,7 @@ public class FixVersionDialog extends JPanel implements ActionListener
 
 		init();
 		final String[] options = { ResourceBundleUtil.getMessage("FixVersionKey"), ResourceBundleUtil.getMessage("CancelKey") };
-		final int option = JOptionPane.showOptionDialog(Editor.getFrame(), this, "Fix Version in file", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+		final int option = JOptionPane.showOptionDialog(MainView.getFrame(), this, "Fix Version in file", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
 		if (option == JOptionPane.OK_OPTION)
 		{
@@ -283,7 +284,7 @@ public class FixVersionDialog extends JPanel implements ActionListener
 				element.eraseEmptyNodes(true);
 			}
 
-			Editor.getFrame().refreshView(Editor.getEditorDoc(), path);
+			MainView.getFrame().refreshView(MainView.getEditorDoc(), path);
 		}
 		catch (final Exception e)
 		{

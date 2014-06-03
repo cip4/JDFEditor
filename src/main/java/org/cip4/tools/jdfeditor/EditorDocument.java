@@ -85,6 +85,7 @@ import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
+import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.mail.BodyPart;
 import javax.mail.Multipart;
@@ -392,7 +393,7 @@ public class EditorDocument
 	@SuppressWarnings("unchecked")
 	private TreePath getPathFromNode(final JDFTreeNode selNode)
 	{
-		final JDFTreeModel model = Editor.getModel();
+		final JDFTreeModel model = MainView.getModel();
 		if (model == null)
 		{
 			return null;
@@ -473,7 +474,7 @@ public class EditorDocument
 
 	protected void enableNextLast()
 	{
-		final EditorButtonBar editorButtonBar = Editor.getFrame().m_buttonBar;
+		final EditorButtonBar editorButtonBar = MainView.getFrame().m_buttonBar;
 		editorButtonBar.m_LastButton.setEnabled(m_HistoryPos != 0 && m_PathHistory.size() > 1);
 		editorButtonBar.m_NextButton.setEnabled(m_HistoryPos != m_PathHistory.size() - 1 && m_PathHistory.size() > 1);
 	}

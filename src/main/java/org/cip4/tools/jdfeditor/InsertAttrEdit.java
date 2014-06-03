@@ -70,6 +70,8 @@
  */
 package org.cip4.tools.jdfeditor;
 
+import org.cip4.tools.jdfeditor.view.MainView;
+
 import javax.swing.tree.TreePath;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
@@ -98,24 +100,24 @@ public class InsertAttrEdit extends EditorUndoableEdit
              intoNode = (JDFTreeNode) path.getParentPath().getLastPathComponent();
 
          pos = intoNode.getIndex(attrNode);
-         Editor.getFrame().updateViews(path);
+         MainView.getFrame().updateViews(path);
     }
 
     @Override
 	public void undo() throws CannotUndoException 
     { 
          TreePath attrPath=new TreePath(attrNode.getPath());
-         Editor.getModel().deleteItem(attrPath);
-         Editor.getFrame().updateViews(path);
+         MainView.getModel().deleteItem(attrPath);
+         MainView.getFrame().updateViews(path);
          super.undo();
     }
 
     @Override
 	public void redo() throws CannotRedoException 
     {
-        Editor.getModel().insertInto(attrNode, intoNode, pos);
+        MainView.getModel().insertInto(attrNode, intoNode, pos);
         intoNode.getElement().setAttributeNode(attrNode.getAttr());
-        Editor.getFrame().updateViews(path);
+        MainView.getFrame().updateViews(path);
         super.redo();
     }
 

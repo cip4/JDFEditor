@@ -89,6 +89,7 @@ import org.cip4.tools.jdfeditor.dialog.SaveAsXJDFDialog;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.swing.*;
 import javax.swing.tree.TreePath;
@@ -195,8 +196,8 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 			doc.setOriginalFileName("Auto" + mService.getType() + ".jmf");
 			final JDFMessage m = jmf.getMessageElement(f, EnumType.getEnum(mService.getType()), 0);
 			extendMessage(m);
-			Editor.getFrame().setJDFDoc(doc, null);
-			Editor.getTreeArea().drawTreeView(Editor.getEditorDoc());
+			MainView.getFrame().setJDFDoc(doc, null);
+			MainView.getTreeArea().drawTreeView(MainView.getEditorDoc());
 
 			return true;
 		}
@@ -382,7 +383,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 	 */
 	private void setEnabledInMouseMenu(final JDFTreeNode node, final KElement elem)
 	{
-		final JDFFrame m_frame = Editor.getFrame();
+		final JDFFrame m_frame = MainView.getFrame();
 		final boolean isElement = node.isElement();
 		if (isElement && elem != null)
 		{
@@ -464,10 +465,10 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 	@Override
 	public void actionPerformed(final ActionEvent e)
 	{
-		Editor.setCursor(1, null);
+		MainView.setCursor(1, null);
 
 		final Object eSrc = e.getSource();
-		final JDFFrame frame = Editor.getFrame();
+		final JDFFrame frame = MainView.getFrame();
 		final JDFTreeArea treeArea = frame.m_treeArea;
 
 		if (!settingService.getBoolean(SettingKey.GENERAL_READ_ONLY))
@@ -546,9 +547,9 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 			}
 			else if (eSrc == m_deletePopupItem)
 			{
-				Editor.getModel().deleteSelectedNodes();
+				MainView.getModel().deleteSelectedNodes();
 			}
-			Editor.getFrame().refreshView(null, treeArea.getSelectionPath());
+			MainView.getFrame().refreshView(null, treeArea.getSelectionPath());
 		}
 		if (eSrc == m_xpandPopupItem)
 		{
@@ -571,7 +572,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 			SaveAsXJDFDialog d = new SaveAsXJDFDialog();
 			if (d.isOK())
 			{
-				Editor.getModel().saveAsXJDF(treeArea.getSelectionPath(), d.getXJDFConverter());
+				MainView.getModel().saveAsXJDF(treeArea.getSelectionPath(), d.getXJDFConverter());
 			}
 		}
 		else if (eSrc == m_saveJDF)
@@ -579,36 +580,36 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 			SaveAsJDFDialog d = new SaveAsJDFDialog();
 			if (d.isOK())
 			{
-				Editor.getModel().saveAsJDF(treeArea.getSelectionPath(), d.getConverter());
+				MainView.getModel().saveAsJDF(treeArea.getSelectionPath(), d.getConverter());
 			}
 		}
 		else if (eSrc == m_saveXJDFCaps)
 		{
-			Editor.getModel().saveAsXJDFCaps(treeArea.getSelectionPath(), true);
+			MainView.getModel().saveAsXJDFCaps(treeArea.getSelectionPath(), true);
 		}
 		else if (eSrc == m_spawn)
 		{
-			Editor.getModel().spawn(false);
-			Editor.getFrame().refreshView(null, treeArea.getSelectionPath());
+			MainView.getModel().spawn(false);
+			MainView.getFrame().refreshView(null, treeArea.getSelectionPath());
 		}
 		else if (eSrc == m_unspawn)
 		{
-			Editor.getModel().unspawn();
-			Editor.getFrame().refreshView(null, treeArea.getSelectionPath());
+			MainView.getModel().unspawn();
+			MainView.getFrame().refreshView(null, treeArea.getSelectionPath());
 		}
 		else if (eSrc == m_nodeFromCaps)
 		{
-			Editor.getModel().createNodeFromCaps(treeArea.getSelectionPath());
+			MainView.getModel().createNodeFromCaps(treeArea.getSelectionPath());
 		}
 		else if (eSrc == m_normalize)
 		{
-			Editor.getModel().normalize(treeArea.getSelectionPath());
+			MainView.getModel().normalize(treeArea.getSelectionPath());
 		}
 		else if (eSrc == m_sendMessage)
 		{
 			sendJMF(treeArea.getSelectionPath());
 		}
-		Editor.setCursor(0, null);
+		MainView.setCursor(0, null);
 
 	}
 

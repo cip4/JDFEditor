@@ -77,6 +77,7 @@ import org.cip4.tools.jdfeditor.dialog.SearchComboBoxModel;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.swing.*;
 import javax.swing.tree.TreePath;
@@ -131,7 +132,7 @@ public class SearchDialog extends JDialog implements ActionListener
 	 */
 	public SearchDialog(final String _searchComponent)
 	{
-		super(Editor.getFrame());
+		super(MainView.getFrame());
 
 		setTitle(ResourceBundleUtil.getMessage("FindKey"));
 		searchComponent = _searchComponent;
@@ -242,7 +243,7 @@ public class SearchDialog extends JDialog implements ActionListener
 		else if (eSrc == m_cancelButton)
 		{
 			dispose();
-			Editor.getFrame().m_dialog = null;
+			MainView.getFrame().m_dialog = null;
 		}
 		else if (eSrc == m_IgnoreCase)
 		{
@@ -299,7 +300,7 @@ public class SearchDialog extends JDialog implements ActionListener
 			if (path != null)
 			{
 				lastPos = nextPos;
-				Editor.getEditorDoc().setSelectionPath(path, true);
+				MainView.getEditorDoc().setSelectionPath(path, true);
 			}
 			else
 			{
@@ -308,7 +309,7 @@ public class SearchDialog extends JDialog implements ActionListener
 		}
 		else if (searchComponent.equals("NeighbourTree"))
 		{
-			Editor.getFrame().m_topTabs.m_inOutScrollPane.findStringInNeighbourTree(lastSearch, forwardDirection, m_IgnoreCase.isSelected());
+			MainView.getFrame().m_topTabs.m_inOutScrollPane.findStringInNeighbourTree(lastSearch, forwardDirection, m_IgnoreCase.isSelected());
 		}
 	}
 
@@ -326,12 +327,12 @@ public class SearchDialog extends JDialog implements ActionListener
 	{
 		m_LastResults = new Vector<JDFTreeNode>();
 		final boolean bForward = m_forwardRadioButton.isSelected();
-		final TreePath selectionPath = Editor.getFrame().m_treeArea.getSelectionPath();
+		final TreePath selectionPath = MainView.getFrame().m_treeArea.getSelectionPath();
 		final JDFTreeNode currentNode = selectionPath == null ? null : (JDFTreeNode) selectionPath.getLastPathComponent();
 		if (StringUtil.getNonEmpty(lastSearch) != null)
 		{
 			@SuppressWarnings("unchecked")
-			final Enumeration<JDFTreeNode> tmpEnumeration = ((JDFTreeNode) Editor.getModel().getRootNode().getFirstChild()).preorderEnumeration();
+			final Enumeration<JDFTreeNode> tmpEnumeration = ((JDFTreeNode) MainView.getModel().getRootNode().getFirstChild()).preorderEnumeration();
 			final String upSearch = lastSearch.toUpperCase();
 			while (tmpEnumeration.hasMoreElements())
 			{

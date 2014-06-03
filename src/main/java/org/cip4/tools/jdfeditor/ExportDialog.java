@@ -75,6 +75,7 @@ import org.cip4.jdflib.node.JDFNode;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -112,7 +113,7 @@ public class ExportDialog extends JPanel implements ActionListener
 		super();
 		this.originalFile = new File(jdfRoot.getOwnerDocument_KElement().getOriginalFileName());
 		generAttrString = settingService.getString(SettingKey.VALIDATION_GENERIC_ATTR);
-		JDFFrame frame = Editor.getFrame();
+		JDFFrame frame = MainView.getFrame();
 		init();
 		final String[] options = { ResourceBundleUtil.getMessage("OkKey"), ResourceBundleUtil.getMessage("CancelKey") };
 
@@ -224,7 +225,7 @@ public class ExportDialog extends JPanel implements ActionListener
 		final JLabel label = new JLabel(ResourceBundleUtil.getMessage("DCOpenAfterGenerationKey"));
 		final String[] options = { ResourceBundleUtil.getMessage("YesKey"), ResourceBundleUtil.getMessage("NoKey") };
 
-		final int option = JOptionPane.showOptionDialog(Editor.getFrame(), label, ResourceBundleUtil.getMessage("DCHappyMessageKey"), JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+		final int option = JOptionPane.showOptionDialog(MainView.getFrame(), label, ResourceBundleUtil.getMessage("DCHappyMessageKey"), JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 
 		if (option == JOptionPane.OK_OPTION)
 		{
@@ -269,7 +270,7 @@ public class ExportDialog extends JPanel implements ActionListener
 		if (e.getSource() == browse)
 		{
 			final EditorFileChooser files = new EditorFileChooser(newDCFile, "xml jdf jmf");
-			final int option = files.showOpenDialog(Editor.getFrame());
+			final int option = files.showOpenDialog(MainView.getFrame());
 
 			if (option == JFileChooser.APPROVE_OPTION)
 			{

@@ -76,6 +76,7 @@ import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
 import org.cip4.jdflib.core.KElement;
+import org.cip4.tools.jdfeditor.view.MainView;
 
 /*
  * InsertElementAfterEdit.java
@@ -102,7 +103,7 @@ public class InsertElementEdit extends EditorUndoableEdit
          presentationString=_presentationString;         
          newNodePath = new TreePath(_newNode.getPath());
 
-         Editor.getFrame().updateViews(newNodePath);
+         MainView.getFrame().updateViews(newNodePath);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////
@@ -110,8 +111,8 @@ public class InsertElementEdit extends EditorUndoableEdit
     @Override
 	public void undo() throws CannotUndoException 
     {
-        Editor.getModel().deleteItem(newNodePath);
-        Editor.getFrame().updateViews(newNodePath.getParentPath());
+        MainView.getModel().deleteItem(newNodePath);
+        MainView.getFrame().updateViews(newNodePath.getParentPath());
         super.undo();
     }
     
@@ -124,9 +125,9 @@ public class InsertElementEdit extends EditorUndoableEdit
         final JDFTreeNode parentNode=(JDFTreeNode) newNodePath.getParentPath().getLastPathComponent();
         final KElement parentElement = parentNode.getElement();
         KElement beforeElement= beforeNode==null ? null : beforeNode.getElement();
-        Editor.getModel().insertInto(newNode, parentNode, parentNode.getIndex(beforeNode));
+        MainView.getModel().insertInto(newNode, parentNode, parentNode.getIndex(beforeNode));
         parentElement.insertBefore(newElement, beforeElement);
-        Editor.getFrame().updateViews(newNodePath);
+        MainView.getFrame().updateViews(newNodePath);
         super.redo();
     }
 

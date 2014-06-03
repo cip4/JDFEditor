@@ -70,6 +70,8 @@
 */
 package org.cip4.tools.jdfeditor;
 
+import org.cip4.tools.jdfeditor.view.MainView;
+
 import javax.swing.tree.TreePath;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
@@ -101,7 +103,7 @@ public class DeleteItemEdit extends EditorUndoableEdit
             if(parentNode!=null)
             {
                 pos = parentNode.getIndex(delNode);                
-                bOK= Editor.getModel().deleteItem(treePath);
+                bOK= MainView.getModel().deleteItem(treePath);
             }
         }
         if(!bOK)
@@ -110,7 +112,7 @@ public class DeleteItemEdit extends EditorUndoableEdit
         }
         else
         {
-            Editor.getFrame().updateViews(parentPath);
+            MainView.getFrame().updateViews(parentPath);
         }
         canUndo=delNode!=null&&bOK;
     }
@@ -121,16 +123,16 @@ public class DeleteItemEdit extends EditorUndoableEdit
     {
         if (!delNode.isElement())
         {
-            delNode = Editor.getModel().setAttribute(parentNode, delNode.getName(), delNode.getValue(), null, false);
+            delNode = MainView.getModel().setAttribute(parentNode, delNode.getName(), delNode.getValue(), null, false);
         }
         else 
         {
             parentNode.getElement().appendChild(delNode.getElement());
-            Editor.getModel().insertInto(delNode, parentNode, pos);      
+            MainView.getModel().insertInto(delNode, parentNode, pos);
         }
         
         TreePath path=new TreePath(delNode.getPath());
-        Editor.getFrame().updateViews(path);
+        MainView.getFrame().updateViews(path);
         super.undo();
     }
 
@@ -138,8 +140,8 @@ public class DeleteItemEdit extends EditorUndoableEdit
 	public void redo() throws CannotRedoException 
     {
         TreePath path=new TreePath(delNode.getPath());
-        Editor.getModel().deleteNode(delNode,path);
-        Editor.getFrame().updateViews(path.getParentPath());
+        MainView.getModel().deleteNode(delNode,path);
+        MainView.getFrame().updateViews(path.getParentPath());
         super.redo();
     }
 

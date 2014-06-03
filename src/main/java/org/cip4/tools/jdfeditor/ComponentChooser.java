@@ -71,6 +71,7 @@
 package org.cip4.tools.jdfeditor;
 
 import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -121,7 +122,7 @@ public class ComponentChooser extends JPanel implements ActionListener
 		processButton = new JRadioButton(ResourceBundleUtil.getMessage("ProcessViewKey"));
 		processButton.setActionCommand(ResourceBundleUtil.getMessage("ProcessViewKey"));
 		rbg.add(processButton);
-		final JDFFrame frame = Editor.getFrame();
+		final JDFFrame frame = MainView.getFrame();
 		if (frame.m_topTabs.processAreaIsNull())
 			processButton.setEnabled(false);
 		else

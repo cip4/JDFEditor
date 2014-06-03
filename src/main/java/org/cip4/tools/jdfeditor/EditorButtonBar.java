@@ -76,6 +76,7 @@ import org.cip4.tools.jdfeditor.dialog.SaveAsXJDFDialog;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -149,34 +150,34 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 	public void drawButtonBar()
 	{
 
-		final ImageIcon imgNew = Editor.getImageIcon(Editor.ICONS_PATH + "toolbar/new.png");
-		final ImageIcon imgOpen = Editor.getImageIcon(Editor.ICONS_PATH + "toolbar/open.png");
-		final ImageIcon imgSave = Editor.getImageIcon(Editor.ICONS_PATH + "toolbar/save.png");
+		final ImageIcon imgNew = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/new.png");
+		final ImageIcon imgOpen = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/open.png");
+		final ImageIcon imgSave = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/save.png");
 
-        final ImageIcon imgPrint = Editor.getImageIcon(Editor.ICONS_PATH + "toolbar/print.png");
-        final ImageIcon imgRefresh = Editor.getImageIcon(Editor.ICONS_PATH + "toolbar/refresh.png");
+        final ImageIcon imgPrint = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/print.png");
+        final ImageIcon imgRefresh = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/refresh.png");
 
-		final ImageIcon imgCut = Editor.getImageIcon(Editor.ICONS_PATH + "toolbar/cut.png");
-		final ImageIcon imgCopy = Editor.getImageIcon(Editor.ICONS_PATH + "toolbar/copy.png");
-		final ImageIcon imgPaste = Editor.getImageIcon(Editor.ICONS_PATH + "toolbar/paste.png");
+		final ImageIcon imgCut = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/cut.png");
+		final ImageIcon imgCopy = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/copy.png");
+		final ImageIcon imgPaste = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/paste.png");
 
-        final ImageIcon imgJDF = Editor.getImageIcon(Editor.ICONS_PATH + "toolbar/jdf.png");
-        final ImageIcon imgXJDF = Editor.getImageIcon(Editor.ICONS_PATH + "toolbar/xjdf.png");
+        final ImageIcon imgJDF = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/jdf.png");
+        final ImageIcon imgXJDF = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/xjdf.png");
 
-		final ImageIcon imgUndo = Editor.getImageIcon(Editor.ICONS_PATH + "toolbar/undo.png");
-		final ImageIcon imgRedo = Editor.getImageIcon(Editor.ICONS_PATH + "toolbar/redo.png");
+		final ImageIcon imgUndo = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/undo.png");
+		final ImageIcon imgRedo = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/redo.png");
 
-		final ImageIcon imgReval = Editor.getImageIcon(Editor.ICONS_PATH + "toolbar/validate.png");
-		final ImageIcon imgUp = Editor.getImageIcon(Editor.ICONS_PATH + "toolbar/arrow_up.png");
-		final ImageIcon imgLast = Editor.getImageIcon(Editor.ICONS_PATH + "toolbar/arrow_left.png");
-		final ImageIcon imgNext = Editor.getImageIcon(Editor.ICONS_PATH + "toolbar/arrow_right.png");
+		final ImageIcon imgReval = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/validate.png");
+		final ImageIcon imgUp = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/arrow_up.png");
+		final ImageIcon imgLast = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/arrow_left.png");
+		final ImageIcon imgNext = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/arrow_right.png");
 
-		final ImageIcon imgZoomIn = Editor.getImageIcon(Editor.ICONS_PATH + "toolbar/zoom-in.png");
-		final ImageIcon imgZoomOut = Editor.getImageIcon(Editor.ICONS_PATH + "toolbar/zoom-out.png");
-		final ImageIcon imgZoomOrig = Editor.getImageIcon(Editor.ICONS_PATH + "toolbar/zoom-original.png");
-		final ImageIcon imgZoomBest = Editor.getImageIcon(Editor.ICONS_PATH + "toolbar/zoom-fit-best.png");
+		final ImageIcon imgZoomIn = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/zoom-in.png");
+		final ImageIcon imgZoomOut = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/zoom-out.png");
+		final ImageIcon imgZoomOrig = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/zoom-original.png");
+		final ImageIcon imgZoomBest = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/zoom-fit-best.png");
 
-        final ImageIcon imgClose = Editor.getImageIcon(Editor.ICONS_PATH + "toolbar/close.png");
+        final ImageIcon imgClose = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/close.png");
 
 
 		final Dimension d = new Dimension(10, 30);
@@ -265,7 +266,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 	 */
 	public void setEnableZoom(double zoom)
 	{
-		if (Editor.getEditorDoc() == null)
+		if (MainView.getEditorDoc() == null)
 		{
 			m_zoomOutButton.setEnabled(false);
 			m_zoomInButton.setEnabled(false);
@@ -323,7 +324,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 
 		m_validateButton.setEnabled(true);
 		m_printButton.setEnabled(true);
-		EditorDocument eDoc = Editor.getEditorDoc();
+		EditorDocument eDoc = MainView.getEditorDoc();
 		m_refreshButton.setEnabled(eDoc == null ? true : eDoc.getMimePackage() == null);
 	}
 
@@ -337,7 +338,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 	{
 
 		final Object eSrc = e.getSource();
-		Editor.setCursor(1, null);
+		MainView.setCursor(1, null);
 		if (eSrc == m_newButton) // new document
 		{
 			m_frame.newFile();
@@ -367,7 +368,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
             SaveAsJDFDialog d = new SaveAsJDFDialog();
             if (d.isOK())
             {
-                Editor.getModel().saveAsJDF(null, d.getConverter());
+                MainView.getModel().saveAsJDF(null, d.getConverter());
             }
         }
         else if (eSrc == m_convert2XJdf) // convert 2 XJDF
@@ -375,7 +376,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
             SaveAsXJDFDialog d = new SaveAsXJDFDialog();
             if (d.isOK())
             {
-                Editor.getModel().saveAsXJDF(null, d.getXJDFConverter());
+                MainView.getModel().saveAsXJDF(null, d.getXJDFConverter());
             }
         }
 		else if (eSrc == m_upOneLevelButton) // navigate up
@@ -385,11 +386,11 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 
 		else if (eSrc == m_NextButton) // navigate next
 		{
-			Editor.getEditorDoc().setNextSelection();
+			MainView.getEditorDoc().setNextSelection();
 		}
 		else if (eSrc == m_LastButton) // navigate last
 		{
-			Editor.getEditorDoc().setLastSelection();
+			MainView.getEditorDoc().setLastSelection();
 		}
 		else if (eSrc == m_printButton)  // print
 		{
@@ -435,7 +436,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 			}
 		}
 		// always clean up!
-		Editor.setCursor(0, null);
+		MainView.setCursor(0, null);
 	}
 
 	///////////////////////////////////////////////////////////////
