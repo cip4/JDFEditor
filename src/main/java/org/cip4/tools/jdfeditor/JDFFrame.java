@@ -1053,7 +1053,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				System.exit(0);
 			}
 		}
-		else if (eSrc == m_menuBar.m_versionItem)
+		else if (eSrc == m_menuBar.m_infoItem)
 		{
 			JOptionPane.showMessageDialog(this, App.APP_NAME + "\n" + App.APP_VERSION + " (" + App.APP_RELEASE_DATE + ")\n"
 					+ this.editor.getEditorVersion(), "Version", JOptionPane.INFORMATION_MESSAGE);
