@@ -295,25 +295,29 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		this.currValidate = settingService.getBoolean(SettingKey.GENERAL_AUTO_VALIDATE);
 		this.currReadOnly = settingService.getBoolean(SettingKey.GENERAL_READ_ONLY);
 		this.currMethodSendToDevice = settingService.getString(SettingKey.GENERAL_LOOK);
-		longID = settingService.getBoolean(SettingKey.GENERAL_LONG_ID);
-		updateJobID = settingService.getBoolean(SettingKey.GENERAL_UPDATE_JOBID);
-		useSchema = settingService.getBoolean(SettingKey.GENERAL_USE_SCHEMA);
-		schemaFile = new File(settingService.getString(SettingKey.VALIDATION_SCHEMA_URL));
-		currRemoveDefault = settingService.getBoolean(SettingKey.GENERAL_REMOVE_DEFAULT);
-		currRemoveWhite = settingService.getBoolean(SettingKey.GENERAL_REMOVE_WHITE);
-		currIndentSave = settingService.getBoolean(SettingKey.GENERAL_INDENT);
-		currDispDefault = settingService.getBoolean(SettingKey.GENERAL_DISPLAY_DEFAULT);
-		checkURL = settingService.getBoolean(SettingKey.VALIDATION_CHECK_URL);
+		this.longID = settingService.getBoolean(SettingKey.GENERAL_LONG_ID);
+		this.updateJobID = settingService.getBoolean(SettingKey.GENERAL_UPDATE_JOBID);
+		this.useSchema = settingService.getBoolean(SettingKey.GENERAL_USE_SCHEMA);
 
-		genericStrings = settingService.getString(SettingKey.VALIDATION_GENERIC_ATTR);
-		generateFull = settingService.getBoolean(SettingKey.VALIDATION_GENERATE_FULL);
-		normalizeOpen = settingService.getBoolean(SettingKey.GENERAL_NORMALIZE);
-		ignoreDefaults = settingService.getBoolean(SettingKey.VALIDATION_IGNORE_DEFAULT);
+        if(settingService.getString(SettingKey.VALIDATION_SCHEMA_URL) != null) {
+            this.schemaFile = new File(settingService.getString(SettingKey.VALIDATION_SCHEMA_URL));
+        }
 
-		validationVersion = EnumVersion.getEnum(settingService.getString(SettingKey.VALIDATION_VERSION));
-		validationLevel = EnumValidationLevel.getEnum(settingService.getString(SettingKey.VALIDATION_LEVEL));
-		exportValidation = settingService.getBoolean(SettingKey.VALIDATION_EXPORT);
-		misURL = settingService.getString(SettingKey.GOLDENTICKET_MISURL);
+		this.currRemoveDefault = settingService.getBoolean(SettingKey.GENERAL_REMOVE_DEFAULT);
+		this.currRemoveWhite = settingService.getBoolean(SettingKey.GENERAL_REMOVE_WHITE);
+		this.currIndentSave = settingService.getBoolean(SettingKey.GENERAL_INDENT);
+		this.currDispDefault = settingService.getBoolean(SettingKey.GENERAL_DISPLAY_DEFAULT);
+		this.checkURL = settingService.getBoolean(SettingKey.VALIDATION_CHECK_URL);
+
+		this.genericStrings = settingService.getString(SettingKey.VALIDATION_GENERIC_ATTR);
+		this.generateFull = settingService.getBoolean(SettingKey.VALIDATION_GENERATE_FULL);
+		this.normalizeOpen = settingService.getBoolean(SettingKey.GENERAL_NORMALIZE);
+		this.ignoreDefaults = settingService.getBoolean(SettingKey.VALIDATION_IGNORE_DEFAULT);
+
+		this.validationVersion = EnumVersion.getEnum(settingService.getString(SettingKey.VALIDATION_VERSION));
+		this.validationLevel = EnumValidationLevel.getEnum(settingService.getString(SettingKey.VALIDATION_LEVEL));
+		this.exportValidation = settingService.getBoolean(SettingKey.VALIDATION_EXPORT);
+		this.misURL = settingService.getString(SettingKey.GOLDENTICKET_MISURL);
 
 		/*
 		 * BaseLevel=iniFile.getBaseLevel(); MISLevel=iniFile.getMISLevel(); JMFLevel=iniFile.getJMFLevel();
