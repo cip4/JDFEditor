@@ -1060,7 +1060,10 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	{
 		validTab.writeToIni();
 		settingService.setBoolean(SettingKey.GENERAL_USE_SCHEMA, useSchema);
-        settingService.setString(SettingKey.VALIDATION_SCHEMA_URL, getSchemaURL().getAbsolutePath());
+
+        if(getSchemaURL() != null) {
+            settingService.setString(SettingKey.VALIDATION_SCHEMA_URL, getSchemaURL().getAbsolutePath());
+        }
 
 		settingService.setInteger(SettingKey.GOLDENTICKET_BASELEVEL, getBaseLevel());
 		settingService.setInteger(SettingKey.GOLDENTICKET_MISLEVEL, getMISLevel());
