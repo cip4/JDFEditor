@@ -77,6 +77,7 @@ import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourceLinkPool;
 import org.cip4.jdflib.pool.JDFResourcePool;
+import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.RecentFileUtil;
@@ -88,7 +89,6 @@ import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.net.URI;
 
 /**
  * Class to implement all the menu bar and menu related stuff moved here from JDFFrame
@@ -104,6 +104,8 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
     private static final Logger LOGGER = LogManager.getLogger(SettingService.class.getName());
 
     private SettingService settingService = new SettingService();
+
+    private MainController mainController;
 
 	private JMenu m_insertElementMenu;
 	private JMenu m_resourceMenu;
@@ -175,7 +177,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	{
 
 		/**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 		private JMenuItem m_newItem;
@@ -429,13 +431,22 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	}
 
 	/**
-	 * 
+	 * Default constructor.
 	 */
 	public EditorMenuBar()
 	{
 		super();
 		fileMenu = new FileMenu();
 	}
+
+    /**
+     * Register a MainController for this view (MVC Pattern)
+     * @param mainController The MainController for this view.
+     */
+    public void registerController(final MainController mainController) {
+
+        this.mainController = mainController;
+    }
 
 	/**
 	 * Creates the Edit menu.
@@ -528,14 +539,16 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		m_helpMenu.addMouseListener(menuListener);
 
 		m_onlineItem = new JMenuItem(ResourceBundleUtil.getMessage("main.menu.help.online"));
-		m_onlineItem.addActionListener(this);
+        m_onlineItem.addActionListener(this.mainController);
+        m_onlineItem.setActionCommand(MainController.ACTION_ONLINE_HELP);
 		m_onlineItem.setAccelerator(KeyStroke.getKeyStroke('H', menuKeyMask));
 		m_helpMenu.add(m_onlineItem);
 
 		m_helpMenu.add(new JSeparator());
 
 		m_infoItem = new JMenuItem(ResourceBundleUtil.getMessage("main.menu.help.info"));
-		m_infoItem.addActionListener(m_frame);
+        m_infoItem.addActionListener(this.mainController);
+        m_infoItem.setActionCommand(MainController.ACTION_INFO);
 		m_helpMenu.add(m_infoItem);
 
 		return m_helpMenu;
@@ -1156,26 +1169,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		else if (eSrc == m_mergeItem)
 		{
 			MainView.getModel().merge();
-		}
-		else if (eSrc == m_aboutItem)
-		{
-			final ImageIcon imgCIP = MainView.getImageIcon(MainView.ICONS_PATH + "CIP4.gif");
-
-			final String about = getAboutText();
-			JOptionPane.showMessageDialog(this, about, "CIP4 JDF Editor", JOptionPane.INFORMATION_MESSAGE, imgCIP);
-		}
-		else if (eSrc == m_onlineItem)
-		{
-            if (Desktop.isDesktopSupported()) {
-                try {
-                    Desktop.getDesktop().browse(new URI("http://cip4.org/jdfeditor"));
-                } catch (Exception ex) {
-                    LOGGER.error("Error opening Online Help.", ex);
-                }
-            } else {
-                final ImageIcon imgCIP = MainView.getImageIcon(MainView.ICONS_PATH + "CIP4.gif");
-                JOptionPane.showMessageDialog(this, "see http://cip4.org/jdfeditor", "CIP4 JDF Editor", JOptionPane.INFORMATION_MESSAGE, imgCIP);
-            }
 		}
 		else if (eSrc == m_preferenceItem)
 		{

@@ -89,7 +89,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Main class of JDFEditor.
+ * The MainView of the CIP4 JDFEditor.
  */
 public class MainView
 {
@@ -108,6 +108,7 @@ public class MainView
      * Default constructor.
      */
     public MainView() {
+        my_Frame = new JDFFrame(this);
     }
 
     /**
@@ -117,6 +118,22 @@ public class MainView
     public void registerController(final MainController mainController) {
 
         this.mainController = mainController;
+
+
+        my_Frame.registerController(mainController);
+    }
+
+    /**
+     * Show a Message Dialog in MainView.
+     * @param message The message of the dialog.
+     * @param title The title of the dialog.
+     */
+    public void showMessageDialog(String message, String title) {
+        JOptionPane.showMessageDialog(my_Frame, message, title, JOptionPane.INFORMATION_MESSAGE);
+
+        // final ImageIcon imgCIP = MainView.getImageIcon(MainView.ICONS_PATH + "CIP4.gif");
+        // JOptionPane.showMessageDialog(this, "see http://cip4.org/jdfeditor", "CIP4 JDF Editor", JOptionPane.INFORMATION_MESSAGE, imgCIP);
+
     }
 
     /**
@@ -182,7 +199,6 @@ public class MainView
             LOGGER.error("Error during setting 'Look and Feel' of JDFEditor.", e);
 		}
 
-		my_Frame = new JDFFrame(this);
 		setCursor(0, null);
 
 		// read the initialization stuff

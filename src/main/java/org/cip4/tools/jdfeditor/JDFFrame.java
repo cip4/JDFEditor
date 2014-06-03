@@ -85,6 +85,7 @@ import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
 import org.cip4.jdflib.jmf.JMFBuilder;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.util.StringUtil;
+import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.RecentFileUtil;
@@ -123,6 +124,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
     SettingService settingService = new SettingService();
 
     private final MainView editor;
+
+    private MainController mainController;
 
     /**
 	 * Comment for <code>serialVersionU
@@ -185,6 +188,17 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		setBounds(0, 0, d.width, d.height - 30);
 		m_menuBar = new EditorMenuBar();
 	}
+
+    /**
+     * Register a MainController for this view (MVC Pattern)
+     * @param mainController The MainController for this view.
+     */
+    public void registerController(final MainController mainController) {
+
+        this.mainController = mainController;
+        m_menuBar.registerController(mainController);
+    }
+
 
     /**
      * Enables JDFEditor to run in full screen mode on a MacOSX System.
@@ -1056,8 +1070,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		}
 		else if (eSrc == m_menuBar.m_infoItem)
 		{
-			JOptionPane.showMessageDialog(this, App.APP_NAME + "\n" + App.APP_VERSION + " (" + App.APP_RELEASE_DATE + ")\n"
-					+ this.editor.getEditorVersion(), "Version", JOptionPane.INFORMATION_MESSAGE);
+
 		}
 		else if (eSrc == m_menuBar.m_findItem)
 		{
