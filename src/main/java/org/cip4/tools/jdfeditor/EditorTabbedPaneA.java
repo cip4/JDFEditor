@@ -75,7 +75,7 @@ import org.cip4.jdflib.core.JDFComment;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.node.JDFNode;
-import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.swing.*;
@@ -120,7 +120,7 @@ public class EditorTabbedPaneA extends JTabbedPane
 
 		m_inOutScrollPane = new JDFInOutScroll();
 
-		addTab(ResourceBundleUtil.getMessage("NextNeighbourKey"), null, m_inOutScrollPane, ResourceBundleUtil.getMessage("NextNeighbourKey"));
+		addTab(ResourceUtil.getMessage("NextNeighbourKey"), null, m_inOutScrollPane, ResourceUtil.getMessage("NextNeighbourKey"));
 		setComponentAt(m_IO_INDEX, m_inOutScrollPane);
 		setSelectedIndex(m_IO_INDEX);
 
@@ -132,14 +132,14 @@ public class EditorTabbedPaneA extends JTabbedPane
 		m_processScrollPane.getVerticalScrollBar().setUnitIncrement(20);
 		m_processScrollPane.getHorizontalScrollBar().setUnitIncrement(20);
 
-		addTab(ResourceBundleUtil.getMessage("ProcessViewKey"), null, m_processScrollPane, ResourceBundleUtil.getMessage("ProcessViewKey"));
+		addTab(ResourceUtil.getMessage("ProcessViewKey"), null, m_processScrollPane, ResourceUtil.getMessage("ProcessViewKey"));
 		setComponentAt(m_PROC_INDEX, m_processScrollPane);
 		m_processScrollPane.getViewport().add(m_pArea, null);
 		SwingUtilities.updateComponentTreeUI(m_processScrollPane);
 
 		m_devCapScrollPane = new JDFDevCapScrollPane();
 
-		addTab(ResourceBundleUtil.getMessage("DevCapViewKey"), null, m_devCapScrollPane, ResourceBundleUtil.getMessage("DevCapViewKey"));
+		addTab(ResourceUtil.getMessage("DevCapViewKey"), null, m_devCapScrollPane, ResourceUtil.getMessage("DevCapViewKey"));
 		setComponentAt(m_DC_INDEX, m_devCapScrollPane);
 
 		m_commentArea = new JTextArea();
@@ -150,7 +150,7 @@ public class EditorTabbedPaneA extends JTabbedPane
 		m_commentScrollPane.getViewport().add(m_commentArea, null);
 		m_commentScrollPane.getVerticalScrollBar().setUnitIncrement(20);
 		m_commentScrollPane.getHorizontalScrollBar().setUnitIncrement(20);
-		addTab(ResourceBundleUtil.getMessage("CommentViewKey"), null, m_commentScrollPane, ResourceBundleUtil.getMessage("CommentViewKey"));
+		addTab(ResourceUtil.getMessage("CommentViewKey"), null, m_commentScrollPane, ResourceUtil.getMessage("CommentViewKey"));
 		setComponentAt(m_COM_INDEX, m_commentScrollPane);
 		setEnabledAt(m_COM_INDEX, false);
 
@@ -215,7 +215,7 @@ public class EditorTabbedPaneA extends JTabbedPane
 				if (jdfElem instanceof JDFComment)
 				{
 					final String txt = jdfElem.getTextContent().trim();
-					m_commentArea.setText(txt.equals("") ? ResourceBundleUtil.getMessage("EmptyCommentKey") : txt);
+					m_commentArea.setText(txt.equals("") ? ResourceUtil.getMessage("EmptyCommentKey") : txt);
 					setEnabledAt(m_COM_INDEX, true);
 					setSelectedIndex(m_COM_INDEX);
 				}

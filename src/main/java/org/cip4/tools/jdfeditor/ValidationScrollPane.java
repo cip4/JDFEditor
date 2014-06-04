@@ -71,7 +71,7 @@ package org.cip4.tools.jdfeditor;
  * 
  */
 
-import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.util.ResourceUtil;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
@@ -138,7 +138,7 @@ public class ValidationScrollPane extends JScrollPane
 
 		if (!node.isLeaf())
 		{
-			JMenuItem xpandDevCapOutput = new JMenuItem(ResourceBundleUtil.getMessage("ExpandKey"));
+			JMenuItem xpandDevCapOutput = new JMenuItem(ResourceUtil.getMessage("ExpandKey"));
 			xpandDevCapOutput.addActionListener(new ActionListener()
 			{
 				@Override
@@ -159,7 +159,7 @@ public class ValidationScrollPane extends JScrollPane
 			rightMenu.add(xpandDevCapOutput);
 			xpandDevCapOutput.setEnabled(true);
 
-			JMenuItem collapseDevCapOutput = new JMenuItem(ResourceBundleUtil.getMessage("CollapseKey"));
+			JMenuItem collapseDevCapOutput = new JMenuItem(ResourceUtil.getMessage("CollapseKey"));
 			collapseDevCapOutput.addActionListener(new ActionListener()
 			{
 				@Override

@@ -74,7 +74,7 @@ import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
-import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.swing.*;
@@ -115,9 +115,9 @@ public class ExportDialog extends JPanel implements ActionListener
 		generAttrString = settingService.getSetting(SettingKey.VALIDATION_GENERIC_ATTR, String.class);
 		JDFFrame frame = MainView.getFrame();
 		init();
-		final String[] options = { ResourceBundleUtil.getMessage("OkKey"), ResourceBundleUtil.getMessage("CancelKey") };
+		final String[] options = { ResourceUtil.getMessage("OkKey"), ResourceUtil.getMessage("CancelKey") };
 
-		final int option = JOptionPane.showOptionDialog(frame, this, ResourceBundleUtil.getMessage("ExportToDevCapKey"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+		final int option = JOptionPane.showOptionDialog(frame, this, ResourceUtil.getMessage("ExportToDevCapKey"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
 		if (option == JOptionPane.OK_OPTION)
 		{
@@ -131,7 +131,7 @@ public class ExportDialog extends JPanel implements ActionListener
 
 			if (newDCFile == null)
 			{
-				JOptionPane.showMessageDialog(frame, ResourceBundleUtil.getMessage("ExportFailedKey"), "Error creating " + path, JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(frame, ResourceUtil.getMessage("ExportFailedKey"), "Error creating " + path, JOptionPane.ERROR_MESSAGE);
 			}
 			else
 			{
@@ -148,7 +148,7 @@ public class ExportDialog extends JPanel implements ActionListener
 					//                    boolean success = devCapDoc.write2File(newDCFile.getAbsolutePath(), 2, false);                   
 					if (!success)
 					{
-						JOptionPane.showMessageDialog(frame, ResourceBundleUtil.getMessage("ExportFailedKey"), "Error", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(frame, ResourceUtil.getMessage("ExportFailedKey"), "Error", JOptionPane.ERROR_MESSAGE);
 					}
 					else
 					{
@@ -175,14 +175,14 @@ public class ExportDialog extends JPanel implements ActionListener
 		constraints = new GridBagConstraints();
 		constraints.fill = GridBagConstraints.HORIZONTAL;
 		constraints.insets = new Insets(3, 5, 3, 5);
-		setBorder(BorderFactory.createTitledBorder(ResourceBundleUtil.getMessage("DevCapChooseKey")));
+		setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("DevCapChooseKey")));
 
-		final JLabel mergeLabel = new JLabel(EditorUtils.displayPathName(originalFile, ResourceBundleUtil.getMessage("DevCapChooseKey").length()));
+		final JLabel mergeLabel = new JLabel(EditorUtils.displayPathName(originalFile, ResourceUtil.getMessage("DevCapChooseKey").length()));
 		constraints.gridwidth = GridBagConstraints.REMAINDER;
 		layout.setConstraints(mergeLabel, constraints);
 		add(mergeLabel);
 
-		final JLabel idLabel = new JLabel(ResourceBundleUtil.getMessage("DevCapOutputFileKey"));
+		final JLabel idLabel = new JLabel(ResourceUtil.getMessage("DevCapOutputFileKey"));
 		constraints.insets = new Insets(10, 5, 3, 5);
 		layout.setConstraints(idLabel, constraints);
 		add(idLabel);
@@ -196,7 +196,7 @@ public class ExportDialog extends JPanel implements ActionListener
 		idBox.add(idPath);
 		idBox.add(Box.createHorizontalStrut(10));
 
-		browse = new JButton(ResourceBundleUtil.getMessage("BrowseKey"));
+		browse = new JButton(ResourceUtil.getMessage("BrowseKey"));
 		browse.setPreferredSize(new Dimension(85, 22));
 		browse.addActionListener(this);
 		idBox.add(browse);
@@ -205,7 +205,7 @@ public class ExportDialog extends JPanel implements ActionListener
 		layout.setConstraints(idBox, constraints);
 		add(idBox);
 
-		final JLabel rLabel = new JLabel(ResourceBundleUtil.getMessage("DevCapGenericAttrKey"));
+		final JLabel rLabel = new JLabel(ResourceUtil.getMessage("DevCapGenericAttrKey"));
 		constraints.insets = new Insets(10, 5, 3, 5);
 		layout.setConstraints(rLabel, constraints);
 		add(rLabel);
@@ -222,10 +222,10 @@ public class ExportDialog extends JPanel implements ActionListener
 
 	private void setOpenFileDialog()
 	{
-		final JLabel label = new JLabel(ResourceBundleUtil.getMessage("DCOpenAfterGenerationKey"));
-		final String[] options = { ResourceBundleUtil.getMessage("YesKey"), ResourceBundleUtil.getMessage("NoKey") };
+		final JLabel label = new JLabel(ResourceUtil.getMessage("DCOpenAfterGenerationKey"));
+		final String[] options = { ResourceUtil.getMessage("YesKey"), ResourceUtil.getMessage("NoKey") };
 
-		final int option = JOptionPane.showOptionDialog(MainView.getFrame(), label, ResourceBundleUtil.getMessage("DCHappyMessageKey"), JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+		final int option = JOptionPane.showOptionDialog(MainView.getFrame(), label, ResourceUtil.getMessage("DCHappyMessageKey"), JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 
 		if (option == JOptionPane.OK_OPTION)
 		{

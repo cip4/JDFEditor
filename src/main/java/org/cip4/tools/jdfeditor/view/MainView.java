@@ -70,7 +70,6 @@
  */
 package org.cip4.tools.jdfeditor.view;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cip4.jdflib.core.*;
@@ -85,8 +84,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * The MainView of the CIP4 JDFEditor.
@@ -100,8 +97,6 @@ public class MainView
 
 
 	public static JDFFrame my_Frame;
-
-	public static final String ICONS_PATH = "/org/cip4/tools/jdfeditor/icons/";
 
     /**
      * Default constructor.
@@ -134,29 +129,6 @@ public class MainView
         // JOptionPane.showMessageDialog(this, "see http://cip4.org/jdfeditor", "CIP4 JDF Editor", JOptionPane.INFORMATION_MESSAGE, imgCIP);
 
     }
-
-    /**
-     * Returns a resource as ImageIcon object.
-     * @param res Resource String of Icon.
-     * @return The ImageIcon object.
-     */
-	public static ImageIcon getImageIcon(String res)
-	{
-        // load icon
-        ImageIcon imageIcon = null;
-        InputStream is = MainView.class.getResourceAsStream(res);
-
-        try {
-            byte[] bytes = IOUtils.toByteArray(is);
-            imageIcon = new ImageIcon(bytes);
-
-        } catch (IOException e) {
-            LOGGER.error("Error during loading ImageIcon", e);
-        }
-
-        // return icon
-		return imageIcon;
-	}
 
 	/**
 	 * Sets the cursor to wait or ready
@@ -271,15 +243,6 @@ public class MainView
 	{
 		final EditorDocument ed = getEditorDoc();
 		return ed == null ? null : ed.getModel();
-	}
-
-	/**
-	 * @param m_model
-	 */
-	public static void getsetModel(final JDFTreeModel m_model)
-	{
-		final EditorDocument ed = getEditorDoc();
-		ed.setModel(m_model);
 	}
 
 	/**

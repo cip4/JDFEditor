@@ -73,7 +73,7 @@ package org.cip4.tools.jdfeditor.dialog;
 import org.cip4.jdflib.extensions.XJDF20;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
-import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.util.ResourceUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -109,20 +109,20 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 
 	public SaveAsXJDFDialog()
 	{
-		setTitle(ResourceBundleUtil.getMessage("SaveAsXJDFKey"));
+		setTitle(ResourceUtil.getMessage("SaveAsXJDFKey"));
 		setModal(true);
 		setLayout(new BorderLayout());
 
 		JPanel checkboxesPanel = new JPanel();
 		checkboxesPanel.setLayout(new BoxLayout(checkboxesPanel, BoxLayout.Y_AXIS));
 
-		cbExt1 = new JCheckBox(ResourceBundleUtil.getMessage("SingleNodeKey"));
-		cbExt2 = new JCheckBox(ResourceBundleUtil.getMessage("ConvertStrippingKey"));
-		cbExt3 = new JCheckBox(ResourceBundleUtil.getMessage("SpanAsAttributeKey"));
-		cbExt4 = new JCheckBox(ResourceBundleUtil.getMessage("MergeRunListKey"));
-		cbLoPrep = new JCheckBox(ResourceBundleUtil.getMessage("ConvertLayoutPrepKey"));
-		cbTilde = new JCheckBox(ResourceBundleUtil.getMessage("RemoveTildeFromRange"));
-		cbTypesafeJMF = new JCheckBox(ResourceBundleUtil.getMessage("TypesafeJMF"));
+		cbExt1 = new JCheckBox(ResourceUtil.getMessage("SingleNodeKey"));
+		cbExt2 = new JCheckBox(ResourceUtil.getMessage("ConvertStrippingKey"));
+		cbExt3 = new JCheckBox(ResourceUtil.getMessage("SpanAsAttributeKey"));
+		cbExt4 = new JCheckBox(ResourceUtil.getMessage("MergeRunListKey"));
+		cbLoPrep = new JCheckBox(ResourceUtil.getMessage("ConvertLayoutPrepKey"));
+		cbTilde = new JCheckBox(ResourceUtil.getMessage("RemoveTildeFromRange"));
+		cbTypesafeJMF = new JCheckBox(ResourceUtil.getMessage("TypesafeJMF"));
 
 		checkboxesPanel.add(cbExt1);
 		checkboxesPanel.add(cbExt2);
@@ -138,7 +138,7 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 
 		bOK = new JButton("OK");
 		bOK.addActionListener(this);
-		bCancel = new JButton(ResourceBundleUtil.getMessage("CancelKey"));
+		bCancel = new JButton(ResourceUtil.getMessage("CancelKey"));
 		bCancel.addActionListener(this);
 
 		buttonsPanel.add(bOK);
@@ -191,7 +191,7 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
             settingService.setSetting(SettingKey.XJDF_CONVERT_RUNLIST, cbExt4.isSelected());
             settingService.setSetting(SettingKey.XJDF_CONVERT_LAYOUTPREP, cbLoPrep.isSelected());
             settingService.setSetting(SettingKey.XJDF_CONVERT_TILDE, cbTilde.isSelected());
-            settingService.setSetting(SettingKey.XJDF_TYPESAFE_JMF,cbTypesafeJMF.isSelected());
+            settingService.setSetting(SettingKey.XJDF_TYPESAFE_JMF, cbTypesafeJMF.isSelected());
 
 			choosedButton = BUTTON_OK;
 			dispose();

@@ -1,20 +1,35 @@
 package org.cip4.tools.jdfeditor.util;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 
+import javax.swing.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
  * Util class for Resource Bundle management.
  */
-public class ResourceBundleUtil {
+public class ResourceUtil {
+
+    private static final Logger LOGGER = LogManager.getLogger(ResourceUtil.class);
 
     private static final ResourceBundle messageBundle = initMessageBundle();
 
     private static final String RES_MESSAGE_BUNDLE = "org.cip4.tools.jdfeditor.messages.JDFEditor";
 
+    private static final String ICONS_PATH = "/org/cip4/tools/jdfeditor/icons/";
+
+    /**
+     * Private constructor. This class cannot be instantiated.
+     */
+    private ResourceUtil() {
+    }
 
     /**
      * Return a localized message by key.
@@ -25,6 +40,29 @@ public class ResourceBundleUtil {
 
         // return localized message
         return messageBundle.getString(key);
+    }
+
+    /**
+     * Returns a resource as ImageIcon object.
+     * @param resIcon Resource String of Icon.
+     * @return The ImageIcon object.
+     */
+    public static ImageIcon getImageIcon(String resIcon)
+    {
+        // load icon
+        ImageIcon imageIcon = null;
+        InputStream is = ResourceUtil.class.getResourceAsStream(ICONS_PATH + resIcon);
+
+        try {
+            byte[] bytes = IOUtils.toByteArray(is);
+            imageIcon = new ImageIcon(bytes);
+
+        } catch (IOException e) {
+            LOGGER.error("Error during loading ImageIcon", e);
+        }
+
+        // return icon
+        return imageIcon;
     }
 
     /**

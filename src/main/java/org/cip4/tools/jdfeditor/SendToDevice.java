@@ -84,7 +84,7 @@ import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
-import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.mail.Multipart;
@@ -140,7 +140,7 @@ public class SendToDevice extends JPanel implements ActionListener
 	{
 		final JDFDoc d = MainView.getJDFDoc();
 		final JDFJMF jmf = d == null ? null : d.getJMFRoot();
-		final JLabel urlText = new JLabel(ResourceBundleUtil.getMessage("setURL"));
+		final JLabel urlText = new JLabel(ResourceUtil.getMessage("setURL"));
 		urlText.setVerticalAlignment(SwingConstants.BOTTOM);
 		add(urlText);
 
@@ -148,11 +148,11 @@ public class SendToDevice extends JPanel implements ActionListener
 		{
 			// RadioButtons to choose sending JDF with QueueSubmissionParams
 			// and URL or as a multipart/related MIME message
-			rbJMF = new JRadioButton(ResourceBundleUtil.getMessage("sendMethodJMF"));
-			rbMIME = new JRadioButton(ResourceBundleUtil.getMessage("sendMethodMIME"));
-			rbRawXML = new JRadioButton(ResourceBundleUtil.getMessage("sendMethodRaw"));
-			rbPackageAll = new JRadioButton(ResourceBundleUtil.getMessage("PackageAll"));
-			cbReturn = new JCheckBox(ResourceBundleUtil.getMessage("returnJMF"));
+			rbJMF = new JRadioButton(ResourceUtil.getMessage("sendMethodJMF"));
+			rbMIME = new JRadioButton(ResourceUtil.getMessage("sendMethodMIME"));
+			rbRawXML = new JRadioButton(ResourceUtil.getMessage("sendMethodRaw"));
+			rbPackageAll = new JRadioButton(ResourceUtil.getMessage("PackageAll"));
+			cbReturn = new JCheckBox(ResourceUtil.getMessage("returnJMF"));
 			if (settingService.getSetting(SettingKey.SEND_METHOD, String.class).equals("MIME"))
 			{
 				rbMIME.setSelected(true);
@@ -175,7 +175,7 @@ public class SendToDevice extends JPanel implements ActionListener
 			sendMethodGroup.add(rbRawXML);
 			sendMethodGroup.add(rbPackageAll);
 
-			final JLabel rbLabel = new JLabel(ResourceBundleUtil.getMessage("sendMethod"));
+			final JLabel rbLabel = new JLabel(ResourceUtil.getMessage("sendMethod"));
 			final Box SendMethodBox = Box.createHorizontalBox();
 
 			SendMethodBox.add(rbLabel);
@@ -185,9 +185,9 @@ public class SendToDevice extends JPanel implements ActionListener
 			SendMethodBox.add(rbPackageAll);
 			add(SendMethodBox);
 			add(cbReturn);
-			urlReturn = initURL(ResourceBundleUtil.getMessage("returnToURL"), settingService.getSetting(SettingKey.SEND_URL_RETURN, String.class));
+			urlReturn = initURL(ResourceUtil.getMessage("returnToURL"), settingService.getSetting(SettingKey.SEND_URL_RETURN, String.class));
 		}
-		urlPath = initURL(ResourceBundleUtil.getMessage("pathToURL"), settingService.getSetting(SettingKey.SEND_URL_SEND, String.class));
+		urlPath = initURL(ResourceUtil.getMessage("pathToURL"), settingService.getSetting(SettingKey.SEND_URL_SEND, String.class));
 	}
 
 	/**
@@ -507,9 +507,9 @@ public class SendToDevice extends JPanel implements ActionListener
 		}
 		// get the URL to send to and call the CommunicationController
 		boolean bSendTrue = false;
-		final String[] options = { ResourceBundleUtil.getMessage("OkKey"), ResourceBundleUtil.getMessage("CancelKey") };
+		final String[] options = { ResourceUtil.getMessage("OkKey"), ResourceUtil.getMessage("CancelKey") };
 
-		final int option = JOptionPane.showOptionDialog(MainView.getFrame(), this, ResourceBundleUtil.getMessage("JDFSendToDevice"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+		final int option = JOptionPane.showOptionDialog(MainView.getFrame(), this, ResourceUtil.getMessage("JDFSendToDevice"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
 		if (option == JOptionPane.OK_OPTION)
 		{
@@ -518,7 +518,7 @@ public class SendToDevice extends JPanel implements ActionListener
 		}
 
 		// show success in a popup window
-		String sLabel = (bSendTrue) ? ResourceBundleUtil.getMessage("JDFSent") : ResourceBundleUtil.getMessage("JDFNotSent");
+		String sLabel = (bSendTrue) ? ResourceUtil.getMessage("JDFSent") : ResourceUtil.getMessage("JDFNotSent");
 		URL url = getURL(false);
 		sLabel += "\n\nURL= " + url.toExternalForm();
 		if (bSendTrue)

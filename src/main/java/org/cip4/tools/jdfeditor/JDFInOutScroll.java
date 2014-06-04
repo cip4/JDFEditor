@@ -76,7 +76,7 @@ import org.cip4.jdflib.datatypes.JDFAttributeMap;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourceLinkPool;
 import org.cip4.jdflib.resource.JDFResource;
-import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 import org.cip4.tools.jdfeditor.view.renderer.JDFResourceTreeCellRenderer;
 
@@ -467,7 +467,7 @@ public class JDFInOutScroll extends JScrollPane
 			}
 			if (!found)
 			{
-				((JLabel) ((Box) ((Box) m_frame.m_dialog.getContentPane().getComponent(1)).getComponent(7)).getComponent(1)).setText(ResourceBundleUtil.getMessage("StringNotFoundKey"));
+				((JLabel) ((Box) ((Box) m_frame.m_dialog.getContentPane().getComponent(1)).getComponent(7)).getComponent(1)).setText(ResourceUtil.getMessage("StringNotFoundKey"));
 			}
 		}
 		MainView.setCursor(0, null);
@@ -587,7 +587,7 @@ public class JDFInOutScroll extends JScrollPane
 
 				if (kElement instanceof JDFNode)
 				{
-					mTitle = ResourceBundleUtil.getMessage("JDFElementKey");
+					mTitle = ResourceUtil.getMessage("JDFElementKey");
 					isJDFNode = true;
 					final JDFNode n = (JDFNode) kElement;
 
@@ -598,8 +598,8 @@ public class JDFInOutScroll extends JScrollPane
 						{
 							final VElement resourceLinks = resourceLinkPool.getPoolChildren(null, null, null);
 
-							lTitle = ResourceBundleUtil.getMessage("InputResourceKey");
-							rTitle = ResourceBundleUtil.getMessage("OutputResourceKey");
+							lTitle = ResourceUtil.getMessage("InputResourceKey");
+							rTitle = ResourceUtil.getMessage("OutputResourceKey");
 
 							for (int i = 0; i < resourceLinks.size(); i++)
 							{
@@ -617,9 +617,9 @@ public class JDFInOutScroll extends JScrollPane
 				{
 					final JDFResource r = (JDFResource) kElement;
 
-					mTitle = ResourceBundleUtil.getMessage("ResourceKey");
-					rTitle = ResourceBundleUtil.getMessage("JDFConsumerKey");
-					lTitle = ResourceBundleUtil.getMessage("JDFProducerKey");
+					mTitle = ResourceUtil.getMessage("ResourceKey");
+					rTitle = ResourceUtil.getMessage("JDFConsumerKey");
+					lTitle = ResourceUtil.getMessage("JDFProducerKey");
 					if (root instanceof JDFNode) // not in JMF
 					{
 						String id = r.getID();

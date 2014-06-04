@@ -84,7 +84,7 @@ import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.streamloader.IStreamLoader;
 import org.cip4.tools.jdfeditor.streamloader.PluginLoader;
-import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.mail.BodyPart;
@@ -370,7 +370,7 @@ public class EditorUtils
 			addedString = " " + addedString;
 		}
 
-		JOptionPane.showMessageDialog(frame, ResourceBundleUtil.getMessage(errorKey) + addedString, ResourceBundleUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(frame, ResourceUtil.getMessage(errorKey) + addedString, ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 	}
 
 	// ////////////////////////////////////////////////////////////////////////////

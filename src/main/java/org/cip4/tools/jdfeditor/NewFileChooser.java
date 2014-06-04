@@ -70,7 +70,7 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.util.ResourceUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -119,26 +119,26 @@ public class NewFileChooser extends JPanel implements ActionListener
 		/*
 		* Need to add this getString "Golden Ticket" b/c it states right now Do you want to create a new JDF or JMF file?
 		*/
-		final JLabel label = new JLabel(ResourceBundleUtil.getMessage("ChooseNewFileKey"));
+		final JLabel label = new JLabel(ResourceUtil.getMessage("ChooseNewFileKey"));
 		add(label);
 
 		fileTypeGroup = new ButtonGroup();
 
-		radioJDFButton = new JRadioButton(ResourceBundleUtil.getMessage("NewJDFKey"));
-		radioJDFButton.setActionCommand(ResourceBundleUtil.getMessage("NewJDFKey"));
+		radioJDFButton = new JRadioButton(ResourceUtil.getMessage("NewJDFKey"));
+		radioJDFButton.setActionCommand(ResourceUtil.getMessage("NewJDFKey"));
 		radioJDFButton.addActionListener(this);
 		radioJDFButton.setSelected(true);
 		add(radioJDFButton);
 		fileTypeGroup.add(radioJDFButton);
 
-		radioJMFButton = new JRadioButton(ResourceBundleUtil.getMessage("NewJMFKey"));
-		radioJMFButton.setActionCommand(ResourceBundleUtil.getMessage("NewJMFKey"));
+		radioJMFButton = new JRadioButton(ResourceUtil.getMessage("NewJMFKey"));
+		radioJMFButton.setActionCommand(ResourceUtil.getMessage("NewJMFKey"));
 		radioJMFButton.addActionListener(this);
 		add(radioJMFButton);
 		fileTypeGroup.add(radioJMFButton);
 
-		radioGTButton = new JRadioButton(ResourceBundleUtil.getMessage("NewGoldenTicket"));
-		radioGTButton.setActionCommand(ResourceBundleUtil.getMessage("NewGoldenTicket"));
+		radioGTButton = new JRadioButton(ResourceUtil.getMessage("NewGoldenTicket"));
+		radioGTButton.setActionCommand(ResourceUtil.getMessage("NewGoldenTicket"));
 		radioGTButton.addActionListener(this);
 		add(radioGTButton);
 		fileTypeGroup.add(radioGTButton);

@@ -78,7 +78,7 @@ import org.cip4.jdflib.datatypes.JDFAttributeMap;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourceLinkPool;
 import org.cip4.jdflib.resource.JDFResource;
-import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.swing.*;
@@ -590,7 +590,7 @@ public class ProcessPanel extends JPanel
 		}
 		catch (Exception s)
 		{
-			JOptionPane.showMessageDialog(this, ResourceBundleUtil.getMessage("FindErrorKey"), ResourceBundleUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("FindErrorKey"), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 			s.printStackTrace();
 		}
 		if (node != null)
@@ -820,7 +820,7 @@ public class ProcessPanel extends JPanel
 		final JPopupMenu jpmPopup = new JPopupMenu();
 
 		//create a "copy top clipboard" item for the popup menus
-		final JMenuItem jmiCopyToClipboard = new JMenuItem(ResourceBundleUtil.getMessage("copyToClipboard"));
+		final JMenuItem jmiCopyToClipboard = new JMenuItem(ResourceUtil.getMessage("copyToClipboard"));
 		jmiCopyToClipboard.addActionListener(new ActionListener()
 		{
 			@Override

@@ -88,7 +88,7 @@ import org.cip4.jdflib.util.StringUtil;
 import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.util.RecentFileUtil;
-import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.swing.*;
@@ -247,7 +247,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 		m_treeArea = new JDFTreeArea(this);
 		new DropTarget(m_treeArea, this);
-		m_treeArea.setToolTipText(ResourceBundleUtil.getMessage("TreeViewKey"));
+		m_treeArea.setToolTipText(ResourceUtil.getMessage("TreeViewKey"));
 
 		undomanager.setLimit(100);
 		m_treeArea.getDocument().addUndoableEditListener(undomanager);
@@ -323,22 +323,22 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final ClassNotFoundException e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, ResourceBundleUtil.getMessage("LookAndFeelErrorKey"), ResourceBundleUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("LookAndFeelErrorKey"), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 		catch (final InstantiationException e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, ResourceBundleUtil.getMessage("LookAndFeelErrorKey"), ResourceBundleUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("LookAndFeelErrorKey"), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 		catch (final IllegalAccessException e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, ResourceBundleUtil.getMessage("LookAndFeelErrorKey"), ResourceBundleUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("LookAndFeelErrorKey"), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 		catch (final UnsupportedLookAndFeelException e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, ResourceBundleUtil.getMessage("LookAndFeelErrorKey"), ResourceBundleUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("LookAndFeelErrorKey"), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -348,25 +348,25 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 */
 	public void printWhat()
 	{
-		final String[] options = { ResourceBundleUtil.getMessage("OkKey"), ResourceBundleUtil.getMessage("CancelKey") };
+		final String[] options = { ResourceUtil.getMessage("OkKey"), ResourceUtil.getMessage("CancelKey") };
 
 		final ComponentChooser cc = new ComponentChooser();
-		final int option = JOptionPane.showOptionDialog(this, cc, ResourceBundleUtil.getMessage("PrintMessKey"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+		final int option = JOptionPane.showOptionDialog(this, cc, ResourceUtil.getMessage("PrintMessKey"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
 		final EditorDocument ed = getEditorDoc();
 		if (option == JOptionPane.OK_OPTION)
 		{
 			Component comp = null;
 
-			if (cc.getComponent().equals(ResourceBundleUtil.getMessage("ProcessViewKey")))
+			if (cc.getComponent().equals(ResourceUtil.getMessage("ProcessViewKey")))
 			{
 				comp = m_topTabs.m_pArea;
 			}
-			else if (cc.getComponent().equals(ResourceBundleUtil.getMessage("NextNeighbourKey")))
+			else if (cc.getComponent().equals(ResourceUtil.getMessage("NextNeighbourKey")))
 			{
 				comp = m_topTabs.m_inOutScrollPane.m_inOutArea;
 			}
-			else if (cc.getComponent().equals(ResourceBundleUtil.getMessage("TreeViewKey")))
+			else if (cc.getComponent().equals(ResourceUtil.getMessage("TreeViewKey")))
 			{
 				comp = ed.getJDFTree();
 			}
@@ -407,7 +407,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, ResourceBundleUtil.getMessage("DevcapExportErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceBundleUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("DevcapExportErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -430,7 +430,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, ResourceBundleUtil.getMessage("DevcapOpenErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceBundleUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("DevcapOpenErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -521,7 +521,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		{
 			setJDFDoc(null, null);
             LOGGER.error("Error during refreshing View.", e);
-			JOptionPane.showMessageDialog(this, ResourceBundleUtil.getMessage("FileNotOpenKey"), ResourceBundleUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("FileNotOpenKey"), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 		finally
 		{
@@ -596,8 +596,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 			if (file.exists() && !file.equals(fileToSave))
 			{
-				final String[] options = { ResourceBundleUtil.getMessage("YesKey"), ResourceBundleUtil.getMessage("NoKey"), ResourceBundleUtil.getMessage("CancelKey") };
-				newAnswer = JOptionPane.showOptionDialog(this, ResourceBundleUtil.getMessage("FileExistsKey"), null, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+				final String[] options = { ResourceUtil.getMessage("YesKey"), ResourceUtil.getMessage("NoKey"), ResourceUtil.getMessage("CancelKey") };
+				newAnswer = JOptionPane.showOptionDialog(this, ResourceUtil.getMessage("FileExistsKey"), null, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 
 			}
 			if (newAnswer == JOptionPane.YES_OPTION)
@@ -624,7 +624,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		}
 		catch (final Exception s)
 		{
-			JOptionPane.showMessageDialog(this, ResourceBundleUtil.getMessage("FindErrorKey"), ResourceBundleUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("FindErrorKey"), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 			s.printStackTrace();
 		}
 		if (node != null)
@@ -667,7 +667,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 					originalFileName = "Untitled";
 				}
 
-				final String question = ResourceBundleUtil.getMessage("SaveQuestionKey") + "\n" + '"' + originalFileName + '"';
+				final String question = ResourceUtil.getMessage("SaveQuestionKey") + "\n" + '"' + originalFileName + '"';
 				save = JOptionPane.showConfirmDialog(this, question, "", JOptionPane.YES_NO_CANCEL_OPTION);
 			}
 		}
@@ -695,7 +695,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final Exception s)
 		{
 			s.printStackTrace();
-			JOptionPane.showMessageDialog(this, ResourceBundleUtil.getMessage("FileNotOpenKey"), ResourceBundleUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("FileNotOpenKey"), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 
 	}
@@ -736,7 +736,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final Exception s)
 		{
 			s.printStackTrace();
-			JOptionPane.showMessageDialog(this, ResourceBundleUtil.getMessage("FileNotOpenKey"), ResourceBundleUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("FileNotOpenKey"), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -804,7 +804,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				catch (final Exception s)
 				{
 					s.printStackTrace();
-					JOptionPane.showMessageDialog(this, ResourceBundleUtil.getMessage("FileNotOpenKey"), ResourceBundleUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("FileNotOpenKey"), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 				}
 
 			}
@@ -812,7 +812,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, ResourceBundleUtil.getMessage("DevcapOpenErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceBundleUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("DevcapOpenErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 
 	}
@@ -905,11 +905,11 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 */
 	public void newFile()
 	{
-		final String[] options = { ResourceBundleUtil.getMessage("OkKey"), ResourceBundleUtil.getMessage("CancelKey") };
+		final String[] options = { ResourceUtil.getMessage("OkKey"), ResourceUtil.getMessage("CancelKey") };
 
 		final NewFileChooser newFileChooser = new NewFileChooser();
 
-		final int option = JOptionPane.showOptionDialog(this, newFileChooser, ResourceBundleUtil.getMessage("ChooseNewFileKey"), JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+		final int option = JOptionPane.showOptionDialog(this, newFileChooser, ResourceUtil.getMessage("ChooseNewFileKey"), JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 
 		if (option == JOptionPane.OK_OPTION)
 		{
@@ -989,7 +989,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, ResourceBundleUtil.getMessage("FixVersionErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceBundleUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("FixVersionErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -1021,7 +1021,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, ResourceBundleUtil.getMessage("FixVersionErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceBundleUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("FixVersionErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 

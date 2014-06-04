@@ -75,7 +75,7 @@ import org.cip4.tools.jdfeditor.dialog.SaveAsJDFDialog;
 import org.cip4.tools.jdfeditor.dialog.SaveAsXJDFDialog;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
-import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.swing.*;
@@ -150,81 +150,81 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 	public void drawButtonBar()
 	{
 
-		final ImageIcon imgNew = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/new.png");
-		final ImageIcon imgOpen = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/open.png");
-		final ImageIcon imgSave = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/save.png");
+		final ImageIcon imgNew = ResourceUtil.getImageIcon("toolbar/new.png");
+		final ImageIcon imgOpen = ResourceUtil.getImageIcon("toolbar/open.png");
+		final ImageIcon imgSave = ResourceUtil.getImageIcon("toolbar/save.png");
 
-        final ImageIcon imgPrint = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/print.png");
-        final ImageIcon imgRefresh = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/refresh.png");
+        final ImageIcon imgPrint = ResourceUtil.getImageIcon("toolbar/print.png");
+        final ImageIcon imgRefresh = ResourceUtil.getImageIcon("toolbar/refresh.png");
 
-		final ImageIcon imgCut = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/cut.png");
-		final ImageIcon imgCopy = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/copy.png");
-		final ImageIcon imgPaste = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/paste.png");
+		final ImageIcon imgCut = ResourceUtil.getImageIcon("toolbar/cut.png");
+		final ImageIcon imgCopy = ResourceUtil.getImageIcon("toolbar/copy.png");
+		final ImageIcon imgPaste = ResourceUtil.getImageIcon("toolbar/paste.png");
 
-        final ImageIcon imgJDF = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/jdf.png");
-        final ImageIcon imgXJDF = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/xjdf.png");
+        final ImageIcon imgJDF = ResourceUtil.getImageIcon("toolbar/jdf.png");
+        final ImageIcon imgXJDF = ResourceUtil.getImageIcon("toolbar/xjdf.png");
 
-		final ImageIcon imgUndo = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/undo.png");
-		final ImageIcon imgRedo = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/redo.png");
+		final ImageIcon imgUndo = ResourceUtil.getImageIcon("toolbar/undo.png");
+		final ImageIcon imgRedo = ResourceUtil.getImageIcon("toolbar/redo.png");
 
-		final ImageIcon imgReval = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/validate.png");
-		final ImageIcon imgUp = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/arrow_up.png");
-		final ImageIcon imgLast = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/arrow_left.png");
-		final ImageIcon imgNext = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/arrow_right.png");
+		final ImageIcon imgReval = ResourceUtil.getImageIcon("toolbar/validate.png");
+		final ImageIcon imgUp = ResourceUtil.getImageIcon("toolbar/arrow_up.png");
+		final ImageIcon imgLast = ResourceUtil.getImageIcon("toolbar/arrow_left.png");
+		final ImageIcon imgNext = ResourceUtil.getImageIcon("toolbar/arrow_right.png");
 
-		final ImageIcon imgZoomIn = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/zoom-in.png");
-		final ImageIcon imgZoomOut = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/zoom-out.png");
-		final ImageIcon imgZoomOrig = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/zoom-original.png");
-		final ImageIcon imgZoomBest = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/zoom-fit-best.png");
+		final ImageIcon imgZoomIn = ResourceUtil.getImageIcon("toolbar/zoom-in.png");
+		final ImageIcon imgZoomOut = ResourceUtil.getImageIcon("toolbar/zoom-out.png");
+		final ImageIcon imgZoomOrig = ResourceUtil.getImageIcon("toolbar/zoom-original.png");
+		final ImageIcon imgZoomBest = ResourceUtil.getImageIcon("toolbar/zoom-fit-best.png");
 
-        final ImageIcon imgClose = MainView.getImageIcon(MainView.ICONS_PATH + "toolbar/close.png");
+        final ImageIcon imgClose = ResourceUtil.getImageIcon("toolbar/close.png");
 
 
 		final Dimension d = new Dimension(10, 30);
 		setFloatable(false);
 
         // document block
-		m_newButton = createDefaultButton(imgNew, ResourceBundleUtil.getMessage("main.toolbar.document.new"), true, '|');
-		m_openButton = createDefaultButton(imgOpen, ResourceBundleUtil.getMessage("main.toolbar.document.open"), true, '|');
-		m_saveButton = createDefaultButton(imgSave, ResourceBundleUtil.getMessage("main.toolbar.document.save"), false, '|');
-        m_closeButton = createDefaultButton(imgClose, ResourceBundleUtil.getMessage("main.toolbar.document.close"), true, '|');
+		m_newButton = createDefaultButton(imgNew, ResourceUtil.getMessage("main.toolbar.document.new"), true, '|');
+		m_openButton = createDefaultButton(imgOpen, ResourceUtil.getMessage("main.toolbar.document.open"), true, '|');
+		m_saveButton = createDefaultButton(imgSave, ResourceUtil.getMessage("main.toolbar.document.save"), false, '|');
+        m_closeButton = createDefaultButton(imgClose, ResourceUtil.getMessage("main.toolbar.document.close"), true, '|');
 		addSeparator(d);
 
         // util block
-		m_printButton = createDefaultButton(imgPrint, ResourceBundleUtil.getMessage("main.toolbar.util.print"), false, '|');
-		m_refreshButton = createDefaultButton(imgRefresh, ResourceBundleUtil.getMessage("main.toolbar.util.refresh"), false, '|');
-        m_validateButton = createDefaultButton(imgReval, ResourceBundleUtil.getMessage("main.toolbar.util.validate"), false, 'A');
+		m_printButton = createDefaultButton(imgPrint, ResourceUtil.getMessage("main.toolbar.util.print"), false, '|');
+		m_refreshButton = createDefaultButton(imgRefresh, ResourceUtil.getMessage("main.toolbar.util.refresh"), false, '|');
+        m_validateButton = createDefaultButton(imgReval, ResourceUtil.getMessage("main.toolbar.util.validate"), false, 'A');
 		addSeparator(d);
 
         // edit block
-		m_cutButton = createDefaultButton(imgCut, ResourceBundleUtil.getMessage("main.toolbar.edit.cut"), false, '|');
-		m_copyButton = createDefaultButton(imgCopy, ResourceBundleUtil.getMessage("main.toolbar.edit.copy"), false, '|');
-		m_pasteButton = createDefaultButton(imgPaste, ResourceBundleUtil.getMessage("main.toolbar.edit.paste"), false, '|');
+		m_cutButton = createDefaultButton(imgCut, ResourceUtil.getMessage("main.toolbar.edit.cut"), false, '|');
+		m_copyButton = createDefaultButton(imgCopy, ResourceUtil.getMessage("main.toolbar.edit.copy"), false, '|');
+		m_pasteButton = createDefaultButton(imgPaste, ResourceUtil.getMessage("main.toolbar.edit.paste"), false, '|');
 		addSeparator(d);
 
         // convert block
-        m_convert2Jdf = createDefaultButton(imgJDF, ResourceBundleUtil.getMessage("main.toolbar.convert.jdf"), false, '|');
-        m_convert2XJdf = createDefaultButton(imgXJDF, ResourceBundleUtil.getMessage("main.toolbar.convert.xjdf"), false, '|');
+        m_convert2Jdf = createDefaultButton(imgJDF, ResourceUtil.getMessage("main.toolbar.convert.jdf"), false, '|');
+        m_convert2XJdf = createDefaultButton(imgXJDF, ResourceUtil.getMessage("main.toolbar.convert.xjdf"), false, '|');
         addSeparator(d);
 
         // history block
-		m_undoButton = createDefaultButton(imgUndo, ResourceBundleUtil.getMessage("main.toolbar.history.undo"), false, '|');
+		m_undoButton = createDefaultButton(imgUndo, ResourceUtil.getMessage("main.toolbar.history.undo"), false, '|');
 		m_undoButton.addActionListener(m_frame.undoAction);
-		m_redoButton = createDefaultButton(imgRedo, ResourceBundleUtil.getMessage("main.toolbar.history.redo"), false, '|');
+		m_redoButton = createDefaultButton(imgRedo, ResourceUtil.getMessage("main.toolbar.history.redo"), false, '|');
 		m_redoButton.addActionListener(m_frame.redoAction);
 		addSeparator(d);
 
 		// navigation block
-		m_upOneLevelButton = createDefaultButton(imgUp, ResourceBundleUtil.getMessage("main.toolbar.nav.up"), false, '|');
-		m_LastButton = createDefaultButton(imgLast, ResourceBundleUtil.getMessage("main.toolbar.nav.last"), false, '|');
-		m_NextButton = createDefaultButton(imgNext, ResourceBundleUtil.getMessage("main.toolbar.nav.next"), false, '|');
+		m_upOneLevelButton = createDefaultButton(imgUp, ResourceUtil.getMessage("main.toolbar.nav.up"), false, '|');
+		m_LastButton = createDefaultButton(imgLast, ResourceUtil.getMessage("main.toolbar.nav.last"), false, '|');
+		m_NextButton = createDefaultButton(imgNext, ResourceUtil.getMessage("main.toolbar.nav.next"), false, '|');
 		addSeparator(d);
 
         // zoom block
-		m_zoomInButton = createDefaultButton(imgZoomIn, ResourceBundleUtil.getMessage("main.toolbar.zoom.in"), false, '|');
-		m_zoomOutButton = createDefaultButton(imgZoomOut, ResourceBundleUtil.getMessage("main.toolbar.zoom.out"), false, '|');
-		m_zoomOrigButton = createDefaultButton(imgZoomOrig, ResourceBundleUtil.getMessage("main.toolbar.zoom.orig"), false, '|');
-		m_zoomBestButton = createDefaultButton(imgZoomBest, ResourceBundleUtil.getMessage("main.toolbar.zoom.fit"), false, '|');
+		m_zoomInButton = createDefaultButton(imgZoomIn, ResourceUtil.getMessage("main.toolbar.zoom.in"), false, '|');
+		m_zoomOutButton = createDefaultButton(imgZoomOut, ResourceUtil.getMessage("main.toolbar.zoom.out"), false, '|');
+		m_zoomOrigButton = createDefaultButton(imgZoomOrig, ResourceUtil.getMessage("main.toolbar.zoom.orig"), false, '|');
+		m_zoomBestButton = createDefaultButton(imgZoomBest, ResourceUtil.getMessage("main.toolbar.zoom.fit"), false, '|');
 		addSeparator(d);
 
 		add(Box.createHorizontalGlue());

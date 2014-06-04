@@ -83,7 +83,7 @@ import org.cip4.jdflib.util.EnumUtil;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
-import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.swing.*;
@@ -147,7 +147,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 		ignoreExtensions = ! settingService.getSetting(SettingKey.VALIDATION_HIGHTLIGHT_FN, Boolean.class);
 
 		init();
-		final String[] options = { ResourceBundleUtil.getMessage("OkKey"), ResourceBundleUtil.getMessage("CancelKey") };
+		final String[] options = { ResourceUtil.getMessage("OkKey"), ResourceUtil.getMessage("CancelKey") };
 
 		final int option = JOptionPane.showOptionDialog(parent, this, "Test against DeviceCapabilities file", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
@@ -274,14 +274,14 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 		final GridBagConstraints constraints = new GridBagConstraints();
 		constraints.fill = GridBagConstraints.HORIZONTAL;
 		constraints.insets = new Insets(3, 5, 3, 5);
-		panel.setBorder(BorderFactory.createTitledBorder(ResourceBundleUtil.getMessage("DCInputKey")));
+		panel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("DCInputKey")));
 
-		final JLabel dLabel = new JLabel(EditorUtils.displayPathName(idFile, ResourceBundleUtil.getMessage("DCInputKey").length()));
+		final JLabel dLabel = new JLabel(EditorUtils.displayPathName(idFile, ResourceUtil.getMessage("DCInputKey").length()));
 		constraints.gridwidth = GridBagConstraints.REMAINDER;
 		inLayout.setConstraints(dLabel, constraints);
 		panel.add(dLabel);
 
-		final JLabel idLabel = new JLabel(ResourceBundleUtil.getMessage("DCFileKey"));
+		final JLabel idLabel = new JLabel(ResourceUtil.getMessage("DCFileKey"));
 		constraints.insets = new Insets(10, 5, 3, 5);
 		inLayout.setConstraints(idLabel, constraints);
 		panel.add(idLabel);
@@ -294,7 +294,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 		horizontalBox.add(idPath);
 		horizontalBox.add(Box.createHorizontalStrut(10));
 
-		browse = new JButton(ResourceBundleUtil.getMessage("BrowseKey"));
+		browse = new JButton(ResourceUtil.getMessage("BrowseKey"));
 		browse.setPreferredSize(new Dimension(85, 22));
 		browse.addActionListener(this);
 		horizontalBox.add(browse);
@@ -311,7 +311,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 		JPanel testLists = new JPanel();
 		testLists.setLayout(inLayout);
 
-		testLists.setBorder(BorderFactory.createTitledBorder(ResourceBundleUtil.getMessage("DCTestListsKey")));
+		testLists.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("DCTestListsKey")));
 
 		//        final Box verticalBox = Box.createVerticalBox();
 		final ButtonGroup group = new ButtonGroup();
@@ -350,7 +350,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 		downPanel.add(testLists);
 
 		final JPanel validationPanel = new JPanel();
-		validationPanel.setBorder(BorderFactory.createTitledBorder(ResourceBundleUtil.getMessage("ValidationLevelKey")));
+		validationPanel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("ValidationLevelKey")));
 
 		final VString allowedValues = EnumUtil.getNamesVector(EnumValidationLevel.class);
 		allowedValues.removeElementAt(0);

@@ -76,7 +76,7 @@ import org.cip4.jdflib.util.StringUtil;
 import org.cip4.tools.jdfeditor.dialog.SearchComboBoxModel;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
-import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.swing.*;
@@ -134,7 +134,7 @@ public class SearchDialog extends JDialog implements ActionListener
 	{
 		super(MainView.getFrame());
 
-		setTitle(ResourceBundleUtil.getMessage("FindKey"));
+		setTitle(ResourceUtil.getMessage("FindKey"));
 		searchComponent = _searchComponent;
 		getContentPane().setLayout(new FlowLayout());
 		getContentPane().add(Box.createHorizontalStrut(15));
@@ -143,7 +143,7 @@ public class SearchDialog extends JDialog implements ActionListener
 		middleBox.add(Box.createVerticalStrut(20));
 
 		final Box box2 = Box.createHorizontalBox();
-		final JLabel findLabel = new JLabel(ResourceBundleUtil.getMessage("FindKey"));
+		final JLabel findLabel = new JLabel(ResourceUtil.getMessage("FindKey"));
 		box2.add(findLabel);
 
 		searchComboBoxModel = new SearchComboBoxModel();
@@ -169,7 +169,7 @@ public class SearchDialog extends JDialog implements ActionListener
 		final ButtonGroup group = new ButtonGroup();
 		middleBox.add(new JSeparator());
 
-		m_forwardRadioButton = new JRadioButton(ResourceBundleUtil.getMessage("ForwardKey"));
+		m_forwardRadioButton = new JRadioButton(ResourceUtil.getMessage("ForwardKey"));
 		m_forwardRadioButton.setSelected(true);
 		m_forwardRadioButton.setAlignmentX(Component.LEFT_ALIGNMENT);
 		group.add(m_forwardRadioButton);
@@ -178,7 +178,7 @@ public class SearchDialog extends JDialog implements ActionListener
 		boxF.add(Box.createHorizontalGlue());
 		middleBox.add(boxF);
 
-		m_backwardRadioButton = new JRadioButton(ResourceBundleUtil.getMessage("BackwardKey"));
+		m_backwardRadioButton = new JRadioButton(ResourceUtil.getMessage("BackwardKey"));
 		m_backwardRadioButton.setAlignmentX(Component.LEFT_ALIGNMENT);
 		middleBox.add(m_backwardRadioButton);
 		group.add(m_backwardRadioButton);
@@ -188,11 +188,11 @@ public class SearchDialog extends JDialog implements ActionListener
 		middleBox.add(boxB);
 
 		middleBox.add(new JSeparator());
-		m_IgnoreCase = new JCheckBox(ResourceBundleUtil.getMessage("ignoreCase"));
+		m_IgnoreCase = new JCheckBox(ResourceUtil.getMessage("ignoreCase"));
 		m_IgnoreCase.addActionListener(this);
 		m_IgnoreCase.setSelected(settingService.getSetting(SettingKey.FIND_CASE_SENSITIVE, Boolean.class));
 		m_IgnoreCase.setAlignmentX(Component.LEFT_ALIGNMENT); // I'm confused why right???
-		m_Wrap = new JCheckBox(ResourceBundleUtil.getMessage("wrap"));
+		m_Wrap = new JCheckBox(ResourceUtil.getMessage("wrap"));
 		m_Wrap.addActionListener(this);
 		m_Wrap.setSelected(settingService.getSetting(SettingKey.FIND_WRAP, Boolean.class));
 		m_Wrap.setAlignmentX(Component.LEFT_ALIGNMENT); // I'm confused why right???
@@ -204,12 +204,12 @@ public class SearchDialog extends JDialog implements ActionListener
 
 		final JPanel panel2 = new JPanel();
 		panel2.setBorder(BorderFactory.createEmptyBorder());
-		m_findNextButton = new JButton(ResourceBundleUtil.getMessage("FindNextKey"));
+		m_findNextButton = new JButton(ResourceUtil.getMessage("FindNextKey"));
 		m_findNextButton.addActionListener(this);
 		m_findNextButton.setEnabled(true);
 		panel2.add(m_findNextButton);
 
-		m_cancelButton = new JButton(ResourceBundleUtil.getMessage("CancelKey"));
+		m_cancelButton = new JButton(ResourceUtil.getMessage("CancelKey"));
 		m_cancelButton.addActionListener(this);
 		m_cancelButton.setMnemonic(KeyEvent.VK_ESCAPE);
 		panel2.add(m_cancelButton);

@@ -80,7 +80,7 @@ import org.cip4.jdflib.resource.devicecapability.JDFDevCaps;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
-import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 import org.cip4.tools.jdfeditor.view.renderer.JDFTreeCellRenderer;
 
@@ -129,10 +129,10 @@ public class JDFTreeArea extends JTextArea
 		m_treeScroll.getVerticalScrollBar().setUnitIncrement(20);
 		m_treeScroll.getHorizontalScrollBar().setUnitIncrement(20);
 
-		final JLabel treeLabel = new JLabel(" " + ResourceBundleUtil.getMessage("TreeViewKey"));
+		final JLabel treeLabel = new JLabel(" " + ResourceUtil.getMessage("TreeViewKey"));
 		treeLabel.setPreferredSize(new Dimension(treeLabel.getPreferredSize().width, 23));
 		treeLabel.setVerticalTextPosition(SwingConstants.BOTTOM);
-		treeLabel.setToolTipText(ResourceBundleUtil.getMessage("TreeViewKey"));
+		treeLabel.setToolTipText(ResourceUtil.getMessage("TreeViewKey"));
 		treeLabel.setBorder(BorderFactory.createLineBorder(Color.black));
 
 		m_treeView = new JViewport();
@@ -387,15 +387,15 @@ public class JDFTreeArea extends JTextArea
 						defVal = oldVal;
 					}
 
-					selectedValue = (String) JOptionPane.showInputDialog(this, ResourceBundleUtil.getMessage("ChooseAttValueKey"), ResourceBundleUtil.getMessage("ModifyAttValueKey"), JOptionPane.QUESTION_MESSAGE, null, vValues.toArray(), defVal);
+					selectedValue = (String) JOptionPane.showInputDialog(this, ResourceUtil.getMessage("ChooseAttValueKey"), ResourceUtil.getMessage("ModifyAttValueKey"), JOptionPane.QUESTION_MESSAGE, null, vValues.toArray(), defVal);
 				}
 				else
 				{
-					selectedValue = JOptionPane.showInputDialog(this, ResourceBundleUtil.getMessage("InsertNewAttValueKey"), oldVal);
+					selectedValue = JOptionPane.showInputDialog(this, ResourceUtil.getMessage("InsertNewAttValueKey"), oldVal);
 				}
 				if (selectedValue != null && selectedValue.equals("Other.."))
 				{
-					selectedValue = JOptionPane.showInputDialog(this, ResourceBundleUtil.getMessage("InsertNewAttValueKey"), oldVal);
+					selectedValue = JOptionPane.showInputDialog(this, ResourceUtil.getMessage("InsertNewAttValueKey"), oldVal);
 				}
 				if ((selectedValue != null) && !(selectedValue.equals(oldVal)))
 				{

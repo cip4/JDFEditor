@@ -70,7 +70,7 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
+import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
 import javax.swing.*;
@@ -103,7 +103,7 @@ public class ComponentChooser extends JPanel implements ActionListener
 	{
 		super();
 		this.setLayout(new GridLayout(4, 1));
-		this.component = ResourceBundleUtil.getMessage("ProcessViewKey");
+		this.component = ResourceUtil.getMessage("ProcessViewKey");
 		init();
 		setVisible(true);
 	}
@@ -119,8 +119,8 @@ public class ComponentChooser extends JPanel implements ActionListener
 
 		rbg = new ButtonGroup();
 
-		processButton = new JRadioButton(ResourceBundleUtil.getMessage("ProcessViewKey"));
-		processButton.setActionCommand(ResourceBundleUtil.getMessage("ProcessViewKey"));
+		processButton = new JRadioButton(ResourceUtil.getMessage("ProcessViewKey"));
+		processButton.setActionCommand(ResourceUtil.getMessage("ProcessViewKey"));
 		rbg.add(processButton);
 		final JDFFrame frame = MainView.getFrame();
 		if (frame.m_topTabs.processAreaIsNull())
@@ -133,8 +133,8 @@ public class ComponentChooser extends JPanel implements ActionListener
 		processButton.addActionListener(this);
 		add(processButton);
 
-		inOutButton = new JRadioButton(ResourceBundleUtil.getMessage("NextNeighbourKey"));
-		inOutButton.setActionCommand(ResourceBundleUtil.getMessage("NextNeighbourKey"));
+		inOutButton = new JRadioButton(ResourceUtil.getMessage("NextNeighbourKey"));
+		inOutButton.setActionCommand(ResourceUtil.getMessage("NextNeighbourKey"));
 		rbg.add(inOutButton);
 		if (frame.m_topTabs.inOutIsNull())
 			inOutButton.setEnabled(false);
@@ -147,8 +147,8 @@ public class ComponentChooser extends JPanel implements ActionListener
 		inOutButton.addActionListener(this);
 		add(inOutButton);
 
-		jdfTreeButton = new JRadioButton(ResourceBundleUtil.getMessage("TreeViewKey"));
-		jdfTreeButton.setActionCommand(ResourceBundleUtil.getMessage("TreeViewKey"));
+		jdfTreeButton = new JRadioButton(ResourceUtil.getMessage("TreeViewKey"));
+		jdfTreeButton.setActionCommand(ResourceUtil.getMessage("TreeViewKey"));
 		rbg.add(jdfTreeButton);
 		if (frame.m_treeArea.jdfTreeIsNull())
 			jdfTreeButton.setEnabled(false);
