@@ -148,7 +148,7 @@ public class SearchDialog extends JDialog implements ActionListener
 
 		searchComboBoxModel = new SearchComboBoxModel();
 
-		String findPattern = settingService.getString(SettingKey.FIND_PATTERN); // conf.getFindPattern();
+		String findPattern = settingService.getSetting(SettingKey.FIND_PATTERN, String.class); // conf.getFindPattern();
 
         List<String> findItems = new ArrayList<String>();
 
@@ -190,11 +190,11 @@ public class SearchDialog extends JDialog implements ActionListener
 		middleBox.add(new JSeparator());
 		m_IgnoreCase = new JCheckBox(ResourceBundleUtil.getMessage("ignoreCase"));
 		m_IgnoreCase.addActionListener(this);
-		m_IgnoreCase.setSelected(settingService.getBoolean(SettingKey.FIND_CASE_SENSITIVE));
+		m_IgnoreCase.setSelected(settingService.getSetting(SettingKey.FIND_CASE_SENSITIVE, Boolean.class));
 		m_IgnoreCase.setAlignmentX(Component.LEFT_ALIGNMENT); // I'm confused why right???
 		m_Wrap = new JCheckBox(ResourceBundleUtil.getMessage("wrap"));
 		m_Wrap.addActionListener(this);
-		m_Wrap.setSelected(settingService.getBoolean(SettingKey.FIND_WRAP));
+		m_Wrap.setSelected(settingService.getSetting(SettingKey.FIND_WRAP, Boolean.class));
 		m_Wrap.setAlignmentX(Component.LEFT_ALIGNMENT); // I'm confused why right???
 		middleBox.add(m_IgnoreCase);
 		middleBox.add(m_Wrap);
@@ -247,11 +247,11 @@ public class SearchDialog extends JDialog implements ActionListener
 		}
 		else if (eSrc == m_IgnoreCase)
 		{
-			settingService.setBoolean(SettingKey.FIND_CASE_SENSITIVE, m_IgnoreCase.isSelected());
+			settingService.setSetting(SettingKey.FIND_CASE_SENSITIVE, m_IgnoreCase.isSelected());
 		}
 		else if (eSrc == m_Wrap)
 		{
-            settingService.setBoolean(SettingKey.FIND_WRAP, m_Wrap.isSelected());
+            settingService.setSetting(SettingKey.FIND_WRAP, m_Wrap.isSelected());
 		}
 	}
 

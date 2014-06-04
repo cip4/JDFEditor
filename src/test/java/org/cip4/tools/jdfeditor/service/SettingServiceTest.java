@@ -77,7 +77,7 @@ public class SettingServiceTest {
         // arrange
 
         // act
-        settingService.setString(SettingKey.GENERAL_LANGUAGE, "de");
+        settingService.setSetting(SettingKey.GENERAL_LANGUAGE, "de");
 
         // assert
         File logFile = settingService.getConfFile();
@@ -99,13 +99,13 @@ public class SettingServiceTest {
     public void testChangeExistingAttributeReload() throws Exception {
 
         // arrange
-        settingService.setString(SettingKey.GENERAL_LANGUAGE, "de");
+        settingService.setSetting(SettingKey.GENERAL_LANGUAGE, "de");
 
         // act
         settingService = new SettingService();
 
         // assert
-        Assert.assertEquals("Language attribute is wrong.", "de", settingService.getString(SettingKey.GENERAL_LANGUAGE));
+        Assert.assertEquals("Language attribute is wrong.", "de", settingService.getSetting(SettingKey.GENERAL_LANGUAGE, String.class));
     }
 
     /**
@@ -119,11 +119,11 @@ public class SettingServiceTest {
 
         // act
         settingService = new SettingService();
-        settingService.setString(SettingKey.GENERAL_LANGUAGE, "tt");
+        settingService.setSetting(SettingKey.GENERAL_LANGUAGE, "tt");
         settingService = new SettingService();
-        settingService.setString(SettingKey.LOGGING_ENABLED, "dd");
+        settingService.setSetting(SettingKey.LOGGING_ENABLED, true);
         settingService = new SettingService();
-        settingService.setString(SettingKey.LOGGING_LEVEL, "yy");
+        settingService.setSetting(SettingKey.LOGGING_LEVEL, "yy");
 
 
         // assert
@@ -151,7 +151,7 @@ public class SettingServiceTest {
         Assert.assertEquals("Language attribute is wrong.", "tt", language);
 
         String logging_enabled = (String) config.getProperty(SettingKey.LOGGING_ENABLED.getKey());
-        Assert.assertEquals("Language attribute is wrong.", "dd", logging_enabled);
+        Assert.assertEquals("Language attribute is wrong.", "true", logging_enabled);
 
         String logging_level = (String) config.getProperty(SettingKey.LOGGING_LEVEL.getKey());
         Assert.assertEquals("Language attribute is wrong.", "yy", logging_level);
@@ -176,7 +176,7 @@ public class SettingServiceTest {
 
         // act
         settingService = new SettingService();
-        settingService.setString(SettingKey.GENERAL_LANGUAGE, "it");
+        settingService.setSetting(SettingKey.GENERAL_LANGUAGE, "it");
 
         // assert
         File logFile = settingService.getConfFile();

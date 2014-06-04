@@ -143,9 +143,9 @@ public class SaveAsJDFDialog extends JDialog implements ActionListener
 		setSize(screenWidth / 4, screenHeight / 4);
 		setLocation(screenWidth / 4, screenHeight / 4);
 
-		cbExtRetainProduct.setSelected(settingService.getBoolean(SettingKey.XJDF_FROM_RETAIN_PRODUCT));
-		cbTilde.setSelected(settingService.getBoolean(SettingKey.XJDF_CONVERT_TILDE));
-		cbHeuristcLink.setSelected(settingService.getBoolean(SettingKey.XJDF_FROM_HEURISTIC_LINK));
+		cbExtRetainProduct.setSelected(settingService.getSetting(SettingKey.XJDF_FROM_RETAIN_PRODUCT, Boolean.class));
+		cbTilde.setSelected(settingService.getSetting(SettingKey.XJDF_CONVERT_TILDE, Boolean.class));
+		cbHeuristcLink.setSelected(settingService.getSetting(SettingKey.XJDF_FROM_HEURISTIC_LINK, Boolean.class));
 
 		setVisible(true);
 	}
@@ -169,10 +169,10 @@ public class SaveAsJDFDialog extends JDialog implements ActionListener
 	{
 		if (e.getSource() == bOK)
 		{
-            settingService.setBoolean(SettingKey.XJDF_FROM_RETAIN_PRODUCT, cbExtRetainProduct.isSelected());
-            settingService.setBoolean(SettingKey.XJDF_FROM_HEURISTIC_LINK, cbHeuristcLink.isSelected());
+            settingService.setSetting(SettingKey.XJDF_FROM_RETAIN_PRODUCT, cbExtRetainProduct.isSelected());
+            settingService.setSetting(SettingKey.XJDF_FROM_HEURISTIC_LINK, cbHeuristcLink.isSelected());
 			choosedButton = BUTTON_OK;
-            settingService.setBoolean(SettingKey.XJDF_CONVERT_TILDE, cbTilde.isSelected());
+            settingService.setSetting(SettingKey.XJDF_CONVERT_TILDE, cbTilde.isSelected());
 		}
 		else if (e.getSource() == bCancel)
 		{
@@ -197,9 +197,9 @@ public class SaveAsJDFDialog extends JDialog implements ActionListener
 	public XJDFToJDFConverter getConverter()
 	{
 		final XJDFToJDFConverter c = new XJDFToJDFConverter(null);
-		c.setConvertTilde(settingService.getBoolean(SettingKey.XJDF_CONVERT_TILDE));
-		c.setCreateProduct(settingService.getBoolean(SettingKey.XJDF_FROM_RETAIN_PRODUCT));
-		c.setHeuristicLink(settingService.getBoolean(SettingKey.XJDF_FROM_HEURISTIC_LINK));
+		c.setConvertTilde(settingService.getSetting(SettingKey.XJDF_CONVERT_TILDE, Boolean.class));
+		c.setCreateProduct(settingService.getSetting(SettingKey.XJDF_FROM_RETAIN_PRODUCT, Boolean.class));
+		c.setHeuristicLink(settingService.getSetting(SettingKey.XJDF_FROM_HEURISTIC_LINK, Boolean.class));
 		return c;
 	}
 

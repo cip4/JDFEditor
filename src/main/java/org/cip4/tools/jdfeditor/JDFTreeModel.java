@@ -244,16 +244,16 @@ public class JDFTreeModel extends DefaultTreeModel
 		final JDFValidator checkJDF = new JDFValidator();
 		checkJDF.setPrint(false);
 		checkJDF.bQuiet = true;
-        checkJDF.level = JDFElement.EnumValidationLevel.getEnum(settingService.getString(SettingKey.VALIDATION_LEVEL));
+        checkJDF.level = JDFElement.EnumValidationLevel.getEnum(settingService.getSetting(SettingKey.VALIDATION_LEVEL, String.class));
 		checkJDF.bMultiID = true;
 		checkJDF.setWarning(!JDFElement.EnumValidationLevel.isNoWarn(checkJDF.level));
 		XMLDoc schemaValidationResult = null;
 
-		checkJDF.setIgnorePrivate(!settingService.getBoolean(SettingKey.VALIDATION_HIGHTLIGHT_FN));
-		checkJDF.bWarnDanglingURL = settingService.getBoolean(SettingKey.VALIDATION_CHECK_URL);
+		checkJDF.setIgnorePrivate(!settingService.getSetting(SettingKey.VALIDATION_HIGHTLIGHT_FN, Boolean.class));
+		checkJDF.bWarnDanglingURL = settingService.getSetting(SettingKey.VALIDATION_CHECK_URL, Boolean.class);
 
 		final String fn = theDoc.getOriginalFileName();
-		if (settingService.getBoolean(SettingKey.VALIDATION_EXPORT))
+		if (settingService.getSetting(SettingKey.VALIDATION_EXPORT, Boolean.class))
 		{
 			checkJDF.xmlOutputName = UrlUtil.newExtension(fn, ".validate.xml");
 		}
@@ -261,13 +261,15 @@ public class JDFTreeModel extends DefaultTreeModel
 		{
 			checkJDF.xmlOutputName = null;
 		}
-		if (settingService.getBoolean(SettingKey.GENERAL_USE_SCHEMA))
+		if (settingService.getSetting(SettingKey.GENERAL_USE_SCHEMA, Boolean.class))
 		{
 
 			File f = theDoc.getSchemaLocationFile(JDFElement.getSchemaURL());
-			if (!UrlUtil.isFileOK(f))
+            String validationSchemaUrl = settingService.getSetting(SettingKey.VALIDATION_SCHEMA_URL, String.class);
+
+			if (!UrlUtil.isFileOK(f) && validationSchemaUrl != null)
 			{
-				f = new File(settingService.getString(SettingKey.VALIDATION_SCHEMA_URL));
+				f = new File(validationSchemaUrl);
 			}
 
 			if (UrlUtil.isFileOK(f))
@@ -308,7 +310,7 @@ public class JDFTreeModel extends DefaultTreeModel
 			}
 			else
 			{
-                settingService.setString(SettingKey.VALIDATION_SCHEMA_URL, null);
+                settingService.setSetting(SettingKey.VALIDATION_SCHEMA_URL, null);
 			}
 		}
 		// TODO addFile
@@ -350,7 +352,7 @@ public class JDFTreeModel extends DefaultTreeModel
 			insertInto(newNode, parentNode, parentNode.getIndex(beforeNode));
 
 			MainView.getFrame().updateViews(new TreePath(newNode.getPath()));
-			if (settingService.getBoolean(SettingKey.GENERAL_AUTO_VALIDATE))
+			if (settingService.getSetting(SettingKey.GENERAL_AUTO_VALIDATE, Boolean.class))
 			{
 				validate();
 			}
@@ -653,12 +655,12 @@ public class JDFTreeModel extends DefaultTreeModel
 	public void addNodeAttributes(final JDFTreeNode node)
 	{
 		final KElement elem = node.getElement();
-		if (settingService.getBoolean(SettingKey.TREEVIEW_ATTRIBUTE) == false)
+		if (settingService.getSetting(SettingKey.TREEVIEW_ATTRIBUTE, Boolean.class) == false)
 		{
 			return;
 		}
 
-		final boolean showDefaultAtts = settingService.getBoolean(SettingKey.GENERAL_DISPLAY_DEFAULT);
+		final boolean showDefaultAtts = settingService.getSetting(SettingKey.GENERAL_DISPLAY_DEFAULT, Boolean.class);
 		// get of 'elem' all not inherited attribute names
 		VString vAttNames = elem.getAttributeVector_KElement();
 
@@ -683,7 +685,7 @@ public class JDFTreeModel extends DefaultTreeModel
 					setAttribute(node, AttributeName.ID, id, null, true);
 
 			}
-			if (!m_ignoreAttributes && (elem instanceof JDFResource && settingService.getBoolean(SettingKey.TREEVIEW_ATTRIBUTE_INHERITED)))
+			if (!m_ignoreAttributes && (elem instanceof JDFResource && settingService.getSetting(SettingKey.TREEVIEW_ATTRIBUTE_INHERITED, Boolean.class)))
 			{
 
 				// Create a vector with all the attribute names including the inherited attributes
@@ -1063,7 +1065,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	private void autoValidate()
 	{
-		if (settingService.getBoolean(SettingKey.GENERAL_AUTO_VALIDATE))
+		if (settingService.getSetting(SettingKey.GENERAL_AUTO_VALIDATE, Boolean.class))
 		{
 			validate();
 		}
@@ -1330,7 +1332,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 		final JDFDoc d = new JDFDoc("JDF");
 		final JDFNode n = d.getJDFRoot();
-		dc.setDefaultsFromCaps(n, true, settingService.getBoolean(SettingKey.VALIDATION_GENERATE_FULL));
+		dc.setDefaultsFromCaps(n, true, settingService.getSetting(SettingKey.VALIDATION_GENERATE_FULL, Boolean.class));
 		final String fnNew = UrlUtil.newExtension(fn, ".generated.JDF");
 		d.write2File(fnNew, 2, false);
 		MainView.getFrame().readFile(new File(fnNew));

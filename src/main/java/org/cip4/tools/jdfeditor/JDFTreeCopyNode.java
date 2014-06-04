@@ -128,7 +128,7 @@ public class JDFTreeCopyNode
 			model.insertNodeInto(childN, newNode, pos + i);
 
 			getChildrenForCopiedNode(childN);
-			if (settingService.getBoolean(SettingKey.GENERAL_AUTO_VALIDATE))
+			if (settingService.getSetting(SettingKey.GENERAL_AUTO_VALIDATE, Boolean.class))
 				model.validate();
 		}
 	}
@@ -162,7 +162,7 @@ public class JDFTreeCopyNode
 				model.insertNodeInto(newNode, parentNode, parentNode.getChildCount());
 
 				getChildrenForCopiedNode(newNode);
-				if (settingService.getBoolean(SettingKey.GENERAL_AUTO_VALIDATE))
+				if (settingService.getSetting(SettingKey.GENERAL_AUTO_VALIDATE, Boolean.class))
 					model.validate();
 			}
 			catch (Exception s)
@@ -203,7 +203,7 @@ public class JDFTreeCopyNode
 				model.insertNodeInto(newNode, parentNode, parentNode.getChildCount());
 
 				getChildrenForCopiedNode(newNode);
-				if (settingService.getBoolean(SettingKey.GENERAL_AUTO_VALIDATE))
+				if (settingService.getSetting(SettingKey.GENERAL_AUTO_VALIDATE, Boolean.class))
 					model.validate();
 			}
 			catch (Exception s)

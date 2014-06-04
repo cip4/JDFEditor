@@ -267,7 +267,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private void applyLnF()
 	{
 		final JDFFrame f = MainView.getFrame();
-		settingService.setString(SettingKey.GENERAL_LOOK, currLNF);
+		settingService.setSetting(SettingKey.GENERAL_LOOK, currLNF);
 		f.applyLookAndFeel(this);
 	}
 
@@ -291,34 +291,34 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
 	private void init()
 	{
-		this.currLang = settingService.getString(SettingKey.GENERAL_LANGUAGE);
-		this.currLNF = settingService.getString(SettingKey.GENERAL_LOOK);
-		this.currValidate = settingService.getBoolean(SettingKey.GENERAL_AUTO_VALIDATE);
-		this.currReadOnly = settingService.getBoolean(SettingKey.GENERAL_READ_ONLY);
-		this.currMethodSendToDevice = settingService.getString(SettingKey.GENERAL_LOOK);
-		this.longID = settingService.getBoolean(SettingKey.GENERAL_LONG_ID);
-		this.updateJobID = settingService.getBoolean(SettingKey.GENERAL_UPDATE_JOBID);
-		this.useSchema = settingService.getBoolean(SettingKey.GENERAL_USE_SCHEMA);
+		this.currLang = settingService.getSetting(SettingKey.GENERAL_LANGUAGE, String.class);
+		this.currLNF = settingService.getSetting(SettingKey.GENERAL_LOOK, String.class);
+		this.currValidate = settingService.getSetting(SettingKey.GENERAL_AUTO_VALIDATE, Boolean.class);
+		this.currReadOnly = settingService.getSetting(SettingKey.GENERAL_READ_ONLY, Boolean.class);
+		this.currMethodSendToDevice = settingService.getSetting(SettingKey.GENERAL_LOOK, String.class);
+		this.longID = settingService.getSetting(SettingKey.GENERAL_LONG_ID, Boolean.class);
+		this.updateJobID = settingService.getSetting(SettingKey.GENERAL_UPDATE_JOBID, Boolean.class);
+		this.useSchema = settingService.getSetting(SettingKey.GENERAL_USE_SCHEMA, Boolean.class);
 
-        if(settingService.getString(SettingKey.VALIDATION_SCHEMA_URL) != null) {
-            this.schemaFile = new File(settingService.getString(SettingKey.VALIDATION_SCHEMA_URL));
+        if(settingService.getSetting(SettingKey.VALIDATION_SCHEMA_URL, String.class) != null) {
+            this.schemaFile = new File(settingService.getSetting(SettingKey.VALIDATION_SCHEMA_URL, String.class));
         }
 
-		this.currRemoveDefault = settingService.getBoolean(SettingKey.GENERAL_REMOVE_DEFAULT);
-		this.currRemoveWhite = settingService.getBoolean(SettingKey.GENERAL_REMOVE_WHITE);
-		this.currIndentSave = settingService.getBoolean(SettingKey.GENERAL_INDENT);
-		this.currDispDefault = settingService.getBoolean(SettingKey.GENERAL_DISPLAY_DEFAULT);
-		this.checkURL = settingService.getBoolean(SettingKey.VALIDATION_CHECK_URL);
+		this.currRemoveDefault = settingService.getSetting(SettingKey.GENERAL_REMOVE_DEFAULT, Boolean.class);
+		this.currRemoveWhite = settingService.getSetting(SettingKey.GENERAL_REMOVE_WHITE, Boolean.class);
+		this.currIndentSave = settingService.getSetting(SettingKey.GENERAL_INDENT, Boolean.class);
+		this.currDispDefault = settingService.getSetting(SettingKey.GENERAL_DISPLAY_DEFAULT, Boolean.class);
+		this.checkURL = settingService.getSetting(SettingKey.VALIDATION_CHECK_URL, Boolean.class);
 
-		this.genericStrings = settingService.getString(SettingKey.VALIDATION_GENERIC_ATTR);
-		this.generateFull = settingService.getBoolean(SettingKey.VALIDATION_GENERATE_FULL);
-		this.normalizeOpen = settingService.getBoolean(SettingKey.GENERAL_NORMALIZE);
-		this.ignoreDefaults = settingService.getBoolean(SettingKey.VALIDATION_IGNORE_DEFAULT);
+		this.genericStrings = settingService.getSetting(SettingKey.VALIDATION_GENERIC_ATTR, String.class);
+		this.generateFull = settingService.getSetting(SettingKey.VALIDATION_GENERATE_FULL, Boolean.class);
+		this.normalizeOpen = settingService.getSetting(SettingKey.GENERAL_NORMALIZE, Boolean.class);
+		this.ignoreDefaults = settingService.getSetting(SettingKey.VALIDATION_IGNORE_DEFAULT, Boolean.class);
 
-		this.validationVersion = EnumVersion.getEnum(settingService.getString(SettingKey.VALIDATION_VERSION));
-		this.validationLevel = EnumValidationLevel.getEnum(settingService.getString(SettingKey.VALIDATION_LEVEL));
-		this.exportValidation = settingService.getBoolean(SettingKey.VALIDATION_EXPORT);
-		this.misURL = settingService.getString(SettingKey.GOLDENTICKET_MISURL);
+		this.validationVersion = EnumVersion.getEnum(settingService.getSetting(SettingKey.VALIDATION_VERSION, String.class));
+		this.validationLevel = EnumValidationLevel.getEnum(settingService.getSetting(SettingKey.VALIDATION_LEVEL, String.class));
+		this.exportValidation = settingService.getSetting(SettingKey.VALIDATION_EXPORT, Boolean.class);
+		this.misURL = settingService.getSetting(SettingKey.GOLDENTICKET_MISURL, String.class);
 
 		/*
 		 * BaseLevel=iniFile.getBaseLevel(); MISLevel=iniFile.getMISLevel(); JMFLevel=iniFile.getJMFLevel();
@@ -735,7 +735,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		bl.setBounds(10, y, d.width, d.height);
 		panel.add(bl);
 
-		BaseLevel = settingService.getInteger(SettingKey.GOLDENTICKET_BASELEVEL);
+		BaseLevel = settingService.getSetting(SettingKey.GOLDENTICKET_BASELEVEL, Integer.class);
 		y += d.height + 3;
 		boxBaseLevel = new JComboBox(level1);
 		boxBaseLevel.setSelectedItem(String.valueOf(BaseLevel));
@@ -752,7 +752,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		ml.setBounds(10, y, d.width, d.height);
 		panel.add(ml);
 
-		MISLevel = settingService.getInteger(SettingKey.GOLDENTICKET_MISLEVEL);
+		MISLevel = settingService.getSetting(SettingKey.GOLDENTICKET_MISLEVEL, Integer.class);
 		y += d.height + 3;
 		boxMISLevel = new JComboBox(level2);
 		boxMISLevel.setSelectedItem(String.valueOf(MISLevel));
@@ -769,7 +769,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		jl.setBounds(10, y, d.width, d.height);
 		panel.add(jl);
 
-		JMFLevel = settingService.getInteger(SettingKey.GOLDENTICKET_JMFLEVEL);
+		JMFLevel = settingService.getSetting(SettingKey.GOLDENTICKET_JMFLEVEL, Integer.class);
 		y += d.height + 3;
 		boxJMFLevel = new JComboBox(level1);
 		boxJMFLevel.setSelectedItem(String.valueOf(JMFLevel));
@@ -1060,44 +1060,44 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	public void writeToIni()
 	{
 		validTab.writeToIni();
-		settingService.setBoolean(SettingKey.GENERAL_USE_SCHEMA, useSchema);
+		settingService.setSetting(SettingKey.GENERAL_USE_SCHEMA, useSchema);
 
         if(getSchemaURL() != null) {
-            settingService.setString(SettingKey.VALIDATION_SCHEMA_URL, getSchemaURL().getAbsolutePath());
+            settingService.setSetting(SettingKey.VALIDATION_SCHEMA_URL, getSchemaURL().getAbsolutePath());
         }
 
-		settingService.setInteger(SettingKey.GOLDENTICKET_BASELEVEL, getBaseLevel());
-		settingService.setInteger(SettingKey.GOLDENTICKET_MISLEVEL, getMISLevel());
-		settingService.setInteger(SettingKey.GOLDENTICKET_JMFLEVEL, getJMFLevel());
+		settingService.setSetting(SettingKey.GOLDENTICKET_BASELEVEL, getBaseLevel());
+		settingService.setSetting(SettingKey.GOLDENTICKET_MISLEVEL, getMISLevel());
+		settingService.setSetting(SettingKey.GOLDENTICKET_JMFLEVEL, getJMFLevel());
 
-		settingService.setString(SettingKey.GENERAL_LANGUAGE, getLanguage());
-		settingService.setBoolean(SettingKey.GENERAL_READ_ONLY, getReadOnly());
-		settingService.setBoolean(SettingKey.GENERAL_AUTO_VALIDATE, getAutoVal());
-		settingService.setString(SettingKey.SEND_METHOD, getMethodSendToDevice());
-		settingService.setString(SettingKey.GENERAL_LOOK, getLNF());
-		settingService.setBoolean(SettingKey.GENERAL_REMOVE_DEFAULT, currRemoveDefault);
-		settingService.setBoolean(SettingKey.GENERAL_DISPLAY_DEFAULT, currDispDefault);
-		settingService.setBoolean(SettingKey.GENERAL_REMOVE_WHITE, currRemoveWhite);
-		settingService.setBoolean(SettingKey.GENERAL_INDENT, currIndentSave);
-        settingService.setBoolean(SettingKey.VALIDATION_CHECK_URL, checkURL);
-		settingService.setBoolean(SettingKey.GENERAL_LONG_ID, longID);
-		settingService.setBoolean(SettingKey.GENERAL_UPDATE_JOBID, updateJobID);
-        settingService.setBoolean(SettingKey.VALIDATION_GENERATE_FULL, generateFull);
-		settingService.setBoolean(SettingKey.GENERAL_NORMALIZE, normalizeOpen);
-        settingService.setBoolean(SettingKey.VALIDATION_IGNORE_DEFAULT, ignoreDefaults);
-        settingService.setString(SettingKey.VALIDATION_LEVEL, validationLevel.getName());
-        settingService.setString(SettingKey.VALIDATION_VERSION, validationVersion.getName());
-        settingService.setBoolean(SettingKey.VALIDATION_EXPORT, exportValidation);
+		settingService.setSetting(SettingKey.GENERAL_LANGUAGE, getLanguage());
+		settingService.setSetting(SettingKey.GENERAL_READ_ONLY, getReadOnly());
+		settingService.setSetting(SettingKey.GENERAL_AUTO_VALIDATE, getAutoVal());
+		settingService.setSetting(SettingKey.SEND_METHOD, getMethodSendToDevice());
+		settingService.setSetting(SettingKey.GENERAL_LOOK, getLNF());
+		settingService.setSetting(SettingKey.GENERAL_REMOVE_DEFAULT, currRemoveDefault);
+		settingService.setSetting(SettingKey.GENERAL_DISPLAY_DEFAULT, currDispDefault);
+		settingService.setSetting(SettingKey.GENERAL_REMOVE_WHITE, currRemoveWhite);
+		settingService.setSetting(SettingKey.GENERAL_INDENT, currIndentSave);
+        settingService.setSetting(SettingKey.VALIDATION_CHECK_URL, checkURL);
+		settingService.setSetting(SettingKey.GENERAL_LONG_ID, longID);
+		settingService.setSetting(SettingKey.GENERAL_UPDATE_JOBID, updateJobID);
+        settingService.setSetting(SettingKey.VALIDATION_GENERATE_FULL, generateFull);
+		settingService.setSetting(SettingKey.GENERAL_NORMALIZE, normalizeOpen);
+        settingService.setSetting(SettingKey.VALIDATION_IGNORE_DEFAULT, ignoreDefaults);
+        settingService.setSetting(SettingKey.VALIDATION_LEVEL, validationLevel.getName());
+        settingService.setSetting(SettingKey.VALIDATION_VERSION, validationVersion.getName());
+        settingService.setSetting(SettingKey.VALIDATION_EXPORT, exportValidation);
 		misURL = fieldMISURL.getText();
 
-		settingService.setString(SettingKey.GOLDENTICKET_MISURL, misURL);
+		settingService.setSetting(SettingKey.GOLDENTICKET_MISURL, misURL);
 
 		genericStrings = fieldGenericStrings.getText();
 		final VString genericAttributes = new VString(genericStrings, null);
 		genericAttributes.unify();
 
         String s = StringUtil.setvString(genericAttributes, " ", null, null);
-        settingService.setString(SettingKey.VALIDATION_GENERIC_ATTR, s);
+        settingService.setSetting(SettingKey.VALIDATION_GENERIC_ATTR, s);
 	}
 
 	/**

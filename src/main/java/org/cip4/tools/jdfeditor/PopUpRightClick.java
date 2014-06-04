@@ -471,7 +471,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		final JDFFrame frame = MainView.getFrame();
 		final JDFTreeArea treeArea = frame.m_treeArea;
 
-		if (!settingService.getBoolean(SettingKey.GENERAL_READ_ONLY))
+		if (!settingService.getSetting(SettingKey.GENERAL_READ_ONLY, Boolean.class))
 		{
 			if (eSrc == m_cutPopupItem)
 			{

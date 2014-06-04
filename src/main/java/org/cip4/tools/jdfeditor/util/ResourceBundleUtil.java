@@ -34,7 +34,7 @@ public class ResourceBundleUtil {
     private static ResourceBundle initMessageBundle() {
 
         // setup application language
-        String language = new SettingService().getString(SettingKey.GENERAL_LANGUAGE);
+        String language = new SettingService().getSetting(SettingKey.GENERAL_LANGUAGE, String.class);
         final Locale currentLocale = new Locale(language, language.toUpperCase());
         Locale.setDefault(currentLocale);
 

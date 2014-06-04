@@ -2,10 +2,15 @@ package org.cip4.tools.jdfeditor.controller;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.cip4.jdflib.core.JDFVersion;
 import org.cip4.tools.jdfeditor.App;
+import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.view.MainView;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
+import javax.annotation.PostConstruct;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,6 +20,7 @@ import java.net.URI;
 /**
  * The Main Controller class.
  */
+@Controller
 public class MainController implements ActionListener {
 
     private static final Logger LOGGER = LogManager.getLogger(MainController.class.getName());
@@ -23,38 +29,55 @@ public class MainController implements ActionListener {
 
     public static final String ACTION_INFO = "actionInfo";
 
-    private final SettingService settingService = new SettingService();
+    @Autowired
+    private SettingService settingService;
 
-    private final MainView mainView;
-
-    private File file;
+    @Autowired
+    private MainView mainView;
 
     /**
      * Default constructor.
      */
     public MainController() {
-        this(null);
     }
 
-    /**
-     * Custom constructor. Accepting a file object for initializing.
-     * @param file The JDF File which should be shown after start.
-     */
-    public MainController(File file) {
 
-        this.mainView = new MainView();
+    /**
+     * Initializes the MainController class. This method is called by the Spring Framework after construction.
+     */
+    @PostConstruct
+    public void init() {
         this.mainView.registerController(this);
-        this.file = file;
     }
 
     /**
      * Display the main form.
+     * @param file The file to be shown after application start.
      */
-    public void displayForm() {
+    public void displayForm(File file) {
 
+        // display main view
         mainView.display(file);
     }
 
+    /**
+     * Get a typed setting value by key.
+     * @param key The key of the setting value.
+     * @param clazz The type of the setting value.
+     * @return The typed setting value.
+     */
+    public <T> T getSetting(SettingKey key, Class<T> clazz) {
+        return settingService.getSetting(key, clazz);
+    }
+
+    /**
+     * Set a setting value by a key.
+     * @param key   The configuration key.
+     * @param value The configuration setting value as String.
+     */
+    public void setSetting(SettingKey key, Object value) {
+        settingService.setSetting(key, value);
+    }
 
     /**
      * ActionListner for defined actions.
@@ -63,7 +86,7 @@ public class MainController implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-
+        // analyze action command
         switch (e.getActionCommand()) {
 
             case ACTION_ONLINE_HELP:
@@ -75,7 +98,7 @@ public class MainController implements ActionListener {
                 break;
 
             default:
-                LOGGER.warn(String.format("ActionCommnd '%s' is unknown.", e.getActionCommand()));
+                LOGGER.warn(String.format("ActionCommand '%s' is unknown.", e.getActionCommand()));
                 break;
         }
     }
@@ -113,7 +136,7 @@ public class MainController implements ActionListener {
 
         LOGGER.info("Show Info Window.");
 
-        String msg = App.APP_NAME + "\n" + App.APP_VERSION + " (" + App.APP_RELEASE_DATE + ")";
+        String msg = App.APP_NAME + "\n" + App.APP_VERSION + " (" + App.APP_RELEASE_DATE + ")\n\n" + JDFVersion.LIB_NAME + " (" + JDFVersion.LIB_ARTIFACT_ID + ")\n" + JDFVersion.LIB_VERSION + " (" + JDFVersion.LIB_RELEASE_DATE + ")";
         String title = "Version";
 
         mainView.showMessageDialog(msg, title);

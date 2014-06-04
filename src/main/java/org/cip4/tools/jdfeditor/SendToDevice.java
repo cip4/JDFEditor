@@ -153,11 +153,11 @@ public class SendToDevice extends JPanel implements ActionListener
 			rbRawXML = new JRadioButton(ResourceBundleUtil.getMessage("sendMethodRaw"));
 			rbPackageAll = new JRadioButton(ResourceBundleUtil.getMessage("PackageAll"));
 			cbReturn = new JCheckBox(ResourceBundleUtil.getMessage("returnJMF"));
-			if (settingService.getString(SettingKey.SEND_METHOD).equals("MIME"))
+			if (settingService.getSetting(SettingKey.SEND_METHOD, String.class).equals("MIME"))
 			{
 				rbMIME.setSelected(true);
 			}
-			else if (settingService.getString(SettingKey.SEND_METHOD).equals("JMF"))
+			else if (settingService.getSetting(SettingKey.SEND_METHOD, String.class).equals("JMF"))
 			{
 				rbJMF.setSelected(true);
 			}
@@ -185,9 +185,9 @@ public class SendToDevice extends JPanel implements ActionListener
 			SendMethodBox.add(rbPackageAll);
 			add(SendMethodBox);
 			add(cbReturn);
-			urlReturn = initURL(ResourceBundleUtil.getMessage("returnToURL"), settingService.getString(SettingKey.SEND_URL_RETURN));
+			urlReturn = initURL(ResourceBundleUtil.getMessage("returnToURL"), settingService.getSetting(SettingKey.SEND_URL_RETURN, String.class));
 		}
-		urlPath = initURL(ResourceBundleUtil.getMessage("pathToURL"), settingService.getString(SettingKey.SEND_URL_SEND));
+		urlPath = initURL(ResourceBundleUtil.getMessage("pathToURL"), settingService.getSetting(SettingKey.SEND_URL_SEND, String.class));
 	}
 
 	/**
@@ -219,16 +219,16 @@ public class SendToDevice extends JPanel implements ActionListener
 		if (eSrc == rbJMF || eSrc == rbMIME || eSrc == rbRawXML)
 		{
 			if (rbJMF.isSelected())
-				settingService.setString(SettingKey.SEND_METHOD, "JMF");
+				settingService.setSetting(SettingKey.SEND_METHOD, "JMF");
 			else if (rbMIME.isSelected())
-				settingService.setString(SettingKey.SEND_METHOD, "MIME");
+				settingService.setSetting(SettingKey.SEND_METHOD, "MIME");
 			else if (rbRawXML.isSelected())
-				settingService.setString(SettingKey.SEND_METHOD, "RAW");
+				settingService.setSetting(SettingKey.SEND_METHOD, "RAW");
 
 		}
 		else if (eSrc == rbPackageAll)
 		{
-			settingService.setBoolean(SettingKey.SEND_PACKAGE, rbPackageAll.isSelected());
+			settingService.setSetting(SettingKey.SEND_PACKAGE, rbPackageAll.isSelected());
 		}
 	}
 
@@ -389,11 +389,11 @@ public class SendToDevice extends JPanel implements ActionListener
 	 */
 	private void updateJobID(final KElement root)
 	{
-		if (settingService.getBoolean(SettingKey.GENERAL_UPDATE_JOBID))
+		if (settingService.getSetting(SettingKey.GENERAL_UPDATE_JOBID, Boolean.class))
 		{
-			int inc = settingService.getInteger(SettingKey.SEND_JOB_INCREMENT);
+			int inc = settingService.getSetting(SettingKey.SEND_JOB_INCREMENT, Integer.class);
 			inc = ++inc % 10000;
-			settingService.setInteger(SettingKey.SEND_JOB_INCREMENT, inc);
+			settingService.setSetting(SettingKey.SEND_JOB_INCREMENT, inc);
 			final String jobID = root.getAttribute(AttributeName.JOBID) + "." + inc;
 			final AttributeReplacer ar = new AttributeReplacer("JobID", jobID, null);
 			ar.replace(root);
@@ -481,11 +481,11 @@ public class SendToDevice extends JPanel implements ActionListener
 			url = new URL(urlText);
 			if (bReturn)
 			{
-				settingService.setString(SettingKey.SEND_URL_RETURN, urlText);
+				settingService.setSetting(SettingKey.SEND_URL_RETURN, urlText);
 			}
 			else
 			{
-				settingService.setString(SettingKey.SEND_URL_SEND, urlText);
+				settingService.setSetting(SettingKey.SEND_URL_SEND, urlText);
 			}
 		}
 		catch (final MalformedURLException e)

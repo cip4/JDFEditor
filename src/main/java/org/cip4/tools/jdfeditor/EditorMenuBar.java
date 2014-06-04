@@ -99,11 +99,7 @@ import java.io.File;
  */
 public class EditorMenuBar extends JMenuBar implements ActionListener
 {
-	private static final long serialVersionUID = -8488973695389593826L;
-
     private static final Logger LOGGER = LogManager.getLogger(SettingService.class.getName());
-
-    private SettingService settingService = new SettingService();
 
     private MainController mainController;
 
@@ -301,7 +297,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 			}
 			else if (eSrc == m_devcapOpenMenu)
 			{
-                String s = settingService.getString(SettingKey.RECENT_DEV_CAP);
+                String s = mainController.getSetting(SettingKey.RECENT_DEV_CAP, String.class);
                 File f = null;
 
                 if(s != null) {
@@ -332,7 +328,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 			m_newItem.setEnabled(mode);
 			m_closeItem.setEnabled(true);
 			m_closeAllItem.setEnabled(true);
-			m_devcapOpenMenu.setEnabled(settingService.getString(SettingKey.RECENT_DEV_CAP) != null);
+			m_devcapOpenMenu.setEnabled(mainController.getSetting(SettingKey.RECENT_DEV_CAP, String.class) != null);
 			m_saveAsItem.setEnabled(mode);
 			m_saveItem.setEnabled(mode);
 		}
@@ -782,21 +778,21 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 		m_validateMenu.add(new JSeparator());
 
-		m_highlightFNRadioItem = new JRadioButtonMenuItem(ResourceBundleUtil.getMessage("main.menu.tools.validate.highlight"), settingService.getBoolean(SettingKey.VALIDATION_HIGHTLIGHT_FN));
+		m_highlightFNRadioItem = new JRadioButtonMenuItem(ResourceBundleUtil.getMessage("main.menu.tools.validate.highlight"), mainController.getSetting(SettingKey.VALIDATION_HIGHTLIGHT_FN, Boolean.class));
 		m_highlightFNRadioItem.addActionListener(this);
 		m_validateMenu.add(m_highlightFNRadioItem);
 
 		m_validateMenu.add(new JSeparator());
 
-		m_showAttrRadioItem = new JRadioButtonMenuItem(ResourceBundleUtil.getMessage("main.menu.tools.validate.display.attributes"), settingService.getBoolean(SettingKey.TREEVIEW_ATTRIBUTE));
+		m_showAttrRadioItem = new JRadioButtonMenuItem(ResourceBundleUtil.getMessage("main.menu.tools.validate.display.attributes"), mainController.getSetting(SettingKey.TREEVIEW_ATTRIBUTE, Boolean.class));
 		m_showAttrRadioItem.addActionListener(this);
 		m_validateMenu.add(m_showAttrRadioItem);
 
-		m_showInhAttrRadioItem = new JRadioButtonMenuItem(ResourceBundleUtil.getMessage("main.menu.tools.validate.display.attributes.inherited"), settingService.getBoolean(SettingKey.TREEVIEW_ATTRIBUTE_INHERITED));
+		m_showInhAttrRadioItem = new JRadioButtonMenuItem(ResourceBundleUtil.getMessage("main.menu.tools.validate.display.attributes.inherited"), mainController.getSetting(SettingKey.TREEVIEW_ATTRIBUTE_INHERITED, Boolean.class));
 		m_showInhAttrRadioItem.addActionListener(this);
 		m_validateMenu.add(m_showInhAttrRadioItem);
 
-		m_DispDefAttrRadioItem = new JRadioButtonMenuItem(ResourceBundleUtil.getMessage("main.menu.tools.validate.display.attributes.default"), settingService.getBoolean(SettingKey.GENERAL_DISPLAY_DEFAULT));
+		m_DispDefAttrRadioItem = new JRadioButtonMenuItem(ResourceBundleUtil.getMessage("main.menu.tools.validate.display.attributes.default"), mainController.getSetting(SettingKey.GENERAL_DISPLAY_DEFAULT, Boolean.class));
 		m_DispDefAttrRadioItem.addActionListener(this);
 		m_validateMenu.add(m_DispDefAttrRadioItem);
 
@@ -1104,7 +1100,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		final JDFTreeArea ta = frame.m_treeArea;
 		if (eSrc == m_showInhAttrRadioItem)
 		{
-            settingService.setBoolean(SettingKey.TREEVIEW_ATTRIBUTE_INHERITED, m_showInhAttrRadioItem.isSelected());
+            mainController.setSetting(SettingKey.TREEVIEW_ATTRIBUTE_INHERITED, m_showInhAttrRadioItem.isSelected());
 			if (getJDFDoc() != null)
 			{
 				ta.drawTreeView(frame.getEditorDoc());
@@ -1113,7 +1109,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		}
 		if (eSrc == m_DispDefAttrRadioItem)
 		{
-            settingService.setBoolean(SettingKey.GENERAL_DISPLAY_DEFAULT, m_DispDefAttrRadioItem.isSelected());
+            mainController.setSetting(SettingKey.GENERAL_DISPLAY_DEFAULT, m_DispDefAttrRadioItem.isSelected());
 			if (getJDFDoc() != null)
 			{
 				ta.drawTreeView(frame.getEditorDoc());
@@ -1129,7 +1125,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		}
 		else if (eSrc == m_highlightFNRadioItem)
 		{
-            settingService.setBoolean(SettingKey.VALIDATION_HIGHTLIGHT_FN, m_highlightFNRadioItem.isSelected());
+            mainController.setSetting(SettingKey.VALIDATION_HIGHTLIGHT_FN, m_highlightFNRadioItem.isSelected());
 		}
 		else if (eSrc == m_nextItem)
 		{
@@ -1228,9 +1224,9 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 			m_DispDefAttrRadioItem.setEnabled(true);
 		}
 
-        settingService.setBoolean(SettingKey.TREEVIEW_ATTRIBUTE, m_showAttrRadioItem.isSelected());
-        settingService.setBoolean(SettingKey.GENERAL_DISPLAY_DEFAULT, m_DispDefAttrRadioItem.isSelected());
-        settingService.setBoolean(SettingKey.TREEVIEW_ATTRIBUTE_INHERITED, m_showInhAttrRadioItem.isSelected());
+        mainController.setSetting(SettingKey.TREEVIEW_ATTRIBUTE, m_showAttrRadioItem.isSelected());
+        mainController.setSetting(SettingKey.GENERAL_DISPLAY_DEFAULT, m_DispDefAttrRadioItem.isSelected());
+        mainController.setSetting(SettingKey.TREEVIEW_ATTRIBUTE_INHERITED, m_showInhAttrRadioItem.isSelected());
 		if (getJDFDoc() != null)
 		{
 			ta.drawTreeView(frame.getEditorDoc());

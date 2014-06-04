@@ -112,7 +112,7 @@ public class ExportDialog extends JPanel implements ActionListener
 	{
 		super();
 		this.originalFile = new File(jdfRoot.getOwnerDocument_KElement().getOriginalFileName());
-		generAttrString = settingService.getString(SettingKey.VALIDATION_GENERIC_ATTR);
+		generAttrString = settingService.getSetting(SettingKey.VALIDATION_GENERIC_ATTR, String.class);
 		JDFFrame frame = MainView.getFrame();
 		init();
 		final String[] options = { ResourceBundleUtil.getMessage("OkKey"), ResourceBundleUtil.getMessage("CancelKey") };

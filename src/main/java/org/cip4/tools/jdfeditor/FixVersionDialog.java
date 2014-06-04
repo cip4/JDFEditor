@@ -130,9 +130,9 @@ public class FixVersionDialog extends JPanel implements ActionListener
 		{
 			bVersionKeyChosen = true;
 
-            settingService.setBoolean(SettingKey.VALIDATION_CONVERT_LPP, bConvertLPP);
-            settingService.setBoolean(SettingKey.VALIDATION_FIX_ICS_VERSION, bFixICSVersion);
-            settingService.setString(SettingKey.VALIDATION_VERSION, version.getName());
+            settingService.setSetting(SettingKey.VALIDATION_CONVERT_LPP, bConvertLPP);
+            settingService.setSetting(SettingKey.VALIDATION_FIX_ICS_VERSION, bFixICSVersion);
+            settingService.setSetting(SettingKey.VALIDATION_VERSION, version.getName());
 
 		}
 		else if (option == JOptionPane.CANCEL_OPTION)
@@ -149,9 +149,9 @@ public class FixVersionDialog extends JPanel implements ActionListener
 	{
 		final JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(2, 1, 0, 5));
-		final EnumVersion defVersion = EnumVersion.getEnum(settingService.getString(SettingKey.VALIDATION_VERSION));
-		bConvertLPP = settingService.getBoolean(SettingKey.VALIDATION_CONVERT_LPP);
-		bFixICSVersion = settingService.getBoolean(SettingKey.VALIDATION_FIX_ICS_VERSION);
+		final EnumVersion defVersion = EnumVersion.getEnum(settingService.getSetting(SettingKey.VALIDATION_VERSION, String.class));
+		bConvertLPP = settingService.getSetting(SettingKey.VALIDATION_CONVERT_LPP, Boolean.class);
+		bFixICSVersion = settingService.getSetting(SettingKey.VALIDATION_FIX_ICS_VERSION, Boolean.class);
 		version = defVersion;
 		addOptionPanel(panel);
 		addVersionPannel(panel, defVersion);

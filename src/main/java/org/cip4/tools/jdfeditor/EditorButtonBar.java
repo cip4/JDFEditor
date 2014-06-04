@@ -241,7 +241,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 	{
 		final JButton button = new JButton(icon);
 
-		if (settingService.getString(SettingKey.GENERAL_LOOK).equalsIgnoreCase("com.sun.java.swing.plaf.motif.MotifLookAndFeel"))
+		if (settingService.getSetting(SettingKey.GENERAL_LOOK, String.class).equalsIgnoreCase("com.sun.java.swing.plaf.motif.MotifLookAndFeel"))
 			button.setPreferredSize(new Dimension(45, 45));
 		else
 			button.setPreferredSize(new Dimension(30, 30));
@@ -416,7 +416,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		{
 			m_frame.closeFile(1);
 		}
-		else if (!settingService.getBoolean(SettingKey.GENERAL_READ_ONLY))
+		else if (!settingService.getSetting(SettingKey.GENERAL_READ_ONLY, Boolean.class))
 		{
 			if (eSrc == m_cutButton) // cut
 			{

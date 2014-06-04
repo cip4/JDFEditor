@@ -155,13 +155,13 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 		setSize(screenWidth / 4, screenHeight / 4);
 		setLocation(screenWidth / 4, screenHeight / 4);
 
-		cbExt1.setSelected(settingService.getBoolean(SettingKey.XJDF_CONVERT_SINGLENODE));
-		cbExt2.setSelected(settingService.getBoolean(SettingKey.XJDF_CONVERT_STRIPPING));
-		cbExt3.setSelected(settingService.getBoolean(SettingKey.XJDF_CONVERT_SPAN));
-		cbExt4.setSelected(settingService.getBoolean(SettingKey.XJDF_CONVERT_RUNLIST));
-		cbLoPrep.setSelected(settingService.getBoolean(SettingKey.XJDF_CONVERT_LAYOUTPREP));
-		cbTilde.setSelected(settingService.getBoolean(SettingKey.XJDF_CONVERT_TILDE));
-		cbTypesafeJMF.setSelected(settingService.getBoolean(SettingKey.XJDF_TYPESAFE_JMF));
+		cbExt1.setSelected(settingService.getSetting(SettingKey.XJDF_CONVERT_SINGLENODE, Boolean.class));
+		cbExt2.setSelected(settingService.getSetting(SettingKey.XJDF_CONVERT_STRIPPING, Boolean.class));
+		cbExt3.setSelected(settingService.getSetting(SettingKey.XJDF_CONVERT_SPAN, Boolean.class));
+		cbExt4.setSelected(settingService.getSetting(SettingKey.XJDF_CONVERT_RUNLIST, Boolean.class));
+		cbLoPrep.setSelected(settingService.getSetting(SettingKey.XJDF_CONVERT_LAYOUTPREP, Boolean.class));
+		cbTilde.setSelected(settingService.getSetting(SettingKey.XJDF_CONVERT_TILDE, Boolean.class));
+		cbTypesafeJMF.setSelected(settingService.getSetting(SettingKey.XJDF_TYPESAFE_JMF, Boolean.class));
 
 		setVisible(true);
 	}
@@ -185,13 +185,13 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 	{
 		if (e.getSource() == bOK)
 		{
-			settingService.setBoolean(SettingKey.XJDF_CONVERT_SINGLENODE, cbExt1.isSelected());
-            settingService.setBoolean(SettingKey.XJDF_CONVERT_STRIPPING, cbExt2.isSelected());
-            settingService.setBoolean(SettingKey.XJDF_CONVERT_SPAN, cbExt3.isSelected());
-            settingService.setBoolean(SettingKey.XJDF_CONVERT_RUNLIST, cbExt4.isSelected());
-            settingService.setBoolean(SettingKey.XJDF_CONVERT_LAYOUTPREP, cbLoPrep.isSelected());
-            settingService.setBoolean(SettingKey.XJDF_CONVERT_TILDE, cbTilde.isSelected());
-            settingService.setBoolean(SettingKey.XJDF_TYPESAFE_JMF,cbTypesafeJMF.isSelected());
+			settingService.setSetting(SettingKey.XJDF_CONVERT_SINGLENODE, cbExt1.isSelected());
+            settingService.setSetting(SettingKey.XJDF_CONVERT_STRIPPING, cbExt2.isSelected());
+            settingService.setSetting(SettingKey.XJDF_CONVERT_SPAN, cbExt3.isSelected());
+            settingService.setSetting(SettingKey.XJDF_CONVERT_RUNLIST, cbExt4.isSelected());
+            settingService.setSetting(SettingKey.XJDF_CONVERT_LAYOUTPREP, cbLoPrep.isSelected());
+            settingService.setSetting(SettingKey.XJDF_CONVERT_TILDE, cbTilde.isSelected());
+            settingService.setSetting(SettingKey.XJDF_TYPESAFE_JMF,cbTypesafeJMF.isSelected());
 
 			choosedButton = BUTTON_OK;
 			dispose();

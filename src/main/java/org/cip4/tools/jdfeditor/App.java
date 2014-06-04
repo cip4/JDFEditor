@@ -2,9 +2,12 @@ package org.cip4.tools.jdfeditor;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
-import org.cip4.jdflib.core.JDFAudit;
 import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.util.DirectoryUtil;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +16,9 @@ import java.util.Properties;
 /**
  * Initialize and start JDFEditor Application.
  */
+
+@Configuration
+@ComponentScan
 public class App {
 
     public static final String APP_NAME = getBuildProp("name");
@@ -20,10 +26,6 @@ public class App {
     public static final String APP_VERSION = getBuildProp("version");
 
     public static final String APP_RELEASE_DATE = getBuildProp("build.date");
-
-    public static final String JDFLIBJ_VERSION = JDFAudit.software();
-
-    public static final String JDFLIBJ_RELEASE_DATE = "";
 
     private static final String RES_BUILD_PROPS = "/org/cip4/tools/jdfeditor/build.properties";
 
@@ -60,12 +62,9 @@ public class App {
         }
 
         // show main view
-        MainController mainController = new MainController();
-        mainController.displayForm();
-
-        // start editor
-        // MainView editor = new MainView();
-        // editor.init(file);
+        ApplicationContext ctx = new AnnotationConfigApplicationContext(App.class);
+        MainController mainController = ctx.getBean(MainController.class);
+        mainController.displayForm(file);
     }
 
     /**

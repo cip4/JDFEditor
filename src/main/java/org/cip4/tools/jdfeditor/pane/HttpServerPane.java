@@ -131,7 +131,7 @@ public class HttpServerPane implements FileAlterationListener, ActionListener
 	{
 		this.frame = frame;
 
-		File directory = new File(settingService.getString(SettingKey.HTTP_STORE_PATH));
+		File directory = new File(settingService.getSetting(SettingKey.HTTP_STORE_PATH, String.class));
 		FileAlterationObserver observer = new FileAlterationObserver(directory);
 		observer.addListener(this);
 
@@ -258,7 +258,7 @@ public class HttpServerPane implements FileAlterationListener, ActionListener
 		buttonSelectPath = new JButton("...");
 		buttonSelectPath.addActionListener(this);
 		pathPanel.add(buttonSelectPath);
-		labelStorePath = new JLabel(settingService.getString(SettingKey.HTTP_STORE_PATH));
+		labelStorePath = new JLabel(settingService.getSetting(SettingKey.HTTP_STORE_PATH, String.class));
 		pathPanel.add(labelStorePath);
 		rightBottomPanel.add(pathPanel, BorderLayout.SOUTH);
 
@@ -421,13 +421,13 @@ public class HttpServerPane implements FileAlterationListener, ActionListener
 		else if (e.getSource() == buttonSelectPath)
 		{
 			JFileChooser chooser = new JFileChooser();
-			chooser.setCurrentDirectory(new File(settingService.getString(SettingKey.HTTP_STORE_PATH)));
+			chooser.setCurrentDirectory(new File(settingService.getSetting(SettingKey.HTTP_STORE_PATH, String.class)));
 			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			chooser.setAcceptAllFileFilterUsed(false);
 			if (chooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION)
 			{
 				LOGGER.debug("getSelectedFile(): " + chooser.getSelectedFile());
-                settingService.setString(SettingKey.HTTP_STORE_PATH, chooser.getSelectedFile().getAbsolutePath());
+                settingService.setSetting(SettingKey.HTTP_STORE_PATH, chooser.getSelectedFile().getAbsolutePath());
 				labelStorePath.setText(chooser.getSelectedFile().getAbsolutePath());
 			}
 		}

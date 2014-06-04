@@ -87,7 +87,6 @@ import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
-import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.RecentFileUtil;
 import org.cip4.tools.jdfeditor.util.ResourceBundleUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
@@ -121,26 +120,16 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 {
     private static final Logger LOGGER = LogManager.getLogger(JDFFrame.class);
 
-    SettingService settingService = new SettingService();
-
-    private final MainView editor;
-
     private MainController mainController;
 
-    /**
-	 * Comment for <code>serialVersionU
-	 * ID</code>
-	 */
-	private static final long serialVersionUID = 626128726824503039L;
 
-	// TODO remove messy globals
-	/**
-	 * 
-	 */
+
 	public JDFTreeArea m_treeArea;
 
 	EditorTabbedPaneA m_topTabs;
+
 	EditorTabbedPaneB m_errorTabbedPane;
+
 	JTree m_searchTree;
 
 	/**
@@ -181,7 +170,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		super("CIP4 JDF Editor");
         enableOSXFullscreen(this);
 
-        this.editor = editor;
 
 		MainView.my_Frame = this;
 		final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
@@ -317,7 +305,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	{
 		try
 		{
-			UIManager.setLookAndFeel(settingService.getString(SettingKey.GENERAL_LOOK));
+			UIManager.setLookAndFeel(mainController.getSetting(SettingKey.GENERAL_LOOK, String.class));
 			m_buttonBar.removeAll();
 			m_buttonBar.drawButtonBar();
 			SwingUtilities.updateComponentTreeUI(JDFFrame.this);
@@ -411,7 +399,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				vs.unify();
 
                 String s = StringUtil.setvString(vs, " ", null, null);
-                settingService.setString(SettingKey.VALIDATION_GENERIC_ATTR, s);
+                mainController.setSetting(SettingKey.VALIDATION_GENERIC_ATTR, s);
 				clearViews();
 				readFile(fileToOpen);
 			}
@@ -514,7 +502,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		MainView.setCursor(1, null);
 		try
 		{
-			setEnableOpen(!settingService.getBoolean(SettingKey.GENERAL_READ_ONLY));
+			setEnableOpen(!mainController.getSetting(SettingKey.GENERAL_READ_ONLY, Boolean.class));
 
 			m_treeArea.drawTreeView(eDoc);
 			m_topTabs.refreshView(eDoc);
@@ -532,7 +520,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final Exception e)
 		{
 			setJDFDoc(null, null);
-			e.printStackTrace();
+            LOGGER.error("Error during refreshing View.", e);
 			JOptionPane.showMessageDialog(this, ResourceBundleUtil.getMessage("FileNotOpenKey"), ResourceBundleUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 		finally
@@ -671,7 +659,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		final EditorDocument doc = getEditorDoc();
 		if (doc != null)
 		{
-			if (!settingService.getBoolean(SettingKey.GENERAL_READ_ONLY) || !isDirty())
+			if (!mainController.getSetting(SettingKey.GENERAL_READ_ONLY, Boolean.class) || !isDirty())
 			{
 				String originalFileName = doc.getOriginalFileName();
 				if (originalFileName == null)
@@ -846,7 +834,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				break;
 			}
 
-			if (isDirty() && !settingService.getBoolean(SettingKey.GENERAL_READ_ONLY))
+			if (isDirty() && !mainController.getSetting(SettingKey.GENERAL_READ_ONLY, Boolean.class))
 			{
 				save = saveFileQuestion();
 			}
@@ -896,7 +884,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				textArea.setEditable(false);
 				new DropTarget(textArea, this);
 
-				if (!settingService.getBoolean(SettingKey.GENERAL_READ_ONLY))
+				if (!mainController.getSetting(SettingKey.GENERAL_READ_ONLY, Boolean.class))
 				{
 					setEnableClose();
 				}
@@ -938,7 +926,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				newGoldenTicket();
 			}
 
-			setEnableOpen(!settingService.getBoolean(SettingKey.GENERAL_READ_ONLY));
+			setEnableOpen(!mainController.getSetting(SettingKey.GENERAL_READ_ONLY, Boolean.class));
 		}
 	}
 
@@ -1118,7 +1106,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		{
 			// TODO m_errorTabbedPane.copyValidationListToClipBoard();
 		}
-		else if (!settingService.getBoolean(SettingKey.GENERAL_READ_ONLY))
+		else if (!mainController.getSetting(SettingKey.GENERAL_READ_ONLY, Boolean.class))
 		{
 			if (eSrc == m_buttonBar.m_cutButton || eSrc == m_menuBar.m_cutItem)
 			{
@@ -1536,7 +1524,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 				final int selIndex = m_topTabs.getSelectedIndex();
 
-				if (!settingService.getBoolean(SettingKey.GENERAL_READ_ONLY))
+				if (!mainController.getSetting(SettingKey.GENERAL_READ_ONLY, Boolean.class))
 				{
 					m_menuBar.setEnabledInMenu(m_treeArea.getSelectionPath());
 				}

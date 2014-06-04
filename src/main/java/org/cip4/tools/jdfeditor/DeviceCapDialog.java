@@ -134,7 +134,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 		KElement docRoot = doc.getRoot();
 
 		// idFile = iniFile.getRecentDevCap();
-        String s = settingService.getString(SettingKey.RECENT_DEV_CAP);
+        String s = settingService.getSetting(SettingKey.RECENT_DEV_CAP, String.class);
         File f = null;
 
         if(s != null) {
@@ -143,8 +143,8 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 
         idFile = f;
 
-		ignoreDefaults = settingService.getBoolean(SettingKey.VALIDATION_IGNORE_DEFAULT);
-		ignoreExtensions = ! settingService.getBoolean(SettingKey.VALIDATION_HIGHTLIGHT_FN);
+		ignoreDefaults = settingService.getSetting(SettingKey.VALIDATION_IGNORE_DEFAULT, Boolean.class);
+		ignoreExtensions = ! settingService.getSetting(SettingKey.VALIDATION_HIGHTLIGHT_FN, Boolean.class);
 
 		init();
 		final String[] options = { ResourceBundleUtil.getMessage("OkKey"), ResourceBundleUtil.getMessage("CancelKey") };
@@ -165,7 +165,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
                     recentDevCap = idFile.getAbsolutePath();
                 }
 
-                settingService.setString(SettingKey.RECENT_DEV_CAP, recentDevCap);
+                settingService.setSetting(SettingKey.RECENT_DEV_CAP, recentDevCap);
 
 				try
 				{
@@ -227,7 +227,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 								{
 									final JDFResponse respKnownMessages = (JDFResponse) ms.getParentNode_KElement();
 									executableJDF = null;
-									bugReport = JDFDeviceCap.getJMFInfo((JDFJMF) docRoot, respKnownMessages, testlists, validationLevel, ! settingService.getBoolean(SettingKey.VALIDATION_HIGHTLIGHT_FN));
+									bugReport = JDFDeviceCap.getJMFInfo((JDFJMF) docRoot, respKnownMessages, testlists, validationLevel, ! settingService.getSetting(SettingKey.VALIDATION_HIGHTLIGHT_FN, Boolean.class));
 
 								}
 								if (bugReport != (null))

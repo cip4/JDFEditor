@@ -144,7 +144,7 @@ public class SearchComboBoxModel extends AbstractListModel implements ComboBoxMo
             }
         }
 
-        settingService.setString(SettingKey.FIND_PATTERN, findPattern);
+        settingService.setSetting(SettingKey.FIND_PATTERN, findPattern);
 
 	}
 

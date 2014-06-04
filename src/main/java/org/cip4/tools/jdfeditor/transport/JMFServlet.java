@@ -157,7 +157,7 @@ public class JMFServlet extends HttpServlet {
 			}
 			LOGGER.info("Save message to file: " + fileName);
 			
-			String fullPathFile = settingService.getString(SettingKey.HTTP_STORE_PATH) + File.separator + fileName;
+			String fullPathFile = settingService.getSetting(SettingKey.HTTP_STORE_PATH, String.class) + File.separator + fileName;
 
 			File f = new File(fullPathFile);
 			

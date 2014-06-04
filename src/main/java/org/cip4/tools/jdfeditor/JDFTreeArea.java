@@ -292,7 +292,7 @@ public class JDFTreeArea extends JTextArea
 			final JTree jdfTree = ed.getJDFTree();
 			final TreePath path = jdfTree.getPathForLocation(e.getX(), e.getY());
 
-			if ((SwingUtilities.isRightMouseButton(e) || e.isAltDown()) && path != null && !settingService.getBoolean(SettingKey.GENERAL_READ_ONLY))
+			if ((SwingUtilities.isRightMouseButton(e) || e.isAltDown()) && path != null && !settingService.getSetting(SettingKey.GENERAL_READ_ONLY, Boolean.class))
 			{
 				jdfTree.removeTreeSelectionListener(m_treeSelectionListener);
 				ed.setSelectionPath(path, true);

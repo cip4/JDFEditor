@@ -77,7 +77,7 @@ import org.cip4.jdflib.core.*;
 import org.cip4.tools.jdfeditor.*;
 import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
-import org.cip4.tools.jdfeditor.service.SettingService;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
@@ -91,11 +91,10 @@ import java.io.InputStream;
 /**
  * The MainView of the CIP4 JDFEditor.
  */
+@Component
 public class MainView
 {
     private static final Logger LOGGER = LogManager.getLogger(MainView.class);
-
-    private SettingService settingService = new SettingService();
 
     private MainController mainController;
 
@@ -164,7 +163,7 @@ public class MainView
 	 * @param iWait 0 = ready; 1 = wait; 2 = hand
 	 * @param parentComponent the parent frame to set the cursor in, if null use the main frame
 	 */
-	public static void setCursor(final int iWait, Component parentComponent)
+	public static void setCursor(final int iWait, java.awt.Component parentComponent)
 	{
 		if (parentComponent == null)
 		{
@@ -193,7 +192,7 @@ public class MainView
 	public void display(final File file)
 	{
 		try	{
-            String currentLookAndFeel = settingService.getString(SettingKey.GENERAL_LOOK);
+            String currentLookAndFeel = mainController.getSetting(SettingKey.GENERAL_LOOK, String.class);
 			UIManager.setLookAndFeel(currentLookAndFeel);
 		} catch (final Exception e)	{
             LOGGER.error("Error during setting 'Look and Feel' of JDFEditor.", e);
@@ -204,8 +203,8 @@ public class MainView
 		// read the initialization stuff
 		JDFAudit.setStaticAgentName(App.APP_NAME);
 		JDFAudit.setStaticAgentVersion(getEditorVersion());
-		KElement.setLongID(settingService.getBoolean(SettingKey.GENERAL_LONG_ID));
-		JDFElement.setDefaultJDFVersion(JDFElement.EnumVersion.getEnum(settingService.getString(SettingKey.VALIDATION_VERSION)));
+		KElement.setLongID(mainController.getSetting(SettingKey.GENERAL_LONG_ID, Boolean.class));
+		JDFElement.setDefaultJDFVersion(JDFElement.EnumVersion.getEnum(mainController.getSetting(SettingKey.VALIDATION_VERSION, String.class)));
 		JDFParser.m_searchStream = true;
 
         my_Frame.drawWindow();

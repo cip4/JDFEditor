@@ -542,9 +542,13 @@ public class EditorUtils
 	{
 		File schemaloc = null;
 
-		if (new SettingService().getBoolean(SettingKey.GENERAL_USE_SCHEMA))
+        SettingService s = new SettingService();
+        boolean generalUseSchema = s.getSetting(SettingKey.GENERAL_USE_SCHEMA, Boolean.class);
+        String validationSchemaUrl = s.getSetting(SettingKey.VALIDATION_SCHEMA_URL, String.class);
+
+		if (generalUseSchema && validationSchemaUrl != null)
 		{
-			schemaloc =  new File(new SettingService().getString(SettingKey.VALIDATION_SCHEMA_URL));
+			schemaloc =  new File(validationSchemaUrl);
 		}
 
 		return (schemaloc);
@@ -558,7 +562,7 @@ public class EditorUtils
 		{
 			jdfDoc.clearDirtyIDs();
 
-			if (new SettingService().getBoolean(SettingKey.GENERAL_NORMALIZE))
+			if (new SettingService().getSetting(SettingKey.GENERAL_NORMALIZE, Boolean.class))
 			{
 				jdfDoc.getRoot().sortChildren();
 			}

@@ -28,7 +28,7 @@ public class RecentFileUtil {
         String[] result = new String[5];
 
         // load recent files
-        String strRecentFiles = new SettingService().getString(SettingKey.RECENT_FILES);
+        String strRecentFiles = new SettingService().getSetting(SettingKey.RECENT_FILES, String.class);
 
         // create result
         if(strRecentFiles != null) {
@@ -64,7 +64,7 @@ public class RecentFileUtil {
         }
 
         // write to config
-        new SettingService().setString(SettingKey.RECENT_FILES, strRecentFiles);
+        new SettingService().setSetting(SettingKey.RECENT_FILES, strRecentFiles);
     }
 
     /**

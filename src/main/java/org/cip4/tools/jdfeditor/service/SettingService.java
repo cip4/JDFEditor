@@ -8,12 +8,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.util.DirectoryUtil;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 
 /**
  * This services is responsible for all configuration settings stored in the external configuration file.
  */
+@Service
+@Scope(value = "singleton")
 public class SettingService {
 
     private static final Logger LOGGER = LogManager.getLogger(SettingService.class.getName());
@@ -72,69 +76,50 @@ public class SettingService {
     }
 
     /**
-     * Get a setting as String.
-     *
-     * @param key The setting key.
-     * @return The setting value as String.
+     * Get a typed setting value by key.
+     * @param key The key of the setting value.
+     * @param c The type of the setting value.
+     * @return The typed setting value.
      */
-    public String getString(SettingKey key) {
+    public <T> T getSetting(SettingKey key, Class<T> c) {
 
-        return config.getString(key.getKey(), key.getDefaultValue());
+        Class clazz = key.getClazz();
+        String value = config.getString(key.getKey(), key.getDefaultValue());
+
+        if(Boolean.class.equals(clazz)) {
+            return c.cast(Boolean.parseBoolean(value));
+
+        } else if (String.class.equals(clazz)) {
+            return c.cast(value);
+
+        } else if (Integer.class.equals(clazz)) {
+            return c.cast(Integer.parseInt(value));
+
+        }
+
+        LOGGER.warn("Wrong DataType for SettingKey " + key.getKey());
+        return null;
     }
 
     /**
-     * Retruns a setting as boolean.
-     * @param key The setting key.
-     * @return The Setting value as boolean.
-     */
-    public boolean getBoolean(SettingKey key) {
-
-        String value = getString(key);
-        return Boolean.parseBoolean(value);
-    }
-
-    /**
-     * Retruns a setting as int.
-     * @param key The setting key.
-     * @return The Setting value as int.
-     */
-    public int getInteger(SettingKey key) {
-
-        String value = getString(key);
-        return Integer.parseInt(value);
-    }
-
-    /**
-     * Set a setting string by a key.
-     *
+     * Set a setting value by a key.
      * @param key   The configuration key.
      * @param value The configuration setting value as String.
      */
-    public void setString(SettingKey key, String value) {
+    public void setSetting(SettingKey key, Object value) {
 
-        config.setProperty(key.getKey(), value);
-    }
+        Class clazz = key.getClazz();
 
-    /**
-     * Set a setting boolean by a key.
-     *
-     * @param key   The configuration key.
-     * @param value The configuration setting value as Boolean.
-     */
-    public void setBoolean(SettingKey key, boolean value) {
+        if(Boolean.class.equals(clazz)) {
+            config.setProperty(key.getKey(), Boolean.toString((Boolean) value));
 
-        config.setProperty(key.getKey(), Boolean.toString(value));
-    }
+        } else if (String.class.equals(clazz)) {
+            config.setProperty(key.getKey(), value);
 
-    /**
-     * Set a setting boolean by a key.
-     *
-     * @param key   The configuration key.
-     * @param value The configuration setting value as int.
-     */
-    public void setInteger(SettingKey key, int value) {
+        } else if (Integer.class.equals(clazz)) {
+            config.setProperty(key.getKey(), Integer.toString((Integer) value));
 
-        config.setProperty(key.getKey(), Integer.toString(value));
+        }
     }
 
     /**

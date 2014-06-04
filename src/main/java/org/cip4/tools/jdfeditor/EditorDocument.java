@@ -497,7 +497,7 @@ public class EditorDocument
 		root.add(new JDFTreeNode(doc.getRoot()));
 		m_model.buildModel((JDFTreeNode) root.getFirstChild());
 		m_model.addTreeModelListener(new MyTreeModelListener());
-		if (settingService.getBoolean(SettingKey.GENERAL_AUTO_VALIDATE))
+		if (settingService.getSetting(SettingKey.GENERAL_AUTO_VALIDATE, Boolean.class))
 		{
 			m_model.validate();
 		}
@@ -580,15 +580,15 @@ public class EditorDocument
 		}
 
 		final KElement e = m_jdfDoc.getRoot();
-		if (settingService.getBoolean(SettingKey.GENERAL_REMOVE_DEFAULT) && (e instanceof JDFElement))
+		if (settingService.getSetting(SettingKey.GENERAL_REMOVE_DEFAULT, Boolean.class) && (e instanceof JDFElement))
 		{
 			((JDFElement) e).eraseDefaultAttributes(true);
 		}
-		if (settingService.getBoolean(SettingKey.GENERAL_REMOVE_WHITE))
+		if (settingService.getSetting(SettingKey.GENERAL_REMOVE_WHITE, Boolean.class))
 		{
 			e.eraseEmptyNodes(true);
 		}
-		if (settingService.getBoolean(SettingKey.GENERAL_NORMALIZE))
+		if (settingService.getSetting(SettingKey.GENERAL_NORMALIZE, Boolean.class))
 		{
 			e.sortChildren();
 			// String extension=UrlUtil.extension(file.getAbsolutePath().toLowerCase());
@@ -631,8 +631,8 @@ public class EditorDocument
 	 */
 	private void writeToFile(File file)
 	{
-		int indent = settingService.getBoolean(SettingKey.GENERAL_INDENT) ? 2 : 0;
-		m_jdfDoc.write2File(file.getAbsolutePath(), indent, !settingService.getBoolean(SettingKey.GENERAL_INDENT));
+		int indent = settingService.getSetting(SettingKey.GENERAL_INDENT, Boolean.class) ? 2 : 0;
+		m_jdfDoc.write2File(file.getAbsolutePath(), indent, !settingService.getSetting(SettingKey.GENERAL_INDENT, Boolean.class));
 	}
 
 	/**
