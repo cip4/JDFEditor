@@ -20,7 +20,7 @@ import java.io.File;
 @Scope(value = "singleton")
 public class SettingService {
 
-    private static final Logger LOGGER = LogManager.getLogger(SettingService.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(SettingService.class);
 
     private static String confFileName = "JDFEditor.conf";
 

@@ -325,7 +325,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		m_validateButton.setEnabled(true);
 		m_printButton.setEnabled(true);
 		EditorDocument eDoc = MainView.getEditorDoc();
-		m_refreshButton.setEnabled(eDoc == null ? true : eDoc.getMimePackage() == null);
+		m_refreshButton.setEnabled(eDoc == null ? true : eDoc.getPackageName() == null);
 	}
 
 	///////////////////////////////////////////////////////////////

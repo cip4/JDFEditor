@@ -87,6 +87,7 @@ import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.service.DocumentService;
 import org.cip4.tools.jdfeditor.util.RecentFileUtil;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
@@ -122,7 +123,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
     private MainController mainController;
 
-
+    DocumentService documentService = new DocumentService();
 
 	public JDFTreeArea m_treeArea;
 
@@ -446,7 +447,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 		if (fileToRead != null)
 		{
-			final int docIndex = EditorDocument.indexOfFile(fileToRead, m_VjdfDocument);
+			final int docIndex = documentService.indexOfFile(fileToRead, m_VjdfDocument);
 			if (docIndex >= 0)
 			{
 				nextFile(docIndex);
@@ -542,7 +543,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			return title;
 		}
 		title += ": " + ediDoc.getSaveFileName();
-		final String packageName = ediDoc.getMimePackage();
+		final String packageName = ediDoc.getPackageName();
 		if (packageName != null)
 		{
 			title += " (" + ediDoc.getOriginalFileName() + ")";
@@ -560,7 +561,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		{
 			return;
 		}
-		if (editorDoc.getMimePackage() != null)
+		if (editorDoc.getPackageName() != null)
 		{
 			return;
 		}
@@ -1833,7 +1834,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		int i = m_DocPos;
 		if (doc != null)
 		{
-			i = EditorDocument.indexOfJDF(doc, m_VjdfDocument);
+			i = documentService.indexOfJDF(doc, m_VjdfDocument);
 
 			if (i >= 0)
 			{

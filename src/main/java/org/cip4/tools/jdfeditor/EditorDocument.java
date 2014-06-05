@@ -1,81 +1,3 @@
-/*
- *
- * The CIP4 Software License, Version 1.0
- *
- *
- * Copyright (c) 2001-2012 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
- * reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
- *
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in
- *    the documentation and/or other materials provided with the
- *    distribution.
- *
- * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
- *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
- *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
- *    Alternately, this acknowledgment may appear in the software itself,
- *    if and wherever such third-party acknowledgments normally appear.
- *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
- *    Processes in  Prepress, Press and Postpress" must
- *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
- *    permission, please contact info@cip4.org.
- *
- * 5. Products derived from this software may not be called "CIP4",
- *    nor may "CIP4" appear in their name, without prior written
- *    permission of the CIP4 organization
- *
- * Usage of this software in commercial products is subject to restrictions. For
- * details please consult info@cip4.org.
- *
- * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED.  IN NO EVENT SHALL THE INTERNATIONAL COOPERATION FOR
- * THE INTEGRATION OF PROCESSES IN PREPRESS, PRESS AND POSTPRESS OR
- * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
- * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
- * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- * ====================================================================
- *
- * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
- * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
- * Integration of Processes in  Prepress, Press and Postpress , please see
- * <http://www.cip4.org/>.
- *  
- * 
- */
-/**
- *
- * Copyright (c) 2001 Heidelberger Druckmaschinen AG, All Rights Reserved.
- *
- * JDFDoc.java
- *
- * -------------------------------------------------------------------------------------------------
- */
 package org.cip4.tools.jdfeditor;
 
 import org.cip4.jdflib.core.JDFDoc;
@@ -100,154 +22,103 @@ import java.util.Enumeration;
 import java.util.Vector;
 
 /**
- * this class manipulates the xml file internals
- * 
-  * @author Rainer Prosi, Heidelberger Druckmaschinen *
+ * The Document model.
  */
 public class EditorDocument
 {
-	/**
-	 * this class collects all pointers to documents, trees, models etc and consolidates multi document functionality
-	 * 
-	 */
-    SettingService settingService = new SettingService();
+	private SettingService settingService = new SettingService();
 
-	private JDFDoc m_jdfDoc = null;
-	private JTree m_JDFTree = null;
-	// The model of the JDF
-	private JDFTreeModel m_model = null;
-	protected EditorSelectionListener m_SelectionListener = null;
-	protected Vector<JDFTreeNode> m_PathHistory = null; // history of selection path
-	int m_HistoryPos = -1;
-	private String m_MimePackage = null;
-	private String m_cid = null;
-	private double zoom = 1.0;
-	private int topTab = 0;
+    private JDFDoc jdfDoc;
+
+	private JTree jTree;
+
+	private JDFTreeModel jdfTreeModel;
+
+	private EditorSelectionListener editorSelectionListener;
+
+	private Vector<JDFTreeNode> jdfTreeNodesHistory;
+
+	private int historyPos;
+
+	private String packageName;
+
+	private String cid;
+
+	private double zoom;
+
+	private int topTab;
+
+    /**
+     * Custom constructor. Accepting several attributes for initializing.
+     * @param jdfDoc The JDFDoc object.
+     * @param packageName The package name as String
+     */
+    public EditorDocument(JDFDoc jdfDoc, String packageName)
+    {
+        this.historyPos = -1;
+        this.jdfDoc = jdfDoc;
+        this.jdfTreeNodesHistory = new Vector<JDFTreeNode>();
+        this.packageName = packageName;
+        this.zoom = 1.0;
+    }
 
 	/**
-	 * @return the zoom
+	 * Getter for the zoom attribute value.
+     * @return The zoom value as double.
 	 */
-	public double getZoom()
-	{
+	public double getZoom() {
 		return zoom;
 	}
 
 	/**
-	 * @param _zoom the zoom to set
+	 * Setter for the zoom attribute value.
+     * @param zoom The zoom attribute value as double.
 	 */
-	public void setZoom(final double _zoom)
-	{
-		zoom = _zoom;
+	public void setZoom(double zoom) {
+		this.zoom = zoom;
 	}
 
 	/**
-	 * @param jdfDoc
-	 * @param packageName
-	 */
-	public EditorDocument(final JDFDoc jdfDoc, final String packageName)
-	{
-		m_jdfDoc = jdfDoc;
-		m_PathHistory = new Vector<JDFTreeNode>();
-		m_MimePackage = packageName;
-		zoom = 1.0;
-	}
-
-	/**
-	 * @return
+	 * Getter for the jdfDoc attribute value.
+     * @return The JDFDoc attribute value.
 	 */
 	public JDFDoc getJDFDoc()
 	{
-		return m_jdfDoc;
+		return jdfDoc;
 	}
 
 	/**
-	 * @return
+	 * Getter for the PackageName attribute value.
+     * @return The PackageName value as String.
 	 */
-	public String getMimePackage()
+	public String getPackageName()
 	{
-		return m_MimePackage;
+		return packageName;
 	}
 
-	/**
-	 * check whether the vector contains a document corresponding to this document
-	 * @param doc
-	 * @param vjdfDocument
-	 * @return
-	 */
-	public static int indexOfJDF(final JDFDoc doc, final Vector<EditorDocument> vjdfDocument)
-	{
-		if (vjdfDocument == null)
-		{
-			return -1;
-		}
-		for (int i = 0; i < vjdfDocument.size(); i++)
-		{
-			final EditorDocument ed = vjdfDocument.elementAt(i);
-			if (ed.getJDFDoc().equals(doc))
-			{
-				return i;
-			}
-		}
-		return -1;
-	}
-
-	// ///////////////////////////////////////////////////////////////
-	/**
-	 * returns the index of the EditorDocument in vjdfDocument, -1 if not found
-	 * @param file the file that corresponds to the document
-	 * @param vjdfDocument the vector to search in
-	 * @return int the index of the document in vjdfDocument
-	 */
-	static public int indexOfFile(final File file, final Vector<EditorDocument> vjdfDocument)
-	{
-
-		if (file == null)
-		{
-			return -1;
-		}
-		final String filePath = file.getAbsolutePath();
-		for (int i = 0; i < vjdfDocument.size(); i++)
-		{
-			final EditorDocument d = vjdfDocument.elementAt(i);
-			if (d != null)
-			{
-				if (filePath.equals(d.getOriginalFileName()))
-				{
-					return i;
-				}
-			}
-		}
-		return -1;
-	}
-
-	// ///////////////////////////////////////////////////////////////
-
-	/**
-	 * 
-	 */
 	@Override
 	public String toString()
 	{
-		if (m_jdfDoc == null)
+		if (jdfDoc == null)
 		{
 			return "EditorDocument: #null";
 		}
-		return "EditorDocument: " + m_jdfDoc.toString();
+		return "EditorDocument: " + jdfDoc.toString();
 	}
 
-	// //////////////////////////////////////////////////////////////////////////
 
-	/**
-	 * @return 
-	 * 
-	 */
+    /**
+     * Returns the original file name of a JDF Document.
+     * @return The original file name of a JDF Document as String.
+     */
 	public String getOriginalFileName()
 	{
-		if (m_jdfDoc == null)
+		if (jdfDoc == null)
 		{
 			return null;
 		}
-		return m_jdfDoc.getOriginalFileName();
+
+		return jdfDoc.getOriginalFileName();
 	}
 
 	/**
@@ -256,7 +127,7 @@ public class EditorDocument
 	 */
 	public void setModel(final JDFTreeModel model)
 	{
-		m_model = model;
+		jdfTreeModel = model;
 	}
 
 	/**
@@ -265,7 +136,7 @@ public class EditorDocument
 	 */
 	public JDFTreeModel getModel()
 	{
-		return m_model;
+		return jdfTreeModel;
 	}
 
 	/**
@@ -275,25 +146,25 @@ public class EditorDocument
 	 */
 	public void setSelectionPath(final TreePath path, final boolean trackHistory)
 	{
-		if (m_JDFTree == null)
+		if (jTree == null)
 		{
 			return;
 		}
 
 		if (trackHistory == false)
 		{
-			m_JDFTree.removeTreeSelectionListener(m_SelectionListener);
+			jTree.removeTreeSelectionListener(editorSelectionListener);
 		}
 
 		if (path != null)
 		{
-			m_JDFTree.setSelectionPath(path);
-			m_JDFTree.scrollPathToVisible(path);
+			jTree.setSelectionPath(path);
+			jTree.scrollPathToVisible(path);
 		}
 
 		if (trackHistory == false)
 		{
-			m_JDFTree.addTreeSelectionListener(m_SelectionListener);
+			jTree.addTreeSelectionListener(editorSelectionListener);
 		}
 	}
 
@@ -329,9 +200,9 @@ public class EditorDocument
 	 */
 	public void setJDFTree(final JTree jdfTree)
 	{
-		this.m_JDFTree = jdfTree;
-		m_SelectionListener = new EditorSelectionListener();
-		m_JDFTree.addTreeSelectionListener(m_SelectionListener);
+		this.jTree = jdfTree;
+		editorSelectionListener = new EditorSelectionListener();
+		jTree.addTreeSelectionListener(editorSelectionListener);
 	}
 
 	/**
@@ -340,7 +211,7 @@ public class EditorDocument
 	 */
 	public JTree getJDFTree()
 	{
-		return m_JDFTree;
+		return jTree;
 	}
 
 	/**
@@ -359,14 +230,14 @@ public class EditorDocument
 	public void setLastSelection()
 	{
 		JDFTreeNode selNode = null;
-		if (m_HistoryPos == -1)
+		if (historyPos == -1)
 		{
-			m_HistoryPos = m_PathHistory.size() - 1;
+			historyPos = jdfTreeNodesHistory.size() - 1;
 		}
-		if (m_HistoryPos > 0)
+		if (historyPos > 0)
 		{
-			m_HistoryPos--;
-			selNode = m_PathHistory.elementAt(m_HistoryPos);
+			historyPos--;
+			selNode = jdfTreeNodesHistory.elementAt(historyPos);
 			setSelectionNode(selNode, false);
 		}
 		enableNextLast();
@@ -437,13 +308,13 @@ public class EditorDocument
 	public JDFTreeNode getLastTreeNode()
 	{
 		JDFTreeNode selNode = null;
-		if (m_HistoryPos == -1)
+		if (historyPos == -1)
 		{
-			m_HistoryPos = m_PathHistory.size() - 1;
+			historyPos = jdfTreeNodesHistory.size() - 1;
 		}
-		if (m_HistoryPos > 0)
+		if (historyPos > 0)
 		{
-			selNode = m_PathHistory.elementAt(m_HistoryPos);
+			selNode = jdfTreeNodesHistory.elementAt(historyPos);
 		}
 		return selNode;
 	}
@@ -455,16 +326,16 @@ public class EditorDocument
 	 */
 	public void setNextSelection()
 	{
-		if (m_HistoryPos >= 0)
+		if (historyPos >= 0)
 		{
-			m_HistoryPos++;
-			if (m_HistoryPos < m_PathHistory.size())
+			historyPos++;
+			if (historyPos < jdfTreeNodesHistory.size())
 			{
-				setSelectionNode(m_PathHistory.elementAt(m_HistoryPos), false);
+				setSelectionNode(jdfTreeNodesHistory.elementAt(historyPos), false);
 			}
 			else
 			{
-				m_HistoryPos = -1; // we are at the head
+				historyPos = -1; // we are at the head
 			}
 		}
 		enableNextLast();
@@ -475,8 +346,8 @@ public class EditorDocument
 	protected void enableNextLast()
 	{
 		final EditorButtonBar editorButtonBar = MainView.getFrame().m_buttonBar;
-		editorButtonBar.m_LastButton.setEnabled(m_HistoryPos != 0 && m_PathHistory.size() > 1);
-		editorButtonBar.m_NextButton.setEnabled(m_HistoryPos != m_PathHistory.size() - 1 && m_PathHistory.size() > 1);
+		editorButtonBar.m_LastButton.setEnabled(historyPos != 0 && jdfTreeNodesHistory.size() > 1);
+		editorButtonBar.m_NextButton.setEnabled(historyPos != jdfTreeNodesHistory.size() - 1 && jdfTreeNodesHistory.size() > 1);
 	}
 
 	/**
@@ -487,7 +358,7 @@ public class EditorDocument
 	public JDFTreeModel createModel(final JDFTreeNode root)
 	{
 
-		m_model = new JDFTreeModel(root, false);
+		jdfTreeModel = new JDFTreeModel(root, false);
 		final JDFDoc doc = getJDFDoc();
 		if (doc == null)
 		{
@@ -495,13 +366,13 @@ public class EditorDocument
 		}
 
 		root.add(new JDFTreeNode(doc.getRoot()));
-		m_model.buildModel((JDFTreeNode) root.getFirstChild());
-		m_model.addTreeModelListener(new MyTreeModelListener());
+		jdfTreeModel.buildModel((JDFTreeNode) root.getFirstChild());
+		jdfTreeModel.addTreeModelListener(new MyTreeModelListener());
 		if (settingService.getSetting(SettingKey.GENERAL_AUTO_VALIDATE, Boolean.class))
 		{
-			m_model.validate();
+			jdfTreeModel.validate();
 		}
-		return m_model;
+		return jdfTreeModel;
 	}
 
 	// ///////////////////////////////////////////////////////////////
@@ -511,11 +382,11 @@ public class EditorDocument
 		{
 			final TreePath p = e.getPath();
 			final JDFTreeNode tn = (JDFTreeNode) p.getLastPathComponent();
-			m_HistoryPos = -1;
-			m_PathHistory.add(tn);
-			if (m_PathHistory.size() > 100)
+			historyPos = -1;
+			jdfTreeNodesHistory.add(tn);
+			if (jdfTreeNodesHistory.size() > 100)
 			{
-				m_PathHistory.remove(0);
+				jdfTreeNodesHistory.remove(0);
 			}
 			enableNextLast();
 
@@ -569,7 +440,7 @@ public class EditorDocument
 	public void saveFile(File file)
 	{
 
-		if (m_jdfDoc == null)
+		if (jdfDoc == null)
 		{
 			return;
 		}
@@ -579,7 +450,7 @@ public class EditorDocument
 			file = new File(getSaveFileName());
 		}
 
-		final KElement e = m_jdfDoc.getRoot();
+		final KElement e = jdfDoc.getRoot();
 		if (settingService.getSetting(SettingKey.GENERAL_REMOVE_DEFAULT, Boolean.class) && (e instanceof JDFElement))
 		{
 			((JDFElement) e).eraseDefaultAttributes(true);
@@ -597,19 +468,19 @@ public class EditorDocument
 		if (!UrlUtil.isMIME(file))
 		{
 			writeToFile(file);
-			m_jdfDoc.setOriginalFileName(file.getAbsolutePath());
+			jdfDoc.setOriginalFileName(file.getAbsolutePath());
 		}
 		else
 		{
 			Multipart mp = null;
-			if (m_MimePackage == null)
+			if (packageName == null)
 			{
 				mp = MimeUtil.buildMimePackage(null, getJDFDoc(), true);
 			}
 			else
 			{
-				mp = MimeUtil.getMultiPart(m_MimePackage);
-				final BodyPart bp = MimeUtil.updateXMLMultipart(mp, m_jdfDoc, m_cid);
+				mp = MimeUtil.getMultiPart(packageName);
+				final BodyPart bp = MimeUtil.updateXMLMultipart(mp, jdfDoc, cid);
 				if (bp == null)
 				{
 					mp = null; // flag that we shouldnt write
@@ -618,10 +489,10 @@ public class EditorDocument
 			if (mp != null)
 			{
 				MimeUtil.writeToFile(mp, file.getAbsolutePath(), null);
-				m_MimePackage = file.getAbsolutePath();
+				packageName = file.getAbsolutePath();
 			}
 		}
-		m_jdfDoc.clearDirtyIDs();
+		jdfDoc.clearDirtyIDs();
 	}
 
 	/**
@@ -632,7 +503,7 @@ public class EditorDocument
 	private void writeToFile(File file)
 	{
 		int indent = settingService.getSetting(SettingKey.GENERAL_INDENT, Boolean.class) ? 2 : 0;
-		m_jdfDoc.write2File(file.getAbsolutePath(), indent, !settingService.getSetting(SettingKey.GENERAL_INDENT, Boolean.class));
+		jdfDoc.write2File(file.getAbsolutePath(), indent, !settingService.getSetting(SettingKey.GENERAL_INDENT, Boolean.class));
 	}
 
 	/**
@@ -641,7 +512,7 @@ public class EditorDocument
 	 */
 	public String getSaveFileName()
 	{
-		String fileName = getMimePackage();
+		String fileName = getPackageName();
 		if (fileName == null)
 		{
 			fileName = getOriginalFileName();
@@ -654,7 +525,7 @@ public class EditorDocument
 	 */
 	public void setCID(final String cid)
 	{
-		m_cid = cid;
+		this.cid = cid;
 
 	}
 
@@ -684,7 +555,7 @@ public class EditorDocument
 	 */
 	public boolean isDirty()
 	{
-		return m_jdfDoc == null ? false : m_jdfDoc.isDirty(null);
+		return jdfDoc == null ? false : jdfDoc.isDirty(null);
 	}
 	// ////////////////////////////////////////////////////////
 
