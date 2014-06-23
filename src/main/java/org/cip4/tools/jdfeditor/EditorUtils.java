@@ -68,11 +68,32 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.cip4.jdflib.core.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLDecoder;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.mail.BodyPart;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.swing.JOptionPane;
+import javax.swing.tree.TreePath;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.cip4.jdflib.core.AttributeName;
+import org.cip4.jdflib.core.JDFDoc;
+import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFElement.EnumValidationLevel;
+import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
+import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.core.VElement;
+import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.jdflib.resource.JDFResource;
@@ -87,16 +108,6 @@ import org.cip4.tools.jdfeditor.streamloader.PluginLoader;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
-import javax.mail.BodyPart;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.swing.*;
-import javax.swing.tree.TreePath;
-import java.io.*;
-import java.net.URLDecoder;
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * static utilities for the editor
  * @author prosirai
@@ -104,11 +115,11 @@ import java.util.List;
  */
 public class EditorUtils
 {
-	private static final Logger LOGGER = LogManager.getLogger(EditorUtils.class);
+	private static final Log LOGGER = LogFactory.getLog(EditorUtils.class);
 
 	private static PluginLoader<IStreamLoader> pluginLoader = null;
 
-    private SettingService settingService = new SettingService();
+	private final SettingService settingService = new SettingService();
 
 	/**
 	 * Check if a KElement is valid or not.
@@ -542,13 +553,13 @@ public class EditorUtils
 	{
 		File schemaloc = null;
 
-        SettingService s = new SettingService();
-        boolean generalUseSchema = s.getSetting(SettingKey.GENERAL_USE_SCHEMA, Boolean.class);
-        String validationSchemaUrl = s.getSetting(SettingKey.VALIDATION_SCHEMA_URL, String.class);
+		SettingService s = new SettingService();
+		boolean generalUseSchema = s.getSetting(SettingKey.GENERAL_USE_SCHEMA, Boolean.class);
+		String validationSchemaUrl = s.getSetting(SettingKey.VALIDATION_SCHEMA_URL, String.class);
 
 		if (generalUseSchema && validationSchemaUrl != null)
 		{
-			schemaloc =  new File(validationSchemaUrl);
+			schemaloc = new File(validationSchemaUrl);
 		}
 
 		return (schemaloc);
