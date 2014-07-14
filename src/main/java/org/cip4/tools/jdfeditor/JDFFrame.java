@@ -70,12 +70,70 @@
  */
 package org.cip4.tools.jdfeditor;
 
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.Window;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragSourceDragEvent;
+import java.awt.dnd.DragSourceDropEvent;
+import java.awt.dnd.DragSourceEvent;
+import java.awt.dnd.DragSourceListener;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.Iterator;
+import java.util.Vector;
+
+import javax.swing.AbstractAction;
+import javax.swing.Box;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.JTree;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.event.UndoableEditEvent;
+import javax.swing.tree.TreePath;
+import javax.swing.undo.CannotUndoException;
+import javax.swing.undo.UndoManager;
+import javax.swing.undo.UndoableEditSupport;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.cip4.jdflib.core.*;
+import org.cip4.jdflib.core.ElementName;
+import org.cip4.jdflib.core.JDFDoc;
+import org.cip4.jdflib.core.JDFElement;
+import org.cip4.jdflib.core.JDFElement.EnumVersion;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
+import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.core.VElement;
+import org.cip4.jdflib.core.VString;
+import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.core.XMLDocUserData.EnumDirtyPolicy;
 import org.cip4.jdflib.elementwalker.RemoveEmpty;
+import org.cip4.jdflib.extensions.xjdfwalker.jdftoxjdf.JDFToXJDF;
 import org.cip4.jdflib.goldenticket.BaseGoldenTicket;
 import org.cip4.jdflib.goldenticket.IDPGoldenTicket;
 import org.cip4.jdflib.goldenticket.MISCPGoldenTicket;
@@ -84,6 +142,7 @@ import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
 import org.cip4.jdflib.jmf.JMFBuilder;
 import org.cip4.jdflib.node.JDFNode;
+import org.cip4.jdflib.util.EnumUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
@@ -91,23 +150,6 @@ import org.cip4.tools.jdfeditor.service.DocumentService;
 import org.cip4.tools.jdfeditor.util.RecentFileUtil;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
-
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.tree.TreePath;
-import javax.swing.undo.CannotUndoException;
-import javax.swing.undo.UndoManager;
-import javax.swing.undo.UndoableEditSupport;
-import java.awt.*;
-import java.awt.datatransfer.*;
-import java.awt.dnd.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.Iterator;
-import java.util.Vector;
 
 /**
  * @author AnderssA ThunellE SvenoniusI Elena Skobchenko
@@ -119,11 +161,11 @@ import java.util.Vector;
 
 public class JDFFrame extends JFrame implements ActionListener, DropTargetListener, DragSourceListener, DragGestureListener, ClipboardOwner
 {
-    private static final Logger LOGGER = LogManager.getLogger(JDFFrame.class);
+	private static final Logger LOGGER = LogManager.getLogger(JDFFrame.class);
 
-    private MainController mainController;
+	private MainController mainController;
 
-    DocumentService documentService = new DocumentService();
+	DocumentService documentService = new DocumentService();
 
 	public JDFTreeArea m_treeArea;
 
@@ -169,8 +211,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	public JDFFrame(MainView editor)
 	{
 		super("CIP4 JDF Editor");
-        enableOSXFullscreen(this);
-
+		enableOSXFullscreen(this);
 
 		MainView.my_Frame = this;
 		final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
@@ -178,32 +219,38 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		m_menuBar = new EditorMenuBar();
 	}
 
-    /**
-     * Register a MainController for this view (MVC Pattern)
-     * @param mainController The MainController for this view.
-     */
-    public void registerController(final MainController mainController) {
+	/**
+	 * Register a MainController for this view (MVC Pattern)
+	 * @param mainController The MainController for this view.
+	 */
+	public void registerController(final MainController mainController)
+	{
 
-        this.mainController = mainController;
-        m_menuBar.registerController(mainController);
-    }
+		this.mainController = mainController;
+		m_menuBar.registerController(mainController);
+	}
 
-
-    /**
-     * Enables JDFEditor to run in full screen mode on a MacOSX System.
-     * @param window This window
-     */
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public static void enableOSXFullscreen(Window window) {
-        try {
-            Class util = Class.forName("com.apple.eawt.FullScreenUtilities");
-            Class params[] = new Class[]{Window.class, Boolean.TYPE};
-            Method method = util.getMethod("setWindowCanFullScreen", params);
-            method.invoke(util, window, true);
-        } catch (ClassNotFoundException e1) {
-        } catch (Exception e) {
-        }
-    }
+	/**
+	 * Enables JDFEditor to run in full screen mode on a MacOSX System.
+	 * @param window This window
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static void enableOSXFullscreen(Window window)
+	{
+		try
+		{
+			Class util = Class.forName("com.apple.eawt.FullScreenUtilities");
+			Class params[] = new Class[] { Window.class, Boolean.TYPE };
+			Method method = util.getMethod("setWindowCanFullScreen", params);
+			method.invoke(util, window, true);
+		}
+		catch (ClassNotFoundException e1)
+		{
+		}
+		catch (Exception e)
+		{
+		}
+	}
 
 	/**
 	 * Method drawWindow.
@@ -399,8 +446,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				final VString vs = StringUtil.tokenize(exportDialog.generAttrString, " ", false);
 				vs.unify();
 
-                String s = StringUtil.setvString(vs, " ", null, null);
-                mainController.setSetting(SettingKey.VALIDATION_GENERIC_ATTR, s);
+				String s = StringUtil.setvString(vs, " ", null, null);
+				mainController.setSetting(SettingKey.VALIDATION_GENERIC_ATTR, s);
 				clearViews();
 				readFile(fileToOpen);
 			}
@@ -408,7 +455,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("DevcapExportErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("DevcapExportErrorKey") + e.getClass() + " \n"
+					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -431,7 +479,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("DevcapOpenErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("DevcapOpenErrorKey") + e.getClass() + " \n"
+					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -521,7 +570,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final Exception e)
 		{
 			setJDFDoc(null, null);
-            LOGGER.error("Error during refreshing View.", e);
+			LOGGER.error("Error during refreshing View.", e);
 			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("FileNotOpenKey"), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 		finally
@@ -741,13 +790,13 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		}
 	}
 
-    JMFBuilder getJMFBuilder()
-    {
-        JMFBuilder b = new JMFBuilder();
-        b.setSenderID("JDFEditor");
+	JMFBuilder getJMFBuilder()
+	{
+		JMFBuilder b = new JMFBuilder();
+		b.setSenderID("JDFEditor");
 
-        return b;
-    }
+		return b;
+	}
 
 	/**
 	 * Method newGoldenTicket. creates a new JDF file from an existing Golden Ticket.java file.
@@ -768,21 +817,28 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			jmf = gt.getJMFLevel();
 			gt1 = gt.getGTLevel();
 			BaseGoldenTicket theGT = null;
+			EnumVersion v = gt.getGtVersionSelected();
+			boolean xjdf = false;
+			if (!EnumUtil.aLessThanB(v, EnumVersion.Version_2_0))
+			{
+				xjdf = true;
+				v = JDFElement.getDefaultJDFVersion();
+			}
 
 			if (gtselect == "MISCP")
 			{
 
-				theGT = new MISCPGoldenTicket(gt1, null, jmf, mis, true, BaseGoldenTicket.createSheetMap(1));
+				theGT = new MISCPGoldenTicket(gt1, v, jmf, mis, true, BaseGoldenTicket.createSheetMap(1));
 				theGT.nCols = new int[] { 4, 4 };
 			}
 			else if (gtselect == "MISPre")
 			{
-				theGT = new MISPreGoldenTicket(gt1, null, jmf, mis, BaseGoldenTicket.createSheetMap(1));
+				theGT = new MISPreGoldenTicket(gt1, v, jmf, mis, BaseGoldenTicket.createSheetMap(1));
 				theGT.nCols = new int[] { 4, 4 };
 			}
 			else if (gtselect == "IDP")
 			{
-				theGT = new IDPGoldenTicket(gt1);
+				theGT = new IDPGoldenTicket(gt1, v);
 			}
 
 			if (theGT != null)
@@ -794,7 +850,13 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 					// assigns the newly created JDF node to jdfcproot
 					final JDFNode root = theGT.getNode();
-					final JDFDoc doc = root.getOwnerDocument_JDFElement();
+					JDFDoc doc = root.getOwnerDocument_JDFElement();
+					if (xjdf)
+					{
+						JDFToXJDF conv = new JDFToXJDF();
+						KElement newRoot = conv.convert(doc.getRoot());
+						doc = new JDFDoc(newRoot.getOwnerDocument_KElement());
+					}
 					setJDFDoc(doc, null);
 
 					// display the result.
@@ -804,7 +866,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				}
 				catch (final Exception s)
 				{
-					s.printStackTrace();
+					LOGGER.error("snafu creating golden ticket", s);
 					JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("FileNotOpenKey"), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 				}
 
@@ -812,8 +874,9 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		}
 		catch (final Exception e)
 		{
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("DevcapOpenErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			LOGGER.error("snafu converting", e);
+			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("DevcapOpenErrorKey") + e.getClass() + " \n"
+					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 
 	}
@@ -990,7 +1053,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("FixVersionErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("FixVersionErrorKey") + e.getClass() + " \n"
+					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -1022,7 +1086,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("FixVersionErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("FixVersionErrorKey") + e.getClass() + " \n"
+					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -1775,7 +1840,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		}
 		catch (final IOException ioe)
 		{
-			System.out.println("data no longer available in the requested flavor");
+			LOGGER.warn("data no longer available in the requested flavor");
 			e.rejectDrop();
 		}
 		catch (final UnsupportedFlavorException ufe)

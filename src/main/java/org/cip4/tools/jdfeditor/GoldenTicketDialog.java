@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -70,15 +70,28 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import org.cip4.tools.jdfeditor.util.ResourceUtil;
-import org.cip4.tools.jdfeditor.view.MainView;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.HashMap;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import org.cip4.jdflib.core.JDFElement;
+import org.cip4.jdflib.core.JDFElement.EnumVersion;
+import org.cip4.jdflib.util.StringUtil;
+import org.cip4.tools.jdfeditor.util.ResourceUtil;
+import org.cip4.tools.jdfeditor.view.MainView;
 
 /**
  * DeviceCapsDialog.java
@@ -98,15 +111,17 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 	private final GridBagLayout outLayout = new GridBagLayout();
 	private final GridBagConstraints outConstraints = new GridBagConstraints();
 
-	private JComboBox goldenTicketLabel;
-	private JComboBox misICSLevel1;
-	private JComboBox jmfICSLevel1;
-	private JComboBox gtICSLevel;
+	private JComboBox<String> goldenTicketLabel;
+	private JComboBox<String> misICSLevel1;
+	private JComboBox<String> jmfICSLevel1;
+	private JComboBox<String> gtICSLevel;
+	private JComboBox<String> gtVersion;
 
 	private String gtSelected = "MISCP";
 	private String misSelected = "1";
 	private String jmfSelected = "1";
 	private String gtLevelSelected = "1";
+	private EnumVersion gtVersionSelected = JDFElement.getDefaultJDFVersion();
 
 	private int misSelectLevel = 1;
 	private int jmfSelectLevel = 1;
@@ -131,14 +146,9 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 
 		if (option == JOptionPane.OK_OPTION)//will create the Golden Ticket
 		{
-			/*String tmpGTfile = gtSelected;*/
-			String tmpMISfile = misSelected;
-			String tmpJMFfile = jmfSelected;
-			String tmpGTlevel = gtLevelSelected;
-
-			misSelectLevel = Integer.parseInt(tmpMISfile);
-			jmfSelectLevel = Integer.parseInt(tmpJMFfile);
-			gtSelectLevel = Integer.parseInt(tmpGTlevel);
+			misSelectLevel = StringUtil.parseInt(misSelected, 1);
+			jmfSelectLevel = StringUtil.parseInt(jmfSelected, 1);
+			gtSelectLevel = StringUtil.parseInt(jmfSelected, 1);
 		}
 		else
 		{
@@ -158,7 +168,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		outLayout.setConstraints(panel, outConstraints);
 		setLayout(outLayout);
 		final GridBagLayout inLayout = new GridBagLayout();
-		panel.setLayout(new GridLayout(4, 1));
+		panel.setLayout(new GridLayout(5, 1));
 		panel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("GTInputKey")));
 
 		//Golden Ticket Chooser
@@ -175,7 +185,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		MISLevel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("MISLevelKey")));
 		outLayout.setConstraints(MISLevel, outConstraints);
 
-		misICSLevel1 = new JComboBox(l2);
+		misICSLevel1 = new JComboBox<String>(l2);
 		misICSLevel1.addActionListener(this);
 
 		MISLevel.add(misICSLevel1);
@@ -187,7 +197,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		JMFLevel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("JMFLevelKey")));
 		outLayout.setConstraints(JMFLevel, outConstraints);
 
-		jmfICSLevel1 = new JComboBox(l1);
+		jmfICSLevel1 = new JComboBox<String>(l1);
 		jmfICSLevel1.addActionListener(this);
 
 		JMFLevel.add(jmfICSLevel1);
@@ -199,11 +209,29 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		GTLevel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("GTLevelKey")));
 		outLayout.setConstraints(GTLevel, outConstraints);
 
-		gtICSLevel = new JComboBox(l1);
+		gtICSLevel = new JComboBox<String>(l1);
 		gtICSLevel.addActionListener(this);
 
 		GTLevel.add(gtICSLevel);
 		panel.add(GTLevel);
+
+		//GT Level
+		JPanel GTVersion = new JPanel();
+		GTVersion.setLayout(inLayout);
+		GTVersion.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("GTVersionKey")));
+		outLayout.setConstraints(GTVersion, outConstraints);
+
+		String[] vs = new String[4];
+		vs[0] = EnumVersion.Version_1_3.getName();
+		vs[1] = EnumVersion.Version_1_4.getName();
+		vs[2] = EnumVersion.Version_1_5.getName();
+		vs[3] = EnumVersion.Version_2_0.getName();
+		gtVersion = new JComboBox<String>(vs);
+		gtVersion.addActionListener(this);
+		gtVersion.setSelectedIndex(3);
+
+		GTVersion.add(gtVersion);
+		panel.add(GTVersion);
 
 		add(panel);
 		setVisible(true);
@@ -262,6 +290,10 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		{
 			jmfSelected = (String) jmfICSLevel1.getSelectedItem();
 		}
+		else if (source == gtVersion)
+		{
+			gtVersionSelected = EnumVersion.getEnum((String) gtVersion.getSelectedItem());
+		}
 		else if (source == gtICSLevel)
 		{
 			getGTLevelSelected();
@@ -317,4 +349,14 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 	{
 		return gtSelectLevel;
 	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public EnumVersion getGtVersionSelected()
+	{
+		return gtVersionSelected;
+	}
+
 }
