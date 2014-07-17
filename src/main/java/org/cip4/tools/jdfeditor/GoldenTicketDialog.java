@@ -89,6 +89,7 @@ import javax.swing.JTextField;
 
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFElement.EnumVersion;
+import org.cip4.jdflib.goldenticket.MISFinGoldenTicket;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
@@ -228,7 +229,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		vs[3] = EnumVersion.Version_2_0.getName();
 		gtVersion = new JComboBox<String>(vs);
 		gtVersion.addActionListener(this);
-		gtVersion.setSelectedIndex(3);
+		gtVersion.setSelectedIndex(2);
 
 		GTVersion.add(gtVersion);
 		panel.add(GTVersion);
@@ -240,7 +241,8 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 	private void initGTLabels(final JPanel panel, JPanel gtChooser)
 	{
 		//Add Golden Tickets as they become available.
-		final String[] gt = { "MISCP", "MISPre", "IDP" };
+		final String[] gt = { "MISCP", "MISPre", "IDP", MISFinGoldenTicket.MISFIN_SHEETFIN, MISFinGoldenTicket.MISFIN_STITCHFIN, MISFinGoldenTicket.MISFIN_BOXMAKING,
+				MISFinGoldenTicket.MISFIN_SOFTCOVERFIN, MISFinGoldenTicket.MISFIN_HARDCOVERFIN };
 		String[] gtDisplay = new String[gt.length];
 		labelMap = new HashMap<String, String>();
 		for (int i = 0; i < gt.length; i++)

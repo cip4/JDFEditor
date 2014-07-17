@@ -137,6 +137,7 @@ import org.cip4.jdflib.extensions.xjdfwalker.jdftoxjdf.JDFToXJDF;
 import org.cip4.jdflib.goldenticket.BaseGoldenTicket;
 import org.cip4.jdflib.goldenticket.IDPGoldenTicket;
 import org.cip4.jdflib.goldenticket.MISCPGoldenTicket;
+import org.cip4.jdflib.goldenticket.MISFinGoldenTicket;
 import org.cip4.jdflib.goldenticket.MISPreGoldenTicket;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
@@ -830,18 +831,50 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				v = JDFElement.getDefaultJDFVersion();
 			}
 
-			if (gtselect == "MISCP")
+			if ("MISCP".equals(gtselect))
 			{
 
 				theGT = new MISCPGoldenTicket(gt1, v, jmf, mis, true, BaseGoldenTicket.createSheetMap(1));
 				theGT.nCols = new int[] { 4, 4 };
 			}
-			else if (gtselect == "MISPre")
+			else if ("MISPre".equals(gtselect))
 			{
 				theGT = new MISPreGoldenTicket(gt1, v, jmf, mis, BaseGoldenTicket.createSheetMap(1));
 				theGT.nCols = new int[] { 4, 4 };
 			}
-			else if (gtselect == "IDP")
+			else if (gtselect.startsWith(MISFinGoldenTicket.MISFIN))
+			{
+				if (gtselect == MISFinGoldenTicket.MISFIN_STITCHFIN)
+				{
+					theGT = new MISFinGoldenTicket(gt1, v, jmf, mis, BaseGoldenTicket.createSheetMap(2));
+				}
+				else if (gtselect == MISFinGoldenTicket.MISFIN_SHEETFIN)
+				{
+					theGT = new MISFinGoldenTicket(gt1, v, jmf, mis, BaseGoldenTicket.createSheetMap(1));
+				}
+				else if (gtselect == MISFinGoldenTicket.MISFIN_SHEETFIN)
+				{
+					theGT = new MISFinGoldenTicket(gt1, v, jmf, mis, BaseGoldenTicket.createSheetMap(1));
+				}
+				else if (gtselect == MISFinGoldenTicket.MISFIN_BOXMAKING)
+				{
+					theGT = new MISFinGoldenTicket(gt1, v, jmf, mis, BaseGoldenTicket.createSheetMap(1));
+				}
+				else if (gtselect == MISFinGoldenTicket.MISFIN_HARDCOVERFIN)
+				{
+					theGT = new MISFinGoldenTicket(gt1, v, jmf, mis, BaseGoldenTicket.createSheetMap(5));
+				}
+				else if (gtselect == MISFinGoldenTicket.MISFIN_SOFTCOVERFIN)
+				{
+					theGT = new MISFinGoldenTicket(gt1, v, jmf, mis, BaseGoldenTicket.createSheetMap(3));
+				}
+				else if (gtselect == MISFinGoldenTicket.MISFIN_INSERTFIN)
+				{
+					theGT = new MISFinGoldenTicket(gt1, v, jmf, mis, BaseGoldenTicket.createSheetMap(1));
+				}
+				((MISFinGoldenTicket) theGT).setCategory(gtselect);
+			}
+			else if ("IDP".equals(gtselect))
 			{
 				theGT = new IDPGoldenTicket(gt1, v);
 			}
