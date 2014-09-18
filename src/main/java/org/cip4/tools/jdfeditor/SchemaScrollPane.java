@@ -147,9 +147,9 @@ public class SchemaScrollPane extends ValidationScrollPane
         // now add the individual attributes
         VString vAtts=repElem.getAttributeVector();
         for(int i=0;i<vAtts.size();i++){
-            if(vAtts.stringAt(i).equals("Message"))
+            if(vAtts.get(i).equals("Message"))
                 continue;
-            SchemaOutputWrapper next = new SchemaOutputWrapper(repElem.getAttributeNode(vAtts.stringAt(i)));
+            SchemaOutputWrapper next = new SchemaOutputWrapper(repElem.getAttributeNode(vAtts.get(i)));
             bugReport.add(next);
         }
         // recurse through children

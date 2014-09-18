@@ -345,7 +345,7 @@ public class Caps
 			final VString keys = e.getAttributeVector();
 			for (int j = 0; j < keys.size(); j++)
 			{
-				final String attribute = keys.stringAt(j);
+				final String attribute = keys.get(j);
 				boolean bFound = false;
 				for (int k = 0; k < states.size(); k++)
 				{

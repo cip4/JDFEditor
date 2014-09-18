@@ -125,14 +125,14 @@ public class EditorFileChooser extends JFileChooser
 		xmlFilterAll.setDescription("All accepted files");
 		for (int i = 0; i < v.size(); i++)
 		{
-			String s = v.stringAt(i);
+			String s = v.get(i);
 			xmlFilterAll.addExtension(s);
 		}
 		addChoosableFileFilter(xmlFilterAll);
 
 		for (int i = 0; i < v.size(); i++)
 		{
-			String s = v.stringAt(i);
+			String s = v.get(i);
 			final JDFFileFilter xmlFilter = new JDFFileFilter();
 			xmlFilter.addExtension(s);
 			xmlFilter.setDescription(s.toUpperCase() + " files");

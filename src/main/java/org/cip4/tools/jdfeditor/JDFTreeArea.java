@@ -380,7 +380,7 @@ public class JDFTreeArea extends JTextArea
 					String defVal;
 					if (!vValues.contains(oldVal))
 					{
-						defVal = vValues.stringAt(0);
+						defVal = vValues.get(0);
 					}
 					else
 					{
@@ -498,7 +498,7 @@ public class JDFTreeArea extends JTextArea
 
 		for (int i = 0; i < size; i++)
 		{
-			validValues[i] = vValid.stringAt(i);
+			validValues[i] = vValid.get(i);
 		}
 		validValues[size] = "zzzzzz";
 		Arrays.sort(validValues);

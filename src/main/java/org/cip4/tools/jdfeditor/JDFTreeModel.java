@@ -557,8 +557,8 @@ public class JDFTreeModel extends DefaultTreeModel
 
 			for (int i = 0; i < requiredAttributes.size(); i++)
 			{
-				final String attValue = JDFElement.getValueForNewAttribute(kElement, requiredAttributes.stringAt(i));
-				final JDFTreeNode attrNode = setAttribute(newNode, requiredAttributes.stringAt(i), attValue, null, false);
+				final String attValue = JDFElement.getValueForNewAttribute(kElement, requiredAttributes.get(i));
+				final JDFTreeNode attrNode = setAttribute(newNode, requiredAttributes.get(i), attValue, null, false);
 				addedAttributeNodesVector.add(attrNode);
 			}
 		}
@@ -621,7 +621,7 @@ public class JDFTreeModel extends DefaultTreeModel
 			final String[] abstractElems = { ElementName.RESOURCELINK, "ResourceRef" };
 			for (int i = 0; i < requiredElements.size(); i++)
 			{
-				final String elName = requiredElements.stringAt(i);
+				final String elName = requiredElements.get(i);
 				if (ArrayUtils.contains(abstractElems, elName))
 				{
 					continue;
@@ -694,12 +694,12 @@ public class JDFTreeModel extends DefaultTreeModel
 
 				for (int i = 0; i < vInheritedAttNames.size(); i++)
 				{
-					final String attNameStr = vInheritedAttNames.stringAt(i);
+					final String attNameStr = vInheritedAttNames.get(i);
 
 					// Add the attribute to the TreeNode, but only if it is an inherited attribute
 					if (!vAttNames.contains(attNameStr))
 					{
-						final String attName = vInheritedAttNames.stringAt(i);
+						final String attName = vInheritedAttNames.get(i);
 						final String attVal = elem.getAttribute(attName);
 						setAttribute(node, attName, attVal, null, true);
 					}
@@ -734,7 +734,7 @@ public class JDFTreeModel extends DefaultTreeModel
 			{
 				for (int d = attSize - 1; d >= 0; d--)
 				{
-					final String key = vAttNames.stringAt(d);
+					final String key = vAttNames.get(d);
 					final String defValue = defMap.get(key);
 					if (defValue != null && elem.getAttribute(key).equals(defValue))
 					{

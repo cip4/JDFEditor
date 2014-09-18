@@ -771,10 +771,10 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 			for (int i = 0; i < requiredAttributes.size(); i++)
 			{
-				final String s = JDFElement.getValueForNewAttribute(jmf, requiredAttributes.stringAt(i));
-				if (!jmf.hasAttribute(requiredAttributes.stringAt(i)))
+				final String s = JDFElement.getValueForNewAttribute(jmf, requiredAttributes.get(i));
+				if (!jmf.hasAttribute(requiredAttributes.get(i)))
 				{
-					jmf.setAttribute(requiredAttributes.stringAt(i), s);
+					jmf.setAttribute(requiredAttributes.get(i), s);
 				}
 			}
 			if (type == null)

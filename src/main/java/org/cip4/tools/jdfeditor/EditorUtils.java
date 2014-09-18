@@ -201,7 +201,7 @@ public class EditorUtils
 			else if (usage != null)
 			{
 				final String io = usage.equals(EnumUsage.Input) ? "i" : "o";
-				if (vValidInfo.stringAt(n).indexOf(io) < 0)
+				if (vValidInfo.get(n).indexOf(io) < 0)
 				{
 					resourcesInTree.remove(res);
 				}
@@ -228,7 +228,7 @@ public class EditorUtils
 			final VString existingElementsVector = parentElement.getElementNameVector();
 			for (int i = 0; i < existingElementsVector.size(); i++)
 			{
-				final String existingElementName = existingElementsVector.stringAt(i);
+				final String existingElementName = existingElementsVector.get(i);
 				if (uniqueElementsVector.contains(existingElementName))
 				{
 					// if element is unique and already in a parentElement - remove it from a valid list
@@ -295,7 +295,7 @@ public class EditorUtils
 		final String possibleValues[] = new String[size + 1];
 		for (int i = 0; i < size; i++)
 		{
-			possibleValues[i] = validAttributesVector.stringAt(i);
+			possibleValues[i] = validAttributesVector.get(i);
 		}
 		possibleValues[size] = "zzzzzzz";
 		Arrays.sort(possibleValues);

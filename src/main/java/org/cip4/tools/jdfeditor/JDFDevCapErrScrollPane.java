@@ -180,7 +180,7 @@ public class JDFDevCapErrScrollPane extends ValidationScrollPane
 		VString vAtts = repElem.getAttributeVector();
 		for (int i = 0; i < vAtts.size(); i++)
 		{
-			final String stringAt = vAtts.stringAt(i);
+			final String stringAt = vAtts.get(i);
 			if (stringAt.equals("ID"))
 				continue;
 			if (stringAt.equals("Name"))
