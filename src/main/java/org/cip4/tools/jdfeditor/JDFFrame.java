@@ -823,6 +823,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			mis = gt.getMISLevel();
 			jmf = gt.getJMFLevel();
 			gt1 = gt.getGTLevel();
+			int iType = gt.getGtTypeSelected();
 			BaseGoldenTicket theGT = null;
 			EnumVersion v = gt.getGtVersionSelected();
 			boolean xjdf = false;
@@ -890,6 +891,10 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				{
 
 					theGT.assign(null);
+					if (iType >= 1)
+						theGT.makeReadyAll();
+					if (iType >= 2)
+						theGT.executeAll(null);
 
 					// assigns the newly created JDF node to jdfcproot
 					final JDFNode root = theGT.getNode();

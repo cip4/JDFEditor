@@ -116,6 +116,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 	private JComboBox<String> misICSLevel1;
 	private JComboBox<String> jmfICSLevel1;
 	private JComboBox<String> gtICSLevel;
+	private JComboBox<String> gtType;
 	private JComboBox<String> gtVersion;
 
 	private String gtSelected = "MISCP";
@@ -123,6 +124,12 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 	private String jmfSelected = "1";
 	private String gtLevelSelected = "1";
 	private EnumVersion gtVersionSelected = JDFElement.getDefaultJDFVersion();
+	private int gtTypeSelected = 0;
+
+	public int getGtTypeSelected()
+	{
+		return gtTypeSelected;
+	}
 
 	private int misSelectLevel = 1;
 	private int jmfSelectLevel = 1;
@@ -169,7 +176,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		outLayout.setConstraints(panel, outConstraints);
 		setLayout(outLayout);
 		final GridBagLayout inLayout = new GridBagLayout();
-		panel.setLayout(new GridLayout(5, 1));
+		panel.setLayout(new GridLayout(6, 1));
 		panel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("GTInputKey")));
 
 		//Golden Ticket Chooser
@@ -179,6 +186,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		outLayout.setConstraints(gtChooser, outConstraints);
 
 		initGTLabels(panel, gtChooser);
+		initGTType(panel);
 
 		//MIS Level
 		JPanel MISLevel = new JPanel();
@@ -210,7 +218,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		GTLevel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("GTLevelKey")));
 		outLayout.setConstraints(GTLevel, outConstraints);
 
-		gtICSLevel = new JComboBox<String>(l1);
+		gtICSLevel = new JComboBox<String>(l2);
 		gtICSLevel.addActionListener(this);
 
 		GTLevel.add(gtICSLevel);
@@ -236,6 +244,23 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 
 		add(panel);
 		setVisible(true);
+	}
+
+	private void initGTType(JPanel panel)
+	{
+		JPanel p = new JPanel();
+		p.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("GTTypeKey")));
+		JComboBox<String> gtType = new JComboBox<String>();
+
+		String[] vs = new String[3];
+		vs[0] = ResourceUtil.getMessage("GTTypeMIS");
+		vs[1] = ResourceUtil.getMessage("GTTypeWorkflow");
+		vs[2] = ResourceUtil.getMessage("GTTypeDevice");
+		gtType = new JComboBox<String>(vs);
+		gtType.addActionListener(this);
+		gtType.setSelectedIndex(0);
+		p.add(gtType);
+		panel.add(p);
 	}
 
 	private void initGTLabels(final JPanel panel, JPanel gtChooser)
@@ -300,6 +325,10 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		{
 			getGTLevelSelected();
 		}
+		else if (source == gtType)
+		{
+			getGTTypeSelected();
+		}
 	}
 
 	private String getGTLabel()
@@ -311,6 +340,11 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 	private void getGTLevelSelected()
 	{
 		gtLevelSelected = (String) gtICSLevel.getSelectedItem();
+	}
+
+	private void getGTTypeSelected()
+	{
+		gtTypeSelected = gtType.getSelectedIndex();
 	}
 
 	/**
