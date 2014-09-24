@@ -139,6 +139,7 @@ import org.cip4.jdflib.goldenticket.IDPGoldenTicket;
 import org.cip4.jdflib.goldenticket.MISCPGoldenTicket;
 import org.cip4.jdflib.goldenticket.MISFinGoldenTicket;
 import org.cip4.jdflib.goldenticket.MISPreGoldenTicket;
+import org.cip4.jdflib.goldenticket.WideFormatGoldenTicket;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
 import org.cip4.jdflib.jmf.JMFBuilder;
@@ -877,6 +878,10 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			else if ("IDP".equals(gtselect))
 			{
 				theGT = new IDPGoldenTicket(gt1, v);
+			}
+			else if ("DPW".equals(gtselect))
+			{
+				theGT = new WideFormatGoldenTicket(gt1, v);
 			}
 
 			if (theGT != null)

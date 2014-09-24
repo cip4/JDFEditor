@@ -241,7 +241,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 	private void initGTLabels(final JPanel panel, JPanel gtChooser)
 	{
 		//Add Golden Tickets as they become available.
-		final String[] gt = { "MISCP", "MISPre", "IDP", MISFinGoldenTicket.MISFIN_SHEETFIN, MISFinGoldenTicket.MISFIN_STITCHFIN, MISFinGoldenTicket.MISFIN_BOXMAKING,
+		final String[] gt = { "MISCP", "MISPre", "IDP", "DPW", MISFinGoldenTicket.MISFIN_SHEETFIN, MISFinGoldenTicket.MISFIN_STITCHFIN, MISFinGoldenTicket.MISFIN_BOXMAKING,
 				MISFinGoldenTicket.MISFIN_SOFTCOVERFIN, MISFinGoldenTicket.MISFIN_HARDCOVERFIN };
 		String[] gtDisplay = new String[gt.length];
 		labelMap = new HashMap<String, String>();
