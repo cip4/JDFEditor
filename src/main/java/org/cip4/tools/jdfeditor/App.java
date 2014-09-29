@@ -6,6 +6,7 @@ import java.util.Properties;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
+import org.cip4.jdflib.util.logging.LogConfigurator;
 import org.cip4.jdflib.util.net.ProxyUtil;
 import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.util.DirectoryUtil;
@@ -43,10 +44,10 @@ public class App
 		// init logging
 		String logFile = FilenameUtils.concat(DirectoryUtil.getDirCIP4Tools(), "logs");
 		logFile = FilenameUtils.concat(logFile, "JDFEditor.log");
-
 		System.setProperty("filename", logFile);
 		LogManager.getLogger(App.class).info("--- Start CIP4 JDFEditor ------------------------------ ");
 
+		LogConfigurator.configureLog(logFile, "JDFEditor_Real.log");
 		// update proxies to system
 		ProxyUtil.setUseSystemDefault(true);
 
