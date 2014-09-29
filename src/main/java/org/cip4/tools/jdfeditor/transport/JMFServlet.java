@@ -70,9 +70,24 @@
  */
 package org.cip4.tools.jdfeditor.transport;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.FileUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.jmf.JDFJMF;
@@ -80,108 +95,109 @@ import org.cip4.jdflib.jmf.JDFMessage;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+public class JMFServlet extends HttpServlet
+{
 
-
-public class JMFServlet extends HttpServlet {
-
-	private static final Logger LOGGER = LogManager.getLogger(JMFServlet.class);
+	private static final Log LOGGER = LogFactory.getLog(JMFServlet.class);
 
 	private static String TIMESTAMP_PATTERN = "yyyy-MM-dd_hh-mm-ss-SSS";
 	private static int INDENT = 2;
 
-    private SettingService settingService = new SettingService();
-	
+	private final SettingService settingService = new SettingService();
+
 	@Override
-	public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
+	public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException
+	{
 		LOGGER.debug("received doPost: " + this);
-		try {
+		try
+		{
 			processMessage(req, res);
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			String err = "The request body could not be processed. Maybe it did not contain JMF or JDF?";
 			LOGGER.error(err, e);
 			e.printStackTrace();
 			res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, err + e);
 		}
 	}
-	
+
 	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
-		String msg = "Received HTTP GET request from "
-				+ req.getHeader("User-Agent") + " @ " + req.getRemoteHost()
-				+ " (" + req.getRemoteAddr() + "). Request ignored.";
+	public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException
+	{
+		String msg = "Received HTTP GET request from " + req.getHeader("User-Agent") + " @ " + req.getRemoteHost() + " (" + req.getRemoteAddr() + "). Request ignored.";
 		LOGGER.warn(msg);
 		res.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, "HTTP GET not implemented.");
 	}
-	
-	public void processMessage(HttpServletRequest req, HttpServletResponse res) throws IOException {
-		String msg = "Receiving message from " + req.getHeader("User-Agent")
-				+ " @ " + req.getRemoteHost() + " (" + req.getRemoteAddr()
-				+ ")...";
+
+	public void processMessage(HttpServletRequest req, HttpServletResponse res) throws IOException
+	{
+		String msg = "Receiving message from " + req.getHeader("User-Agent") + " @ " + req.getRemoteHost() + " (" + req.getRemoteAddr() + ")...";
 		LOGGER.debug(msg);
-//		Build incoming Message
+		//		Build incoming Message
 		final String messageBody = toString(req.getInputStream());
 		LOGGER.debug("Incoming message body: \n" + messageBody);
 		String contentType = req.getHeader("Content-type");
 		LOGGER.debug("contentType: " + contentType);
-		
+
 		JDFJMF jmf = new JDFParser().parseString(messageBody).getJMFRoot();
 		VElement e = jmf.getMessageVector(null, null);
 		LOGGER.debug("e.size: " + e.size());
-		
-		for (int i = 0; i < e.size(); i++) {
+
+		for (int i = 0; i < e.size(); i++)
+		{
 			JDFMessage currMessage = jmf.getMessageElement(null, null, i);
 			String type = currMessage.getType();
 			LOGGER.debug("currMessage type: " + type);
-			
+
 			JDFJMF tempRequestMessage = (JDFJMF) jmf.clone();
 			JDFMessage tempMessageFamily = (JDFMessage) currMessage.clone();
-			
+
 			tempRequestMessage.removeChildren(null, null, null); // remove all children
 			tempRequestMessage.appendChild(tempMessageFamily);
 			LOGGER.debug("tempRequestMessage: \n" + tempRequestMessage.toDisplayXML(INDENT));
-			
+
 			Date today = Calendar.getInstance().getTime();
 			SimpleDateFormat formatter = new SimpleDateFormat(TIMESTAMP_PATTERN);
 			String fileName = formatter.format(today);
-			if (type == null || type.equals("")) {
+			if (type == null || type.equals(""))
+			{
 				fileName += "-UnknownType.jmf";
-			} else {
+			}
+			else
+			{
 				fileName += "-" + type + ".jmf";
 			}
 			LOGGER.info("Save message to file: " + fileName);
-			
+
 			String fullPathFile = settingService.getSetting(SettingKey.HTTP_STORE_PATH, String.class) + File.separator + fileName;
 
 			File f = new File(fullPathFile);
-			
+
 			FileUtils.writeStringToFile(f, tempRequestMessage.toDisplayXML(INDENT));
 			LOGGER.info("Message saved as: " + fullPathFile);
 		}
-		
+
 	}
-	
-	public static String toString(InputStream input) throws IOException {
-        StringWriter writer = new StringWriter();
-        InputStreamReader reader = new InputStreamReader(input);
-        copy(reader, writer);
-        return writer.toString();
-    }
-	
-	public static int copy(Reader input, Writer output) throws IOException {
-        char[] buffer = new char[1024 * 4];
-        int count = 0;
-        int n = 0;
-        while (-1 != (n = input.read(buffer))) {
-            output.write(buffer, 0, n);
-            count += n;
-        }
-        return count;
-    }
+
+	public static String toString(InputStream input) throws IOException
+	{
+		StringWriter writer = new StringWriter();
+		InputStreamReader reader = new InputStreamReader(input);
+		copy(reader, writer);
+		return writer.toString();
+	}
+
+	public static int copy(Reader input, Writer output) throws IOException
+	{
+		char[] buffer = new char[1024 * 4];
+		int count = 0;
+		int n = 0;
+		while (-1 != (n = input.read(buffer)))
+		{
+			output.write(buffer, 0, n);
+			count += n;
+		}
+		return count;
+	}
 }

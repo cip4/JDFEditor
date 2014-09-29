@@ -70,8 +70,8 @@
  */
 package org.cip4.tools.jdfeditor.view.renderer;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.validate.JDFValidator;
 import org.cip4.tools.jdfeditor.JDFTreeModel;
@@ -82,21 +82,24 @@ import org.cip4.tools.jdfeditor.JDFTreeNode;
  */
 public class CheckJDFOutputTreeCellRenderer extends AbstractTreeCellRenderer
 {
-    private static final Logger LOGGER = LogManager.getLogger(CheckJDFOutputTreeCellRenderer.class);
+	private static final Log LOGGER = LogFactory.getLog(CheckJDFOutputTreeCellRenderer.class);
 
-    /**
-     * Default constructor.
-     */
-	public CheckJDFOutputTreeCellRenderer() {
+	/**
+	 * Default constructor.
+	 */
+	public CheckJDFOutputTreeCellRenderer()
+	{
 	}
 
-    @Override
-    protected Logger getLogger() {
-        return LOGGER;
-    }
+	@Override
+	protected Log getLogger()
+	{
+		return LOGGER;
+	}
 
-    @Override
-    protected void setNodeIcon(JDFTreeNode node, JDFTreeModel model) {
+	@Override
+	protected void setNodeIcon(JDFTreeNode node, JDFTreeModel model)
+	{
 		String n = node.getName();
 		if (node.isElement())
 		{
@@ -106,11 +109,11 @@ public class CheckJDFOutputTreeCellRenderer extends AbstractTreeCellRenderer
 			{
 				if (elem != null && !elem.getBoolAttribute("IsValid", null, false))
 				{
-                    setIcon(loadImageIcon(TreeIcon.ATTR_ERR));
+					setIcon(loadImageIcon(TreeIcon.ATTR_ERR));
 				}
 				else
 				{
-                    setIcon(loadImageIcon(TreeIcon.ATTR_DEFAULT));
+					setIcon(loadImageIcon(TreeIcon.ATTR_DEFAULT));
 				}
 
 				String tts = JDFValidator.toMessageString(elem);
@@ -121,11 +124,11 @@ public class CheckJDFOutputTreeCellRenderer extends AbstractTreeCellRenderer
 			{
 				if (elem != null && !elem.getBoolAttribute("IsValid", null, false))
 				{
-                    setIcon(loadImageIcon(TreeIcon.NODE_ERR));
+					setIcon(loadImageIcon(TreeIcon.NODE_ERR));
 				}
 				else
 				{
-                    setIcon(loadImageIcon(TreeIcon.NODE_JDF));
+					setIcon(loadImageIcon(TreeIcon.NODE_JDF));
 				}
 
 				if (elem.getAttribute("Message") != null)
@@ -136,11 +139,11 @@ public class CheckJDFOutputTreeCellRenderer extends AbstractTreeCellRenderer
 			{
 				if (elem != null && !elem.getBoolAttribute("IsValid", null, true))
 				{
-                    setIcon(loadImageIcon(TreeIcon.NODE_ERR));
+					setIcon(loadImageIcon(TreeIcon.NODE_ERR));
 				}
 				else
 				{
-                    setIcon(loadImageIcon(TreeIcon.NODE_JDF));
+					setIcon(loadImageIcon(TreeIcon.NODE_JDF));
 				}
 
 				if (elem.getAttribute("Message") != null)
@@ -150,17 +153,17 @@ public class CheckJDFOutputTreeCellRenderer extends AbstractTreeCellRenderer
 
 			else if (n.equals("Part"))
 			{
-                setIcon(loadImageIcon(TreeIcon.NODE_JDF));
+				setIcon(loadImageIcon(TreeIcon.NODE_JDF));
 			}
 			else
 			{
 				if ("false".equals(elem.getInheritedAttribute("IsValid", null, null)))
 				{
-                    setIcon(loadImageIcon(TreeIcon.NODE_ERR));
+					setIcon(loadImageIcon(TreeIcon.NODE_ERR));
 				}
 				else
 				{
-                    setIcon(loadImageIcon(TreeIcon.NODE_JDF));
+					setIcon(loadImageIcon(TreeIcon.NODE_JDF));
 				}
 
 				if (elem.getAttribute("Message") != null)
@@ -170,7 +173,7 @@ public class CheckJDFOutputTreeCellRenderer extends AbstractTreeCellRenderer
 		else
 		// real attributes
 		{
-            setIcon(loadImageIcon(TreeIcon.ATTR_DEFAULT));
+			setIcon(loadImageIcon(TreeIcon.ATTR_DEFAULT));
 		}
 	}
 }

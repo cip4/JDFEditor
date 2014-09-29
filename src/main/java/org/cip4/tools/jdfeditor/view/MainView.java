@@ -1,19 +1,32 @@
 package org.cip4.tools.jdfeditor.view;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.cip4.jdflib.core.*;
-import org.cip4.tools.jdfeditor.*;
-import org.cip4.tools.jdfeditor.controller.MainController;
-import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
-import org.springframework.stereotype.Component;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
+
+import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.WindowConstants;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.cip4.jdflib.core.JDFAudit;
+import org.cip4.jdflib.core.JDFDoc;
+import org.cip4.jdflib.core.JDFElement;
+import org.cip4.jdflib.core.JDFParser;
+import org.cip4.jdflib.core.KElement;
+import org.cip4.tools.jdfeditor.App;
+import org.cip4.tools.jdfeditor.EditorDocument;
+import org.cip4.tools.jdfeditor.JDFFrame;
+import org.cip4.tools.jdfeditor.JDFTreeArea;
+import org.cip4.tools.jdfeditor.JDFTreeModel;
+import org.cip4.tools.jdfeditor.controller.MainController;
+import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.springframework.stereotype.Component;
 
 /**
  * The MainView of the CIP4 JDFEditor.
@@ -21,44 +34,45 @@ import java.io.File;
 @Component
 public class MainView
 {
-    private static final Logger LOGGER = LogManager.getLogger(MainView.class);
+	private static final Log LOGGER = LogFactory.getLog(MainView.class);
 
-    private MainController mainController;
-
+	private MainController mainController;
 
 	public static JDFFrame my_Frame;
 
-    /**
-     * Default constructor.
-     */
-    public MainView() {
-        my_Frame = new JDFFrame(this);
-    }
+	/**
+	 * Default constructor.
+	 */
+	public MainView()
+	{
+		my_Frame = new JDFFrame(this);
+	}
 
-    /**
-     * Register a MainController for this view (MVC Pattern)
-     * @param mainController The MainController for this view.
-     */
-    public void registerController(final MainController mainController) {
+	/**
+	 * Register a MainController for this view (MVC Pattern)
+	 * @param mainController The MainController for this view.
+	 */
+	public void registerController(final MainController mainController)
+	{
 
-        this.mainController = mainController;
+		this.mainController = mainController;
 
+		my_Frame.registerController(mainController);
+	}
 
-        my_Frame.registerController(mainController);
-    }
+	/**
+	 * Show a Message Dialog in MainView.
+	 * @param message The message of the dialog.
+	 * @param title The title of the dialog.
+	 */
+	public void showMessageDialog(String message, String title)
+	{
+		JOptionPane.showMessageDialog(my_Frame, message, title, JOptionPane.INFORMATION_MESSAGE);
 
-    /**
-     * Show a Message Dialog in MainView.
-     * @param message The message of the dialog.
-     * @param title The title of the dialog.
-     */
-    public void showMessageDialog(String message, String title) {
-        JOptionPane.showMessageDialog(my_Frame, message, title, JOptionPane.INFORMATION_MESSAGE);
+		// final ImageIcon imgCIP = MainView.getImageIcon(MainView.ICONS_PATH + "CIP4.gif");
+		// JOptionPane.showMessageDialog(this, "see http://cip4.org/jdfeditor", "CIP4 JDF Editor", JOptionPane.INFORMATION_MESSAGE, imgCIP);
 
-        // final ImageIcon imgCIP = MainView.getImageIcon(MainView.ICONS_PATH + "CIP4.gif");
-        // JOptionPane.showMessageDialog(this, "see http://cip4.org/jdfeditor", "CIP4 JDF Editor", JOptionPane.INFORMATION_MESSAGE, imgCIP);
-
-    }
+	}
 
 	/**
 	 * Sets the cursor to wait or ready
@@ -93,11 +107,14 @@ public class MainView
 	 */
 	public void display(final File file)
 	{
-		try	{
-            String currentLookAndFeel = mainController.getSetting(SettingKey.GENERAL_LOOK, String.class);
+		try
+		{
+			String currentLookAndFeel = mainController.getSetting(SettingKey.GENERAL_LOOK, String.class);
 			UIManager.setLookAndFeel(currentLookAndFeel);
-		} catch (final Exception e)	{
-            LOGGER.error("Error during setting 'Look and Feel' of JDFEditor.", e);
+		}
+		catch (final Exception e)
+		{
+			LOGGER.error("Error during setting 'Look and Feel' of JDFEditor.", e);
 		}
 
 		setCursor(0, null);
@@ -109,33 +126,33 @@ public class MainView
 		JDFElement.setDefaultJDFVersion(JDFElement.EnumVersion.getEnum(mainController.getSetting(SettingKey.VALIDATION_VERSION, String.class)));
 		JDFParser.m_searchStream = true;
 
-        my_Frame.drawWindow();
-        my_Frame.setBackground(Color.white);
-        my_Frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        final WindowListener winLis = new WindowAdapter()
-        {
-            @Override
-            public void windowClosing(final WindowEvent e)
-            {
-                if (my_Frame.closeFile(999) != JOptionPane.CANCEL_OPTION)
-                {
-                    System.exit(0);
-                    e.getID(); // make compile happy
-                }
-            }
-        };
-        my_Frame.addWindowListener(winLis);
-        my_Frame.setIconImage(Toolkit.getDefaultToolkit().getImage(MainView.class.getResource("/org/cip4/tools/jdfeditor/jdfeditor_128.png")));
+		my_Frame.drawWindow();
+		my_Frame.setBackground(Color.white);
+		my_Frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		final WindowListener winLis = new WindowAdapter()
+		{
+			@Override
+			public void windowClosing(final WindowEvent e)
+			{
+				if (my_Frame.closeFile(999) != JOptionPane.CANCEL_OPTION)
+				{
+					System.exit(0);
+					e.getID(); // make compile happy
+				}
+			}
+		};
+		my_Frame.addWindowListener(winLis);
+		my_Frame.setIconImage(Toolkit.getDefaultToolkit().getImage(MainView.class.getResource("/org/cip4/tools/jdfeditor/jdfeditor_128.png")));
 
-        // this is only for the PC version
-        if (file != null)
-        {
-            final boolean b = my_Frame.readFile(file);
-            if (b)
-            {
-                my_Frame.m_menuBar.updateRecentFilesMenu(file.toString());
-            }
-        }
+		// this is only for the PC version
+		if (file != null)
+		{
+			final boolean b = my_Frame.readFile(file);
+			if (b)
+			{
+				my_Frame.m_menuBar.updateRecentFilesMenu(file.toString());
+			}
+		}
 	}
 
 	/**

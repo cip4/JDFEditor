@@ -70,8 +70,8 @@
  */
 package org.cip4.tools.jdfeditor.transport;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.mortbay.http.HttpContext;
 import org.mortbay.http.SocketListener;
 import org.mortbay.jetty.Server;
@@ -79,68 +79,75 @@ import org.mortbay.jetty.servlet.ServletHandler;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.jetty.servlet.ServletHttpContext;
 
-
-
-public class HttpReceiver {
-	private static final Logger LOGGER = LogManager.getLogger(HttpReceiver.class);
+public class HttpReceiver
+{
+	private static final Log LOGGER = LogFactory.getLog(HttpReceiver.class);
 	private Server server;
-	
+
 	private static HttpReceiver instance;
-	
+
 	public static final String DEF_PROTOCOL = "http";
 	public static final String DEF_PATH = "/jmf/*";
-	
-	
-	private HttpReceiver() {
+
+	private HttpReceiver()
+	{
 	}
-	
-	public static HttpReceiver getInstance() {
-		if (instance == null) {
+
+	public static HttpReceiver getInstance()
+	{
+		if (instance == null)
+		{
 			instance = new HttpReceiver();
 		}
 		return instance;
 	}
-	
-	public void startServer(int port) throws Exception {
-        startServer("127.0.0.1", port);
-    }
-	
-	public void startServer(String host, int port) throws Exception {
-        startServer(host, port, DEF_PATH);
-    }
-	
-	public synchronized void startServer(String host, int port, 
-			String jmfContextPath) throws Exception {
+
+	public void startServer(int port) throws Exception
+	{
+		startServer("127.0.0.1", port);
+	}
+
+	public void startServer(String host, int port) throws Exception
+	{
+		startServer(host, port, DEF_PATH);
+	}
+
+	public synchronized void startServer(String host, int port, String jmfContextPath) throws Exception
+	{
 		LOGGER.info("Starting HTTP server on " + host + ":" + port + jmfContextPath);
-		
+
 		server = new Server();
 		SocketListener listener = new SocketListener();
 		listener.setPort(port);
-		
+
 		server.addListener(listener);
-		
+
 		HttpContext context = new ServletHttpContext();
-        context.setContextPath("/");
-        server.addContext(context);
-        
-        ServletHandler servlets = new ServletHandler();
-        ServletHolder holder = servlets.addServlet(jmfContextPath,
-        		JMFServlet.class.getName());
-        context.addHandler(servlets);
-        
-        server.start();
-        LOGGER.info("HTTP server started.");
+		context.setContextPath("/");
+		server.addContext(context);
+
+		ServletHandler servlets = new ServletHandler();
+		ServletHolder holder = servlets.addServlet(jmfContextPath, JMFServlet.class.getName());
+		context.addHandler(servlets);
+
+		server.start();
+		LOGGER.info("HTTP server started.");
 	}
-	
-	public synchronized void stopServer() {
-		try {
+
+	public synchronized void stopServer()
+	{
+		try
+		{
 			server.stop();
-		} catch (InterruptedException e) {
+		}
+		catch (InterruptedException e)
+		{
 			e.printStackTrace();
 		}
 	}
-	
-	public synchronized boolean isStarted() {
+
+	public synchronized boolean isStarted()
+	{
 		return server.isStarted();
 	}
 }

@@ -120,8 +120,8 @@ import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEditSupport;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
@@ -168,7 +168,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger LOGGER = LogManager.getLogger(JDFFrame.class);
+	private static final Log LOGGER = LogFactory.getLog(JDFFrame.class);
 
 	private MainController mainController;
 

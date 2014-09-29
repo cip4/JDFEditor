@@ -70,20 +70,13 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.cip4.jdflib.core.*;
-import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
-import org.cip4.jdflib.datatypes.JDFAttributeMap;
-import org.cip4.jdflib.node.JDFNode;
-import org.cip4.jdflib.pool.JDFResourceLinkPool;
-import org.cip4.jdflib.resource.JDFResource;
-import org.cip4.tools.jdfeditor.util.ResourceUtil;
-import org.cip4.tools.jdfeditor.view.MainView;
-
-import javax.swing.*;
-import javax.swing.tree.TreePath;
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -92,6 +85,30 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.Vector;
 
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JTree;
+import javax.swing.SwingUtilities;
+import javax.swing.tree.TreePath;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.cip4.jdflib.core.AttributeName;
+import org.cip4.jdflib.core.JDFElement;
+import org.cip4.jdflib.core.JDFException;
+import org.cip4.jdflib.core.JDFResourceLink;
+import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
+import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.core.VElement;
+import org.cip4.jdflib.datatypes.JDFAttributeMap;
+import org.cip4.jdflib.node.JDFNode;
+import org.cip4.jdflib.pool.JDFResourceLinkPool;
+import org.cip4.jdflib.resource.JDFResource;
+import org.cip4.tools.jdfeditor.util.ResourceUtil;
+import org.cip4.tools.jdfeditor.view.MainView;
+
 /*
  * FooProcessPanel.java
  * @author SvenoniusI
@@ -99,7 +116,7 @@ import java.util.Vector;
 
 public class ProcessPanel extends JPanel
 {
-	private static final Logger LOGGER = LogManager.getLogger(ProcessPanel.class);
+	private static final Log LOGGER = LogFactory.getLog(ProcessPanel.class);
 
 	class PartListener extends MouseAdapter
 	{

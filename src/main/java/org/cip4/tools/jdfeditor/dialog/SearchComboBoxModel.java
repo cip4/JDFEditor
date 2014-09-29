@@ -70,16 +70,18 @@
  */
 package org.cip4.tools.jdfeditor.dialog;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
-import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
-import org.cip4.tools.jdfeditor.service.SettingService;
-
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.swing.AbstractListModel;
+import javax.swing.ComboBoxModel;
+
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.service.SettingService;
 
 /** 
  * @author rainer prosi
@@ -87,9 +89,9 @@ import java.util.List;
  */
 public class SearchComboBoxModel extends AbstractListModel implements ComboBoxModel
 {
-	private SettingService settingService = new SettingService();
+	private final SettingService settingService = new SettingService();
 
-    /**
+	/**
 	 * 	Max number of strings in combobox
 	 */
 	public static int MAX_ELEMENTS = 5;
@@ -107,7 +109,7 @@ public class SearchComboBoxModel extends AbstractListModel implements ComboBoxMo
 		super();
 	}
 
-	private static final Logger LOGGER = LogManager.getLogger(SearchComboBoxModel.class);
+	private static final Log LOGGER = LogFactory.getLog(SearchComboBoxModel.class);
 
 	private List<String> elements = new ArrayList<String>();
 	private String selectedItem;
@@ -131,20 +133,24 @@ public class SearchComboBoxModel extends AbstractListModel implements ComboBoxMo
 		}
 		fireContentsChanged(this, 0, elements.size());
 
-        String findPattern = null;
+		String findPattern = null;
 
-        for(int i = 0; i < elements.size() && i < 5 ; i ++) {
+		for (int i = 0; i < elements.size() && i < 5; i++)
+		{
 
-            if(i == 0) {
-                findPattern = elements.get(i);
+			if (i == 0)
+			{
+				findPattern = elements.get(i);
 
-            } else {
-                findPattern += ";" + elements.get(i);
+			}
+			else
+			{
+				findPattern += ";" + elements.get(i);
 
-            }
-        }
+			}
+		}
 
-        settingService.setSetting(SettingKey.FIND_PATTERN, findPattern);
+		settingService.setSetting(SettingKey.FIND_PATTERN, findPattern);
 
 	}
 
@@ -165,6 +171,7 @@ public class SearchComboBoxModel extends AbstractListModel implements ComboBoxMo
 	 * 
 	 * @see javax.swing.ComboBoxModel#getSelectedItem()
 	 */
+	@Override
 	public Object getSelectedItem()
 	{
 		return selectedItem;
@@ -174,6 +181,7 @@ public class SearchComboBoxModel extends AbstractListModel implements ComboBoxMo
 	 * 
 	 * @see javax.swing.ComboBoxModel#setSelectedItem(java.lang.Object)
 	 */
+	@Override
 	public void setSelectedItem(Object anItem)
 	{
 		selectedItem = (String) anItem;
@@ -183,6 +191,7 @@ public class SearchComboBoxModel extends AbstractListModel implements ComboBoxMo
 	 * 
 	 * @see javax.swing.ListModel#getElementAt(int)
 	 */
+	@Override
 	public Object getElementAt(int index)
 	{
 		int size = elements.size();
@@ -193,6 +202,7 @@ public class SearchComboBoxModel extends AbstractListModel implements ComboBoxMo
 	 * 
 	 * @see javax.swing.ListModel#getSize()
 	 */
+	@Override
 	public int getSize()
 	{
 		return elements.size();

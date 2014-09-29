@@ -70,24 +70,8 @@
  */
 package org.cip4.tools.jdfeditor.pane;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.monitor.FileAlterationListener;
-import org.apache.commons.io.monitor.FileAlterationMonitor;
-import org.apache.commons.io.monitor.FileAlterationObserver;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.cip4.jdflib.core.JDFParser;
-import org.cip4.jdflib.jmf.JDFJMF;
-import org.cip4.jdflib.jmf.JDFMessage;
-import org.cip4.tools.jdfeditor.JDFFrame;
-import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
-import org.cip4.tools.jdfeditor.service.SettingService;
-import org.cip4.tools.jdfeditor.transport.HttpReceiver;
-import org.cip4.tools.jdfeditor.util.ResourceUtil;
-
-import javax.swing.*;
-import javax.swing.table.TableRowSorter;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -103,15 +87,46 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
+import javax.swing.SpringLayout;
+import javax.swing.table.TableRowSorter;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.monitor.FileAlterationListener;
+import org.apache.commons.io.monitor.FileAlterationMonitor;
+import org.apache.commons.io.monitor.FileAlterationObserver;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.cip4.jdflib.core.JDFParser;
+import org.cip4.jdflib.jmf.JDFJMF;
+import org.cip4.jdflib.jmf.JDFMessage;
+import org.cip4.tools.jdfeditor.JDFFrame;
+import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.service.SettingService;
+import org.cip4.tools.jdfeditor.transport.HttpReceiver;
+import org.cip4.tools.jdfeditor.util.ResourceUtil;
+
 /**
  * Class that implements a "HTTP server" tab/panel.
  *
  */
 public class HttpServerPane implements FileAlterationListener, ActionListener
 {
-	private static final Logger LOGGER = LogManager.getLogger(HttpServerPane.class);
+	private static final Log LOGGER = LogFactory.getLog(HttpServerPane.class);
 
-    private SettingService settingService = new SettingService();
+	private final SettingService settingService = new SettingService();
 
 	private final JDFFrame frame;
 
@@ -427,7 +442,7 @@ public class HttpServerPane implements FileAlterationListener, ActionListener
 			if (chooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION)
 			{
 				LOGGER.debug("getSelectedFile(): " + chooser.getSelectedFile());
-                settingService.setSetting(SettingKey.HTTP_STORE_PATH, chooser.getSelectedFile().getAbsolutePath());
+				settingService.setSetting(SettingKey.HTTP_STORE_PATH, chooser.getSelectedFile().getAbsolutePath());
 				labelStorePath.setText(chooser.getSelectedFile().getAbsolutePath());
 			}
 		}

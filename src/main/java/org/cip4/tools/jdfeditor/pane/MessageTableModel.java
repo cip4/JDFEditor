@@ -70,65 +70,81 @@
  */
 package org.cip4.tools.jdfeditor.pane;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.table.AbstractTableModel;
 
-public class MessageTableModel extends AbstractTableModel {
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-	private static final Logger LOGGER = LogManager.getLogger(MessageTableModel.class);
+public class MessageTableModel extends AbstractTableModel
+{
 
-	private String[] columnNames = {"Sender ID", "Message Type", "Time Received", "Size"};
+	private static final Log LOGGER = LogFactory.getLog(MessageTableModel.class);
 
-	private List<MessageBean> data = new ArrayList<MessageBean>();
-	
-	
+	private final String[] columnNames = { "Sender ID", "Message Type", "Time Received", "Size" };
+
+	private final List<MessageBean> data = new ArrayList<MessageBean>();
+
+	@Override
 	public int getColumnCount()
 	{
 		return columnNames.length;
 	}
 
+	@Override
 	public int getRowCount()
 	{
 		return data.size();
 	}
 
+	@Override
 	public Object getValueAt(int rowIndex, int columnIndex)
 	{
-		if (columnIndex == 0) {
+		if (columnIndex == 0)
+		{
 			return data.get(rowIndex).getSenderId();
-		} else if (columnIndex == 1) {
+		}
+		else if (columnIndex == 1)
+		{
 			return data.get(rowIndex).getMessageType();
-		} else if (columnIndex == 2) {
+		}
+		else if (columnIndex == 2)
+		{
 			return data.get(rowIndex).getTimeReceived();
-		} else if (columnIndex == 3) {
+		}
+		else if (columnIndex == 3)
+		{
 			return data.get(rowIndex).getSize();
-		} else {
+		}
+		else
+		{
 			LOGGER.error("No column available: " + columnIndex);
 			return "";
 		}
 	}
-	
-	public String getColumnName(int col) {
+
+	@Override
+	public String getColumnName(int col)
+	{
 		return columnNames[col];
 	}
-	
+
 	public void addMessage(MessageBean msg)
 	{
 		data.add(msg);
 		fireTableDataChanged();
 	}
-	
-	public void clearAll() {
+
+	public void clearAll()
+	{
 		data.clear();
 		fireTableDataChanged();
 	}
-	
-	public MessageBean getItem(int i) {
+
+	public MessageBean getItem(int i)
+	{
 		return data.get(i);
 	}
 

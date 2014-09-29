@@ -71,9 +71,6 @@ package org.cip4.tools.jdfeditor.streamloader;
  * 
  */
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -87,6 +84,8 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Class PluginLoader
@@ -94,7 +93,7 @@ import java.util.jar.JarFile;
  */
 public class PluginLoader<I>
 {
-	private static final Logger LOGGER = LogManager.getLogger(PluginLoader.class);
+	private static final Log LOGGER = LogFactory.getLog(PluginLoader.class);
 
 	private static final String PLUGIN_FILE_EXT = ".jar";
 
