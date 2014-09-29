@@ -15,7 +15,6 @@ import javax.swing.RepaintManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cip4.tools.jdfeditor.dialog.SearchComboBoxModel;
 
 /*
  * PrintUtilities.java
@@ -24,7 +23,7 @@ import org.cip4.tools.jdfeditor.dialog.SearchComboBoxModel;
 
 public class PrintDialog implements Printable
 {
-	private static final Log LOGGER = LogFactory.getLog(SearchComboBoxModel.class);
+	private static final Log LOGGER = LogFactory.getLog(PrintDialog.class);
 
 	private final Component comp;
 
