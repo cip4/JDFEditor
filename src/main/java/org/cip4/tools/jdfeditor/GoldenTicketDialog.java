@@ -90,6 +90,7 @@ import javax.swing.JTextField;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFElement.EnumVersion;
 import org.cip4.jdflib.goldenticket.MISFinGoldenTicket;
+import org.cip4.jdflib.goldenticket.MISPreGoldenTicket;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
@@ -156,7 +157,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		{
 			misSelectLevel = StringUtil.parseInt(misSelected, 1);
 			jmfSelectLevel = StringUtil.parseInt(jmfSelected, 1);
-			gtSelectLevel = StringUtil.parseInt(jmfSelected, 1);
+			gtSelectLevel = StringUtil.parseInt(gtLevelSelected, 1);
 		}
 		else
 		{
@@ -266,8 +267,10 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 	private void initGTLabels(final JPanel panel, JPanel gtChooser)
 	{
 		//Add Golden Tickets as they become available.
-		final String[] gt = { "MISCP", "MISPre", "IDP", "DPW", MISFinGoldenTicket.MISFIN_SHEETFIN, MISFinGoldenTicket.MISFIN_STITCHFIN, MISFinGoldenTicket.MISFIN_BOXMAKING,
-				MISFinGoldenTicket.MISFIN_SOFTCOVERFIN, MISFinGoldenTicket.MISFIN_HARDCOVERFIN };
+		final String[] gt = { "MISCP", MISPreGoldenTicket.MISPRE_CONTENTCREATION, MISPreGoldenTicket.MISPRE_IMPOSITIONPREPARATION, MISPreGoldenTicket.MISPRE_IMPOSITIONRIPING,
+				MISPreGoldenTicket.MISPRE_PLATEMAKING, MISPreGoldenTicket.MISPRE_PLATESETTING, MISPreGoldenTicket.MISPRE_PREPRESSPREPARATION, "IDP", "DPW",
+				MISFinGoldenTicket.MISFIN_SHEETFIN, MISFinGoldenTicket.MISFIN_STITCHFIN, MISFinGoldenTicket.MISFIN_BOXMAKING, MISFinGoldenTicket.MISFIN_SOFTCOVERFIN,
+				MISFinGoldenTicket.MISFIN_HARDCOVERFIN };
 		String[] gtDisplay = new String[gt.length];
 		labelMap = new HashMap<String, String>();
 		for (int i = 0; i < gt.length; i++)

@@ -839,10 +839,11 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				theGT = new MISCPGoldenTicket(gt1, v, jmf, mis, true, BaseGoldenTicket.createSheetMap(1));
 				theGT.nCols = new int[] { 4, 4 };
 			}
-			else if ("MISPre".equals(gtselect))
+			else if (gtselect.startsWith("MISPRE"))
 			{
 				theGT = new MISPreGoldenTicket(gt1, v, jmf, mis, BaseGoldenTicket.createSheetMap(1));
 				theGT.nCols = new int[] { 4, 4 };
+				((MISPreGoldenTicket) theGT).setCategory(gtselect);
 			}
 			else if (gtselect.startsWith(MISFinGoldenTicket.MISFIN))
 			{
