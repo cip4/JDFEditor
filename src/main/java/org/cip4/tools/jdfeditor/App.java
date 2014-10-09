@@ -42,12 +42,12 @@ public class App
 		System.setProperty("apple.laf.useScreenMenuBar", "true");
 
 		// init logging
-		String logFile = FilenameUtils.concat(DirectoryUtil.getDirCIP4Tools(), "logs");
-		logFile = FilenameUtils.concat(logFile, "JDFEditor.log");
+		String logDir = FilenameUtils.concat(DirectoryUtil.getDirCIP4Tools(), "logs");
+		String logFile = FilenameUtils.concat(logDir, "JDFEditor.log");
 		System.setProperty("filename", logFile);
 		LogManager.getLogger(App.class).info("--- Start CIP4 JDFEditor ------------------------------ ");
 
-		LogConfigurator.configureLog(logFile, "JDFEditor_Real.log");
+		LogConfigurator.configureLog(logDir, "JDFEditor_Real.log");
 		// update proxies to system
 		ProxyUtil.setUseSystemDefault(true);
 

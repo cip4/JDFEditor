@@ -250,7 +250,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 	{
 		JPanel p = new JPanel();
 		p.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("GTTypeKey")));
-		JComboBox<String> gtType = new JComboBox<String>();
+		gtType = new JComboBox<String>();
 
 		String[] vs = new String[3];
 		vs[0] = ResourceUtil.getMessage("GTTypeMIS");
