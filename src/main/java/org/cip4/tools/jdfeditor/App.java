@@ -45,7 +45,7 @@ public class App
 		String logDir = FilenameUtils.concat(DirectoryUtil.getDirCIP4Tools(), "logs");
 		String logFile = FilenameUtils.concat(logDir, "JDFEditor.log");
 		System.setProperty("filename", logFile);
-		LogManager.getLogger(App.class).info("--- Start CIP4 JDFEditor ------------------------------ ");
+		//		LogManager.getLogger(App.class).info("--- Start CIP4 JDFEditor ------------------------------ ");
 
 		LogConfigurator.configureLog(logDir, "JDFEditor_Real.log");
 		// update proxies to system

@@ -70,8 +70,24 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.awt.Color;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JSeparator;
+import javax.swing.KeyStroke;
+import javax.swing.tree.TreePath;
+
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.node.JDFNode;
@@ -79,16 +95,9 @@ import org.cip4.jdflib.pool.JDFResourceLinkPool;
 import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
-import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.RecentFileUtil;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
-
-import javax.swing.*;
-import javax.swing.tree.TreePath;
-import java.awt.*;
-import java.awt.event.*;
-import java.io.File;
 
 /**
  * Class to implement all the menu bar and menu related stuff moved here from JDFFrame
@@ -99,16 +108,20 @@ import java.io.File;
  */
 public class EditorMenuBar extends JMenuBar implements ActionListener
 {
-    private static final Logger LOGGER = LogManager.getLogger(SettingService.class.getName());
 
-    private MainController mainController;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private MainController mainController;
 
 	private JMenu m_insertElementMenu;
 	private JMenu m_resourceMenu;
 	private JMenu m_resourceLinkMenu;
 
 	protected JMenu m_insertMenu;
-	protected JMenu m_toolsMenu;
+	protected ToolsMenu m_toolsMenu;
 	protected JMenu m_editMenu;
 	protected JMenu m_validateMenu;
 	protected JMenu m_windowMenu;
@@ -130,7 +143,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	JMenuItem m_copyValidationListItem;
 	JMenuItem m_findItem;
 	private JMenuItem m_findXPathItem;
-	private JMenuItem m_aboutItem;
 	JMenuItem m_infoItem;
 	JMenuItem m_renameItem;
 	JMenuItem m_modifyAttrValueItem;
@@ -142,13 +154,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	JMenuItem m_pasteItem;
 	private JMenuItem m_deleteItem;
 
-	private JMenuItem m_preferenceItem;
-
-	private JMenuItem m_sendToDeviceItem;
-	JMenuItem m_unspawnItem;
-	JMenuItem m_spawnItem;
-	JMenuItem m_spawnInformItem;
-	JMenuItem m_mergeItem;
 	JMenuItem m_devCapItem;
 	// popup menues
 	JMenuItem m_insertElemBeforeItem;
@@ -210,7 +215,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 				if (RecentFileUtil.nrOfRecentFiles() != 1)
 				{
-                    RecentFileUtil.updateOrder(s, true);
+					RecentFileUtil.updateOrder(s, true);
 				}
 			}
 			else
@@ -228,7 +233,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		{
 			final boolean exist = RecentFileUtil.pathNameExists(pathName);
 
-            RecentFileUtil.updateOrder(pathName, exist);
+			RecentFileUtil.updateOrder(pathName, exist);
 
 			if (RecentFileUtil.nrOfRecentFiles() != 0)
 			{
@@ -297,12 +302,13 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 			}
 			else if (eSrc == m_devcapOpenMenu)
 			{
-                String s = mainController.getSetting(SettingKey.RECENT_DEV_CAP, String.class);
-                File f = null;
+				String s = mainController.getSetting(SettingKey.RECENT_DEV_CAP, String.class);
+				File f = null;
 
-                if(s != null) {
-                    f = new File(s);
-                }
+				if (s != null)
+				{
+					f = new File(s);
+				}
 
 				if (f != null)
 					openRecentFile(f);
@@ -433,16 +439,18 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	{
 		super();
 		fileMenu = new FileMenu();
+		m_toolsMenu = new ToolsMenu();
 	}
 
-    /**
-     * Register a MainController for this view (MVC Pattern)
-     * @param mainController The MainController for this view.
-     */
-    public void registerController(final MainController mainController) {
+	/**
+	 * Register a MainController for this view (MVC Pattern)
+	 * @param mainController The MainController for this view.
+	 */
+	public void registerController(final MainController mainController)
+	{
 
-        this.mainController = mainController;
-    }
+		this.mainController = mainController;
+	}
 
 	/**
 	 * Creates the Edit menu.
@@ -526,7 +534,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	 */
 	private JMenu drawHelpMenu()
 	{
-		final JDFFrame m_frame = MainView.getFrame();
 		final Menu_MouseListener menuListener = new Menu_MouseListener();
 		final int menuKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
@@ -535,16 +542,16 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		m_helpMenu.addMouseListener(menuListener);
 
 		m_onlineItem = new JMenuItem(ResourceUtil.getMessage("main.menu.help.online"));
-        m_onlineItem.addActionListener(this.mainController);
-        m_onlineItem.setActionCommand(MainController.ACTION_ONLINE_HELP);
+		m_onlineItem.addActionListener(this.mainController);
+		m_onlineItem.setActionCommand(MainController.ACTION_ONLINE_HELP);
 		m_onlineItem.setAccelerator(KeyStroke.getKeyStroke('H', menuKeyMask));
 		m_helpMenu.add(m_onlineItem);
 
 		m_helpMenu.add(new JSeparator());
 
 		m_infoItem = new JMenuItem(ResourceUtil.getMessage("main.menu.help.info"));
-        m_infoItem.addActionListener(this.mainController);
-        m_infoItem.setActionCommand(MainController.ACTION_INFO);
+		m_infoItem.addActionListener(this.mainController);
+		m_infoItem.setActionCommand(MainController.ACTION_INFO);
 		m_helpMenu.add(m_infoItem);
 
 		return m_helpMenu;
@@ -592,10 +599,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		insertM.setBackground(menuColor);
 		add(insertM);
 
-		final JMenu toolsM = drawToolsMenu();
-		toolsM.setMnemonic('T');
-		toolsM.setBackground(menuColor);
-		add(toolsM);
+		m_toolsMenu.drawToolsMenu();
 
 		final JMenu validateM = drawValidateMenu();
 		validateM.setMnemonic('V');
@@ -691,70 +695,164 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		return m_insertMenu;
 	}
 
-	/**
-	 * Creates the Tools menu.
-	 * @return The Tools menu with the menu items.
-	 */
-	private JMenu drawToolsMenu()
+	private class ToolsMenu extends JMenu implements ActionListener
 	{
-		final Menu_MouseListener menuListener = new Menu_MouseListener();
 
-		final JDFFrame m_frame = MainView.getFrame();
-		m_toolsMenu = new JMenu(ResourceUtil.getMessage("main.menu.tools"));
-		m_toolsMenu.setBorderPainted(false);
-		m_toolsMenu.addMouseListener(menuListener);
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		JMenuItem m_unspawnItem;
+		JMenuItem m_spawnItem;
+		JMenuItem m_spawnInformItem;
+		JMenuItem m_mergeItem;
+		private JMenuItem m_preferenceItem;
+		private JMenuItem m_sendToDeviceItem;
 
-		m_spawnItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.spawn"));
-		m_spawnItem.addActionListener(this);
-		m_spawnItem.setEnabled(false);
-		m_spawnItem.setAccelerator(KeyStroke.getKeyStroke('S', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.ALT_MASK));
-		m_toolsMenu.add(m_spawnItem);
+		/**
+		 * Creates the Tools menu.
+		 * @return The Tools menu with the menu items.
+		 */
+		private void drawToolsMenu()
+		{
+			final Menu_MouseListener menuListener = new Menu_MouseListener();
 
-		m_spawnInformItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.spawn.info"));
-		m_spawnInformItem.addActionListener(this);
-		m_spawnInformItem.setAccelerator(KeyStroke.getKeyStroke('I', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.ALT_MASK));
-		m_spawnInformItem.setEnabled(false);
-		m_toolsMenu.add(m_spawnInformItem);
+			final JDFFrame m_frame = MainView.getFrame();
+			setBorderPainted(false);
+			addMouseListener(menuListener);
 
-		m_mergeItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.merge"));
-		m_mergeItem.addActionListener(this);
-		m_mergeItem.setAccelerator(KeyStroke.getKeyStroke('M', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.ALT_MASK));
-		m_mergeItem.setEnabled(false);
-		m_toolsMenu.add(m_mergeItem);
+			m_spawnItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.spawn"));
+			m_spawnItem.addActionListener(this);
+			m_spawnItem.setEnabled(false);
+			m_spawnItem.setAccelerator(KeyStroke.getKeyStroke('S', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.ALT_MASK));
+			add(m_spawnItem);
 
-		m_unspawnItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.spawn.undo"));
-		m_unspawnItem.addActionListener(this);
-		m_unspawnItem.setEnabled(false);
-		m_toolsMenu.add(m_unspawnItem);
+			m_spawnInformItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.spawn.info"));
+			m_spawnInformItem.addActionListener(this);
+			m_spawnInformItem.setAccelerator(KeyStroke.getKeyStroke('I', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.ALT_MASK));
+			m_spawnInformItem.setEnabled(false);
+			add(m_spawnInformItem);
 
-		m_toolsMenu.add(new JSeparator());
+			m_mergeItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.merge"));
+			m_mergeItem.addActionListener(this);
+			m_mergeItem.setAccelerator(KeyStroke.getKeyStroke('M', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.ALT_MASK));
+			m_mergeItem.setEnabled(false);
+			add(m_mergeItem);
 
-		m_preferenceItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.preferences"));
-		m_preferenceItem.addActionListener(this);
-		m_toolsMenu.add(m_preferenceItem);
-		m_toolsMenu.add(new JSeparator());
+			m_unspawnItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.spawn.undo"));
+			m_unspawnItem.addActionListener(this);
+			m_unspawnItem.setEnabled(false);
+			add(m_unspawnItem);
 
-		m_sendToDeviceItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.send"));
-		m_sendToDeviceItem.addActionListener(this);
-		m_toolsMenu.add(m_sendToDeviceItem);
+			add(new JSeparator());
 
-		m_toolsMenu.add(new JSeparator());
-		m_fixVersionItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.fix"));
-		m_fixVersionItem.addActionListener(m_frame);
-		m_fixVersionItem.setEnabled(true);
-		m_toolsMenu.add(m_fixVersionItem);
+			m_preferenceItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.preferences"));
+			m_preferenceItem.addActionListener(this);
+			add(m_preferenceItem);
+			add(new JSeparator());
 
-		m_fixCleanupItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.clean"));
-		m_fixCleanupItem.addActionListener(this);
-		m_fixCleanupItem.setEnabled(true);
-		m_toolsMenu.add(m_fixCleanupItem);
+			m_sendToDeviceItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.send"));
+			m_sendToDeviceItem.addActionListener(this);
+			add(m_sendToDeviceItem);
 
-		m_removeExtenisionItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.remove"));
-		m_removeExtenisionItem.addActionListener(this);
-		m_removeExtenisionItem.setEnabled(true);
-		m_toolsMenu.add(m_removeExtenisionItem);
+			add(new JSeparator());
+			m_fixVersionItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.fix"));
+			m_fixVersionItem.addActionListener(m_frame);
+			m_fixVersionItem.setEnabled(true);
+			add(m_fixVersionItem);
 
-		return m_toolsMenu;
+			m_fixCleanupItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.clean"));
+			m_fixCleanupItem.addActionListener(this);
+			m_fixCleanupItem.setEnabled(true);
+			add(m_fixCleanupItem);
+
+			m_removeExtenisionItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.remove"));
+			m_removeExtenisionItem.addActionListener(this);
+			m_removeExtenisionItem.setEnabled(true);
+			add(m_removeExtenisionItem);
+
+			setMnemonic('T');
+			final Color menuColor = getBackground();
+			setBackground(menuColor);
+			EditorMenuBar.this.add(this);
+
+		}
+
+		/**
+		 * Creates the Tools menu.
+		 * @return The Tools menu with the menu items.
+		 */
+		private ToolsMenu()
+		{
+			super(ResourceUtil.getMessage("main.menu.tools"));
+		}
+
+		/**
+		 * enable or disable spawn n merge in bulk
+		 * @param enable
+		 */
+		public void setSpawnMergeEnabled(final boolean enable)
+		{
+			m_spawnItem.setEnabled(enable);
+			m_spawnInformItem.setEnabled(enable);
+			m_mergeItem.setEnabled(enable);
+			m_unspawnItem.setEnabled(enable);
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+			final Object eSrc = e.getSource();
+			if (eSrc == m_spawnItem)
+			{
+				MainView.getModel().spawn(false);
+			}
+			else if (eSrc == m_spawnInformItem)
+			{
+				MainView.getModel().spawn(true);
+			}
+			else if (eSrc == m_mergeItem)
+			{
+				MainView.getModel().merge();
+			}
+			else if (eSrc == m_sendToDeviceItem)
+			{
+				new SendToDevice().trySend();
+			}
+			else if (eSrc == m_preferenceItem)
+			{
+				showPreferences();
+			}
+
+		}
+
+		public void setEnableClose()
+		{
+			m_sendToDeviceItem.setEnabled(false);
+		}
+
+		public void setEnableOpen(boolean mode)
+		{
+			m_sendToDeviceItem.setEnabled(true);
+		}
+
+		private void showPreferences()
+		{
+			final String[] options = { ResourceUtil.getMessage("OkKey"), ResourceUtil.getMessage("CancelKey") };
+			final PreferenceDialog pd = new PreferenceDialog();
+
+			final int option = JOptionPane.showOptionDialog(this, pd, ResourceUtil.getMessage("PreferenceKey"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+
+			if (option == JOptionPane.OK_OPTION)
+			{
+				pd.writeToIni();
+				final EditorDocument ed = MainView.getEditorDoc();
+				if (ed != null && ed.getJDFTree() != null)
+				{
+					ed.getJDFTree().repaint();
+				}
+			}
+		}
 	}
 
 	/**
@@ -917,18 +1015,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		}
 	}
 
-	/**
-	 * enable or disable spawn n merge in bulk
-	 * @param enable
-	 */
-	public void setSpawnMergeEnabled(final boolean enable)
-	{
-		m_spawnItem.setEnabled(enable);
-		m_spawnInformItem.setEnabled(enable);
-		m_mergeItem.setEnabled(enable);
-		m_unspawnItem.setEnabled(enable);
-	}
-
 	protected void setEnabledInMenu(final TreePath path)
 	{
 		final JDFFrame m_frame = MainView.getFrame();
@@ -1018,6 +1104,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	public void setEnableClose()
 	{
 		fileMenu.setEnableClose();
+		m_toolsMenu.setEnableClose();
 		m_cutItem.setEnabled(false);
 		m_copyItem.setEnabled(false);
 		m_pasteItem.setEnabled(false);
@@ -1037,8 +1124,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		m_QuickValidateItem.setEnabled(false);
 		m_undoItem.setEnabled(false);
 		m_redoItem.setEnabled(false);
-		m_sendToDeviceItem.setEnabled(false);
-
 	}
 
 	/**
@@ -1047,6 +1132,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	public void setEnableOpen(final boolean mode)
 	{
 		fileMenu.setEnableOpen(mode);
+		m_toolsMenu.setEnableOpen(mode);
 		m_cutItem.setEnabled(mode);
 		m_copyItem.setEnabled(mode);
 		m_deleteItem.setEnabled(mode);
@@ -1061,8 +1147,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		m_devCapItem.setEnabled(true);
 		m_exportItem.setEnabled(true);
 		m_QuickValidateItem.setEnabled(true);
-		m_sendToDeviceItem.setEnabled(true);
-
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////
@@ -1100,7 +1184,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		final JDFTreeArea ta = frame.m_treeArea;
 		if (eSrc == m_showInhAttrRadioItem)
 		{
-            mainController.setSetting(SettingKey.TREEVIEW_ATTRIBUTE_INHERITED, m_showInhAttrRadioItem.isSelected());
+			mainController.setSetting(SettingKey.TREEVIEW_ATTRIBUTE_INHERITED, m_showInhAttrRadioItem.isSelected());
 			if (getJDFDoc() != null)
 			{
 				ta.drawTreeView(frame.getEditorDoc());
@@ -1109,15 +1193,11 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		}
 		if (eSrc == m_DispDefAttrRadioItem)
 		{
-            mainController.setSetting(SettingKey.GENERAL_DISPLAY_DEFAULT, m_DispDefAttrRadioItem.isSelected());
+			mainController.setSetting(SettingKey.GENERAL_DISPLAY_DEFAULT, m_DispDefAttrRadioItem.isSelected());
 			if (getJDFDoc() != null)
 			{
 				ta.drawTreeView(frame.getEditorDoc());
 			}
-		}
-		else if (eSrc == m_sendToDeviceItem)
-		{
-			new SendToDevice().trySend();
 		}
 		else if (eSrc == m_showAttrRadioItem)
 		{
@@ -1125,7 +1205,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		}
 		else if (eSrc == m_highlightFNRadioItem)
 		{
-            mainController.setSetting(SettingKey.VALIDATION_HIGHTLIGHT_FN, m_highlightFNRadioItem.isSelected());
+			mainController.setSetting(SettingKey.VALIDATION_HIGHTLIGHT_FN, m_highlightFNRadioItem.isSelected());
 		}
 		else if (eSrc == m_nextItem)
 		{
@@ -1154,22 +1234,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		{
 			MainView.getFrame().m_treeArea.findXPathElem();
 		}
-		else if (eSrc == m_spawnItem)
-		{
-			MainView.getModel().spawn(false);
-		}
-		else if (eSrc == m_spawnInformItem)
-		{
-			MainView.getModel().spawn(true);
-		}
-		else if (eSrc == m_mergeItem)
-		{
-			MainView.getModel().merge();
-		}
-		else if (eSrc == m_preferenceItem)
-		{
-			showPreferences();
-		}
 
 		// select
 		if (m_Windows != null)
@@ -1187,21 +1251,21 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 	}
 
-    /**
-     * @return the about text
-     */
-    public String getAboutText()
-    {
-        final String about = App.APP_NAME + "\n" + App.APP_VERSION + "\nInternational Cooperation for Integration of Processes in Prepress, Press and Postpress,\n"
-                + "hereinafter referred to as CIP4. All Rights Reserved\n\n"
-                + "Authors: Anna Andersson, Evelina Thunell, Ingemar Svenonius, Elena Skobchenko, Rainer Prosi, Alex Khilov, Stefan Meissner\n\n"
-                + "The APPLICATION is provided 'as is', without warranty of any kind, express, implied, or\n"
-                + "otherwise, including but not limited to the warranties of merchantability,fitness for a\n"
-                + "particular purpose and noninfringement. In no event will CIP4 be liable, for any claim,\n"
-                + "damages or other liability whether in an action of contract, tort or otherwise, arising\n"
-                + "from, out of, or in connection with the APPLICATION or the use or other dealings in the\n" + "APPLICATION.";
-        return about;
-    }
+	/**
+	 * @return the about text
+	 */
+	public String getAboutText()
+	{
+		final String about = App.APP_NAME + "\n" + App.APP_VERSION + "\nInternational Cooperation for Integration of Processes in Prepress, Press and Postpress,\n"
+				+ "hereinafter referred to as CIP4. All Rights Reserved\n\n"
+				+ "Authors: Anna Andersson, Evelina Thunell, Ingemar Svenonius, Elena Skobchenko, Rainer Prosi, Alex Khilov, Stefan Meissner\n\n"
+				+ "The APPLICATION is provided 'as is', without warranty of any kind, express, implied, or\n"
+				+ "otherwise, including but not limited to the warranties of merchantability,fitness for a\n"
+				+ "particular purpose and noninfringement. In no event will CIP4 be liable, for any claim,\n"
+				+ "damages or other liability whether in an action of contract, tort or otherwise, arising\n"
+				+ "from, out of, or in connection with the APPLICATION or the use or other dealings in the\n" + "APPLICATION.";
+		return about;
+	}
 
 	/**
 	 * toggle attributes on and off
@@ -1224,9 +1288,9 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 			m_DispDefAttrRadioItem.setEnabled(true);
 		}
 
-        mainController.setSetting(SettingKey.TREEVIEW_ATTRIBUTE, m_showAttrRadioItem.isSelected());
-        mainController.setSetting(SettingKey.GENERAL_DISPLAY_DEFAULT, m_DispDefAttrRadioItem.isSelected());
-        mainController.setSetting(SettingKey.TREEVIEW_ATTRIBUTE_INHERITED, m_showInhAttrRadioItem.isSelected());
+		mainController.setSetting(SettingKey.TREEVIEW_ATTRIBUTE, m_showAttrRadioItem.isSelected());
+		mainController.setSetting(SettingKey.GENERAL_DISPLAY_DEFAULT, m_DispDefAttrRadioItem.isSelected());
+		mainController.setSetting(SettingKey.TREEVIEW_ATTRIBUTE_INHERITED, m_showInhAttrRadioItem.isSelected());
 		if (getJDFDoc() != null)
 		{
 			ta.drawTreeView(frame.getEditorDoc());
@@ -1261,22 +1325,8 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		}
 	}
 
-	private void showPreferences()
+	public void setSpawnMergeEnabled(boolean enable)
 	{
-		final String[] options = { ResourceUtil.getMessage("OkKey"), ResourceUtil.getMessage("CancelKey") };
-		final PreferenceDialog pd = new PreferenceDialog();
-
-		final int option = JOptionPane.showOptionDialog(this, pd, ResourceUtil.getMessage("PreferenceKey"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
-
-		if (option == JOptionPane.OK_OPTION)
-		{
-			pd.writeToIni();
-			final EditorDocument ed = MainView.getEditorDoc();
-			if (ed != null && ed.getJDFTree() != null)
-			{
-				ed.getJDFTree().repaint();
-			}
-		}
+		m_toolsMenu.setSpawnMergeEnabled(enable);
 	}
-
 }
