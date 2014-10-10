@@ -90,9 +90,13 @@ import javax.swing.tree.TreePath;
 
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.elementwalker.URLExtractor;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourceLinkPool;
 import org.cip4.jdflib.pool.JDFResourcePool;
+import org.cip4.jdflib.util.FileUtil;
+import org.cip4.jdflib.util.StringUtil;
+import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.util.RecentFileUtil;
@@ -121,7 +125,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	private JMenu m_resourceLinkMenu;
 
 	protected JMenu m_insertMenu;
-	protected ToolsMenu m_toolsMenu;
+	protected ToolsMenu toolsMenu;
 	protected JMenu m_editMenu;
 	protected JMenu m_validateMenu;
 	protected JMenu m_windowMenu;
@@ -439,7 +443,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	{
 		super();
 		fileMenu = new FileMenu();
-		m_toolsMenu = new ToolsMenu();
+		toolsMenu = new ToolsMenu();
 	}
 
 	/**
@@ -599,7 +603,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		insertM.setBackground(menuColor);
 		add(insertM);
 
-		m_toolsMenu.drawToolsMenu();
+		toolsMenu.drawToolsMenu();
 
 		final JMenu validateM = drawValidateMenu();
 		validateM.setMnemonic('V');
@@ -695,19 +699,17 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		return m_insertMenu;
 	}
 
-	private class ToolsMenu extends JMenu implements ActionListener
+	class ToolsMenu extends JMenu implements ActionListener
 	{
 
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 1L;
-		JMenuItem m_unspawnItem;
-		JMenuItem m_spawnItem;
-		JMenuItem m_spawnInformItem;
-		JMenuItem m_mergeItem;
-		private JMenuItem m_preferenceItem;
-		private JMenuItem m_sendToDeviceItem;
+		private JMenuItem unspawnItem;
+		private JMenuItem spawnItem;
+		private JMenuItem spawnInformItem;
+		private JMenuItem mergeItem;
+		private JMenuItem extractItem;
+		private JMenuItem preferenceItem;
+		private JMenuItem sendToDeviceItem;
 
 		/**
 		 * Creates the Tools menu.
@@ -721,39 +723,39 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 			setBorderPainted(false);
 			addMouseListener(menuListener);
 
-			m_spawnItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.spawn"));
-			m_spawnItem.addActionListener(this);
-			m_spawnItem.setEnabled(false);
-			m_spawnItem.setAccelerator(KeyStroke.getKeyStroke('S', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.ALT_MASK));
-			add(m_spawnItem);
+			spawnItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.spawn"));
+			spawnItem.addActionListener(this);
+			spawnItem.setEnabled(false);
+			spawnItem.setAccelerator(KeyStroke.getKeyStroke('S', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.ALT_MASK));
+			add(spawnItem);
 
-			m_spawnInformItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.spawn.info"));
-			m_spawnInformItem.addActionListener(this);
-			m_spawnInformItem.setAccelerator(KeyStroke.getKeyStroke('I', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.ALT_MASK));
-			m_spawnInformItem.setEnabled(false);
-			add(m_spawnInformItem);
+			spawnInformItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.spawn.info"));
+			spawnInformItem.addActionListener(this);
+			spawnInformItem.setAccelerator(KeyStroke.getKeyStroke('I', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.ALT_MASK));
+			spawnInformItem.setEnabled(false);
+			add(spawnInformItem);
 
-			m_mergeItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.merge"));
-			m_mergeItem.addActionListener(this);
-			m_mergeItem.setAccelerator(KeyStroke.getKeyStroke('M', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.ALT_MASK));
-			m_mergeItem.setEnabled(false);
-			add(m_mergeItem);
+			mergeItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.merge"));
+			mergeItem.addActionListener(this);
+			mergeItem.setAccelerator(KeyStroke.getKeyStroke('M', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.ALT_MASK));
+			mergeItem.setEnabled(false);
+			add(mergeItem);
 
-			m_unspawnItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.spawn.undo"));
-			m_unspawnItem.addActionListener(this);
-			m_unspawnItem.setEnabled(false);
-			add(m_unspawnItem);
+			unspawnItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.spawn.undo"));
+			unspawnItem.addActionListener(this);
+			unspawnItem.setEnabled(false);
+			add(unspawnItem);
 
 			add(new JSeparator());
 
-			m_preferenceItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.preferences"));
-			m_preferenceItem.addActionListener(this);
-			add(m_preferenceItem);
+			preferenceItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.preferences"));
+			preferenceItem.addActionListener(this);
+			add(preferenceItem);
 			add(new JSeparator());
 
-			m_sendToDeviceItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.send"));
-			m_sendToDeviceItem.addActionListener(this);
-			add(m_sendToDeviceItem);
+			sendToDeviceItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.send"));
+			sendToDeviceItem.addActionListener(this);
+			add(sendToDeviceItem);
 
 			add(new JSeparator());
 			m_fixVersionItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.fix"));
@@ -770,6 +772,11 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 			m_removeExtenisionItem.addActionListener(this);
 			m_removeExtenisionItem.setEnabled(true);
 			add(m_removeExtenisionItem);
+
+			extractItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.extract"));
+			extractItem.addActionListener(this);
+			extractItem.setEnabled(true);
+			add(extractItem);
 
 			setMnemonic('T');
 			final Color menuColor = getBackground();
@@ -793,47 +800,76 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		 */
 		public void setSpawnMergeEnabled(final boolean enable)
 		{
-			m_spawnItem.setEnabled(enable);
-			m_spawnInformItem.setEnabled(enable);
-			m_mergeItem.setEnabled(enable);
-			m_unspawnItem.setEnabled(enable);
+			spawnItem.setEnabled(enable);
+			spawnInformItem.setEnabled(enable);
+			mergeItem.setEnabled(enable);
+			unspawnItem.setEnabled(enable);
 		}
 
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
 			final Object eSrc = e.getSource();
-			if (eSrc == m_spawnItem)
+			if (eSrc == spawnItem)
 			{
 				MainView.getModel().spawn(false);
 			}
-			else if (eSrc == m_spawnInformItem)
+			else if (eSrc == spawnInformItem)
 			{
 				MainView.getModel().spawn(true);
 			}
-			else if (eSrc == m_mergeItem)
+			else if (eSrc == mergeItem)
 			{
 				MainView.getModel().merge();
 			}
-			else if (eSrc == m_sendToDeviceItem)
+			else if (eSrc == sendToDeviceItem)
 			{
 				new SendToDevice().trySend();
 			}
-			else if (eSrc == m_preferenceItem)
+			else if (eSrc == preferenceItem)
 			{
 				showPreferences();
+			}
+			else if (eSrc == extractItem)
+			{
+				extractAll();
 			}
 
 		}
 
-		public void setEnableClose()
+		private void extractAll()
 		{
-			m_sendToDeviceItem.setEnabled(false);
+			EditorDocument d = getEditorDoc();
+
+			String name = d == null ? null : StringUtil.getNonEmpty(d.getSaveFileName());
+			if (name != null)
+			{
+				String dir = UrlUtil.newExtension(name, null);
+
+				File dirFile = FileUtil.getFileInDirectory(new File(dir), new File("extracted"));
+				if (dirFile.mkdirs() || dirFile.isDirectory())
+				{
+					new URLExtractor(dirFile, null, null).convert(getJDFDoc().getRoot());
+				}
+			}
 		}
 
+		/**
+		 * 
+		 */
+		public void setEnableClose()
+		{
+			sendToDeviceItem.setEnabled(false);
+			extractItem.setEnabled(false);
+		}
+
+		/**
+		 * 
+		 */
 		public void setEnableOpen(boolean mode)
 		{
-			m_sendToDeviceItem.setEnabled(true);
+			sendToDeviceItem.setEnabled(true);
+			extractItem.setEnabled(true);
 		}
 
 		private void showPreferences()
@@ -1104,7 +1140,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	public void setEnableClose()
 	{
 		fileMenu.setEnableClose();
-		m_toolsMenu.setEnableClose();
+		toolsMenu.setEnableClose();
 		m_cutItem.setEnabled(false);
 		m_copyItem.setEnabled(false);
 		m_pasteItem.setEnabled(false);
@@ -1132,7 +1168,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	public void setEnableOpen(final boolean mode)
 	{
 		fileMenu.setEnableOpen(mode);
-		m_toolsMenu.setEnableOpen(mode);
+		toolsMenu.setEnableOpen(mode);
 		m_cutItem.setEnabled(mode);
 		m_copyItem.setEnabled(mode);
 		m_deleteItem.setEnabled(mode);
@@ -1301,8 +1337,14 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 	private JDFDoc getJDFDoc()
 	{
-		final EditorDocument ed = MainView.getFrame().getEditorDoc();
+		final EditorDocument ed = getEditorDoc();
 		return ed == null ? null : ed.getJDFDoc();
+	}
+
+	private EditorDocument getEditorDoc()
+	{
+		final EditorDocument ed = MainView.getFrame().getEditorDoc();
+		return ed;
 	}
 
 	/**
@@ -1327,6 +1369,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 	public void setSpawnMergeEnabled(boolean enable)
 	{
-		m_toolsMenu.setSpawnMergeEnabled(enable);
+		toolsMenu.setSpawnMergeEnabled(enable);
 	}
 }

@@ -1,4 +1,85 @@
+/**
+ * The CIP4 Software License, Version 1.0
+ *
+ * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer. 
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. The end-user documentation included with the redistribution,
+ *    if any, must include the following acknowledgment:  
+ *       "This product includes software developed by the
+ *        The International Cooperation for the Integration of 
+ *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
+ *    Alternately, this acknowledgment may appear in the software itself,
+ *    if and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ *    Processes in  Prepress, Press and Postpress" must
+ *    not be used to endorse or promote products derived from this
+ *    software without prior written permission. For written 
+ *    permission, please contact info@cip4.org.
+ *
+ * 5. Products derived from this software may not be called "CIP4",
+ *    nor may "CIP4" appear in their name, without prior written
+ *    permission of the CIP4 organization
+ *
+ * Usage of this software in commercial products is subject to restrictions. For
+ * details please consult info@cip4.org.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED.  IN NO EVENT SHALL THE INTERNATIONAL COOPERATION FOR
+ * THE INTEGRATION OF PROCESSES IN PREPRESS, PRESS AND POSTPRESS OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of the The International Cooperation for the Integration 
+ * of Processes in Prepress, Press and Postpress and was
+ * originally based on software 
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
+ *  
+ * For more information on The International Cooperation for the 
+ * Integration of Processes in  Prepress, Press and Postpress , please see
+ * <http://www.cip4.org/>.
+ *  
+ * 
+ */
 package org.cip4.tools.jdfeditor;
+
+import java.io.File;
+import java.util.Enumeration;
+import java.util.Vector;
+
+import javax.mail.BodyPart;
+import javax.mail.Multipart;
+import javax.swing.JTree;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.TreePath;
 
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
@@ -9,26 +90,14 @@ import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.view.MainView;
 
-import javax.mail.BodyPart;
-import javax.mail.Multipart;
-import javax.swing.*;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.TreePath;
-import java.io.File;
-import java.util.Enumeration;
-import java.util.Vector;
-
 /**
  * The Document model.
  */
 public class EditorDocument
 {
-	private SettingService settingService = new SettingService();
+	private final SettingService settingService = new SettingService();
 
-    private JDFDoc jdfDoc;
+	private final JDFDoc jdfDoc;
 
 	private JTree jTree;
 
@@ -36,7 +105,7 @@ public class EditorDocument
 
 	private EditorSelectionListener editorSelectionListener;
 
-	private Vector<JDFTreeNode> jdfTreeNodesHistory;
+	private final Vector<JDFTreeNode> jdfTreeNodesHistory;
 
 	private int historyPos;
 
@@ -48,39 +117,41 @@ public class EditorDocument
 
 	private int topTab;
 
-    /**
-     * Custom constructor. Accepting several attributes for initializing.
-     * @param jdfDoc The JDFDoc object.
-     * @param packageName The package name as String
-     */
-    public EditorDocument(JDFDoc jdfDoc, String packageName)
-    {
-        this.historyPos = -1;
-        this.jdfDoc = jdfDoc;
-        this.jdfTreeNodesHistory = new Vector<JDFTreeNode>();
-        this.packageName = packageName;
-        this.zoom = 1.0;
-    }
+	/**
+	 * Custom constructor. Accepting several attributes for initializing.
+	 * @param jdfDoc The JDFDoc object.
+	 * @param packageName The package name as String
+	 */
+	public EditorDocument(JDFDoc jdfDoc, String packageName)
+	{
+		this.historyPos = -1;
+		this.jdfDoc = jdfDoc;
+		this.jdfTreeNodesHistory = new Vector<JDFTreeNode>();
+		this.packageName = packageName;
+		this.zoom = 1.0;
+	}
 
 	/**
 	 * Getter for the zoom attribute value.
-     * @return The zoom value as double.
+	 * @return The zoom value as double.
 	 */
-	public double getZoom() {
+	public double getZoom()
+	{
 		return zoom;
 	}
 
 	/**
 	 * Setter for the zoom attribute value.
-     * @param zoom The zoom attribute value as double.
+	 * @param zoom The zoom attribute value as double.
 	 */
-	public void setZoom(double zoom) {
+	public void setZoom(double zoom)
+	{
 		this.zoom = zoom;
 	}
 
 	/**
 	 * Getter for the jdfDoc attribute value.
-     * @return The JDFDoc attribute value.
+	 * @return The JDFDoc attribute value.
 	 */
 	public JDFDoc getJDFDoc()
 	{
@@ -89,7 +160,7 @@ public class EditorDocument
 
 	/**
 	 * Getter for the PackageName attribute value.
-     * @return The PackageName value as String.
+	 * @return The PackageName value as String.
 	 */
 	public String getPackageName()
 	{
@@ -103,14 +174,13 @@ public class EditorDocument
 		{
 			return "EditorDocument: #null";
 		}
-		return "EditorDocument: " + jdfDoc.toString();
+		return "EditorDocument: " + getSaveFileName() + " " + jdfDoc;
 	}
 
-
-    /**
-     * Returns the original file name of a JDF Document.
-     * @return The original file name of a JDF Document as String.
-     */
+	/**
+	 * Returns the original file name of a JDF Document.
+	 * @return The original file name of a JDF Document as String.
+	 */
 	public String getOriginalFileName()
 	{
 		if (jdfDoc == null)
@@ -378,6 +448,7 @@ public class EditorDocument
 	// ///////////////////////////////////////////////////////////////
 	class EditorSelectionListener implements TreeSelectionListener
 	{
+		@Override
 		public void valueChanged(final TreeSelectionEvent e)
 		{
 			final TreePath p = e.getPath();
@@ -397,6 +468,7 @@ public class EditorDocument
 
 	class MyTreeModelListener implements TreeModelListener
 	{
+		@Override
 		public void treeNodesChanged(final TreeModelEvent event)
 		{
 			JDFTreeNode node = (JDFTreeNode) (event.getTreePath().getLastPathComponent());
@@ -411,18 +483,21 @@ public class EditorDocument
 			}
 		}
 
+		@Override
 		public void treeNodesInserted(final TreeModelEvent event)
 		{
 			event.getClass();
 			// TODO implement
 		}
 
+		@Override
 		public void treeNodesRemoved(final TreeModelEvent event)
 		{
 			event.getClass();
 			// TODO implement
 		}
 
+		@Override
 		public void treeStructureChanged(final TreeModelEvent event)
 		{
 			event.getClass();
