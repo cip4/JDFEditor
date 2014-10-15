@@ -112,6 +112,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 	JButton m_NextButton;
 	JButton m_LastButton;
 	JButton m_printButton;
+    JButton m_sendButton;
 	JButton m_zoomInButton;
 	JButton m_zoomOutButton;
 	JButton m_zoomOrigButton;
@@ -156,6 +157,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 
         final ImageIcon imgPrint = ResourceUtil.getImageIcon("toolbar/print.png");
         final ImageIcon imgRefresh = ResourceUtil.getImageIcon("toolbar/refresh.png");
+        final ImageIcon imgSend = ResourceUtil.getImageIcon("toolbar/send.png");
 
 		final ImageIcon imgCut = ResourceUtil.getImageIcon("toolbar/cut.png");
 		final ImageIcon imgCopy = ResourceUtil.getImageIcon("toolbar/copy.png");
@@ -194,6 +196,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		m_printButton = createDefaultButton(imgPrint, ResourceUtil.getMessage("main.toolbar.util.print"), false, '|');
 		m_refreshButton = createDefaultButton(imgRefresh, ResourceUtil.getMessage("main.toolbar.util.refresh"), false, '|');
         m_validateButton = createDefaultButton(imgReval, ResourceUtil.getMessage("main.toolbar.util.validate"), false, 'A');
+        m_sendButton = createDefaultButton(imgSend, ResourceUtil.getMessage("main.toolbar.util.send"), false, '|');
 		addSeparator(d);
 
         // edit block
@@ -304,6 +307,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		m_zoomOutButton.setEnabled(false);
 		m_zoomOrigButton.setEnabled(false);
 		m_zoomBestButton.setEnabled(false);
+        m_sendButton.setEnabled(false);
 	}
 
 	public void setEnableOpen(boolean mode)
@@ -324,6 +328,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 
 		m_validateButton.setEnabled(true);
 		m_printButton.setEnabled(true);
+        m_sendButton.setEnabled(true);
 		EditorDocument eDoc = MainView.getEditorDoc();
 		m_refreshButton.setEnabled(eDoc == null ? true : eDoc.getPackageName() == null);
 	}
@@ -396,6 +401,10 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		{
 			m_frame.printWhat();
 		}
+        else if (eSrc == m_sendButton)  // send
+        {
+            new SendToDevice().trySend();
+        }
 		else if (eSrc == m_zoomInButton)  // zoom in
 		{
 			m_frame.m_topTabs.m_pArea.zoom('+');
