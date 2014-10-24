@@ -70,6 +70,25 @@
  */
 package org.cip4.tools.jdfeditor;
 
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import javax.mail.Multipart;
+import javax.swing.Box;
+import javax.swing.ButtonGroup;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFParser;
@@ -81,22 +100,13 @@ import org.cip4.jdflib.jmf.JDFMessage.EnumType;
 import org.cip4.jdflib.jmf.JDFQueueSubmissionParams;
 import org.cip4.jdflib.jmf.JDFReturnQueueEntryParams;
 import org.cip4.jdflib.util.MimeUtil;
+import org.cip4.jdflib.util.UrlPart;
 import org.cip4.jdflib.util.UrlUtil;
+import org.cip4.jdflib.util.mime.MimeWriter;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
-
-import javax.mail.Multipart;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 /**
  * @author MRE (Institute for Print and Media Technology) History: 20040903 MRE send MIME multipart/related
@@ -286,7 +296,7 @@ public class SendToDevice extends JPanel implements ActionListener
 		{
 			return false;
 		}
-		HttpURLConnection uc = null;
+		UrlPart up = null;
 		try
 		{
 			final JDFDoc theDoc = editorDoc.getJDFDoc().clone();
@@ -301,20 +311,22 @@ public class SendToDevice extends JPanel implements ActionListener
 			{
 				qsp.setURL("dummy");
 				final Multipart mp = MimeUtil.buildMimePackage(jmfDoc, theDoc, packageAll);
-				uc = MimeUtil.writeToURL(mp, url.toExternalForm());
+				MimeWriter mw = new MimeWriter(mp);
+				up = mw.writeToURL(url.toExternalForm());
 			}
 			else
 			{
-				uc = jmfDoc.write2HTTPURL(url, null);
+				up = jmfDoc.write2HttpURL(url, null);
 			}
-			if (uc != null)
+			if (up != null)
 			{
-				rc = uc.getResponseCode();
-				message = uc.getResponseMessage();
+				rc = up.getResponseCode();
 			}
 			bSendTrue = rc == 200;
-			if (bSendTrue)
-				createResponse(uc);
+			if (bSendTrue && !UrlUtil.isFile(url.toExternalForm()))
+			{
+				createResponse(up);
+			}
 		}
 		catch (final Exception x)
 		{
@@ -347,7 +359,7 @@ public class SendToDevice extends JPanel implements ActionListener
 		{
 			return false;
 		}
-		HttpURLConnection uc = null;
+		UrlPart up = null;
 		try
 		{
 			final JDFDoc theDoc = editorDoc.getJDFDoc().clone();
@@ -355,18 +367,19 @@ public class SendToDevice extends JPanel implements ActionListener
 			{
 				rqp.setURL("dummy");
 				final Multipart mp = MimeUtil.buildMimePackage(jmfDoc, theDoc, packageAll);
-				uc = MimeUtil.writeToURL(mp, url.toExternalForm());
+				up = new MimeWriter(mp).writeToURL(url.toExternalForm());
 			}
 			else
 			{
-				uc = jmfDoc.write2HTTPURL(url, null);
+				up = jmfDoc.write2HttpURL(url, null);
 			}
-			if (uc != null)
+			if (up != null)
 			{
-				rc = uc.getResponseCode();
-				message = uc.getResponseMessage();
-				if (rc == 200)
-					createResponse(uc);
+				rc = up.getResponseCode();
+				if (rc == 200 && !UrlUtil.isFile(url.toExternalForm()))
+				{
+					createResponse(up);
+				}
 
 			}
 			bSendTrue = rc == 200;
@@ -416,14 +429,14 @@ public class SendToDevice extends JPanel implements ActionListener
 		KElement root = theDoc.getRoot();
 		updateJobID(root);
 
-		final HttpURLConnection con = theDoc.write2HTTPURL(url, null);
+		final UrlPart up = theDoc.write2HttpURL(url, null);
 
 		try
 		{
-			bSendTrue = con != null && con.getResponseCode() == 200;
-			if (bSendTrue)
+			bSendTrue = up != null && up.getResponseCode() == 200;
+			if (bSendTrue && !UrlUtil.isFile(url.toExternalForm()))
 			{
-				createResponse(con);
+				createResponse(up);
 			}
 		}
 		catch (final IOException x)
@@ -434,14 +447,14 @@ public class SendToDevice extends JPanel implements ActionListener
 	}
 
 	/**
-	 * @param con
+	 * @param up
 	 * @throws IOException
 	 */
-	private void createResponse(final HttpURLConnection con) throws IOException
+	private void createResponse(final UrlPart up) throws IOException
 	{
-		if (con != null)
+		if (up != null)
 		{
-			final JDFDoc d2 = new JDFParser().parseStream(con.getInputStream());
+			final JDFDoc d2 = new JDFParser().parseStream(up.getResponseStream());
 			if (d2 != null)
 			{
 				String newFileName = MainView.getEditorDoc().getOriginalFileName();
