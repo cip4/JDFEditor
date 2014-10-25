@@ -71,20 +71,26 @@ package org.cip4.tools.jdfeditor;
  * 
  */
 
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.HashSet;
+
+import javax.swing.Box;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+
 import org.cip4.tools.jdfeditor.dialog.SaveAsJDFDialog;
 import org.cip4.tools.jdfeditor.dialog.SaveAsXJDFDialog;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.HashSet;
 
 /**
  * 
@@ -95,7 +101,7 @@ import java.util.HashSet;
 public class EditorButtonBar extends JToolBar implements ActionListener
 {
 
-    private SettingService settingService = new SettingService();
+	private final SettingService settingService;
 
 	JButton m_newButton;
 	JButton m_openButton;
@@ -105,14 +111,14 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 	JButton m_cutButton;
 	JButton m_copyButton;
 	JButton m_pasteButton;
-    JButton m_convert2Jdf;
-    JButton m_convert2XJdf;
+	JButton m_convert2Jdf;
+	JButton m_convert2XJdf;
 	JButton m_validateButton;
 	JButton m_upOneLevelButton;
 	JButton m_NextButton;
 	JButton m_LastButton;
 	JButton m_printButton;
-    JButton m_sendButton;
+	JButton m_sendButton;
 	JButton m_zoomInButton;
 	JButton m_zoomOutButton;
 	JButton m_zoomOrigButton;
@@ -136,6 +142,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 	public EditorButtonBar(JDFFrame frame)
 	{
 		super(SwingConstants.HORIZONTAL);
+		settingService = new SettingService();
 		m_frame = frame;
 		m_allButtons = new HashSet<JButton>();
 	}
@@ -155,16 +162,16 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		final ImageIcon imgOpen = ResourceUtil.getImageIcon("toolbar/open.png");
 		final ImageIcon imgSave = ResourceUtil.getImageIcon("toolbar/save.png");
 
-        final ImageIcon imgPrint = ResourceUtil.getImageIcon("toolbar/print.png");
-        final ImageIcon imgRefresh = ResourceUtil.getImageIcon("toolbar/refresh.png");
-        final ImageIcon imgSend = ResourceUtil.getImageIcon("toolbar/send.png");
+		final ImageIcon imgPrint = ResourceUtil.getImageIcon("toolbar/print.png");
+		final ImageIcon imgRefresh = ResourceUtil.getImageIcon("toolbar/refresh.png");
+		final ImageIcon imgSend = ResourceUtil.getImageIcon("toolbar/send.png");
 
 		final ImageIcon imgCut = ResourceUtil.getImageIcon("toolbar/cut.png");
 		final ImageIcon imgCopy = ResourceUtil.getImageIcon("toolbar/copy.png");
 		final ImageIcon imgPaste = ResourceUtil.getImageIcon("toolbar/paste.png");
 
-        final ImageIcon imgJDF = ResourceUtil.getImageIcon("toolbar/jdf.png");
-        final ImageIcon imgXJDF = ResourceUtil.getImageIcon("toolbar/xjdf.png");
+		final ImageIcon imgJDF = ResourceUtil.getImageIcon("toolbar/jdf.png");
+		final ImageIcon imgXJDF = ResourceUtil.getImageIcon("toolbar/xjdf.png");
 
 		final ImageIcon imgUndo = ResourceUtil.getImageIcon("toolbar/undo.png");
 		final ImageIcon imgRedo = ResourceUtil.getImageIcon("toolbar/redo.png");
@@ -179,38 +186,37 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		final ImageIcon imgZoomOrig = ResourceUtil.getImageIcon("toolbar/zoom-original.png");
 		final ImageIcon imgZoomBest = ResourceUtil.getImageIcon("toolbar/zoom-fit-best.png");
 
-        final ImageIcon imgClose = ResourceUtil.getImageIcon("toolbar/close.png");
-
+		final ImageIcon imgClose = ResourceUtil.getImageIcon("toolbar/close.png");
 
 		final Dimension d = new Dimension(10, 30);
 		setFloatable(false);
 
-        // document block
+		// document block
 		m_newButton = createDefaultButton(imgNew, ResourceUtil.getMessage("main.toolbar.document.new"), true, '|');
 		m_openButton = createDefaultButton(imgOpen, ResourceUtil.getMessage("main.toolbar.document.open"), true, '|');
 		m_saveButton = createDefaultButton(imgSave, ResourceUtil.getMessage("main.toolbar.document.save"), false, '|');
-        m_closeButton = createDefaultButton(imgClose, ResourceUtil.getMessage("main.toolbar.document.close"), true, '|');
+		m_closeButton = createDefaultButton(imgClose, ResourceUtil.getMessage("main.toolbar.document.close"), true, '|');
 		addSeparator(d);
 
-        // util block
+		// util block
 		m_printButton = createDefaultButton(imgPrint, ResourceUtil.getMessage("main.toolbar.util.print"), false, '|');
 		m_refreshButton = createDefaultButton(imgRefresh, ResourceUtil.getMessage("main.toolbar.util.refresh"), false, '|');
-        m_validateButton = createDefaultButton(imgReval, ResourceUtil.getMessage("main.toolbar.util.validate"), false, 'A');
-        m_sendButton = createDefaultButton(imgSend, ResourceUtil.getMessage("main.toolbar.util.send"), false, '|');
+		m_validateButton = createDefaultButton(imgReval, ResourceUtil.getMessage("main.toolbar.util.validate"), false, 'A');
+		m_sendButton = createDefaultButton(imgSend, ResourceUtil.getMessage("main.toolbar.util.send"), false, '|');
 		addSeparator(d);
 
-        // edit block
+		// edit block
 		m_cutButton = createDefaultButton(imgCut, ResourceUtil.getMessage("main.toolbar.edit.cut"), false, '|');
 		m_copyButton = createDefaultButton(imgCopy, ResourceUtil.getMessage("main.toolbar.edit.copy"), false, '|');
 		m_pasteButton = createDefaultButton(imgPaste, ResourceUtil.getMessage("main.toolbar.edit.paste"), false, '|');
 		addSeparator(d);
 
-        // convert block
-        m_convert2Jdf = createDefaultButton(imgJDF, ResourceUtil.getMessage("main.toolbar.convert.jdf"), false, '|');
-        m_convert2XJdf = createDefaultButton(imgXJDF, ResourceUtil.getMessage("main.toolbar.convert.xjdf"), false, '|');
-        addSeparator(d);
+		// convert block
+		m_convert2Jdf = createDefaultButton(imgJDF, ResourceUtil.getMessage("main.toolbar.convert.jdf"), false, '|');
+		m_convert2XJdf = createDefaultButton(imgXJDF, ResourceUtil.getMessage("main.toolbar.convert.xjdf"), false, '|');
+		addSeparator(d);
 
-        // history block
+		// history block
 		m_undoButton = createDefaultButton(imgUndo, ResourceUtil.getMessage("main.toolbar.history.undo"), false, '|');
 		m_undoButton.addActionListener(m_frame.undoAction);
 		m_redoButton = createDefaultButton(imgRedo, ResourceUtil.getMessage("main.toolbar.history.redo"), false, '|');
@@ -223,7 +229,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		m_NextButton = createDefaultButton(imgNext, ResourceUtil.getMessage("main.toolbar.nav.next"), false, '|');
 		addSeparator(d);
 
-        // zoom block
+		// zoom block
 		m_zoomInButton = createDefaultButton(imgZoomIn, ResourceUtil.getMessage("main.toolbar.zoom.in"), false, '|');
 		m_zoomOutButton = createDefaultButton(imgZoomOut, ResourceUtil.getMessage("main.toolbar.zoom.out"), false, '|');
 		m_zoomOrigButton = createDefaultButton(imgZoomOrig, ResourceUtil.getMessage("main.toolbar.zoom.orig"), false, '|');
@@ -299,15 +305,15 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		m_undoButton.setEnabled(false);
 		m_redoButton.setEnabled(false);
 		m_upOneLevelButton.setEnabled(false);
-        m_convert2Jdf.setEnabled(false);
-        m_convert2XJdf.setEnabled(false);
+		m_convert2Jdf.setEnabled(false);
+		m_convert2XJdf.setEnabled(false);
 		m_LastButton.setEnabled(false);
 		m_NextButton.setEnabled(false);
 		m_zoomInButton.setEnabled(false);
 		m_zoomOutButton.setEnabled(false);
 		m_zoomOrigButton.setEnabled(false);
 		m_zoomBestButton.setEnabled(false);
-        m_sendButton.setEnabled(false);
+		m_sendButton.setEnabled(false);
 	}
 
 	public void setEnableOpen(boolean mode)
@@ -323,12 +329,12 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		m_LastButton.setEnabled(true);
 		m_NextButton.setEnabled(true);
 
-        m_convert2Jdf.setEnabled(true);
-        m_convert2XJdf.setEnabled(true);
+		m_convert2Jdf.setEnabled(true);
+		m_convert2XJdf.setEnabled(true);
 
 		m_validateButton.setEnabled(true);
 		m_printButton.setEnabled(true);
-        m_sendButton.setEnabled(true);
+		m_sendButton.setEnabled(true);
 		EditorDocument eDoc = MainView.getEditorDoc();
 		m_refreshButton.setEnabled(eDoc == null ? true : eDoc.getPackageName() == null);
 	}
@@ -368,22 +374,22 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		{
 			m_frame.getModel().validate();
 		}
-        else if (eSrc == m_convert2Jdf) // convert 2 JDF
-        {
-            SaveAsJDFDialog d = new SaveAsJDFDialog();
-            if (d.isOK())
-            {
-                MainView.getModel().saveAsJDF(null, d.getConverter());
-            }
-        }
-        else if (eSrc == m_convert2XJdf) // convert 2 XJDF
-        {
-            SaveAsXJDFDialog d = new SaveAsXJDFDialog();
-            if (d.isOK())
-            {
-                MainView.getModel().saveAsXJDF(null, d.getXJDFConverter());
-            }
-        }
+		else if (eSrc == m_convert2Jdf) // convert 2 JDF
+		{
+			SaveAsJDFDialog d = new SaveAsJDFDialog();
+			if (d.isOK())
+			{
+				MainView.getModel().saveAsJDF(null, d.getConverter());
+			}
+		}
+		else if (eSrc == m_convert2XJdf) // convert 2 XJDF
+		{
+			SaveAsXJDFDialog d = new SaveAsXJDFDialog();
+			if (d.isOK())
+			{
+				MainView.getModel().saveAsXJDF(null);
+			}
+		}
 		else if (eSrc == m_upOneLevelButton) // navigate up
 		{
 			m_frame.m_topTabs.m_pArea.goUpOneLevelInProcessView();
@@ -397,15 +403,15 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		{
 			MainView.getEditorDoc().setLastSelection();
 		}
-		else if (eSrc == m_printButton)  // print
+		else if (eSrc == m_printButton) // print
 		{
 			m_frame.printWhat();
 		}
-        else if (eSrc == m_sendButton)  // send
-        {
-            new SendToDevice().trySend();
-        }
-		else if (eSrc == m_zoomInButton)  // zoom in
+		else if (eSrc == m_sendButton) // send
+		{
+			new SendToDevice().trySend();
+		}
+		else if (eSrc == m_zoomInButton) // zoom in
 		{
 			m_frame.m_topTabs.m_pArea.zoom('+');
 		}

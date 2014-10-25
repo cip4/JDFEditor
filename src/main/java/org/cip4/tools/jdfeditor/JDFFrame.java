@@ -139,6 +139,7 @@ import org.cip4.jdflib.goldenticket.IDPGoldenTicket;
 import org.cip4.jdflib.goldenticket.MISCPGoldenTicket;
 import org.cip4.jdflib.goldenticket.MISFinGoldenTicket;
 import org.cip4.jdflib.goldenticket.MISPreGoldenTicket;
+import org.cip4.jdflib.goldenticket.ODPGoldenTicket;
 import org.cip4.jdflib.goldenticket.WideFormatGoldenTicket;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
@@ -825,23 +826,23 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			gt1 = gt.getGTLevel();
 			int iType = gt.getGtTypeSelected();
 			BaseGoldenTicket theGT = null;
-			EnumVersion v = gt.getGtVersionSelected();
+			EnumVersion jdfVersion = gt.getGtVersionSelected();
 			boolean xjdf = false;
-			if (!EnumUtil.aLessThanB(v, EnumVersion.Version_2_0))
+			if (!EnumUtil.aLessThanB(jdfVersion, EnumVersion.Version_2_0))
 			{
 				xjdf = true;
-				v = JDFElement.getDefaultJDFVersion();
+				jdfVersion = JDFElement.getDefaultJDFVersion();
 			}
 
 			if ("MISCP".equals(gtselect))
 			{
 
-				theGT = new MISCPGoldenTicket(gt1, v, jmf, mis, true, BaseGoldenTicket.createSheetMap(1));
+				theGT = new MISCPGoldenTicket(gt1, jdfVersion, jmf, mis, true, BaseGoldenTicket.createSheetMap(1));
 				theGT.nCols = new int[] { 4, 4 };
 			}
 			else if (gtselect.startsWith("MISPRE"))
 			{
-				theGT = new MISPreGoldenTicket(gt1, v, jmf, mis, BaseGoldenTicket.createSheetMap(1));
+				theGT = new MISPreGoldenTicket(gt1, jdfVersion, jmf, mis, BaseGoldenTicket.createSheetMap(1));
 				theGT.nCols = new int[] { 4, 4 };
 				((MISPreGoldenTicket) theGT).setCategory(gtselect);
 			}
@@ -849,41 +850,45 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			{
 				if (gtselect == MISFinGoldenTicket.MISFIN_STITCHFIN)
 				{
-					theGT = new MISFinGoldenTicket(gt1, v, jmf, mis, BaseGoldenTicket.createSheetMap(2));
+					theGT = new MISFinGoldenTicket(gt1, jdfVersion, jmf, mis, BaseGoldenTicket.createSheetMap(2));
 				}
 				else if (gtselect == MISFinGoldenTicket.MISFIN_SHEETFIN)
 				{
-					theGT = new MISFinGoldenTicket(gt1, v, jmf, mis, BaseGoldenTicket.createSheetMap(1));
+					theGT = new MISFinGoldenTicket(gt1, jdfVersion, jmf, mis, BaseGoldenTicket.createSheetMap(1));
 				}
 				else if (gtselect == MISFinGoldenTicket.MISFIN_SHEETFIN)
 				{
-					theGT = new MISFinGoldenTicket(gt1, v, jmf, mis, BaseGoldenTicket.createSheetMap(1));
+					theGT = new MISFinGoldenTicket(gt1, jdfVersion, jmf, mis, BaseGoldenTicket.createSheetMap(1));
 				}
 				else if (gtselect == MISFinGoldenTicket.MISFIN_BOXMAKING)
 				{
-					theGT = new MISFinGoldenTicket(gt1, v, jmf, mis, BaseGoldenTicket.createSheetMap(1));
+					theGT = new MISFinGoldenTicket(gt1, jdfVersion, jmf, mis, BaseGoldenTicket.createSheetMap(1));
 				}
 				else if (gtselect == MISFinGoldenTicket.MISFIN_HARDCOVERFIN)
 				{
-					theGT = new MISFinGoldenTicket(gt1, v, jmf, mis, BaseGoldenTicket.createSheetMap(5));
+					theGT = new MISFinGoldenTicket(gt1, jdfVersion, jmf, mis, BaseGoldenTicket.createSheetMap(5));
 				}
 				else if (gtselect == MISFinGoldenTicket.MISFIN_SOFTCOVERFIN)
 				{
-					theGT = new MISFinGoldenTicket(gt1, v, jmf, mis, BaseGoldenTicket.createSheetMap(3));
+					theGT = new MISFinGoldenTicket(gt1, jdfVersion, jmf, mis, BaseGoldenTicket.createSheetMap(3));
 				}
 				else if (gtselect == MISFinGoldenTicket.MISFIN_INSERTFIN)
 				{
-					theGT = new MISFinGoldenTicket(gt1, v, jmf, mis, BaseGoldenTicket.createSheetMap(1));
+					theGT = new MISFinGoldenTicket(gt1, jdfVersion, jmf, mis, BaseGoldenTicket.createSheetMap(1));
 				}
 				((MISFinGoldenTicket) theGT).setCategory(gtselect);
 			}
 			else if ("IDP".equals(gtselect))
 			{
-				theGT = new IDPGoldenTicket(gt1, v);
+				theGT = new IDPGoldenTicket(gt1, jdfVersion);
+			}
+			else if ("ODP".equals(gtselect))
+			{
+				theGT = new ODPGoldenTicket(gt1, jdfVersion);
 			}
 			else if ("DPW".equals(gtselect))
 			{
-				theGT = new WideFormatGoldenTicket(gt1, v);
+				theGT = new WideFormatGoldenTicket(gt1, jdfVersion);
 			}
 
 			if (theGT != null)
@@ -902,7 +907,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 					JDFDoc doc = root.getOwnerDocument_JDFElement();
 					if (xjdf)
 					{
-						JDFToXJDF conv = new JDFToXJDF();
+						JDFToXJDF conv = EditorUtils.getXJDFConverter();
 						KElement newRoot = conv.convert(doc.getRoot());
 						doc = new JDFDoc(newRoot.getOwnerDocument_KElement());
 					}
@@ -910,7 +915,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 					// display the result.
 					m_treeArea.drawTreeView(getEditorDoc());
-					doc.setOriginalFileName(gtselect + "_GoldenTicket.jdf");
+					doc.setOriginalFileName(gtselect + "_GoldenTicket." + ((xjdf) ? "xjdf" : "jdf"));
 					setTitle(getWindowTitle());
 				}
 				catch (final Exception s)

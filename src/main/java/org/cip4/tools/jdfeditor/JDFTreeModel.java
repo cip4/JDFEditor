@@ -70,10 +70,29 @@
  */
 package org.cip4.tools.jdfeditor;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Enumeration;
+import java.util.Vector;
+
+import javax.swing.JOptionPane;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
+
 import org.apache.commons.lang.ArrayUtils;
-import org.cip4.jdflib.core.*;
+import org.cip4.jdflib.core.AttributeName;
+import org.cip4.jdflib.core.ElementName;
+import org.cip4.jdflib.core.JDFConstants;
+import org.cip4.jdflib.core.JDFDoc;
+import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFElement.EnumNodeStatus;
+import org.cip4.jdflib.core.JDFException;
+import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
+import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.core.VString;
+import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.datatypes.JDFAttributeMap;
 import org.cip4.jdflib.datatypes.VJDFAttributeMap;
 import org.cip4.jdflib.elementwalker.XPathWalker;
@@ -97,14 +116,6 @@ import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 import org.w3c.dom.Attr;
 
-import javax.swing.*;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Enumeration;
-import java.util.Vector;
-
 /**
  * @author rainer prosi This is a new dump for some of the JDFFrame classes anything related to the abstract datamodel in the jdf tree belongs here TODO move
  * some of the routines from JDFTreeArea to here, where they belong and reduce the dependencies with JDFFrame
@@ -112,7 +123,7 @@ import java.util.Vector;
 public class JDFTreeModel extends DefaultTreeModel
 {
 
-    private SettingService settingService = new SettingService();
+	private final SettingService settingService = new SettingService();
 
 	/**
 	 * Spawn informative TODO correctly dump into multiple file
@@ -244,7 +255,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		final JDFValidator checkJDF = new JDFValidator();
 		checkJDF.setPrint(false);
 		checkJDF.bQuiet = true;
-        checkJDF.level = JDFElement.EnumValidationLevel.getEnum(settingService.getSetting(SettingKey.VALIDATION_LEVEL, String.class));
+		checkJDF.level = JDFElement.EnumValidationLevel.getEnum(settingService.getSetting(SettingKey.VALIDATION_LEVEL, String.class));
 		checkJDF.bMultiID = true;
 		checkJDF.setWarning(!JDFElement.EnumValidationLevel.isNoWarn(checkJDF.level));
 		XMLDoc schemaValidationResult = null;
@@ -265,7 +276,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		{
 
 			File f = theDoc.getSchemaLocationFile(JDFElement.getSchemaURL());
-            String validationSchemaUrl = settingService.getSetting(SettingKey.VALIDATION_SCHEMA_URL, String.class);
+			String validationSchemaUrl = settingService.getSetting(SettingKey.VALIDATION_SCHEMA_URL, String.class);
 
 			if (!UrlUtil.isFileOK(f) && validationSchemaUrl != null)
 			{
@@ -310,7 +321,7 @@ public class JDFTreeModel extends DefaultTreeModel
 			}
 			else
 			{
-                settingService.setSetting(SettingKey.VALIDATION_SCHEMA_URL, null);
+				settingService.setSetting(SettingKey.VALIDATION_SCHEMA_URL, null);
 			}
 		}
 		// TODO addFile
@@ -1197,10 +1208,9 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * @param selectionPath
-	 * @param xjdf20 the converter instance
 	 * @experimental
 	 */
-	public void saveAsXJDF(final TreePath selectionPath, XJDF20 xjdf20)
+	public void saveAsXJDF(final TreePath selectionPath)
 	{
 		final JDFTreeNode node = selectionPath == null ? (JDFTreeNode) getRootNode().getChildAt(0) : (JDFTreeNode) selectionPath.getLastPathComponent();
 		if (node == null || XJDF20.rootName.equals(node.getElement().getLocalName()))
@@ -1211,6 +1221,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		final EditorDocument eDoc = MainView.getEditorDoc();
 		final String fn = eDoc.getOriginalFileName();
 		KElement xJDF = null;
+		XJDF20 xjdf20 = EditorUtils.getXJDFConverter();
 		if (e instanceof JDFNode)
 		{
 			xJDF = xjdf20.makeNewJDF((JDFNode) e, (VJDFAttributeMap) null);

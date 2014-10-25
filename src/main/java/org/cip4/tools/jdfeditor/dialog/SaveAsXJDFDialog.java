@@ -70,15 +70,22 @@
  */
 package org.cip4.tools.jdfeditor.dialog;
 
-import org.cip4.jdflib.extensions.XJDF20;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * Class that implements a "Save as XJDF..." dialog.
@@ -87,7 +94,7 @@ import java.awt.event.ActionListener;
 public class SaveAsXJDFDialog extends JDialog implements ActionListener
 {
 
-    SettingService settingService = new SettingService();
+	final SettingService settingService;
 	/**
 	 * 
 	 */
@@ -107,11 +114,16 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 	private final JCheckBox cbTypesafeJMF;
 	private int choosedButton = BUTTON_CANCEL;
 
+	/**
+	 * 
+	 */
 	public SaveAsXJDFDialog()
 	{
 		setTitle(ResourceUtil.getMessage("SaveAsXJDFKey"));
 		setModal(true);
 		setLayout(new BorderLayout());
+
+		settingService = new SettingService();
 
 		JPanel checkboxesPanel = new JPanel();
 		checkboxesPanel.setLayout(new BoxLayout(checkboxesPanel, BoxLayout.Y_AXIS));
@@ -186,12 +198,12 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 		if (e.getSource() == bOK)
 		{
 			settingService.setSetting(SettingKey.XJDF_CONVERT_SINGLENODE, cbExt1.isSelected());
-            settingService.setSetting(SettingKey.XJDF_CONVERT_STRIPPING, cbExt2.isSelected());
-            settingService.setSetting(SettingKey.XJDF_CONVERT_SPAN, cbExt3.isSelected());
-            settingService.setSetting(SettingKey.XJDF_CONVERT_RUNLIST, cbExt4.isSelected());
-            settingService.setSetting(SettingKey.XJDF_CONVERT_LAYOUTPREP, cbLoPrep.isSelected());
-            settingService.setSetting(SettingKey.XJDF_CONVERT_TILDE, cbTilde.isSelected());
-            settingService.setSetting(SettingKey.XJDF_TYPESAFE_JMF, cbTypesafeJMF.isSelected());
+			settingService.setSetting(SettingKey.XJDF_CONVERT_STRIPPING, cbExt2.isSelected());
+			settingService.setSetting(SettingKey.XJDF_CONVERT_SPAN, cbExt3.isSelected());
+			settingService.setSetting(SettingKey.XJDF_CONVERT_RUNLIST, cbExt4.isSelected());
+			settingService.setSetting(SettingKey.XJDF_CONVERT_LAYOUTPREP, cbLoPrep.isSelected());
+			settingService.setSetting(SettingKey.XJDF_CONVERT_TILDE, cbTilde.isSelected());
+			settingService.setSetting(SettingKey.XJDF_TYPESAFE_JMF, cbTypesafeJMF.isSelected());
 
 			choosedButton = BUTTON_OK;
 			dispose();
@@ -201,23 +213,6 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 			choosedButton = BUTTON_CANCEL;
 			dispose();
 		}
-	}
-
-	/**
-	 * 
-	 * get the converter with the options set in this dialog
-	 * @return the converter
-	 */
-	public XJDF20 getXJDFConverter()
-	{
-		XJDF20 xjdf20 = new XJDF20();
-		xjdf20.setSingleNode(cbExt1.isSelected());
-		xjdf20.setMergeLayout(cbExt2.isSelected());
-		xjdf20.setSpanAsAttribute(cbExt3.isSelected());
-		xjdf20.setMergeRunList(cbExt4.isSelected());
-		xjdf20.setMergeLayoutPrep(cbLoPrep.isSelected());
-		xjdf20.setConvertTilde(cbTilde.isSelected());
-		return xjdf20;
 	}
 
 	/**

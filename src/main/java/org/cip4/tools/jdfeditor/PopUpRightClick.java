@@ -70,6 +70,21 @@
  */
 package org.cip4.tools.jdfeditor;
 
+import java.awt.Color;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Enumeration;
+import java.util.Vector;
+
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
+import javax.swing.tree.TreePath;
+
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.core.KElement;
@@ -91,16 +106,6 @@ import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
-import javax.swing.*;
-import javax.swing.tree.TreePath;
-import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Enumeration;
-import java.util.Vector;
-
 /**
  * Class to implement all the menu bar and menu related stuff moved here from JDFFrame
  * @author prosirai
@@ -108,7 +113,7 @@ import java.util.Vector;
  */
 public class PopUpRightClick extends JPopupMenu implements ActionListener
 {
-	private SettingService settingService = new SettingService();
+	private final SettingService settingService = new SettingService();
 
 	private static final long serialVersionUID = -8488973695389593826L;
 
@@ -187,9 +192,8 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 				f = EnumFamily.Command;
 			}
 
-
-            JMFBuilder b = new JMFBuilder();
-            b.setSenderID("JDFEditor");
+			JMFBuilder b = new JMFBuilder();
+			b.setSenderID("JDFEditor");
 
 			final JDFJMF jmf = b.newJMF(f, mService.getType());
 			JDFDoc doc = jmf.getOwnerDocument_JDFElement();
@@ -572,7 +576,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 			SaveAsXJDFDialog d = new SaveAsXJDFDialog();
 			if (d.isOK())
 			{
-				MainView.getModel().saveAsXJDF(treeArea.getSelectionPath(), d.getXJDFConverter());
+				MainView.getModel().saveAsXJDF(treeArea.getSelectionPath());
 			}
 		}
 		else if (eSrc == m_saveJDF)

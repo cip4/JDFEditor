@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2013 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2014 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -94,6 +94,7 @@ import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.VString;
+import org.cip4.jdflib.extensions.XJDF20;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.jdflib.resource.JDFResource;
@@ -118,8 +119,6 @@ public class EditorUtils
 	private static final Log LOGGER = LogFactory.getLog(EditorUtils.class);
 
 	private static PluginLoader<IStreamLoader> pluginLoader = null;
-
-	private final SettingService settingService = new SettingService();
 
 	/**
 	 * Check if a KElement is valid or not.
@@ -596,6 +595,25 @@ public class EditorUtils
 		}
 
 		return (p.parseStream(inStream));
+	}
+
+	/**
+	 * 
+	 * get the converter with the options set in this dialog
+	 * @return the converter
+	 */
+	public static XJDF20 getXJDFConverter()
+	{
+		XJDF20 xjdf20 = new XJDF20();
+		SettingService settingService = new SettingService();
+
+		xjdf20.setSingleNode(settingService.getSetting(SettingKey.XJDF_CONVERT_SINGLENODE, Boolean.class));
+		xjdf20.setMergeLayout(settingService.getSetting(SettingKey.XJDF_CONVERT_STRIPPING, Boolean.class));
+		xjdf20.setSpanAsAttribute(settingService.getSetting(SettingKey.XJDF_CONVERT_SPAN, Boolean.class));
+		xjdf20.setMergeRunList(settingService.getSetting(SettingKey.XJDF_CONVERT_RUNLIST, Boolean.class));
+		xjdf20.setMergeLayoutPrep(settingService.getSetting(SettingKey.XJDF_CONVERT_LAYOUTPREP, Boolean.class));
+		xjdf20.setConvertTilde(settingService.getSetting(SettingKey.XJDF_CONVERT_TILDE, Boolean.class));
+		return xjdf20;
 	}
 
 	/**

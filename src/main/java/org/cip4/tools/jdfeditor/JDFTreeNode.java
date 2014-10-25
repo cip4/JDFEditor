@@ -799,6 +799,21 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 			else if (s.endsWith("Set") || s.equals("Intent"))
 			{
 				String name = e.getAttribute("Name", null, null);
+				String usage = e.getAttribute(AttributeName.USAGE, null, null);
+				String procUsage = e.getAttribute(AttributeName.PROCESSUSAGE, null, null);
+				String prefix = null;
+				if (usage != null)
+				{
+					prefix = usage;
+				}
+				if (procUsage != null)
+				{
+					prefix += "/" + procUsage;
+				}
+				if (prefix != null)
+				{
+					s = prefix + " " + s;
+				}
 				if (name != null)
 				{
 					s += " " + name;

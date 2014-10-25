@@ -268,7 +268,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 	{
 		//Add Golden Tickets as they become available.
 		final String[] gt = { "MISCP", MISPreGoldenTicket.MISPRE_CONTENTCREATION, MISPreGoldenTicket.MISPRE_IMPOSITIONPREPARATION, MISPreGoldenTicket.MISPRE_IMPOSITIONRIPING,
-				MISPreGoldenTicket.MISPRE_PLATEMAKING, MISPreGoldenTicket.MISPRE_PLATESETTING, MISPreGoldenTicket.MISPRE_PREPRESSPREPARATION, "IDP", "DPW",
+				MISPreGoldenTicket.MISPRE_PLATEMAKING, MISPreGoldenTicket.MISPRE_PLATESETTING, MISPreGoldenTicket.MISPRE_PREPRESSPREPARATION, "IDP", "ODP", "DPW",
 				MISFinGoldenTicket.MISFIN_SHEETFIN, MISFinGoldenTicket.MISFIN_STITCHFIN, MISFinGoldenTicket.MISFIN_BOXMAKING, MISFinGoldenTicket.MISFIN_SOFTCOVERFIN,
 				MISFinGoldenTicket.MISFIN_HARDCOVERFIN };
 		String[] gtDisplay = new String[gt.length];
