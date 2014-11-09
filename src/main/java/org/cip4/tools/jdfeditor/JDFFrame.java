@@ -216,12 +216,11 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 * constructor of the frame
 	 * 
 	 */
-	public JDFFrame(MainView editor)
+	public JDFFrame()
 	{
 		super("CIP4 JDF Editor");
 		enableOSXFullscreen(this);
 
-		MainView.my_Frame = this;
 		final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds(0, 0, d.width, d.height - 30);
 		m_menuBar = new EditorMenuBar();

@@ -1292,8 +1292,9 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	 */
 	public String getAboutText()
 	{
-		final String about = App.APP_NAME + "\n" + App.APP_VERSION + "\nInternational Cooperation for Integration of Processes in Prepress, Press and Postpress,\n"
-				+ "hereinafter referred to as CIP4. All Rights Reserved\n\n"
+		Editor editor = Editor.getEditor();
+		final String about = editor.getEditorName() + "\n" + editor.getEditorVersion()
+				+ "\nInternational Cooperation for Integration of Processes in Prepress, Press and Postpress,\n" + "hereinafter referred to as CIP4. All Rights Reserved\n\n"
 				+ "Authors: Anna Andersson, Evelina Thunell, Ingemar Svenonius, Elena Skobchenko, Rainer Prosi, Alex Khilov, Stefan Meissner\n\n"
 				+ "The APPLICATION is provided 'as is', without warranty of any kind, express, implied, or\n"
 				+ "otherwise, including but not limited to the warranties of merchantability,fitness for a\n"

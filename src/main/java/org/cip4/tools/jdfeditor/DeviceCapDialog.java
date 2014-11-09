@@ -1,11 +1,9 @@
-package org.cip4.tools.jdfeditor;
-
 /*
  *
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -70,9 +68,39 @@ package org.cip4.tools.jdfeditor;
  *  
  * 
  */
+package org.cip4.tools.jdfeditor;
 
-import org.cip4.jdflib.core.*;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.io.File;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+
+import org.cip4.jdflib.core.AttributeName;
+import org.cip4.jdflib.core.ElementName;
+import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement.EnumValidationLevel;
+import org.cip4.jdflib.core.JDFParser;
+import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.core.VElement;
+import org.cip4.jdflib.core.VString;
+import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.datatypes.JDFBaseDataTypes.EnumFitsValue;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFResponse;
@@ -86,14 +114,6 @@ import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.io.File;
-
 /**
  * DeviceCapsDialog.java
  * @author Elena Skobchenko
@@ -106,7 +126,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 	 */
 	private static final long serialVersionUID = -267165456151780040L;
 
-    private SettingService settingService = new SettingService();
+	private final SettingService settingService = SettingService.getSettingService();
 
 	private JTextField idPath;
 	private JButton browse;
@@ -119,7 +139,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 	//    private boolean breport;
 	private XMLDoc bugReport = null;
 
-	private JComboBox chooseValidLevel;
+	private JComboBox<String> chooseValidLevel;
 	EnumFitsValue testlists = EnumFitsValue.Allowed;
 	private EnumValidationLevel validationLevel = EnumValidationLevel.RecursiveComplete;
 
@@ -134,17 +154,18 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 		KElement docRoot = doc.getRoot();
 
 		// idFile = iniFile.getRecentDevCap();
-        String s = settingService.getSetting(SettingKey.RECENT_DEV_CAP, String.class);
-        File f = null;
+		String s = settingService.getSetting(SettingKey.RECENT_DEV_CAP, String.class);
+		File f = null;
 
-        if(s != null) {
-            f = new File(s);
-        }
+		if (s != null)
+		{
+			f = new File(s);
+		}
 
-        idFile = f;
+		idFile = f;
 
 		ignoreDefaults = settingService.getSetting(SettingKey.VALIDATION_IGNORE_DEFAULT, Boolean.class);
-		ignoreExtensions = ! settingService.getSetting(SettingKey.VALIDATION_HIGHTLIGHT_FN, Boolean.class);
+		ignoreExtensions = !settingService.getSetting(SettingKey.VALIDATION_HIGHTLIGHT_FN, Boolean.class);
 
 		init();
 		final String[] options = { ResourceUtil.getMessage("OkKey"), ResourceUtil.getMessage("CancelKey") };
@@ -159,13 +180,14 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 				idFile = tmpFile;
 				final JDFParser parser = new JDFParser();
 
-                String recentDevCap = null;
+				String recentDevCap = null;
 
-                if(idFile != null) {
-                    recentDevCap = idFile.getAbsolutePath();
-                }
+				if (idFile != null)
+				{
+					recentDevCap = idFile.getAbsolutePath();
+				}
 
-                settingService.setSetting(SettingKey.RECENT_DEV_CAP, recentDevCap);
+				settingService.setSetting(SettingKey.RECENT_DEV_CAP, recentDevCap);
 
 				try
 				{
@@ -227,7 +249,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 								{
 									final JDFResponse respKnownMessages = (JDFResponse) ms.getParentNode_KElement();
 									executableJDF = null;
-									bugReport = JDFDeviceCap.getJMFInfo((JDFJMF) docRoot, respKnownMessages, testlists, validationLevel, ! settingService.getSetting(SettingKey.VALIDATION_HIGHTLIGHT_FN, Boolean.class));
+									bugReport = JDFDeviceCap.getJMFInfo((JDFJMF) docRoot, respKnownMessages, testlists, validationLevel, !settingService.getSetting(SettingKey.VALIDATION_HIGHTLIGHT_FN, Boolean.class));
 
 								}
 								if (bugReport != (null))
@@ -354,7 +376,7 @@ public class DeviceCapDialog extends JPanel implements ActionListener
 
 		final VString allowedValues = EnumUtil.getNamesVector(EnumValidationLevel.class);
 		allowedValues.removeElementAt(0);
-		chooseValidLevel = new JComboBox(allowedValues);
+		chooseValidLevel = new JComboBox<String>(allowedValues);
 		chooseValidLevel.setSelectedItem(EnumValidationLevel.RecursiveComplete.getName());
 		chooseValidLevel.addActionListener(this);
 		validationPanel.add(chooseValidLevel);

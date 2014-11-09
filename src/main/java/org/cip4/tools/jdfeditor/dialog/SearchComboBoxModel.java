@@ -89,7 +89,7 @@ import org.cip4.tools.jdfeditor.service.SettingService;
  */
 public class SearchComboBoxModel extends AbstractListModel implements ComboBoxModel
 {
-	private final SettingService settingService = new SettingService();
+	private final SettingService settingService = SettingService.getSettingService();
 
 	/**
 	 * 	Max number of strings in combobox

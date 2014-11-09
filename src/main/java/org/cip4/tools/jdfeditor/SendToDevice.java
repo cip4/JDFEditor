@@ -113,7 +113,7 @@ import org.cip4.tools.jdfeditor.view.MainView;
  */
 public class SendToDevice extends JPanel implements ActionListener
 {
-	SettingService settingService = new SettingService();
+	SettingService settingService = SettingService.getSettingService();
 
 	/**
 	 * Comment for <code>serialVersionUID</code>

@@ -95,15 +95,25 @@ import org.cip4.jdflib.jmf.JDFMessage;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 
+/**
+ * 
+ * @author rainer prosi
+ *
+ */
 public class JMFServlet extends HttpServlet
 {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private static final Log LOGGER = LogFactory.getLog(JMFServlet.class);
 
 	private static String TIMESTAMP_PATTERN = "yyyy-MM-dd_hh-mm-ss-SSS";
 	private static int INDENT = 2;
 
-	private final SettingService settingService = new SettingService();
+	private final SettingService settingService = SettingService.getSettingService();
 
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException

@@ -113,7 +113,7 @@ import org.cip4.tools.jdfeditor.view.MainView;
  */
 public class PopUpRightClick extends JPopupMenu implements ActionListener
 {
-	private final SettingService settingService = new SettingService();
+	private final SettingService settingService = SettingService.getSettingService();
 
 	private static final long serialVersionUID = -8488973695389593826L;
 

@@ -142,7 +142,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 	public EditorButtonBar(JDFFrame frame)
 	{
 		super(SwingConstants.HORIZONTAL);
-		settingService = new SettingService();
+		settingService = SettingService.getSettingService();
 		m_frame = frame;
 		m_allButtons = new HashSet<JButton>();
 	}

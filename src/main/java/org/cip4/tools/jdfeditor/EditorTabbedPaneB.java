@@ -70,6 +70,17 @@
  */
 package org.cip4.tools.jdfeditor;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.util.Enumeration;
+
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.JTree;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.TreePath;
+
 import org.cip4.jdflib.core.KElement;
 import org.cip4.tools.jdfeditor.pane.HttpServerPane;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
@@ -77,14 +88,7 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
-import javax.swing.*;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.TreePath;
-import java.awt.*;
-import java.util.Enumeration;
-
 // TODO
-//import tcpmon.MainWindow;
 
 /**
  * 
@@ -146,8 +150,13 @@ public class EditorTabbedPaneB extends JTabbedPane
 		addTab(ResourceUtil.getMessage("HTTPserver"), null, httpPanel.createPane(), ResourceUtil.getMessage("HTTPserver"));
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	private RSyntaxTextArea createXMLPane()
 	{
+		//TODO link xml editor with jdf editor dom model and synchronize updates
 		JPanel xmlEditorPanel = new JPanel(new BorderLayout());
 		RSyntaxTextArea xmlArea = new RSyntaxTextArea();
 		xmlArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_XML);

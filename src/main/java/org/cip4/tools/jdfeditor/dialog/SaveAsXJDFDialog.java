@@ -123,7 +123,7 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 		setModal(true);
 		setLayout(new BorderLayout());
 
-		settingService = new SettingService();
+		settingService = SettingService.getSettingService();
 
 		JPanel checkboxesPanel = new JPanel();
 		checkboxesPanel.setLayout(new BoxLayout(checkboxesPanel, BoxLayout.Y_AXIS));

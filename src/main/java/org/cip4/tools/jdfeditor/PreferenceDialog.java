@@ -70,6 +70,32 @@
  */
 package org.cip4.tools.jdfeditor;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.util.Vector;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+
 import org.cip4.jdflib.core.JDFElement.EnumValidationLevel;
 import org.cip4.jdflib.core.JDFElement.EnumVersion;
 import org.cip4.jdflib.core.VString;
@@ -79,15 +105,6 @@ import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.File;
-import java.util.Vector;
 
 /**
  * @author Dr. Rainer Prosi, Heidelberger Druckmaschinen AG
@@ -104,7 +121,7 @@ import java.util.Vector;
 
 public class PreferenceDialog extends JTabbedPane implements ActionListener
 {
-	private final SettingService settingService = new SettingService();
+	private final SettingService settingService = SettingService.getSettingService();
 
 	// TODO subclass
 	private class ValidationTab
@@ -300,9 +317,10 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		this.updateJobID = settingService.getSetting(SettingKey.GENERAL_UPDATE_JOBID, Boolean.class);
 		this.useSchema = settingService.getSetting(SettingKey.GENERAL_USE_SCHEMA, Boolean.class);
 
-        if(settingService.getSetting(SettingKey.VALIDATION_SCHEMA_URL, String.class) != null) {
-            this.schemaFile = new File(settingService.getSetting(SettingKey.VALIDATION_SCHEMA_URL, String.class));
-        }
+		if (settingService.getSetting(SettingKey.VALIDATION_SCHEMA_URL, String.class) != null)
+		{
+			this.schemaFile = new File(settingService.getSetting(SettingKey.VALIDATION_SCHEMA_URL, String.class));
+		}
 
 		this.currRemoveDefault = settingService.getSetting(SettingKey.GENERAL_REMOVE_DEFAULT, Boolean.class);
 		this.currRemoveWhite = settingService.getSetting(SettingKey.GENERAL_REMOVE_WHITE, Boolean.class);
@@ -1062,9 +1080,10 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		validTab.writeToIni();
 		settingService.setSetting(SettingKey.GENERAL_USE_SCHEMA, useSchema);
 
-        if(getSchemaURL() != null) {
-            settingService.setSetting(SettingKey.VALIDATION_SCHEMA_URL, getSchemaURL().getAbsolutePath());
-        }
+		if (getSchemaURL() != null)
+		{
+			settingService.setSetting(SettingKey.VALIDATION_SCHEMA_URL, getSchemaURL().getAbsolutePath());
+		}
 
 		settingService.setSetting(SettingKey.GOLDENTICKET_BASELEVEL, getBaseLevel());
 		settingService.setSetting(SettingKey.GOLDENTICKET_MISLEVEL, getMISLevel());
@@ -1079,15 +1098,15 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		settingService.setSetting(SettingKey.GENERAL_DISPLAY_DEFAULT, currDispDefault);
 		settingService.setSetting(SettingKey.GENERAL_REMOVE_WHITE, currRemoveWhite);
 		settingService.setSetting(SettingKey.GENERAL_INDENT, currIndentSave);
-        settingService.setSetting(SettingKey.VALIDATION_CHECK_URL, checkURL);
+		settingService.setSetting(SettingKey.VALIDATION_CHECK_URL, checkURL);
 		settingService.setSetting(SettingKey.GENERAL_LONG_ID, longID);
 		settingService.setSetting(SettingKey.GENERAL_UPDATE_JOBID, updateJobID);
-        settingService.setSetting(SettingKey.VALIDATION_GENERATE_FULL, generateFull);
+		settingService.setSetting(SettingKey.VALIDATION_GENERATE_FULL, generateFull);
 		settingService.setSetting(SettingKey.GENERAL_NORMALIZE, normalizeOpen);
-        settingService.setSetting(SettingKey.VALIDATION_IGNORE_DEFAULT, ignoreDefaults);
-        settingService.setSetting(SettingKey.VALIDATION_LEVEL, validationLevel.getName());
-        settingService.setSetting(SettingKey.VALIDATION_VERSION, validationVersion.getName());
-        settingService.setSetting(SettingKey.VALIDATION_EXPORT, exportValidation);
+		settingService.setSetting(SettingKey.VALIDATION_IGNORE_DEFAULT, ignoreDefaults);
+		settingService.setSetting(SettingKey.VALIDATION_LEVEL, validationLevel.getName());
+		settingService.setSetting(SettingKey.VALIDATION_VERSION, validationVersion.getName());
+		settingService.setSetting(SettingKey.VALIDATION_EXPORT, exportValidation);
 		misURL = fieldMISURL.getText();
 
 		settingService.setSetting(SettingKey.GOLDENTICKET_MISURL, misURL);
@@ -1096,8 +1115,8 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		final VString genericAttributes = new VString(genericStrings, null);
 		genericAttributes.unify();
 
-        String s = StringUtil.setvString(genericAttributes, " ", null, null);
-        settingService.setSetting(SettingKey.VALIDATION_GENERIC_ATTR, s);
+		String s = StringUtil.setvString(genericAttributes, " ", null, null);
+		settingService.setSetting(SettingKey.VALIDATION_GENERIC_ATTR, s);
 	}
 
 	/**

@@ -70,15 +70,23 @@
  */
 package org.cip4.tools.jdfeditor.dialog;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+
 import org.cip4.jdflib.extensions.xjdfwalker.XJDFToJDFConverter;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * Class that implements a "Save as XJDF..." dialog.
@@ -86,7 +94,7 @@ import java.awt.event.ActionListener;
  */
 public class SaveAsJDFDialog extends JDialog implements ActionListener
 {
-    SettingService settingService = new SettingService();
+	SettingService settingService = SettingService.getSettingService();
 
 	/**
 	 * 
@@ -169,10 +177,10 @@ public class SaveAsJDFDialog extends JDialog implements ActionListener
 	{
 		if (e.getSource() == bOK)
 		{
-            settingService.setSetting(SettingKey.XJDF_FROM_RETAIN_PRODUCT, cbExtRetainProduct.isSelected());
-            settingService.setSetting(SettingKey.XJDF_FROM_HEURISTIC_LINK, cbHeuristcLink.isSelected());
+			settingService.setSetting(SettingKey.XJDF_FROM_RETAIN_PRODUCT, cbExtRetainProduct.isSelected());
+			settingService.setSetting(SettingKey.XJDF_FROM_HEURISTIC_LINK, cbHeuristcLink.isSelected());
 			choosedButton = BUTTON_OK;
-            settingService.setSetting(SettingKey.XJDF_CONVERT_TILDE, cbTilde.isSelected());
+			settingService.setSetting(SettingKey.XJDF_CONVERT_TILDE, cbTilde.isSelected());
 		}
 		else if (e.getSource() == bCancel)
 		{

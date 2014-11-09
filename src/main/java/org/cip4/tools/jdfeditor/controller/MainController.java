@@ -6,22 +6,17 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.URI;
 
-import javax.annotation.PostConstruct;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.JDFVersion;
-import org.cip4.tools.jdfeditor.App;
+import org.cip4.tools.jdfeditor.Editor;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.view.MainView;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 
 /**
  * The Main Controller class.
  */
-@Controller
 public class MainController implements ActionListener
 {
 
@@ -31,26 +26,25 @@ public class MainController implements ActionListener
 
 	public static final String ACTION_INFO = "actionInfo";
 
-	@Autowired
-	private SettingService settingService;
+	private final SettingService settingService = SettingService.getSettingService();
 
-	@Autowired
-	private MainView mainView;
+	private final MainView mainView;
 
 	/**
 	 * Default constructor.
 	 */
 	public MainController()
 	{
+		mainView = new MainView();
+		init();
 	}
 
 	/**
 	 * Initializes the MainController class. This method is called by the Spring Framework after construction.
 	 */
-	@PostConstruct
 	public void init()
 	{
-		this.mainView.registerController(this);
+		mainView.registerController(this);
 	}
 
 	/**
@@ -152,8 +146,9 @@ public class MainController implements ActionListener
 
 		LOGGER.info("Show Info Window.");
 
-		String msg = App.APP_NAME + "\n" + App.APP_VERSION + " (" + App.APP_RELEASE_DATE + ")\n\n" + JDFVersion.LIB_NAME + " (" + JDFVersion.LIB_ARTIFACT_ID + ")\n"
-				+ JDFVersion.LIB_VERSION + " (" + JDFVersion.LIB_RELEASE_DATE + ")";
+		Editor editor = Editor.getEditor();
+		String msg = editor.getEditorName() + "\n" + editor.getEditorVersion() + " (" + editor.getEditorBuildDate() + ")\n\n" + JDFVersion.LIB_NAME + " ("
+				+ JDFVersion.LIB_ARTIFACT_ID + ")\n" + JDFVersion.LIB_VERSION + " (" + JDFVersion.LIB_RELEASE_DATE + ")";
 		String title = "Version";
 
 		mainView.showMessageDialog(msg, title);

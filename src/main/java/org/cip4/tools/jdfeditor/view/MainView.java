@@ -18,20 +18,17 @@ import org.cip4.jdflib.core.JDFAudit;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFParser;
-import org.cip4.jdflib.core.KElement;
-import org.cip4.tools.jdfeditor.App;
+import org.cip4.tools.jdfeditor.Editor;
 import org.cip4.tools.jdfeditor.EditorDocument;
 import org.cip4.tools.jdfeditor.JDFFrame;
 import org.cip4.tools.jdfeditor.JDFTreeArea;
 import org.cip4.tools.jdfeditor.JDFTreeModel;
 import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
-import org.springframework.stereotype.Component;
 
 /**
  * The MainView of the CIP4 JDFEditor.
  */
-@Component
 public class MainView
 {
 	private static final Log LOGGER = LogFactory.getLog(MainView.class);
@@ -45,7 +42,7 @@ public class MainView
 	 */
 	public MainView()
 	{
-		my_Frame = new JDFFrame(this);
+		my_Frame = new JDFFrame();
 	}
 
 	/**
@@ -54,9 +51,7 @@ public class MainView
 	 */
 	public void registerController(final MainController mainController)
 	{
-
 		this.mainController = mainController;
-
 		my_Frame.registerController(mainController);
 	}
 
@@ -120,9 +115,8 @@ public class MainView
 		setCursor(0, null);
 
 		// read the initialization stuff
-		JDFAudit.setStaticAgentName(App.APP_NAME);
+		JDFAudit.setStaticAgentName(Editor.getEditor().getEditorName());
 		JDFAudit.setStaticAgentVersion(getEditorVersion());
-		KElement.setLongID(mainController.getSetting(SettingKey.GENERAL_LONG_ID, Boolean.class));
 		JDFElement.setDefaultJDFVersion(JDFElement.EnumVersion.getEnum(mainController.getSetting(SettingKey.VALIDATION_VERSION, String.class)));
 		JDFParser.m_searchStream = true;
 

@@ -7,19 +7,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.tools.jdfeditor.EditorDocument;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * This services handles all document actions.
  */
-@Service
 public class DocumentService
 {
 
 	private static final Log LOGGER = LogFactory.getLog(DocumentService.class);
 
-	@Autowired
 	private SettingService settingService;
 
 	/**

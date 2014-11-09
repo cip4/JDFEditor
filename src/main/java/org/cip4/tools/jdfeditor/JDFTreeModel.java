@@ -123,7 +123,7 @@ import org.w3c.dom.Attr;
 public class JDFTreeModel extends DefaultTreeModel
 {
 
-	private final SettingService settingService = new SettingService();
+	private final SettingService settingService = SettingService.getSettingService();
 
 	/**
 	 * Spawn informative TODO correctly dump into multiple file

@@ -126,7 +126,7 @@ public class HttpServerPane implements FileAlterationListener, ActionListener
 {
 	private static final Log LOGGER = LogFactory.getLog(HttpServerPane.class);
 
-	private final SettingService settingService = new SettingService();
+	private final SettingService settingService = SettingService.getSettingService();
 
 	private final JDFFrame frame;
 

@@ -70,6 +70,9 @@
  */
 package org.cip4.tools.jdfeditor;
 
+import javax.swing.JOptionPane;
+import javax.swing.tree.TreePath;
+
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
@@ -78,9 +81,6 @@ import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
-import javax.swing.*;
-import javax.swing.tree.TreePath;
-
 /**
  * class to handle copy / paste actions from the frame
  * @author prosirai
@@ -88,7 +88,7 @@ import javax.swing.tree.TreePath;
  */
 public class JDFTreeCopyNode
 {
-    SettingService settingService = new SettingService();
+	SettingService settingService = SettingService.getSettingService();
 
 	private final JDFTreeNode treeNode;
 	private boolean m_isPastedBefore;

@@ -70,6 +70,19 @@
  */
 package org.cip4.tools.jdfeditor;
 
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Vector;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.tree.TreePath;
+
 import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFElement.EnumVersion;
@@ -82,13 +95,6 @@ import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
-
-import javax.swing.*;
-import javax.swing.tree.TreePath;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Vector;
 
 /**
  * class to update the version of a jdf or jmf<br/>
@@ -105,7 +111,7 @@ public class FixVersionDialog extends JPanel implements ActionListener
 	 */
 	private static final long serialVersionUID = -276165456151780040L;
 
-    private SettingService settingService = new SettingService();
+	private final SettingService settingService = SettingService.getSettingService();
 
 	private boolean bVersionKeyChosen = false;
 	private JComboBox chooseVersion;
@@ -130,9 +136,9 @@ public class FixVersionDialog extends JPanel implements ActionListener
 		{
 			bVersionKeyChosen = true;
 
-            settingService.setSetting(SettingKey.VALIDATION_CONVERT_LPP, bConvertLPP);
-            settingService.setSetting(SettingKey.VALIDATION_FIX_ICS_VERSION, bFixICSVersion);
-            settingService.setSetting(SettingKey.VALIDATION_VERSION, version.getName());
+			settingService.setSetting(SettingKey.VALIDATION_CONVERT_LPP, bConvertLPP);
+			settingService.setSetting(SettingKey.VALIDATION_FIX_ICS_VERSION, bFixICSVersion);
+			settingService.setSetting(SettingKey.VALIDATION_VERSION, version.getName());
 
 		}
 		else if (option == JOptionPane.CANCEL_OPTION)
@@ -289,7 +295,8 @@ public class FixVersionDialog extends JPanel implements ActionListener
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("FixVersionErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("FixVersionErrorKey") + e.getClass() + " \n"
+					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 

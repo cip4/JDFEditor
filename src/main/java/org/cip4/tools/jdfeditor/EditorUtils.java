@@ -552,7 +552,7 @@ public class EditorUtils
 	{
 		File schemaloc = null;
 
-		SettingService s = new SettingService();
+		SettingService s = SettingService.getSettingService();
 		boolean generalUseSchema = s.getSetting(SettingKey.GENERAL_USE_SCHEMA, Boolean.class);
 		String validationSchemaUrl = s.getSetting(SettingKey.VALIDATION_SCHEMA_URL, String.class);
 
@@ -572,7 +572,7 @@ public class EditorUtils
 		{
 			jdfDoc.clearDirtyIDs();
 
-			if (new SettingService().getSetting(SettingKey.GENERAL_NORMALIZE, Boolean.class))
+			if (SettingService.getSettingService().getSetting(SettingKey.GENERAL_NORMALIZE, Boolean.class))
 			{
 				jdfDoc.getRoot().sortChildren();
 			}
@@ -605,7 +605,7 @@ public class EditorUtils
 	public static XJDF20 getXJDFConverter()
 	{
 		XJDF20 xjdf20 = new XJDF20();
-		SettingService settingService = new SettingService();
+		SettingService settingService = SettingService.getSettingService();
 
 		xjdf20.setSingleNode(settingService.getSetting(SettingKey.XJDF_CONVERT_SINGLENODE, Boolean.class));
 		xjdf20.setMergeLayout(settingService.getSetting(SettingKey.XJDF_CONVERT_STRIPPING, Boolean.class));

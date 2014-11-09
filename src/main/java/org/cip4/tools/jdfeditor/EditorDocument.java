@@ -95,7 +95,7 @@ import org.cip4.tools.jdfeditor.view.MainView;
  */
 public class EditorDocument
 {
-	private final SettingService settingService = new SettingService();
+	private final SettingService settingService = SettingService.getSettingService();
 
 	private final JDFDoc jdfDoc;
 

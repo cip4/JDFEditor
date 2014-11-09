@@ -105,9 +105,9 @@ import java.util.Enumeration;
  */
 public class JDFTreeArea extends JTextArea
 {
-	SettingService settingService = new SettingService();
+	SettingService settingService = SettingService.getSettingService();
 
-    TreeSelectionListener m_treeSelectionListener;
+	TreeSelectionListener m_treeSelectionListener;
 	private static final long serialVersionUID = 2036935468347224324L;
 	private final JScrollPane m_treeScroll;
 	JViewport m_treeView;

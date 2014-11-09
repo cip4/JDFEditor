@@ -70,6 +70,29 @@
  */
 package org.cip4.tools.jdfeditor;
 
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Vector;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JSeparator;
+import javax.swing.tree.TreePath;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.cip4.jdflib.util.ContainerUtil;
 import org.cip4.jdflib.util.StringUtil;
@@ -78,17 +101,6 @@ import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
-
-import javax.swing.*;
-import javax.swing.tree.TreePath;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Vector;
 
 /**
  * Class that implements "Find" dialog.
@@ -104,7 +116,7 @@ public class SearchDialog extends JDialog implements ActionListener
 
 	private String searchComponent;
 
-    private SettingService settingService = new SettingService();
+	private final SettingService settingService = SettingService.getSettingService();
 
 	/**
 	 * @param sComp the searchComponent
@@ -150,11 +162,12 @@ public class SearchDialog extends JDialog implements ActionListener
 
 		String findPattern = settingService.getSetting(SettingKey.FIND_PATTERN, String.class); // conf.getFindPattern();
 
-        List<String> findItems = new ArrayList<String>();
+		List<String> findItems = new ArrayList<String>();
 
-        if(findPattern != null || findPattern == "") {
-            CollectionUtils.addAll(findItems, findPattern.split(";"));
-        }
+		if (findPattern != null || findPattern == "")
+		{
+			CollectionUtils.addAll(findItems, findPattern.split(";"));
+		}
 
 		searchComboBoxModel.addAll(findItems);
 		if (findPattern != null && findItems.size() > 0)
@@ -251,7 +264,7 @@ public class SearchDialog extends JDialog implements ActionListener
 		}
 		else if (eSrc == m_Wrap)
 		{
-            settingService.setSetting(SettingKey.FIND_WRAP, m_Wrap.isSelected());
+			settingService.setSetting(SettingKey.FIND_WRAP, m_Wrap.isSelected());
 		}
 	}
 

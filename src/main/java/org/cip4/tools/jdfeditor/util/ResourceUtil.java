@@ -80,7 +80,7 @@ public class ResourceUtil
 	{
 
 		// setup application language
-		String language = new SettingService().getSetting(SettingKey.GENERAL_LANGUAGE, String.class);
+		String language = SettingService.getSettingService().getSetting(SettingKey.GENERAL_LANGUAGE, String.class);
 		final Locale currentLocale = new Locale(language, language.toUpperCase());
 		Locale.setDefault(currentLocale);
 
