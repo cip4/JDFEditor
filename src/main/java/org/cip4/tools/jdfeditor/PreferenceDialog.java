@@ -688,6 +688,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		allValues.addElement(EnumVersion.Version_1_2.getName());
 		allValues.addElement(EnumVersion.Version_1_3.getName());
 		allValues.addElement(EnumVersion.Version_1_4.getName());
+		allValues.addElement(EnumVersion.Version_1_5.getName());
 		//		allValues.addElement("2.0");
 		final JPanel versionPanel = new JPanel();
 		versionPanel.setBorder(BorderFactory.createTitledBorder("JDFVersion"));
