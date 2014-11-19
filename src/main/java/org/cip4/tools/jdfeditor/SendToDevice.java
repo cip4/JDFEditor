@@ -82,6 +82,7 @@ import javax.mail.Multipart;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -89,6 +90,8 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFParser;
@@ -113,6 +116,8 @@ import org.cip4.tools.jdfeditor.view.MainView;
  */
 public class SendToDevice extends JPanel implements ActionListener
 {
+    private static final Log LOG = LogFactory.getLog(SendToDevice.class);
+    
 	SettingService settingService = SettingService.getSettingService();
 
 	/**
@@ -120,8 +125,8 @@ public class SendToDevice extends JPanel implements ActionListener
 	 */
 	private static final long serialVersionUID = -4676135228882149268L;
 
-	private JTextField urlPath;
-	private JTextField urlReturn;
+	private JComboBox<String> urlPath;
+	private JComboBox<String> urlReturn;
 	private JRadioButton rbRawXML;
 	private JRadioButton rbJMF;
 	private JRadioButton rbMIME;
@@ -195,9 +200,11 @@ public class SendToDevice extends JPanel implements ActionListener
 			SendMethodBox.add(rbPackageAll);
 			add(SendMethodBox);
 			add(cbReturn);
-			urlReturn = initURL(ResourceUtil.getMessage("returnToURL"), settingService.getSetting(SettingKey.SEND_URL_RETURN, String.class));
+			String s = settingService.getSetting(SettingKey.SEND_URL_RETURN, String.class);
+			urlReturn = initURL(ResourceUtil.getMessage("returnToURL"), s);
 		}
-		urlPath = initURL(ResourceUtil.getMessage("pathToURL"), settingService.getSetting(SettingKey.SEND_URL_SEND, String.class));
+		String s = settingService.getSetting(SettingKey.SEND_URL_SEND, String.class);
+		urlPath = initURL(ResourceUtil.getMessage("pathToURL"), s);
 	}
 
 	/**
@@ -205,13 +212,18 @@ public class SendToDevice extends JPanel implements ActionListener
 	 * @param preset
 	 * @return the set textfield
 	 */
-	private JTextField initURL(final String url, final String preset)
+	private JComboBox<String> initURL(final String url, final String preset)
 	{
 		final Box urlBox = Box.createHorizontalBox();
 		final JLabel urlLabel = new JLabel(url);
 		urlBox.add(urlLabel);
-		final JTextField tf = new JTextField(50);
-		tf.setText(preset);
+//		final JTextField tf = new JTextField(50);
+//		tf.setText(preset);
+		final JComboBox<String> tf = new JComboBox<String>();
+		tf.addItem("1");
+		tf.addItem("2");
+		tf.addItem("3");
+		
 		urlBox.add(tf);
 		urlBox.add(Box.createHorizontalStrut(5));
 		add(urlBox);
@@ -481,8 +493,11 @@ public class SendToDevice extends JPanel implements ActionListener
 	{
 		// returns the URL given by the user
 		URL url = null;
-		final JTextField tf = bReturn ? urlReturn : urlPath;
-		final String urlText = tf == null ? null : tf.getText();
+//		final JTextField tf = bReturn ? urlReturn : urlPath;
+//		final String urlText = tf == null ? null : tf.getText();
+		final JComboBox<String> tf = bReturn ? urlReturn : urlPath;
+		String s = (String) tf.getEditor().getItem();
+		final String urlText = s == null ? null : s;
 
 		if (bReturn && KElement.isWildCard(urlText))
 		{
