@@ -87,7 +87,7 @@ import org.cip4.tools.jdfeditor.util.DirectoryUtil;
 public class SettingService
 {
 
-	private static final Log LOGGER = LogFactory.getLog(SettingService.class);
+	private static final Log LOG = LogFactory.getLog(SettingService.class);
 
 	private static String confFileName = "JDFEditor.conf";
 
@@ -120,7 +120,7 @@ public class SettingService
 	private PropertiesConfiguration initConfiguration()
 	{
 
-		LOGGER.info("Initialize settings...");
+		LOG.info("Initialize settings...");
 
 		// path config file
 		File configFile = getConfFile();
@@ -137,7 +137,7 @@ public class SettingService
 		}
 		catch (ConfigurationException e)
 		{
-			LOGGER.error("Error during initializing configuration service.", e);
+			LOG.error("Error during initializing configuration service.", e);
 			return null;
 		}
 
@@ -152,7 +152,7 @@ public class SettingService
 		}
 
 		// info log
-		LOGGER.info("Initialize settings completed.");
+		LOG.info("Initialize settings completed.");
 
 		// return configuration
 		return config;
@@ -186,7 +186,7 @@ public class SettingService
 
 		}
 
-		LOGGER.warn("Wrong DataType for SettingKey " + key.getKey());
+		LOG.warn("Wrong DataType for SettingKey " + key.getKey());
 		return null;
 	}
 
