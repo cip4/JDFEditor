@@ -77,6 +77,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.mail.Multipart;
 import javax.swing.Box;
@@ -217,12 +221,18 @@ public class SendToDevice extends JPanel implements ActionListener
 		final Box urlBox = Box.createHorizontalBox();
 		final JLabel urlLabel = new JLabel(url);
 		urlBox.add(urlLabel);
-//		final JTextField tf = new JTextField(50);
-//		tf.setText(preset);
 		final JComboBox<String> tf = new JComboBox<String>();
-		tf.addItem("1");
-		tf.addItem("2");
-		tf.addItem("3");
+		tf.setEditable(true);
+		
+		int items = 0;
+		StringTokenizer st = new StringTokenizer(preset, ";");
+		while (st.hasMoreTokens()) {
+		    items++;
+		    if (items > 5) break; // support only 5 items, don't show others even if they are in conf file
+		    String s = st.nextToken();
+		    tf.addItem(s);
+		    LOG.debug("added item: " + s);
+		}
 		
 		urlBox.add(tf);
 		urlBox.add(Box.createHorizontalStrut(5));
@@ -493,11 +503,9 @@ public class SendToDevice extends JPanel implements ActionListener
 	{
 		// returns the URL given by the user
 		URL url = null;
-//		final JTextField tf = bReturn ? urlReturn : urlPath;
-//		final String urlText = tf == null ? null : tf.getText();
 		final JComboBox<String> tf = bReturn ? urlReturn : urlPath;
-		String s = (String) tf.getEditor().getItem();
-		final String urlText = s == null ? null : s;
+		String currentStr = (String) tf.getEditor().getItem();
+		final String urlText = currentStr == null ? null : currentStr;
 
 		if (bReturn && KElement.isWildCard(urlText))
 		{
@@ -509,11 +517,13 @@ public class SendToDevice extends JPanel implements ActionListener
 			url = new URL(urlText);
 			if (bReturn)
 			{
-				settingService.setSetting(SettingKey.SEND_URL_RETURN, urlText);
+			    String s = convertJComboBoxToString(tf);
+				settingService.setSetting(SettingKey.SEND_URL_RETURN, s);
 			}
 			else
 			{
-				settingService.setSetting(SettingKey.SEND_URL_SEND, urlText);
+			    String s = convertJComboBoxToString(tf);
+			    settingService.setSetting(SettingKey.SEND_URL_SEND, s);
 			}
 		}
 		catch (final MalformedURLException e)
@@ -522,6 +532,24 @@ public class SendToDevice extends JPanel implements ActionListener
 			return null;
 		}
 		return url;
+	}
+	
+	private String convertJComboBoxToString(JComboBox<String> c) {
+	    String currentStr = (String) c.getEditor().getItem();
+	    
+	    Set<String> set = new LinkedHashSet<String>();
+        set.add(currentStr);
+        for (int i = 0; i < c.getItemCount(); i++) {
+            set.add(c.getItemAt(i));
+        }
+        
+        String s = "";
+        Iterator<String> it = set.iterator();
+        while (it.hasNext()) {
+            s += it.next() + ";";
+        }
+        
+        return s;
 	}
 
 	/**
