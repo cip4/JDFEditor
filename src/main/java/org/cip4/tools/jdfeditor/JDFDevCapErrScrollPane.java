@@ -1,11 +1,9 @@
-package org.cip4.tools.jdfeditor;
-
 /*
  *
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2010 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -70,6 +68,8 @@ package org.cip4.tools.jdfeditor;
  *  
  * 
  */
+package org.cip4.tools.jdfeditor;
+
 import javax.swing.JTree;
 import javax.swing.ToolTipManager;
 import javax.swing.tree.TreePath;
@@ -101,9 +101,9 @@ public class JDFDevCapErrScrollPane extends ValidationScrollPane
 	 * 
 	 * @param frame
 	 */
-	public JDFDevCapErrScrollPane(JDFFrame frame)
+	public JDFDevCapErrScrollPane()
 	{
-		super(frame);
+		super();
 	}
 
 	/**

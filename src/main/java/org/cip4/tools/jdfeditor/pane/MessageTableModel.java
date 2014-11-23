@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2010 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -78,12 +78,22 @@ import javax.swing.table.AbstractTableModel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * 
+ *  
+ *
+ */
 public class MessageTableModel extends AbstractTableModel
 {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private static final Log LOGGER = LogFactory.getLog(MessageTableModel.class);
 
-	private final String[] columnNames = { "Sender ID", "Message Type", "Time Received", "Size" };
+	private final String[] columnNames = { "Sender ID", "Message Type", "Time Received", "Message Time", "Size" };
 
 	private final List<MessageBean> data = new ArrayList<MessageBean>();
 
@@ -116,6 +126,10 @@ public class MessageTableModel extends AbstractTableModel
 		}
 		else if (columnIndex == 3)
 		{
+			return data.get(rowIndex).getMessageDate();
+		}
+		else if (columnIndex == 4)
+		{
 			return data.get(rowIndex).getSize();
 		}
 		else
@@ -131,13 +145,13 @@ public class MessageTableModel extends AbstractTableModel
 		return columnNames[col];
 	}
 
-	public void addMessage(MessageBean msg)
+	public synchronized void addMessage(MessageBean msg)
 	{
 		data.add(msg);
 		fireTableDataChanged();
 	}
 
-	public void clearAll()
+	public synchronized void clearAll()
 	{
 		data.clear();
 		fireTableDataChanged();
@@ -146,6 +160,12 @@ public class MessageTableModel extends AbstractTableModel
 	public MessageBean getItem(int i)
 	{
 		return data.get(i);
+	}
+
+	@Override
+	public String toString()
+	{
+		return "MessageTableModel [data=" + data + "]";
 	}
 
 }

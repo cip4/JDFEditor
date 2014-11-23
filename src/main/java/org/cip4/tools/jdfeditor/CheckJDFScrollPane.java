@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2012 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -70,15 +70,16 @@
  */
 package org.cip4.tools.jdfeditor;
 
+import javax.swing.JTree;
+import javax.swing.ToolTipManager;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
+
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.tools.jdfeditor.view.renderer.CheckJDFOutputTreeCellRenderer;
-
-import javax.swing.*;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
 
 /**
  * this class encapsulates the output of the dev caps test
@@ -98,9 +99,9 @@ public class CheckJDFScrollPane extends ValidationScrollPane
 	 * 
 	 * @param frame
 	 */
-	public CheckJDFScrollPane(JDFFrame frame)
+	public CheckJDFScrollPane()
 	{
-		super(frame);
+		super();
 	}
 
 	/**

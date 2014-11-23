@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2010 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -72,28 +72,25 @@ package org.cip4.tools.jdfeditor.transport;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cip4.jdflib.core.JDFParser;
+import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFMessage;
+import org.cip4.jdflib.util.ByteArrayIOStream;
+import org.cip4.jdflib.util.ByteArrayIOStream.ByteArrayIOInputStream;
+import org.cip4.jdflib.util.ContainerUtil;
+import org.cip4.jdflib.util.FileUtil;
+import org.cip4.jdflib.util.file.RollingBackupDirectory;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
+import org.cip4.tools.jdfeditor.view.MainView;
 
 /**
  * 
@@ -102,6 +99,25 @@ import org.cip4.tools.jdfeditor.service.SettingService;
  */
 public class JMFServlet extends HttpServlet
 {
+
+	private String lastDump;
+
+	public JMFServlet()
+	{
+		super();
+	}
+
+	private RollingBackupDirectory getDump()
+	{
+		final SettingService settingService = SettingService.getSettingService();
+		String dump = settingService.getSetting(SettingKey.HTTP_STORE_PATH, String.class);
+		if (!ContainerUtil.equals(dump, lastDump))
+		{
+			dumpDir = new RollingBackupDirectory(new File(dump), 200, "http_received.jmf");
+			lastDump = dump;
+		}
+		return dumpDir;
+	}
 
 	/**
 	 * 
@@ -113,7 +129,7 @@ public class JMFServlet extends HttpServlet
 	private static String TIMESTAMP_PATTERN = "yyyy-MM-dd_hh-mm-ss-SSS";
 	private static int INDENT = 2;
 
-	private final SettingService settingService = SettingService.getSettingService();
+	private RollingBackupDirectory dumpDir;
 
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException
@@ -127,7 +143,6 @@ public class JMFServlet extends HttpServlet
 		{
 			String err = "The request body could not be processed. Maybe it did not contain JMF or JDF?";
 			LOGGER.error(err, e);
-			e.printStackTrace();
 			res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, err + e);
 		}
 	}
@@ -145,69 +160,37 @@ public class JMFServlet extends HttpServlet
 		String msg = "Receiving message from " + req.getHeader("User-Agent") + " @ " + req.getRemoteHost() + " (" + req.getRemoteAddr() + ")...";
 		LOGGER.debug(msg);
 		//		Build incoming Message
-		final String messageBody = toString(req.getInputStream());
-		LOGGER.debug("Incoming message body: \n" + messageBody);
 		String contentType = req.getHeader("Content-type");
 		LOGGER.debug("contentType: " + contentType);
 
-		JDFJMF jmf = new JDFParser().parseString(messageBody).getJMFRoot();
+		ByteArrayIOInputStream inputStream = ByteArrayIOStream.getBufferedInputStream(req.getInputStream());
+		JDFDoc doc = JDFDoc.parseStream(inputStream);
+		if (doc == null)
+		{
+			LOGGER.error("error parsing jmf");
+			return;
+		}
+		JDFJMF jmf = doc.getJMFRoot();
+		if (jmf == null)
+		{
+			LOGGER.error("no root jmf");
+			return;
+		}
 		VElement e = jmf.getMessageVector(null, null);
 		LOGGER.debug("e.size: " + e.size());
-
+		if (getDump() == null)
+		{
+			LOGGER.error("no http dump defined");
+			return;
+		}
 		for (int i = 0; i < e.size(); i++)
 		{
 			JDFMessage currMessage = jmf.getMessageElement(null, null, i);
 			String type = currMessage.getType();
 			LOGGER.debug("currMessage type: " + type);
-
-			JDFJMF tempRequestMessage = (JDFJMF) jmf.clone();
-			JDFMessage tempMessageFamily = (JDFMessage) currMessage.clone();
-
-			tempRequestMessage.removeChildren(null, null, null); // remove all children
-			tempRequestMessage.appendChild(tempMessageFamily);
-			LOGGER.debug("tempRequestMessage: \n" + tempRequestMessage.toDisplayXML(INDENT));
-
-			Date today = Calendar.getInstance().getTime();
-			SimpleDateFormat formatter = new SimpleDateFormat(TIMESTAMP_PATTERN);
-			String fileName = formatter.format(today);
-			if (type == null || type.equals(""))
-			{
-				fileName += "-UnknownType.jmf";
-			}
-			else
-			{
-				fileName += "-" + type + ".jmf";
-			}
-			LOGGER.info("Save message to file: " + fileName);
-
-			String fullPathFile = settingService.getSetting(SettingKey.HTTP_STORE_PATH, String.class) + File.separator + fileName;
-
-			File f = new File(fullPathFile);
-
-			FileUtils.writeStringToFile(f, tempRequestMessage.toDisplayXML(INDENT));
-			LOGGER.info("Message saved as: " + fullPathFile);
+			File f = dumpDir.getNewFileWithExt(type);
+			FileUtil.streamToFile(ByteArrayIOStream.getBufferedInputStream(inputStream), f);
+			MainView.getFrame().getBottomTabs().getHttpPanel().addMessage(jmf, f);
 		}
-
-	}
-
-	public static String toString(InputStream input) throws IOException
-	{
-		StringWriter writer = new StringWriter();
-		InputStreamReader reader = new InputStreamReader(input);
-		copy(reader, writer);
-		return writer.toString();
-	}
-
-	public static int copy(Reader input, Writer output) throws IOException
-	{
-		char[] buffer = new char[1024 * 4];
-		int count = 0;
-		int n = 0;
-		while (-1 != (n = input.read(buffer)))
-		{
-			output.write(buffer, 0, n);
-			count += n;
-		}
-		return count;
 	}
 }

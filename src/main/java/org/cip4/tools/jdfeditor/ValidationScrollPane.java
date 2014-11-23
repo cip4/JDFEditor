@@ -1,11 +1,9 @@
-package org.cip4.tools.jdfeditor;
-
 /*
  *
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -70,20 +68,30 @@ package org.cip4.tools.jdfeditor;
  *  
  * 
  */
+package org.cip4.tools.jdfeditor;
 
-import org.cip4.tools.jdfeditor.util.ResourceUtil;
-
-import javax.swing.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Enumeration;
+
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTree;
+import javax.swing.SwingUtilities;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
+
+import org.cip4.tools.jdfeditor.util.ResourceUtil;
+import org.cip4.tools.jdfeditor.view.MainView;
 
 /**
  * 
@@ -98,7 +106,6 @@ public class ValidationScrollPane extends JScrollPane
 	 * 
 	 */
 	private static final long serialVersionUID = -3269951200837982708L;
-	JDFFrame m_frame;
 	protected JTree m_reportTree;
 	ValidationSelectionListener m_SelectionListener;
 
@@ -106,10 +113,9 @@ public class ValidationScrollPane extends JScrollPane
 	 * 
 	 * @param frame
 	 */
-	public ValidationScrollPane(JDFFrame frame)
+	public ValidationScrollPane()
 	{
 		super();
-		m_frame = frame;
 		getVerticalScrollBar().setUnitIncrement(20);
 		getHorizontalScrollBar().setUnitIncrement(20);
 		getViewport().setBackground(Color.white);
@@ -194,7 +200,7 @@ public class ValidationScrollPane extends JScrollPane
 			if (node != null)
 			{
 				final String path = node.getXPathAttr();
-				m_frame.m_treeArea.findInNode(path);
+				MainView.getFrame().m_treeArea.findInNode(path);
 			}
 		}
 	}

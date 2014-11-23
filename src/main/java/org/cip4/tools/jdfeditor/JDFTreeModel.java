@@ -327,8 +327,8 @@ public class JDFTreeModel extends DefaultTreeModel
 		// TODO addFile
 		validationResult = checkJDF.processSingleDocument(theDoc);
 
-		m_frame.m_errorTabbedPane.m_validErrScroll.drawCheckJDFOutputTree(validationResult);
-		m_frame.m_errorTabbedPane.m_SchemaErrScroll.drawSchemaOutputTree(schemaValidationResult);
+		m_frame.getBottomTabs().m_validErrScroll.drawCheckJDFOutputTree(validationResult);
+		m_frame.getBottomTabs().m_SchemaErrScroll.drawSchemaOutputTree(schemaValidationResult);
 		MainView.getEditorDoc().getJDFTree().repaint();
 		m_frame.m_treeArea.goToPath(m_frame.m_treeArea.getSelectionPath());
 		return validationResult.getRoot().getFirstChildElement().getBoolAttribute("IsValid", null, true);

@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -100,7 +100,6 @@ public class EditorTabbedPaneB extends JTabbedPane
 {
 
 	private static final long serialVersionUID = -6813043793787501763L;
-	protected JDFFrame m_frame;
 	final public int m_VAL_ERRORS_INDEX = 0;
 	final public int m_SCHEMA_ERRORS_INDEX = 1;
 	final public int m_DC_ERRORS_INDEX = 2;
@@ -112,26 +111,26 @@ public class EditorTabbedPaneB extends JTabbedPane
 
 	//    Pane containing XML editor
 	private final RSyntaxTextArea xmlEditorTextArea;
+	private final HttpServerPane httpPanel;
 
 	/**
 	 * 
 	 * @param frame
 	 */
-	public EditorTabbedPaneB(JDFFrame frame)
+	public EditorTabbedPaneB()
 	{
 		super();
-		m_frame = frame;
 		setBorder(BorderFactory.createLineBorder(Color.black));
 
-		m_validErrScroll = new CheckJDFScrollPane(m_frame);
+		m_validErrScroll = new CheckJDFScrollPane();
 		addTab(ResourceUtil.getMessage("ValidationResultKey"), null, m_validErrScroll, ResourceUtil.getMessage("ValidationResultKey"));
 		setComponentAt(m_VAL_ERRORS_INDEX, m_validErrScroll);
 
-		m_SchemaErrScroll = new SchemaScrollPane(m_frame);
+		m_SchemaErrScroll = new SchemaScrollPane();
 		addTab(ResourceUtil.getMessage("SchemaOutputKey"), null, m_SchemaErrScroll, ResourceUtil.getMessage("SchemaOutputKey"));
 		setComponentAt(m_SCHEMA_ERRORS_INDEX, m_SchemaErrScroll);
 
-		m_devCapErrScroll = new JDFDevCapErrScrollPane(m_frame);
+		m_devCapErrScroll = new JDFDevCapErrScrollPane();
 		addTab(ResourceUtil.getMessage("DevCapOutputKey"), null, m_devCapErrScroll, ResourceUtil.getMessage("DevCapOutputKey"));
 		setComponentAt(m_DC_ERRORS_INDEX, m_devCapErrScroll);
 
@@ -146,8 +145,8 @@ public class EditorTabbedPaneB extends JTabbedPane
 		//		addTab(ResourceUtil.getMessage("TCPMon"), null, tcpMonScrPane, ResourceUtil.getMessage("TCPMon"));
 
 		//		HTTP server tab
-		HttpServerPane httpPanel = new HttpServerPane(m_frame);
-		addTab(ResourceUtil.getMessage("HTTPserver"), null, httpPanel.createPane(), ResourceUtil.getMessage("HTTPserver"));
+		httpPanel = new HttpServerPane();
+		addTab(ResourceUtil.getMessage("HTTPserver"), null, getHttpPanel().createPane(), ResourceUtil.getMessage("HTTPserver"));
 	}
 
 	/**
@@ -308,6 +307,11 @@ public class EditorTabbedPaneB extends JTabbedPane
 	public void clearAll()
 	{
 		clearViews();
+	}
+
+	public HttpServerPane getHttpPanel()
+	{
+		return httpPanel;
 	}
 
 }

@@ -173,7 +173,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	EditorTabbedPaneA m_topTabs;
 
-	EditorTabbedPaneB m_errorTabbedPane;
+	private EditorTabbedPaneB m_bottomTabs;
 
 	JTree m_searchTree;
 
@@ -292,7 +292,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	{
 		final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		m_topTabs = new EditorTabbedPaneA();
-		m_errorTabbedPane = new EditorTabbedPaneB(this);
+		m_bottomTabs = new EditorTabbedPaneB();
 
 		m_treeArea = new JDFTreeArea(this);
 		new DropTarget(m_treeArea, this);
@@ -302,7 +302,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		m_treeArea.getDocument().addUndoableEditListener(undomanager);
 		undoSupport.addUndoableEditListener(undomanager);
 
-		final JSplitPane attAndErrorPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, m_topTabs, m_errorTabbedPane);
+		final JSplitPane attAndErrorPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, m_topTabs, getBottomTabs());
 		attAndErrorPane.setDividerLocation(d.height / 2);
 		attAndErrorPane.setResizeWeight(1);
 
@@ -472,9 +472,9 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				final XMLDoc bugReport = testResult.getBugReport();
 				final VElement executNodes = testResult.getExecutable();
 
-				m_errorTabbedPane.m_devCapErrScroll.drawDevCapOutputTree(bugReport, executNodes);
+				getBottomTabs().m_devCapErrScroll.drawDevCapOutputTree(bugReport, executNodes);
 
-				m_errorTabbedPane.setSelectedIndex(m_errorTabbedPane.m_DC_ERRORS_INDEX);
+				getBottomTabs().setSelectedIndex(getBottomTabs().m_DC_ERRORS_INDEX);
 			}
 		}
 		catch (final Exception e)
@@ -559,8 +559,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			m_topTabs.refreshView(eDoc);
 			this.setTitle(getWindowTitle());
 
-			m_errorTabbedPane.refreshView(path);
-			m_errorTabbedPane.refreshXmlEditor(eDoc.getJDFDoc().toXML());
+			getBottomTabs().refreshView(path);
+			getBottomTabs().refreshXmlEditor(eDoc.getJDFDoc().toXML());
 			if (path != null)
 			{
 				m_treeArea.goToPath(path);
@@ -695,7 +695,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			m_dialog = null;
 		}
 		m_topTabs.clearViews();
-		m_errorTabbedPane.clearViews();
+		getBottomTabs().clearViews();
 	}
 
 	/**
@@ -1935,5 +1935,14 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	{
 		final EditorDocument ed = getEditorDoc();
 		return ed == null ? null : ed.getModel();
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public EditorTabbedPaneB getBottomTabs()
+	{
+		return m_bottomTabs;
 	}
 }

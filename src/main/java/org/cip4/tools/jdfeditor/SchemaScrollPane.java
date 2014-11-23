@@ -1,10 +1,9 @@
-package org.cip4.tools.jdfeditor;
 /*
  *
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2006 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -69,13 +68,14 @@ package org.cip4.tools.jdfeditor;
  *  
  * 
  */
-import java.util.Vector;
+package org.cip4.tools.jdfeditor;
 
 import javax.swing.JTree;
 import javax.swing.ToolTipManager;
 import javax.swing.tree.TreeSelectionModel;
 
 import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.tools.jdfeditor.view.renderer.SchemaOutputTreeCellRenderer;
@@ -87,81 +87,75 @@ import org.cip4.tools.jdfeditor.view.renderer.SchemaOutputTreeCellRenderer;
  */
 public class SchemaScrollPane extends ValidationScrollPane
 {
-    
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 2367868076065696714L;
-    
-    SchemaOutputWrapper m_checkRoot = null;
-    
-    public SchemaScrollPane(JDFFrame frame)
-    {
-        super(frame);
-    }
-    
-    
-    public void drawSchemaOutputTree (XMLDoc bugReport) 
-    {
-        if (bugReport==null)
-            return;
-        
-        KElement repRoot= bugReport.getRoot();
-        if(!repRoot.getLocalName().equals("SchemaValidationOutput"))
-            repRoot.getChildByTagName("SchemaValidationOutput",null,0,null,false,true);
 
-        m_checkRoot = new SchemaOutputWrapper(repRoot);
-        m_reportTree = new JTree(m_checkRoot);
-        m_reportTree.setModel(new JDFTreeModel(m_checkRoot,false));
-        m_reportTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-        m_reportTree.setExpandsSelectedPaths(true);
-        m_reportTree.setEditable(false);
-        ToolTipManager.sharedInstance().registerComponent(m_reportTree);
-        
-//        DCOutputWrapper bugReportRoot = null;
-        
-        setSchemaOutputTree(m_checkRoot);            
-//        if (bugReportRoot != null)
-//        {
-//            m_reportTree.expandPath(new TreePath(bugReportRoot.getPath()));
-//        }
-        
-        m_SelectionListener = new ValidationSelectionListener();
-        m_reportTree.addTreeSelectionListener(m_SelectionListener);
-        
-        final ValidationPopupListener popupListener = new ValidationPopupListener();
-        m_reportTree.addMouseListener(popupListener);
-        
-        final SchemaOutputTreeCellRenderer dcRenderer = new SchemaOutputTreeCellRenderer();
-        m_reportTree.setCellRenderer(dcRenderer);
-        getViewport().setView(m_reportTree);
-    }
-    
-    
-    
-    
-    
-    private void setSchemaOutputTree(SchemaOutputWrapper bugReport)
-    {        
-        KElement repElem=bugReport.getElement();
-        // now add the individual attributes
-        VString vAtts=repElem.getAttributeVector();
-        for(int i=0;i<vAtts.size();i++){
-            if(vAtts.get(i).equals("Message"))
-                continue;
-            SchemaOutputWrapper next = new SchemaOutputWrapper(repElem.getAttributeNode(vAtts.get(i)));
-            bugReport.add(next);
-        }
-        // recurse through children
-        Vector childVector = repElem.getChildElementVector(null, null, null, true, 0,false);
-        for (int i=0; i< childVector.size(); i++)
-        {
-            KElement kEl = (KElement) childVector.elementAt(i);
-            SchemaOutputWrapper next = new SchemaOutputWrapper(kEl);
-            setSchemaOutputTree(next);
-            bugReport.add(next);
-        }
-    }
-    
-    
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2367868076065696714L;
+
+	SchemaOutputWrapper m_checkRoot = null;
+
+	public SchemaScrollPane()
+	{
+		super();
+	}
+
+	public void drawSchemaOutputTree(XMLDoc bugReport)
+	{
+		if (bugReport == null)
+			return;
+
+		KElement repRoot = bugReport.getRoot();
+		if (!repRoot.getLocalName().equals("SchemaValidationOutput"))
+			repRoot.getChildByTagName("SchemaValidationOutput", null, 0, null, false, true);
+
+		m_checkRoot = new SchemaOutputWrapper(repRoot);
+		m_reportTree = new JTree(m_checkRoot);
+		m_reportTree.setModel(new JDFTreeModel(m_checkRoot, false));
+		m_reportTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		m_reportTree.setExpandsSelectedPaths(true);
+		m_reportTree.setEditable(false);
+		ToolTipManager.sharedInstance().registerComponent(m_reportTree);
+
+		//        DCOutputWrapper bugReportRoot = null;
+
+		setSchemaOutputTree(m_checkRoot);
+		//        if (bugReportRoot != null)
+		//        {
+		//            m_reportTree.expandPath(new TreePath(bugReportRoot.getPath()));
+		//        }
+
+		m_SelectionListener = new ValidationSelectionListener();
+		m_reportTree.addTreeSelectionListener(m_SelectionListener);
+
+		final ValidationPopupListener popupListener = new ValidationPopupListener();
+		m_reportTree.addMouseListener(popupListener);
+
+		final SchemaOutputTreeCellRenderer dcRenderer = new SchemaOutputTreeCellRenderer();
+		m_reportTree.setCellRenderer(dcRenderer);
+		getViewport().setView(m_reportTree);
+	}
+
+	private void setSchemaOutputTree(SchemaOutputWrapper bugReport)
+	{
+		KElement repElem = bugReport.getElement();
+		// now add the individual attributes
+		VString vAtts = repElem.getAttributeVector();
+		for (int i = 0; i < vAtts.size(); i++)
+		{
+			if (vAtts.get(i).equals("Message"))
+				continue;
+			SchemaOutputWrapper next = new SchemaOutputWrapper(repElem.getAttributeNode(vAtts.get(i)));
+			bugReport.add(next);
+		}
+		// recurse through children
+		VElement childVector = repElem.getChildElementVector(null, null, null, true, 0, false);
+		for (KElement kEl : childVector)
+		{
+			SchemaOutputWrapper next = new SchemaOutputWrapper(kEl);
+			setSchemaOutputTree(next);
+			bugReport.add(next);
+		}
+	}
+
 }
