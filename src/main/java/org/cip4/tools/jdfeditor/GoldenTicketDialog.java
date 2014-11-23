@@ -89,8 +89,13 @@ import javax.swing.JTextField;
 
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFElement.EnumVersion;
+import org.cip4.jdflib.goldenticket.BaseGoldenTicket;
+import org.cip4.jdflib.goldenticket.IDPGoldenTicket;
+import org.cip4.jdflib.goldenticket.MISCPGoldenTicket;
 import org.cip4.jdflib.goldenticket.MISFinGoldenTicket;
 import org.cip4.jdflib.goldenticket.MISPreGoldenTicket;
+import org.cip4.jdflib.goldenticket.ODPGoldenTicket;
+import org.cip4.jdflib.goldenticket.WideFormatGoldenTicket;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
@@ -161,9 +166,101 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		}
 		else
 		{
-			//             	
+			gtSelected = null;
 		}
 
+	}
+
+	/**
+	 * 
+	 * @param gtselect
+	 * @param jdfVersion
+	 * @return
+	 */
+	public BaseGoldenTicket getGoldenTicket()
+	{
+		String gtselect = getGoldenTicketName();
+		if (gtselect == null)
+		{
+			return null; // cancel...
+		}
+		EnumVersion jdfVersion = getGtVersionSelected();
+
+		int mis = getMISLevel();
+		int jmf = getJMFLevel();
+		int gt1 = getGTLevel();
+		BaseGoldenTicket theGT = null;
+		if ("MISCP".equals(gtselect))
+		{
+
+			theGT = new MISCPGoldenTicket(gt1, jdfVersion, jmf, mis, true, BaseGoldenTicket.createSheetMap(1));
+			theGT.nCols = new int[] { 4, 4 };
+		}
+		else if (gtselect.startsWith("MISPRE"))
+		{
+			theGT = new MISPreGoldenTicket(gt1, jdfVersion, jmf, mis, BaseGoldenTicket.createSheetMap(1));
+			theGT.nCols = new int[] { 4, 4 };
+			((MISPreGoldenTicket) theGT).setCategory(gtselect);
+		}
+		else if (gtselect.startsWith(MISFinGoldenTicket.MISFIN))
+		{
+			if (gtselect == MISFinGoldenTicket.MISFIN_STITCHFIN)
+			{
+				theGT = new MISFinGoldenTicket(gt1, jdfVersion, jmf, mis, BaseGoldenTicket.createSheetMap(2));
+			}
+			else if (gtselect == MISFinGoldenTicket.MISFIN_SHEETFIN)
+			{
+				theGT = new MISFinGoldenTicket(gt1, jdfVersion, jmf, mis, BaseGoldenTicket.createSheetMap(1));
+			}
+			else if (gtselect == MISFinGoldenTicket.MISFIN_SHEETFIN)
+			{
+				theGT = new MISFinGoldenTicket(gt1, jdfVersion, jmf, mis, BaseGoldenTicket.createSheetMap(1));
+			}
+			else if (gtselect == MISFinGoldenTicket.MISFIN_BOXMAKING)
+			{
+				theGT = new MISFinGoldenTicket(gt1, jdfVersion, jmf, mis, BaseGoldenTicket.createSheetMap(1));
+			}
+			else if (gtselect == MISFinGoldenTicket.MISFIN_HARDCOVERFIN)
+			{
+				theGT = new MISFinGoldenTicket(gt1, jdfVersion, jmf, mis, BaseGoldenTicket.createSheetMap(5));
+			}
+			else if (gtselect == MISFinGoldenTicket.MISFIN_SOFTCOVERFIN)
+			{
+				theGT = new MISFinGoldenTicket(gt1, jdfVersion, jmf, mis, BaseGoldenTicket.createSheetMap(3));
+			}
+			else if (gtselect == MISFinGoldenTicket.MISFIN_INSERTFIN)
+			{
+				theGT = new MISFinGoldenTicket(gt1, jdfVersion, jmf, mis, BaseGoldenTicket.createSheetMap(1));
+			}
+			((MISFinGoldenTicket) theGT).setCategory(gtselect);
+		}
+		else if ("IDP".equals(gtselect))
+		{
+			theGT = new IDPGoldenTicket(gt1, jdfVersion);
+		}
+		else if ("ODP".equals(gtselect))
+		{
+			theGT = new ODPGoldenTicket(gt1, jdfVersion);
+		}
+		else if ("DPW".equals(gtselect))
+		{
+			theGT = new WideFormatGoldenTicket(gt1, jdfVersion);
+		}
+		assignGT(theGT);
+		return theGT;
+	}
+
+	protected void assignGT(BaseGoldenTicket theGT)
+	{
+		if (theGT != null)
+		{
+			theGT.assign(null);
+			int iType = getGtTypeSelected();
+			if (iType >= 1)
+				theGT.makeReadyAll();
+			if (iType >= 2)
+				theGT.executeAll(null);
+		}
 	}
 
 	/**
@@ -354,7 +451,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 	 * Methods to return the Levels and which golden ticket to create.
 	 * @return 
 	 */
-	public String getGoldenTicket()
+	private String getGoldenTicketName()
 	{
 		return gtSelected;
 	}

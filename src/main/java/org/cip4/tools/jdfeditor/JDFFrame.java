@@ -135,12 +135,6 @@ import org.cip4.jdflib.core.XMLDocUserData.EnumDirtyPolicy;
 import org.cip4.jdflib.elementwalker.RemoveEmpty;
 import org.cip4.jdflib.extensions.xjdfwalker.jdftoxjdf.JDFToXJDF;
 import org.cip4.jdflib.goldenticket.BaseGoldenTicket;
-import org.cip4.jdflib.goldenticket.IDPGoldenTicket;
-import org.cip4.jdflib.goldenticket.MISCPGoldenTicket;
-import org.cip4.jdflib.goldenticket.MISFinGoldenTicket;
-import org.cip4.jdflib.goldenticket.MISPreGoldenTicket;
-import org.cip4.jdflib.goldenticket.ODPGoldenTicket;
-import org.cip4.jdflib.goldenticket.WideFormatGoldenTicket;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
 import org.cip4.jdflib.jmf.JMFBuilder;
@@ -810,97 +804,20 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 */
 	private void newGoldenTicket()
 	{
-		int mis = 0;
-		int jmf = 0;
-		int gt1 = 0;
 		String gtselect = "";
 
 		try
 		{
-			final GoldenTicketDialog gt = new GoldenTicketDialog();
+			final GoldenTicketDialog gtDialog = new GoldenTicketDialog();
 
-			gtselect = gt.getGoldenTicket();
-			mis = gt.getMISLevel();
-			jmf = gt.getJMFLevel();
-			gt1 = gt.getGTLevel();
-			int iType = gt.getGtTypeSelected();
-			BaseGoldenTicket theGT = null;
-			EnumVersion jdfVersion = gt.getGtVersionSelected();
-			boolean xjdf = false;
-			if (!EnumUtil.aLessThanB(jdfVersion, EnumVersion.Version_2_0))
-			{
-				xjdf = true;
-				jdfVersion = JDFElement.getDefaultJDFVersion();
-			}
-
-			if ("MISCP".equals(gtselect))
-			{
-
-				theGT = new MISCPGoldenTicket(gt1, jdfVersion, jmf, mis, true, BaseGoldenTicket.createSheetMap(1));
-				theGT.nCols = new int[] { 4, 4 };
-			}
-			else if (gtselect.startsWith("MISPRE"))
-			{
-				theGT = new MISPreGoldenTicket(gt1, jdfVersion, jmf, mis, BaseGoldenTicket.createSheetMap(1));
-				theGT.nCols = new int[] { 4, 4 };
-				((MISPreGoldenTicket) theGT).setCategory(gtselect);
-			}
-			else if (gtselect.startsWith(MISFinGoldenTicket.MISFIN))
-			{
-				if (gtselect == MISFinGoldenTicket.MISFIN_STITCHFIN)
-				{
-					theGT = new MISFinGoldenTicket(gt1, jdfVersion, jmf, mis, BaseGoldenTicket.createSheetMap(2));
-				}
-				else if (gtselect == MISFinGoldenTicket.MISFIN_SHEETFIN)
-				{
-					theGT = new MISFinGoldenTicket(gt1, jdfVersion, jmf, mis, BaseGoldenTicket.createSheetMap(1));
-				}
-				else if (gtselect == MISFinGoldenTicket.MISFIN_SHEETFIN)
-				{
-					theGT = new MISFinGoldenTicket(gt1, jdfVersion, jmf, mis, BaseGoldenTicket.createSheetMap(1));
-				}
-				else if (gtselect == MISFinGoldenTicket.MISFIN_BOXMAKING)
-				{
-					theGT = new MISFinGoldenTicket(gt1, jdfVersion, jmf, mis, BaseGoldenTicket.createSheetMap(1));
-				}
-				else if (gtselect == MISFinGoldenTicket.MISFIN_HARDCOVERFIN)
-				{
-					theGT = new MISFinGoldenTicket(gt1, jdfVersion, jmf, mis, BaseGoldenTicket.createSheetMap(5));
-				}
-				else if (gtselect == MISFinGoldenTicket.MISFIN_SOFTCOVERFIN)
-				{
-					theGT = new MISFinGoldenTicket(gt1, jdfVersion, jmf, mis, BaseGoldenTicket.createSheetMap(3));
-				}
-				else if (gtselect == MISFinGoldenTicket.MISFIN_INSERTFIN)
-				{
-					theGT = new MISFinGoldenTicket(gt1, jdfVersion, jmf, mis, BaseGoldenTicket.createSheetMap(1));
-				}
-				((MISFinGoldenTicket) theGT).setCategory(gtselect);
-			}
-			else if ("IDP".equals(gtselect))
-			{
-				theGT = new IDPGoldenTicket(gt1, jdfVersion);
-			}
-			else if ("ODP".equals(gtselect))
-			{
-				theGT = new ODPGoldenTicket(gt1, jdfVersion);
-			}
-			else if ("DPW".equals(gtselect))
-			{
-				theGT = new WideFormatGoldenTicket(gt1, jdfVersion);
-			}
+			BaseGoldenTicket theGT = gtDialog.getGoldenTicket();
 
 			if (theGT != null)
 			{
+				EnumVersion jdfVersion = gtDialog.getGtVersionSelected();
+				boolean xjdf = !EnumUtil.aLessThanB(jdfVersion, EnumVersion.Version_2_0);
 				try
 				{
-
-					theGT.assign(null);
-					if (iType >= 1)
-						theGT.makeReadyAll();
-					if (iType >= 2)
-						theGT.executeAll(null);
-
 					// assigns the newly created JDF node to jdfcproot
 					final JDFNode root = theGT.getNode();
 					JDFDoc doc = root.getOwnerDocument_JDFElement();
@@ -2012,17 +1929,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	/**
 	 * 
 	 *  
-	 * @param m_model
-	 */
-	public void setModel(final JDFTreeModel m_model)
-	{
-		final EditorDocument ed = getEditorDoc();
-		ed.setModel(m_model);
-	}
-
-	/**
-	 * 
-	 *  
 	 * @return
 	 */
 	public JDFTreeModel getModel()
@@ -2030,24 +1936,4 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		final EditorDocument ed = getEditorDoc();
 		return ed == null ? null : ed.getModel();
 	}
-
-	// //////////////////////////////////////////////////////////////
-
-	/*
-	 * public int newMISCPLevel() { String cp1 = (String) JOptionPane.showInputDialog( this, ResourceUtil.getMessage("MISCPLevelKey2"),
-	 * ResourceUtil.getMessage("MISCPLevelKey"), JOptionPane.QUESTION_MESSAGE, null, l1, "1");
-	 * 
-	 * int MISCPSelectLevel = 0; MISCPSelectLevel = Integer.parseInt(cp1); return MISCPSelectLevel; }
-	 * 
-	 * public int newJMFLevel() { String j1 = (String) JOptionPane.showInputDialog( this, ResourceUtil.getMessage("JMFLevelKey2"),
-	 * ResourceUtil.getMessage("JMFLevelKey"), JOptionPane.QUESTION_MESSAGE, null, l1, "1");
-	 * 
-	 * int JMFSelectLevel = 0; JMFSelectLevel = Integer.parseInt(j1); return JMFSelectLevel; }
-	 * 
-	 * public int newMISLevel() { String m1 = (String) JOptionPane.showInputDialog( this, ResourceUtil.getMessage("MISLevelKey2"),
-	 * ResourceUtil.getMessage("MISLevelKey"), JOptionPane.QUESTION_MESSAGE, null, l2, "1");
-	 * 
-	 * int MISSelectLevel = 0; MISSelectLevel = Integer.parseInt(m1); return MISSelectLevel; }
-	 */
-	// //////////////////////////////////////////////////////////////
 }
