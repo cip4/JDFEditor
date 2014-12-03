@@ -369,6 +369,7 @@ public class HttpServerPane implements ActionListener
 			chooser.setCurrentDirectory(new File(settingService.getSetting(SettingKey.HTTP_STORE_PATH, String.class)));
 			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			chooser.setAcceptAllFileFilterUsed(false);
+
 			if (chooser.showOpenDialog(MainView.getFrame()) == JFileChooser.APPROVE_OPTION)
 			{
 				LOGGER.debug("getSelectedFile(): " + chooser.getSelectedFile());
