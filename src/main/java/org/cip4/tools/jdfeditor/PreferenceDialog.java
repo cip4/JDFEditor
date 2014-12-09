@@ -342,7 +342,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		 * BaseLevel=iniFile.getBaseLevel(); MISLevel=iniFile.getMISLevel(); JMFLevel=iniFile.getJMFLevel();
 		 */
 
-		this.setPreferredSize(new Dimension(390, 380));
+		this.setPreferredSize(new Dimension(390, 420));
 		this.addMouseListener(new TabListener());
 		drawPane();
 		this.setVisible(true);
