@@ -884,8 +884,6 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		return s;
 	}
 
-	// /////////////////////////////////////////////////////////////////////
-
 	/**
 	 * @return the attribute value
 	 */
@@ -915,8 +913,13 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 
 	}
 
-	// /////////////////////////////////////////////////////////////////////
-
+	/**
+	 * 
+	 * @param attName
+	 * @param prefix
+	 * @param postFix
+	 * @return
+	 */
 	protected String getDCString(final String attName, String prefix, final String postFix)
 	{
 		String strValue = "";
@@ -984,9 +987,4 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		}
 		return getElement().matchesPath(path, true);
 	}
-
-	// /////////////////////////////////////////////////////////////////////
-	// /////////////////////////////////////////////////////////////////////
-	// /////////////////////////////////////////////////////////////////////
-
 }

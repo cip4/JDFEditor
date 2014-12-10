@@ -129,7 +129,7 @@ public class HttpServerPane implements ActionListener
 	private JButton buttonStop;
 	private JButton buttonClear;
 	private JButton buttonSelectPath;
-	private JLabel labelStorePath;
+	private JTextField labelStorePath;
 
 	private final MessageTableModel tableModel = new MessageTableModel();
 
@@ -252,8 +252,10 @@ public class HttpServerPane implements ActionListener
 		buttonSelectPath = new JButton("...");
 		buttonSelectPath.addActionListener(this);
 		pathPanel.add(buttonSelectPath);
-		labelStorePath = new JLabel(settingService.getSetting(SettingKey.HTTP_STORE_PATH, String.class));
+		labelStorePath = new JTextField(settingService.getSetting(SettingKey.HTTP_STORE_PATH, String.class));
+		labelStorePath.setEditable(false);
 		pathPanel.add(labelStorePath);
+
 		rightBottomPanel.add(pathPanel, BorderLayout.SOUTH);
 
 		rightPanel.add(rightTopPanel, BorderLayout.CENTER);
