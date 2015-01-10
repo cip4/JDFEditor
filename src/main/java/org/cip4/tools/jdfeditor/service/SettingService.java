@@ -90,8 +90,10 @@ public class SettingService
 	private static final Log LOG = LogFactory.getLog(SettingService.class);
 
 	private static String confFileName = "JDFEditor.conf";
+	
+	private static File configFile;
 
-	private final PropertiesConfiguration config;
+	private static PropertiesConfiguration config;
 
 	private static SettingService theSettingService;
 
@@ -115,15 +117,15 @@ public class SettingService
 	/**
 	 * Initialize logging
 	 *
-	 * @return New XMLConfiguration object.
+	 * @return New PropertiesConfiguration object.
 	 */
 	private PropertiesConfiguration initConfiguration()
 	{
 
 		LOG.info("Initialize settings...");
-
+		
 		// path config file
-		File configFile = getConfFile();
+		configFile = new File(FilenameUtils.concat(DirectoryUtil.getDirCIP4Tools(), confFileName));
 
 		// config settings
 		PropertiesConfiguration config;
@@ -221,8 +223,16 @@ public class SettingService
 	 * Returns the path of the logfile.
 	 * @return Path to Logfile.
 	 */
-	public File getConfFile()
-	{
-		return new File(FilenameUtils.concat(DirectoryUtil.getDirCIP4Tools(), confFileName));
+	public File getConfFile() {
+		return configFile;
+	}
+	
+	/**
+	 * Used only in JUnits.
+	 */
+	protected static void clearStateForTesting() {
+	    theSettingService = null;
+	    configFile = null;
+	    config = null;
 	}
 }
