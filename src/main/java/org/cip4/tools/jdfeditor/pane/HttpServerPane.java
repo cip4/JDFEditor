@@ -77,6 +77,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -157,7 +158,7 @@ public class HttpServerPane implements ActionListener
 		settingsLayout.putConstraint(SpringLayout.NORTH, ipLabel, 10, SpringLayout.NORTH, settingsPanel);
 
 		ipComboBox = new JComboBox<String>();
-		fillWithIPAddresses(ipComboBox);
+		fillWithIPAddresses();
 		settingsLayout.putConstraint(SpringLayout.WEST, ipComboBox, 5, SpringLayout.EAST, ipLabel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, ipComboBox, 10, SpringLayout.NORTH, settingsPanel);
 
@@ -274,30 +275,42 @@ public class HttpServerPane implements ActionListener
 
 	private void createGatewaylabel()
 	{
-		gatewayValueLabel = new JTextField(HttpReceiver.DEF_PROTOCOL + "://localhost:" + portValueLabel.getText() + HttpReceiver.DEF_PATH);
+	    String interfaceAddress = (String) ipComboBox.getSelectedItem();
+	    
+		gatewayValueLabel = new JTextField(HttpReceiver.DEF_PROTOCOL + "://" + interfaceAddress + ":" + portValueLabel.getText() + HttpReceiver.DEF_PATH);
 		gatewayValueLabel.setEnabled(true);
 		gatewayValueLabel.setEditable(false);
 	}
 
-	private void fillWithIPAddresses(JComboBox<String> ipComboBox)
+	private void fillWithIPAddresses()
 	{
 		ipComboBox.removeAllItems();
 		ipComboBox.setEditable(false);
-		VString v = new VString();
+		VString ipReal = new VString();
+		VString ipLoopback = new VString();
 		try
 		{
 			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
 			while (interfaces.hasMoreElements())
 			{
 				NetworkInterface ni = interfaces.nextElement();
+				LOGGER.debug("network interface: " + ni +
+				        ", isLoopback: " + ni.isLoopback() + ", isVirtual: " + ni.isVirtual());
+				
 				Enumeration<InetAddress> inetAddress = ni.getInetAddresses();
 				while (inetAddress.hasMoreElements())
 				{
 					InetAddress address = inetAddress.nextElement();
-					//                    if (address.isLoopbackAddress()) continue;
-					LOGGER.debug("host address: " + address.getHostAddress());
-					v.appendUnique(address.getHostName());
-					v.appendUnique(address.getHostAddress());
+					if (address instanceof Inet6Address)
+                        continue; // skip IPv6 addresses
+					LOGGER.debug("host name: " + address.getHostName() + ", host address: " + address.getHostAddress());
+					
+					if (address.isLoopbackAddress()) {
+					    ipLoopback.appendUnique(address.getHostAddress());
+					} else {
+					    ipReal.appendUnique(address.getHostAddress());
+					    ipReal.appendUnique(address.getHostName());
+					}
 				}
 				LOGGER.debug("------- next interface");
 			}
@@ -306,11 +319,20 @@ public class HttpServerPane implements ActionListener
 		{
 			LOGGER.error("Snafu filling addresses", e);
 		}
-		v.sort();
-		for (String s : v)
-		{
-			ipComboBox.addItem(s);
-		}
+		
+		sortIPFillComboBox(ipReal);
+		sortIPFillComboBox(ipLoopback);
+		
+		String preselectAddress = settingService.getSetting(SettingKey.HTTP_PRESELECTED_ADDRESS, String.class);
+		ipComboBox.setSelectedItem(preselectAddress);
+	}
+	
+	private void sortIPFillComboBox(final VString list) {
+	    list.sort();
+        for (String s : list)
+        {
+            ipComboBox.addItem(s);
+        }
 	}
 
 	private void updateControls(boolean enabled)
@@ -344,10 +366,13 @@ public class HttpServerPane implements ActionListener
 		{
 			try
 			{
-				HttpReceiver.getInstance().startServer((String) ipComboBox.getSelectedItem(), Integer.parseInt(portValueLabel.getText()));
+			    String interfaceAddress = (String) ipComboBox.getSelectedItem();
+				HttpReceiver.getInstance().startServer(interfaceAddress, Integer.parseInt(portValueLabel.getText()));
 				statusValueLabel.setText(ResourceUtil.getMessage("Started"));
 				gatewayValueLabel.setText(HttpReceiver.DEF_PROTOCOL + "://" + (String) ipComboBox.getSelectedItem() + ":" + portValueLabel.getText() + HttpReceiver.DEF_PATH);
 				updateControls(false);
+				
+				settingService.setSetting(SettingKey.HTTP_PRESELECTED_ADDRESS, interfaceAddress);
 			}
 			catch (Exception ex)
 			{

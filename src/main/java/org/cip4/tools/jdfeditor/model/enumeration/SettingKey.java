@@ -32,6 +32,7 @@ public enum SettingKey {
     GOLDENTICKET_JMFLEVEL("goldenticket.jmflevel", 1),
 
     HTTP_STORE_PATH("http.store.path", "/var/tmp/JDFEditor/ReceivedMessages/"),
+    HTTP_PRESELECTED_ADDRESS("http.preselected.address", "127.0.0.1"),
 
     LOGGING_LEVEL("logging.level", "INFO"),
     LOGGING_ENABLED("logging.enabled", true),
