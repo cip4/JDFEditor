@@ -11,6 +11,7 @@
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<buildDirectory>${project.basedir}/target</buildDirectory>
+		<build>xxx</build>
 	</properties>
 	<scm>
 		<url>http://svn.cip4.org/svnroot/trunk/JDFEditor</url>
@@ -46,13 +47,6 @@
 			<email>s.meissner@flyeralarm.de</email>
 		</developer>
 		<developer>
-			<id>s.gehrig</id>
-			<name>Simon Gehrig</name>
-			<organization>CIP4 Student</organization>
-			<organizationUrl>http://www.cip4.org</organizationUrl>
-			<email>foto@simongehrig.de</email>
-		</developer>
-		<developer>
 			<id>e.thunell</id>
 			<name> Evelina Thunell</name>
 			<organization>CIP4 Student</organization>
@@ -62,7 +56,7 @@
 	</developers>
 	<build>
 		<directory>${buildDirectory}</directory>
-		<finalName>${project.name} ${project.version}</finalName>
+		<finalName>${project.name} build-${build}</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
