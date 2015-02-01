@@ -71,13 +71,8 @@
 package org.cip4.tools.jdfeditor;
 
 import java.io.File;
-import java.net.URL;
 import java.util.Arrays;
 
-import javax.swing.ImageIcon;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.JDFAudit;
@@ -85,6 +80,7 @@ import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.jmf.JMFBuilder;
+import org.cip4.jdflib.util.file.UserDir;
 import org.cip4.jdflib.util.logging.LogConfigurator;
 import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
@@ -104,26 +100,6 @@ public class Editor
 	 * INIReader.java. If you would like to change the appearance of how the menu items appear, go to JDFEditor_(Language want, i.e. en)_.properties located
 	 * under org.cip4.jdfeditor.messages package.
 	 */
-
-	/**
-	 * 
-	 */
-	static final String ICONS_PATH = "/org/cip4/tools/jdfeditor/icons/";
-
-	static ImageIcon getImageIcon(final Class<?> myClass, final String resString)
-	{
-		final URL url = myClass.getResource(resString);
-		ImageIcon imIc = null;
-		if (url != null)
-		{
-			imIc = new ImageIcon(url);
-		}
-		if (imIc == null || imIc.getIconHeight() <= 0)
-		{
-			imIc = new ImageIcon("." + resString);
-		}
-		return imIc;
-	}
 
 	/**
 	 * @param args
@@ -161,11 +137,7 @@ public class Editor
 	public Editor()
 	{
 		// log file location
-		String pathDir = FilenameUtils.concat(FileUtils.getUserDirectoryPath(), "CIP4Tools");
-		pathDir = FilenameUtils.concat(pathDir, "JDFEditor");
-		pathDir = FilenameUtils.concat(pathDir, "logs");
-		new File(pathDir).mkdirs();
-
+		String pathDir = new UserDir("JDFEditor").getLogPath();
 		LogConfigurator.configureLog(pathDir, "JDFEditor.log");
 
 		if (log == null)
