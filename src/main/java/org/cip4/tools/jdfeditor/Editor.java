@@ -216,11 +216,15 @@ public class Editor
 		return "Build version " + JDFAudit.software();
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	JMFBuilder getJMFBuilder()
 	{
 		JMFBuilder b = new JMFBuilder();
 		b.setSenderID("JDFEditor");
-
+		b.setAgentName("CIP4 JDF EDitor");
 		return b;
 	}
 

@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -137,7 +137,6 @@ import org.cip4.jdflib.extensions.xjdfwalker.jdftoxjdf.JDFToXJDF;
 import org.cip4.jdflib.goldenticket.BaseGoldenTicket;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
-import org.cip4.jdflib.jmf.JMFBuilder;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.util.EnumUtil;
 import org.cip4.jdflib.util.StringUtil;
@@ -761,7 +760,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		clearViews();
 		try
 		{
-			JDFJMF jmf = getJMFBuilder().newJMF(f, type);
+			JDFJMF jmf = Editor.getEditor().getJMFBuilder().newJMF(f, type);
 			final VString requiredAttributes = jmf.getMissingAttributes(9999999);
 
 			for (int i = 0; i < requiredAttributes.size(); i++)
@@ -789,14 +788,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			s.printStackTrace();
 			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("FileNotOpenKey"), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
-	}
-
-	JMFBuilder getJMFBuilder()
-	{
-		JMFBuilder b = new JMFBuilder();
-		b.setSenderID("JDFEditor");
-
-		return b;
 	}
 
 	/**
