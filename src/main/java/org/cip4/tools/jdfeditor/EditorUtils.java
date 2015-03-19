@@ -607,12 +607,12 @@ public class EditorUtils
 		XJDF20 xjdf20 = new XJDF20();
 		SettingService settingService = SettingService.getSettingService();
 
-		xjdf20.setSingleNode(settingService.getSetting(SettingKey.XJDF_CONVERT_SINGLENODE, Boolean.class));
-		xjdf20.setMergeLayout(settingService.getSetting(SettingKey.XJDF_CONVERT_STRIPPING, Boolean.class));
-		xjdf20.setSpanAsAttribute(settingService.getSetting(SettingKey.XJDF_CONVERT_SPAN, Boolean.class));
-		xjdf20.setMergeRunList(settingService.getSetting(SettingKey.XJDF_CONVERT_RUNLIST, Boolean.class));
-		xjdf20.setMergeLayoutPrep(settingService.getSetting(SettingKey.XJDF_CONVERT_LAYOUTPREP, Boolean.class));
-		xjdf20.setConvertTilde(settingService.getSetting(SettingKey.XJDF_CONVERT_TILDE, Boolean.class));
+		xjdf20.setSingleNode(settingService.getBool(SettingKey.XJDF_CONVERT_SINGLENODE));
+		xjdf20.setMergeLayout(settingService.getBool(SettingKey.XJDF_CONVERT_STRIPPING));
+		xjdf20.setSpanAsAttribute(settingService.getBool(SettingKey.XJDF_CONVERT_SPAN));
+		xjdf20.setMergeRunList(settingService.getBool(SettingKey.XJDF_CONVERT_RUNLIST));
+		xjdf20.setMergeLayoutPrep(settingService.getBool(SettingKey.XJDF_CONVERT_LAYOUTPREP));
+		xjdf20.setConvertTilde(settingService.getBool(SettingKey.XJDF_CONVERT_TILDE));
 		return xjdf20;
 	}
 

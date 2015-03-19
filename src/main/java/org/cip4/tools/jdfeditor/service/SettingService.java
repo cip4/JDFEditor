@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -78,6 +78,7 @@ import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cip4.jdflib.util.StringUtil;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.util.DirectoryUtil;
 
@@ -90,7 +91,7 @@ public class SettingService
 	private static final Log LOG = LogFactory.getLog(SettingService.class);
 
 	private static String confFileName = "JDFEditor.conf";
-	
+
 	private static File configFile;
 
 	private static PropertiesConfiguration config;
@@ -122,10 +123,9 @@ public class SettingService
 	private PropertiesConfiguration initConfiguration()
 	{
 
-		LOG.info("Initialize settings...");
-		
 		// path config file
 		configFile = new File(FilenameUtils.concat(DirectoryUtil.getDirCIP4Tools(), confFileName));
+		LOG.info("Initialize settings from " + configFile.getAbsolutePath());
 
 		// config settings
 		PropertiesConfiguration config;
@@ -161,6 +161,39 @@ public class SettingService
 	}
 
 	/**
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public boolean getBool(SettingKey key)
+	{
+		String value = config.getString(key.getKey(), key.getDefaultValue());
+		return StringUtil.parseBoolean(value, false);
+	}
+
+	/**
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public int getInt(SettingKey key)
+	{
+		String value = config.getString(key.getKey(), key.getDefaultValue());
+		return StringUtil.parseInt(value, 0);
+	}
+
+	/**
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public String getString(SettingKey key)
+	{
+		String value = config.getString(key.getKey(), key.getDefaultValue());
+		return value;
+	}
+
+	/**
 	 * Get a typed setting value by key.
 	 * @param key The key of the setting value.
 	 * @param c The type of the setting value.
@@ -193,6 +226,36 @@ public class SettingService
 	}
 
 	/**
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	public void set(String key, boolean value)
+	{
+		config.setProperty(key, value ? "true" : "false");
+	}
+
+	/**
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	public void set(String key, int value)
+	{
+		config.setProperty(key, "" + value);
+	}
+
+	/**
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	public void set(String key, String value)
+	{
+		config.setProperty(key, value);
+	}
+
+	/**
 	 * Set a setting value by a key.
 	 * @param key   The configuration key.
 	 * @param value The configuration setting value as String.
@@ -200,7 +263,7 @@ public class SettingService
 	public void setSetting(SettingKey key, Object value)
 	{
 
-		Class clazz = key.getClazz();
+		Class<?> clazz = key.getClazz();
 
 		if (Boolean.class.equals(clazz))
 		{
@@ -223,16 +286,18 @@ public class SettingService
 	 * Returns the path of the logfile.
 	 * @return Path to Logfile.
 	 */
-	public File getConfFile() {
+	public File getConfFile()
+	{
 		return configFile;
 	}
-	
+
 	/**
 	 * Used only in JUnits.
 	 */
-	protected static void clearStateForTesting() {
-	    theSettingService = null;
-	    configFile = null;
-	    config = null;
+	protected static void clearStateForTesting()
+	{
+		theSettingService = null;
+		configFile = null;
+		config = null;
 	}
 }
