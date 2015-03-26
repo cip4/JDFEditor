@@ -13,24 +13,24 @@
 		<buildDirectory>${project.basedir}/target</buildDirectory>
 		<build>xxx</build>
 	</properties>
-	<scm>
-		<url>http://svn.cip4.org/svnroot/trunk/JDFEditor</url>
-		<developerConnection>scm:svn:http://svn.cip4.org/svnroot/trunk/JDFEditor</developerConnection>
-		<connection>scm:svn:http://svn.cip4.org/svnroot/trunk/JDFEditor</connection>
-	</scm>
-	<repositories>
-		<repository>
-			<id>sonatype-nexus-snapshots</id>
-			<name>Sonatype Nexus Snapshots</name>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
+    <scm>
+        <url>https://stash.cip4.org/scm/tool/jdfeditor.git</url>
+        <developerConnection>scm:git:https://stash.cip4.org/scm/tool/jdfeditor.git</developerConnection>
+        <connection>scm:git:https://stash.cip4.org/scm/tool/jdfeditor.git</connection>
+    </scm>
+    <repositories>
+        <repository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 	<developers>
 		<developer>
 			<id>r.prosi</id>
