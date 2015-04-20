@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -105,10 +105,10 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 	private final JButton bOK;
 	private final JButton bCancel;
 
-	private final JCheckBox cbExt1;
-	private final JCheckBox cbExt2;
-	private final JCheckBox cbExt3;
-	private final JCheckBox cbExt4;
+	private final JCheckBox cbSingleNode;
+	private final JCheckBox cbConvertStripping;
+	private final JCheckBox cbSpanAttribute;
+	private final JCheckBox cbMergeRunList;
 	private final JCheckBox cbLoPrep;
 	private final JCheckBox cbTilde;
 	private final JCheckBox cbTypesafeJMF;
@@ -128,18 +128,18 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 		JPanel checkboxesPanel = new JPanel();
 		checkboxesPanel.setLayout(new BoxLayout(checkboxesPanel, BoxLayout.Y_AXIS));
 
-		cbExt1 = new JCheckBox(ResourceUtil.getMessage("SingleNodeKey"));
-		cbExt2 = new JCheckBox(ResourceUtil.getMessage("ConvertStrippingKey"));
-		cbExt3 = new JCheckBox(ResourceUtil.getMessage("SpanAsAttributeKey"));
-		cbExt4 = new JCheckBox(ResourceUtil.getMessage("MergeRunListKey"));
+		cbSingleNode = new JCheckBox(ResourceUtil.getMessage("SingleNodeKey"));
+		cbConvertStripping = new JCheckBox(ResourceUtil.getMessage("ConvertStrippingKey"));
+		cbSpanAttribute = new JCheckBox(ResourceUtil.getMessage("SpanAsAttributeKey"));
+		cbMergeRunList = new JCheckBox(ResourceUtil.getMessage("MergeRunListKey"));
 		cbLoPrep = new JCheckBox(ResourceUtil.getMessage("ConvertLayoutPrepKey"));
 		cbTilde = new JCheckBox(ResourceUtil.getMessage("RemoveTildeFromRange"));
 		cbTypesafeJMF = new JCheckBox(ResourceUtil.getMessage("TypesafeJMF"));
 
-		checkboxesPanel.add(cbExt1);
-		checkboxesPanel.add(cbExt2);
-		checkboxesPanel.add(cbExt3);
-		checkboxesPanel.add(cbExt4);
+		checkboxesPanel.add(cbSingleNode);
+		checkboxesPanel.add(cbConvertStripping);
+		checkboxesPanel.add(cbSpanAttribute);
+		checkboxesPanel.add(cbMergeRunList);
 		checkboxesPanel.add(cbLoPrep);
 		checkboxesPanel.add(cbTilde);
 		checkboxesPanel.add(cbTypesafeJMF);
@@ -167,13 +167,13 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 		setSize(screenWidth / 4, screenHeight / 4);
 		setLocation(screenWidth / 4, screenHeight / 4);
 
-		cbExt1.setSelected(settingService.getSetting(SettingKey.XJDF_CONVERT_SINGLENODE, Boolean.class));
-		cbExt2.setSelected(settingService.getSetting(SettingKey.XJDF_CONVERT_STRIPPING, Boolean.class));
-		cbExt3.setSelected(settingService.getSetting(SettingKey.XJDF_CONVERT_SPAN, Boolean.class));
-		cbExt4.setSelected(settingService.getSetting(SettingKey.XJDF_CONVERT_RUNLIST, Boolean.class));
-		cbLoPrep.setSelected(settingService.getSetting(SettingKey.XJDF_CONVERT_LAYOUTPREP, Boolean.class));
-		cbTilde.setSelected(settingService.getSetting(SettingKey.XJDF_CONVERT_TILDE, Boolean.class));
-		cbTypesafeJMF.setSelected(settingService.getSetting(SettingKey.XJDF_TYPESAFE_JMF, Boolean.class));
+		cbSingleNode.setSelected(settingService.getBool(SettingKey.XJDF_CONVERT_SINGLENODE));
+		cbConvertStripping.setSelected(settingService.getBool(SettingKey.XJDF_CONVERT_STRIPPING));
+		cbSpanAttribute.setSelected(settingService.getBool(SettingKey.XJDF_CONVERT_SPAN));
+		cbMergeRunList.setSelected(settingService.getBool(SettingKey.XJDF_CONVERT_RUNLIST));
+		cbLoPrep.setSelected(settingService.getBool(SettingKey.XJDF_CONVERT_LAYOUTPREP));
+		cbTilde.setSelected(settingService.getBool(SettingKey.XJDF_CONVERT_TILDE));
+		cbTypesafeJMF.setSelected(settingService.getBool(SettingKey.XJDF_TYPESAFE_JMF));
 
 		setVisible(true);
 	}
@@ -197,10 +197,10 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 	{
 		if (e.getSource() == bOK)
 		{
-			settingService.setSetting(SettingKey.XJDF_CONVERT_SINGLENODE, cbExt1.isSelected());
-			settingService.setSetting(SettingKey.XJDF_CONVERT_STRIPPING, cbExt2.isSelected());
-			settingService.setSetting(SettingKey.XJDF_CONVERT_SPAN, cbExt3.isSelected());
-			settingService.setSetting(SettingKey.XJDF_CONVERT_RUNLIST, cbExt4.isSelected());
+			settingService.setSetting(SettingKey.XJDF_CONVERT_SINGLENODE, cbSingleNode.isSelected());
+			settingService.setSetting(SettingKey.XJDF_CONVERT_STRIPPING, cbConvertStripping.isSelected());
+			settingService.setSetting(SettingKey.XJDF_CONVERT_SPAN, cbSpanAttribute.isSelected());
+			settingService.setSetting(SettingKey.XJDF_CONVERT_RUNLIST, cbMergeRunList.isSelected());
 			settingService.setSetting(SettingKey.XJDF_CONVERT_LAYOUTPREP, cbLoPrep.isSelected());
 			settingService.setSetting(SettingKey.XJDF_CONVERT_TILDE, cbTilde.isSelected());
 			settingService.setSetting(SettingKey.XJDF_TYPESAFE_JMF, cbTypesafeJMF.isSelected());
