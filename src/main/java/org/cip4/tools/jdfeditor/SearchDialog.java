@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -128,7 +128,7 @@ public class SearchDialog extends JDialog implements ActionListener
 
 	private final JButton m_findNextButton;
 	private final JButton m_cancelButton;
-	private final JComboBox searchComboBox;
+	private final JComboBox<String> searchComboBox;
 	private final SearchComboBoxModel searchComboBoxModel;
 	private final JRadioButton m_forwardRadioButton;
 	private final JRadioButton m_backwardRadioButton;
@@ -172,7 +172,7 @@ public class SearchDialog extends JDialog implements ActionListener
 		searchComboBoxModel.addAll(findItems);
 		if (findPattern != null && findItems.size() > 0)
 			searchComboBoxModel.setSelectedItem(findItems.get(findItems.size() - 1));
-		searchComboBox = new JComboBox(searchComboBoxModel);
+		searchComboBox = new JComboBox<String>(searchComboBoxModel);
 
 		searchComboBox.setEditable(true);
 		box2.add(searchComboBox);

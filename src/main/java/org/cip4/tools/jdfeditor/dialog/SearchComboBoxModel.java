@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2012 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -87,7 +87,7 @@ import org.cip4.tools.jdfeditor.service.SettingService;
  * @author rainer prosi
  * @date before  Nov 28, 2012
  */
-public class SearchComboBoxModel extends AbstractListModel implements ComboBoxModel
+public class SearchComboBoxModel extends AbstractListModel<String> implements ComboBoxModel<String>
 {
 	private final SettingService settingService = SettingService.getSettingService();
 
@@ -192,7 +192,7 @@ public class SearchComboBoxModel extends AbstractListModel implements ComboBoxMo
 	 * @see javax.swing.ListModel#getElementAt(int)
 	 */
 	@Override
-	public Object getElementAt(int index)
+	public String getElementAt(int index)
 	{
 		int size = elements.size();
 		return elements.get(size - index - 1);
