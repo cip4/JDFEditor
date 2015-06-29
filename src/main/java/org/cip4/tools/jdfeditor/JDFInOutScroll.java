@@ -1,11 +1,9 @@
-package org.cip4.tools.jdfeditor;
-
 /*
  *
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -70,8 +68,33 @@ package org.cip4.tools.jdfeditor;
  *  
  * 
  */
+package org.cip4.tools.jdfeditor;
 
-import org.cip4.jdflib.core.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Enumeration;
+import java.util.Stack;
+
+import javax.swing.Box;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTree;
+import javax.swing.SwingUtilities;
+import javax.swing.ToolTipManager;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
+
+import org.cip4.jdflib.core.AttributeName;
+import org.cip4.jdflib.core.ElementName;
+import org.cip4.jdflib.core.JDFConstants;
+import org.cip4.jdflib.core.JDFResourceLink;
+import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.datatypes.JDFAttributeMap;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourceLinkPool;
@@ -79,15 +102,6 @@ import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 import org.cip4.tools.jdfeditor.view.renderer.JDFResourceTreeCellRenderer;
-
-import javax.swing.*;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.Enumeration;
-import java.util.Stack;
 
 /**
  * 
@@ -308,7 +322,6 @@ public class JDFInOutScroll extends JScrollPane
 										lastSelectedTree.removeSelectionPath(lastSelectedTree.getSelectionPath());
 										m_searchInOutNode = checkNode;
 										m_frame.m_searchTree = tmpTree;
-										((JLabel) ((Box) ((Box) m_frame.m_dialog.getContentPane().getComponent(1)).getComponent(7)).getComponent(1)).setText(" ");
 										final TreePath path = new TreePath(checkNode.getPath());
 										lastSelectedTree = tmpTree;
 										tmpTree.makeVisible(path);
@@ -336,7 +349,6 @@ public class JDFInOutScroll extends JScrollPane
 										lastSelectedTree.removeSelectionPath(lastSelectedTree.getSelectionPath());
 										m_searchInOutNode = checkNode;
 										m_frame.m_searchTree = tmpTree;
-										((JLabel) ((Box) ((Box) m_frame.m_dialog.getContentPane().getComponent(1)).getComponent(7)).getComponent(1)).setText(" ");
 										final TreePath path = new TreePath(checkNode.getPath());
 										lastSelectedTree = tmpTree;
 										tmpTree.makeVisible(path);
@@ -429,7 +441,7 @@ public class JDFInOutScroll extends JScrollPane
 											{
 												lastSelectedTree.removeSelectionPath(lastSelectedTree.getSelectionPath());
 												m_searchInOutNode = checkNode;
-												((JLabel) ((Box) ((Box) m_frame.m_dialog.getContentPane().getComponent(1)).getComponent(7)).getComponent(1)).setText(" ");
+												//												((JLabel) ((Box) ((Box) m_frame.m_dialog.getContentPane().getComponent(1)).getComponent(7)).getComponent(1)).setText(" ");
 												final TreePath path = new TreePath(checkNode.getPath());
 												lastSelectedTree = tmpTree;
 												tmpTree.makeVisible(path);
@@ -467,12 +479,16 @@ public class JDFInOutScroll extends JScrollPane
 			}
 			if (!found)
 			{
-				((JLabel) ((Box) ((Box) m_frame.m_dialog.getContentPane().getComponent(1)).getComponent(7)).getComponent(1)).setText(ResourceUtil.getMessage("StringNotFoundKey"));
+				EditorUtils.errorBox("StringNotFoundKey", inString);
 			}
 		}
 		MainView.setCursor(0, null);
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public JTree findIt()
 	{
 		boolean found = false;

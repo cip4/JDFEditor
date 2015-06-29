@@ -70,16 +70,13 @@
  */
 package org.cip4.tools.jdfeditor.dialog;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.AbstractListModel;
 import javax.swing.ComboBoxModel;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.cip4.jdflib.core.VString;
+import org.cip4.jdflib.util.StringUtil;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 
@@ -94,7 +91,7 @@ public class SearchComboBoxModel extends AbstractListModel<String> implements Co
 	/**
 	 * 	Max number of strings in combobox
 	 */
-	public static int MAX_ELEMENTS = 5;
+	public static int MAX_ELEMENTS = 11;
 
 	/**
 	 * 
@@ -109,9 +106,7 @@ public class SearchComboBoxModel extends AbstractListModel<String> implements Co
 		super();
 	}
 
-	private static final Log LOGGER = LogFactory.getLog(SearchComboBoxModel.class);
-
-	private List<String> elements = new ArrayList<String>();
+	private final List<String> elements = new VString();
 	private String selectedItem;
 
 	/**
@@ -121,35 +116,17 @@ public class SearchComboBoxModel extends AbstractListModel<String> implements Co
 	 */
 	public void addItem(String item)
 	{
-		if (!ArrayUtils.contains(elements.toArray(new String[0]), item))
+		if (!elements.contains(item))
 		{
 			elements.add(item);
 		}
 		if (elements.size() > MAX_ELEMENTS)
 		{
-			String[] newElements = (String[]) ArrayUtils.subarray(elements.toArray(new String[0]), elements.size() - MAX_ELEMENTS, elements.size());
-			elements = Arrays.asList(newElements);
-			LOGGER.debug("elements: " + elements);
+			elements.remove(0);
 		}
 		fireContentsChanged(this, 0, elements.size());
 
-		String findPattern = null;
-
-		for (int i = 0; i < elements.size() && i < 5; i++)
-		{
-
-			if (i == 0)
-			{
-				findPattern = elements.get(i);
-
-			}
-			else
-			{
-				findPattern += ";" + elements.get(i);
-
-			}
-		}
-
+		String findPattern = StringUtil.setvString(elements, ";", null, null);
 		settingService.setSetting(SettingKey.FIND_PATTERN, findPattern);
 
 	}
@@ -172,7 +149,7 @@ public class SearchComboBoxModel extends AbstractListModel<String> implements Co
 	 * @see javax.swing.ComboBoxModel#getSelectedItem()
 	 */
 	@Override
-	public Object getSelectedItem()
+	public String getSelectedItem()
 	{
 		return selectedItem;
 	}

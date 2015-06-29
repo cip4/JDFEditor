@@ -134,9 +134,9 @@ public class SearchDialog extends JDialog implements ActionListener
 	private final JRadioButton m_backwardRadioButton;
 	private final JCheckBox m_IgnoreCase;
 	private final JCheckBox m_Wrap;
-	private static String lastSearch = null;
 	private Vector<JDFTreeNode> m_LastResults = null;
 	private int lastPos;
+	private String lastSearch;
 
 	/**
 	 * Constructor for SearchDialog.
@@ -235,6 +235,7 @@ public class SearchDialog extends JDialog implements ActionListener
 		getRootPane().setDefaultButton(m_findNextButton);
 
 		lastPos = -1;
+		lastSearch = null;
 		setVisible(true);
 
 	}
@@ -256,7 +257,6 @@ public class SearchDialog extends JDialog implements ActionListener
 		else if (eSrc == m_cancelButton)
 		{
 			dispose();
-			MainView.getFrame().m_dialog = null;
 		}
 		else if (eSrc == m_IgnoreCase)
 		{
@@ -274,10 +274,10 @@ public class SearchDialog extends JDialog implements ActionListener
 		final boolean wrap = m_Wrap.isSelected();
 		final boolean ignoreCase = m_IgnoreCase.isSelected();
 
+		String currentSearch = (String) searchComboBox.getEditor().getItem();
 		if (searchComponent.equals("JDFTree"))
 		{
-			String currentSearch = (String) searchComboBox.getEditor().getItem();
-			if (m_LastResults == null || !ContainerUtil.equals(lastSearch, currentSearch))
+			if (m_LastResults == null || !ContainerUtil.equals(currentSearch, lastSearch))
 			{
 				lastSearch = currentSearch;
 				fillResults();
@@ -322,7 +322,7 @@ public class SearchDialog extends JDialog implements ActionListener
 		}
 		else if (searchComponent.equals("NeighbourTree"))
 		{
-			MainView.getFrame().m_topTabs.m_inOutScrollPane.findStringInNeighbourTree(lastSearch, forwardDirection, m_IgnoreCase.isSelected());
+			MainView.getFrame().m_topTabs.m_inOutScrollPane.findStringInNeighbourTree(currentSearch, forwardDirection, m_IgnoreCase.isSelected());
 		}
 	}
 
@@ -342,11 +342,12 @@ public class SearchDialog extends JDialog implements ActionListener
 		final boolean bForward = m_forwardRadioButton.isSelected();
 		final TreePath selectionPath = MainView.getFrame().m_treeArea.getSelectionPath();
 		final JDFTreeNode currentNode = selectionPath == null ? null : (JDFTreeNode) selectionPath.getLastPathComponent();
-		if (StringUtil.getNonEmpty(lastSearch) != null)
+		String currentSearch = (String) searchComboBox.getEditor().getItem();
+		if (StringUtil.getNonEmpty(currentSearch) != null)
 		{
 			@SuppressWarnings("unchecked")
 			final Enumeration<JDFTreeNode> tmpEnumeration = ((JDFTreeNode) MainView.getModel().getRootNode().getFirstChild()).preorderEnumeration();
-			final String upSearch = lastSearch.toUpperCase();
+			final String upSearch = currentSearch.toUpperCase();
 			while (tmpEnumeration.hasMoreElements())
 			{
 				final JDFTreeNode checkNode = tmpEnumeration.nextElement();

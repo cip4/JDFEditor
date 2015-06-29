@@ -182,8 +182,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 */
 	public JDFTreeCopyNode m_copyNode;
 
-	SearchDialog m_dialog = null;
-
 	// q&d hack for multi doc support
 	Vector<EditorDocument> m_VjdfDocument = new Vector<EditorDocument>();
 	int m_DocPos = -1; // document position
@@ -688,11 +686,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 */
 	void clearViews()
 	{
-		if (m_dialog != null)
-		{
-			m_dialog.dispose();
-			m_dialog = null;
-		}
 		m_topTabs.clearViews();
 		getBottomTabs().clearViews();
 	}
@@ -1058,7 +1051,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 */
 	private void findWhatDialog(final String searchComponent)
 	{
-		m_dialog = new SearchDialog(searchComponent);
+		new SearchDialog(searchComponent);
 	}
 
 	/**
@@ -1490,15 +1483,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			}
 		}
 		// findstring is always set at least to JDFTree
-		if (m_dialog == null)
-		{
-			findWhatDialog(findString);
-		}
-		else
-		{
-			m_dialog.setSearchComponent(findString);
-			m_dialog.toFront();
-		}
+		findWhatDialog(findString);
 	}
 
 	/**
