@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2014 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2015 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -77,6 +77,7 @@ import org.cip4.jdflib.auto.JDFAutoRefAnchor.EnumAnchor;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFAudit;
 import org.cip4.jdflib.core.JDFComment;
+import org.cip4.jdflib.core.JDFCustomerInfo;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFElement.EnumNodeStatus;
 import org.cip4.jdflib.core.JDFNodeInfo;
@@ -87,6 +88,7 @@ import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.datatypes.JDFAttributeMap;
+import org.cip4.jdflib.extensions.XJDF20;
 import org.cip4.jdflib.jmf.JDFDeviceInfo;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFJobPhase;
@@ -455,6 +457,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		{
 			final KElement e = (KElement) o;
 			s = e.getNodeName();
+			String nodeName = e.getLocalName();
 			if (e instanceof JDFAudit)
 			{
 				final JDFAudit a = (JDFAudit) e;
@@ -530,7 +533,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 					s += " SenderID: " + senderID;
 				}
 			}
-			else if (e instanceof JDFNode)
+			else if (e instanceof JDFNode || XJDF20.rootName.equals(nodeName))
 			{
 				String typ = e.getAttribute(AttributeName.TYPE, null, null);
 				if (typ != null)
@@ -553,7 +556,10 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 					s += " JobPartID=" + typ;
 				}
 				final String stat = e.getAttribute(AttributeName.STATUS, null, null);
-				s += " NodeStatus=" + stat;
+				if (stat != null)
+				{
+					s += " Status=" + stat;
+				}
 			}
 			else if (e instanceof JDFMessageService)
 			{
@@ -786,6 +792,11 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 			{
 				final JDFComChannel p = (JDFComChannel) e;
 				s += " " + p.getLocator();
+			}
+			else if (e instanceof JDFCustomerInfo)
+			{
+				final JDFCustomerInfo p = (JDFCustomerInfo) e;
+				s += " " + p.getCustomerID();
 			}
 			else if (e instanceof JDFRefAnchor)
 			{
