@@ -125,6 +125,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 	JButton m_zoomBestButton;
 	JButton m_refreshButton;
 	JButton m_closeButton;
+	JButton m_closeAllButton;
 	HashSet<JButton> m_allButtons;
 
 	private final JDFFrame m_frame;
@@ -187,6 +188,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		final ImageIcon imgZoomBest = ResourceUtil.getImageIcon("toolbar/zoom-fit-best.png");
 
 		final ImageIcon imgClose = ResourceUtil.getImageIcon("toolbar/close.png");
+		final ImageIcon imgCloseAll = ResourceUtil.getImageIcon("toolbar/close_all.png");
 
 		final Dimension d = new Dimension(10, 30);
 		setFloatable(false);
@@ -196,6 +198,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		m_openButton = createDefaultButton(imgOpen, ResourceUtil.getMessage("main.toolbar.document.open"), true, '|');
 		m_saveButton = createDefaultButton(imgSave, ResourceUtil.getMessage("main.toolbar.document.save"), false, '|');
 		m_closeButton = createDefaultButton(imgClose, ResourceUtil.getMessage("main.toolbar.document.close"), true, '|');
+		m_closeAllButton = createDefaultButton(imgCloseAll, ResourceUtil.getMessage("main.toolbar.document.close.all"), true, '|');
 		addSeparator(d);
 
 		// util block
@@ -320,6 +323,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 	{
 		m_newButton.setEnabled(mode);
 		m_closeButton.setEnabled(mode);
+		m_closeAllButton.setEnabled(mode);
 		m_saveButton.setEnabled(mode);
 		m_cutButton.setEnabled(mode);
 		m_copyButton.setEnabled(mode);
@@ -430,6 +434,10 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		else if (eSrc == m_closeButton) // close document
 		{
 			m_frame.closeFile(1);
+		}
+		else if (eSrc == m_closeAllButton) // close all documents
+		{
+			m_frame.closeFile(99999);
 		}
 		else if (!settingService.getSetting(SettingKey.GENERAL_READ_ONLY, Boolean.class))
 		{
