@@ -91,14 +91,12 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFDoc;
-import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.elementwalker.AttributeReplacer;
 import org.cip4.jdflib.jmf.JDFCommand;
@@ -120,8 +118,8 @@ import org.cip4.tools.jdfeditor.view.MainView;
  */
 public class SendToDevice extends JPanel implements ActionListener
 {
-    private static final Log LOG = LogFactory.getLog(SendToDevice.class);
-    
+	private static final Log LOG = LogFactory.getLog(SendToDevice.class);
+
 	SettingService settingService = SettingService.getSettingService();
 
 	/**
@@ -223,17 +221,19 @@ public class SendToDevice extends JPanel implements ActionListener
 		urlBox.add(urlLabel);
 		final JComboBox<String> tf = new JComboBox<String>();
 		tf.setEditable(true);
-		
+
 		int items = 0;
 		StringTokenizer st = new StringTokenizer(preset, ";");
-		while (st.hasMoreTokens()) {
-		    items++;
-		    if (items > 5) break; // support only 5 items, don't show others even if they are in conf file
-		    String s = st.nextToken();
-		    tf.addItem(s);
-		    LOG.debug("added item: " + s);
+		while (st.hasMoreTokens())
+		{
+			items++;
+			if (items > 5)
+				break; // support only 5 items, don't show others even if they are in conf file
+			String s = st.nextToken();
+			tf.addItem(s);
+			LOG.debug("added item: " + s);
 		}
-		
+
 		urlBox.add(tf);
 		urlBox.add(Box.createHorizontalStrut(5));
 		add(urlBox);
@@ -476,7 +476,7 @@ public class SendToDevice extends JPanel implements ActionListener
 	{
 		if (up != null)
 		{
-			final JDFDoc d2 = new JDFParser().parseStream(up.getResponseStream());
+			final JDFDoc d2 = JDFDoc.parseStream(up.getResponseStream());
 			if (d2 != null)
 			{
 				String newFileName = MainView.getEditorDoc().getOriginalFileName();
@@ -517,13 +517,13 @@ public class SendToDevice extends JPanel implements ActionListener
 			url = new URL(urlText);
 			if (bReturn)
 			{
-			    String s = convertJComboBoxToString(tf);
+				String s = convertJComboBoxToString(tf);
 				settingService.setSetting(SettingKey.SEND_URL_RETURN, s);
 			}
 			else
 			{
-			    String s = convertJComboBoxToString(tf);
-			    settingService.setSetting(SettingKey.SEND_URL_SEND, s);
+				String s = convertJComboBoxToString(tf);
+				settingService.setSetting(SettingKey.SEND_URL_SEND, s);
 			}
 		}
 		catch (final MalformedURLException e)
@@ -533,23 +533,26 @@ public class SendToDevice extends JPanel implements ActionListener
 		}
 		return url;
 	}
-	
-	private String convertJComboBoxToString(JComboBox<String> c) {
-	    String currentStr = (String) c.getEditor().getItem();
-	    
-	    Set<String> set = new LinkedHashSet<String>();
-        set.add(currentStr);
-        for (int i = 0; i < c.getItemCount(); i++) {
-            set.add(c.getItemAt(i));
-        }
-        
-        String s = "";
-        Iterator<String> it = set.iterator();
-        while (it.hasNext()) {
-            s += it.next() + ";";
-        }
-        
-        return s;
+
+	private String convertJComboBoxToString(JComboBox<String> c)
+	{
+		String currentStr = (String) c.getEditor().getItem();
+
+		Set<String> set = new LinkedHashSet<String>();
+		set.add(currentStr);
+		for (int i = 0; i < c.getItemCount(); i++)
+		{
+			set.add(c.getItemAt(i));
+		}
+
+		String s = "";
+		Iterator<String> it = set.iterator();
+		while (it.hasNext())
+		{
+			s += it.next() + ";";
+		}
+
+		return s;
 	}
 
 	/**
