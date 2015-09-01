@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2014 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2015 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -613,6 +613,8 @@ public class EditorUtils
 		xjdf20.setMergeRunList(settingService.getBool(SettingKey.XJDF_CONVERT_RUNLIST));
 		xjdf20.setMergeLayoutPrep(settingService.getBool(SettingKey.XJDF_CONVERT_LAYOUTPREP));
 		xjdf20.setConvertTilde(settingService.getBool(SettingKey.XJDF_CONVERT_TILDE));
+		xjdf20.setParameterSet(settingService.getBool(SettingKey.XJDF_SPLIT_PARAMETER));
+		xjdf20.setTypeSafeMessage(settingService.getBool(SettingKey.XJDF_TYPESAFE_JMF));
 		return xjdf20;
 	}
 

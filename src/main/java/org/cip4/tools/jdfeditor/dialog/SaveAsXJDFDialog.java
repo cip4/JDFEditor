@@ -112,6 +112,7 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 	private final JCheckBox cbLoPrep;
 	private final JCheckBox cbTilde;
 	private final JCheckBox cbTypesafeJMF;
+	private final JCheckBox cbParameter;
 	private int choosedButton = BUTTON_CANCEL;
 
 	/**
@@ -135,6 +136,7 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 		cbLoPrep = new JCheckBox(ResourceUtil.getMessage("ConvertLayoutPrepKey"));
 		cbTilde = new JCheckBox(ResourceUtil.getMessage("RemoveTildeFromRange"));
 		cbTypesafeJMF = new JCheckBox(ResourceUtil.getMessage("TypesafeJMF"));
+		cbParameter = new JCheckBox(ResourceUtil.getMessage("ParameterSplit"));
 
 		checkboxesPanel.add(cbSingleNode);
 		checkboxesPanel.add(cbConvertStripping);
@@ -143,6 +145,7 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 		checkboxesPanel.add(cbLoPrep);
 		checkboxesPanel.add(cbTilde);
 		checkboxesPanel.add(cbTypesafeJMF);
+		checkboxesPanel.add(cbParameter);
 
 		JPanel buttonsPanel = new JPanel();
 		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
@@ -174,6 +177,7 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 		cbLoPrep.setSelected(settingService.getBool(SettingKey.XJDF_CONVERT_LAYOUTPREP));
 		cbTilde.setSelected(settingService.getBool(SettingKey.XJDF_CONVERT_TILDE));
 		cbTypesafeJMF.setSelected(settingService.getBool(SettingKey.XJDF_TYPESAFE_JMF));
+		cbParameter.setSelected(settingService.getBool(SettingKey.XJDF_SPLIT_PARAMETER));
 
 		setVisible(true);
 	}
@@ -204,6 +208,7 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 			settingService.setSetting(SettingKey.XJDF_CONVERT_LAYOUTPREP, cbLoPrep.isSelected());
 			settingService.setSetting(SettingKey.XJDF_CONVERT_TILDE, cbTilde.isSelected());
 			settingService.setSetting(SettingKey.XJDF_TYPESAFE_JMF, cbTypesafeJMF.isSelected());
+			settingService.setSetting(SettingKey.XJDF_SPLIT_PARAMETER, cbParameter.isSelected());
 
 			choosedButton = BUTTON_OK;
 			dispose();
