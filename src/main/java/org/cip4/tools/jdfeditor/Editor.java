@@ -81,8 +81,10 @@ import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.jmf.JMFBuilder;
 import org.cip4.jdflib.jmf.JMFBuilderFactory;
+import org.cip4.jdflib.util.MyArgs;
 import org.cip4.jdflib.util.file.UserDir;
 import org.cip4.jdflib.util.logging.LogConfigurator;
+import org.cip4.tools.jdfeditor.commandline.EditorCommandLine;
 import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 
@@ -108,9 +110,9 @@ public class Editor
 	// ////////////////////////////////////////////////////////////////
 	public static void main(final String[] args)
 	{
-
-		// apple menu compatibility
-		System.setProperty("apple.laf.useScreenMenuBar", "true");
+		if (log == null)
+			log = LogFactory.getLog(Editor.class);
+		log.info("Starting editor");
 
 		File file = null;
 		// mac may have 2nd argument
@@ -126,10 +128,21 @@ public class Editor
 				file = null;
 			}
 		}
-		my_Editor = new Editor();
 
 		log.info("Main arguments: " + Arrays.toString(args) + " file=" + file);
-		my_Editor.init(file);
+		MyArgs ma = new MyArgs(args, "C?", "", "");
+		if (ma.boolParameter("C") || ma.boolParameter("?"))
+		{
+			EditorCommandLine checker = new EditorCommandLine();
+			checker.validate(args, null);
+		}
+		else
+		{
+			// apple menu compatibility
+			System.setProperty("apple.laf.useScreenMenuBar", "true");
+			my_Editor = new Editor();
+			my_Editor.init(file);
+		}
 	}
 
 	/**
@@ -140,10 +153,6 @@ public class Editor
 		// log file location
 		String pathDir = new UserDir("JDFEditor").getLogPath();
 		LogConfigurator.configureLog(pathDir, "JDFEditor.log");
-
-		if (log == null)
-			log = LogFactory.getLog(Editor.class);
-		log.info("Starting editor");
 		// nothing to do here (yet)
 	}
 
