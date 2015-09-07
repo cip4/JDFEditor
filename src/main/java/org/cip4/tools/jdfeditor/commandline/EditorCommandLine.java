@@ -110,14 +110,14 @@ import org.cip4.jdflib.validate.JDFValidator;
 public class EditorCommandLine extends JDFValidator
 {
 
-	final private static String usage = "\n******************************************************************************************\n" + "Usage: <input JDF files>\n"
-			+ "-V(ersion) -q(uiet) -c(omplete) -n(amespace) -v(alidate) -t(ime)\n" + "-u(RL)<URL> -h(ost) -p(ort) -l(ocation)<schemaLocation> -L(ocation)<schemaLocation>\n"
-			+ "-d(eviceCapabilities)<input JDM file>  -P(resentValueLists) \n\n"
+	final private static String usage = "\n******************************************************************************************\n"
+			+ "Usage: Editor -C(ommandLine) <input JDF files>\n" + "-V(ersion) -q(uiet) -c(omplete) -n(amespace) -v(alidate) -t(ime)\n"
+			+ "-u(RL)<URL> -h(ost) -p(ort) -l(ocation)<schemaLocation> -L(ocation)<schemaLocation>\n" + "-d(eviceCapabilities)<input JDM file>  -P(resentValueLists) \n\n"
 
-			+ "-? usage info\n" + "-q is quiet for valid files\n" + "-Q is completely quiet for all files\n" + "-n will report all elements from foreign name spaces\n"
-			+ "-c requires all required elements and attributes to exist, else incomplete JDF is OK\n" + "-d location of a device capabilities file to test against\n"
-			+ "-f force version to a given jdf version (1.0, 1.1, 1.2, 1.3, 1.4, 1.5)\n" + "-m print multiple IDs\n"
-			+ "-P device capabilities parameter. Use present value lists, otherwise allowed value lists\n"
+			+ "-? usage info\n" + "-C enables the legacy checkJDF mode\n" + "-q is quiet for valid files\n" + "-Q is completely quiet for all files\n"
+			+ "-n will report all elements from foreign name spaces\n" + "-c requires all required elements and attributes to exist, else incomplete JDF is OK\n"
+			+ "-d location of a device capabilities file to test against\n" + "-f force version to a given jdf version (1.0, 1.1, 1.2, 1.3, 1.4, 1.5)\n"
+			+ "-m print multiple IDs\n" + "-P device capabilities parameter. Use present value lists, otherwise allowed value lists\n"
 			+ "-u URL to send the JMF to. In this case, checkJDF will validate the response from the URL\n" + "-U check for dangling URL attributes\n" + "-h proxy host name\n"
 			+ "-p proxy port name\n"
 			+ "-v validate using XML Schema validation;\n   the Schema can be defined in the xsi:schemaLocation tag in the JDF or using the -l or -L switch\n"
@@ -180,7 +180,7 @@ public class EditorCommandLine extends JDFValidator
 		bQuiet = args.boolParameter('q');
 		bWarnDanglingURL = args.boolParameter('U');
 
-		this.setPrint(!args.boolParameter('Q'));
+		setPrint(!args.boolParameter('Q'));
 		xmlOutputName = args.parameterString('x');
 		xslStyleSheet = args.parameterString('X');
 		getTranslation(args);
