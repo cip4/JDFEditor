@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -80,6 +80,7 @@ import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.jmf.JMFBuilder;
+import org.cip4.jdflib.jmf.JMFBuilderFactory;
 import org.cip4.jdflib.util.file.UserDir;
 import org.cip4.jdflib.util.logging.LogConfigurator;
 import org.cip4.tools.jdfeditor.controller.MainController;
@@ -159,6 +160,8 @@ public class Editor
 		// read the initialization stuff
 		JDFAudit.setStaticAgentName(getEditorName());
 		JDFAudit.setStaticAgentVersion(getEditorVersion());
+		JMFBuilderFactory.setSenderID(getClass(), "JDFEditor");
+
 		KElement.setLongID(mainController.getSetting(SettingKey.GENERAL_LONG_ID, Boolean.class));
 		JDFElement.setDefaultJDFVersion(JDFElement.EnumVersion.getEnum(mainController.getSetting(SettingKey.VALIDATION_VERSION, String.class)));
 		JDFParser.m_searchStream = true;
@@ -195,7 +198,7 @@ public class Editor
 	 */
 	public String getEditorName()
 	{
-		return "CIP4 JDF Editor -- Copyright (c) 2001-2014 CIP4";
+		return "CIP4 JDF Editor -- Copyright (c) 2001-2015 CIP4";
 	}
 
 	/**
@@ -204,7 +207,7 @@ public class Editor
 	 */
 	public String getEditorBuildDate()
 	{
-		return "Estimated Build Date After November 14 2014";
+		return "Estimated Build Date After September 7 2015";
 	}
 
 	/**
@@ -222,10 +225,7 @@ public class Editor
 	 */
 	JMFBuilder getJMFBuilder()
 	{
-		JMFBuilder b = new JMFBuilder();
-		b.setSenderID("JDFEditor");
-		b.setAgentName("CIP4 JDF EDitor");
-		return b;
+		return JMFBuilderFactory.getJMFBuilder(getClass());
 	}
 
 }

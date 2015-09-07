@@ -193,7 +193,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private String currLang;
 	private String currIcon;
 	private String currLNF;
-	private String currMethodSendToDevice;
 	private boolean currRemoveDefault;
 	private boolean currDispDefault;
 	private boolean currRemoveWhite;
@@ -270,7 +269,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
 	void setMethodSendToDevice(final String methodSendToDevice)
 	{
-		this.currMethodSendToDevice = methodSendToDevice;
+		settingService.set(SettingKey.SEND_METHOD, methodSendToDevice);
 	}
 
 	/**
@@ -278,7 +277,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	 */
 	public String getMethodSendToDevice()
 	{
-		return this.currMethodSendToDevice;
+		return settingService.getString(SettingKey.SEND_METHOD);
 	}
 
 	private void applyLnF()
@@ -312,7 +311,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		this.currLNF = settingService.getSetting(SettingKey.GENERAL_LOOK, String.class);
 		this.currValidate = settingService.getSetting(SettingKey.GENERAL_AUTO_VALIDATE, Boolean.class);
 		this.currReadOnly = settingService.getSetting(SettingKey.GENERAL_READ_ONLY, Boolean.class);
-		this.currMethodSendToDevice = settingService.getSetting(SettingKey.GENERAL_LOOK, String.class);
 		this.longID = settingService.getSetting(SettingKey.GENERAL_LONG_ID, Boolean.class);
 		this.updateJobID = settingService.getSetting(SettingKey.GENERAL_UPDATE_JOBID, Boolean.class);
 		this.useSchema = settingService.getSetting(SettingKey.GENERAL_USE_SCHEMA, Boolean.class);
@@ -368,7 +366,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		final JPanel dir = createDirPref();
 		prepareTab(n++, dir, "DirectoriesKey");
 
-		final JPanel send = createSendToDevicePref();
+		final JPanel send = new CommunicationTab().createSendToDevicePref();
 		prepareTab(n++, send, "SendToDeviceKey");
 
 		final JPanel valid = createValidatePref();
@@ -857,83 +855,65 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		return langBox;
 	}
 
-	// 20040906 MRE
-	JPanel createSendToDevicePref()
+	class CommunicationTab implements ActionListener
 	{
-		final JPanel main = new JPanel(new BorderLayout());
-
-		final ButtonGroup bgSendToDevice = new ButtonGroup();
-		boolean selected = false;
-
-		main.add(Box.createVerticalStrut(5), BorderLayout.SOUTH);
-		main.add(Box.createHorizontalStrut(5), BorderLayout.EAST);
-		main.add(Box.createHorizontalStrut(5), BorderLayout.WEST);
-		main.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
-
-		final JPanel sendPanel = new JPanel(null);
-		sendPanel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("DefaultSendToDeviceKey")));
-
-		if (getMethodSendToDevice().equals("JMF"))
+		public CommunicationTab()
 		{
-			selected = true;
+			super();
 		}
-		final JRadioButton jrbSendJMF = new JRadioButton(ResourceUtil.getMessage("sendMethodJMF"), selected);
-		Dimension d = jrbSendJMF.getPreferredSize();
-		jrbSendJMF.setBounds(10, 40, d.width, d.height);
-		bgSendToDevice.add(jrbSendJMF);
-		jrbSendJMF.setActionCommand("JMF");
-		jrbSendJMF.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(final ActionEvent e)
-			{
-				setMethodSendToDevice(e.getActionCommand().toString());
-			}
-		});
 
-		if (getMethodSendToDevice().equals("MIME"))
+		// 20040906 MRE
+		JPanel createSendToDevicePref()
 		{
-			selected = true;
+			final JPanel main = new JPanel(new BorderLayout());
+
+			final ButtonGroup bgSendToDevice = new ButtonGroup();
+
+			main.add(Box.createVerticalStrut(5), BorderLayout.SOUTH);
+			main.add(Box.createHorizontalStrut(5), BorderLayout.EAST);
+			main.add(Box.createHorizontalStrut(5), BorderLayout.WEST);
+			main.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
+
+			final JPanel sendPanel = new JPanel(null);
+			sendPanel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("DefaultSendToDeviceKey")));
+
+			String methodSendToDevice = getMethodSendToDevice();
+			final JRadioButton jrbSendJMF = new JRadioButton(ResourceUtil.getMessage("sendMethodJMF"), "JMF".equals(methodSendToDevice));
+			Dimension d = jrbSendJMF.getPreferredSize();
+			jrbSendJMF.setBounds(10, 40, d.width, d.height);
+			bgSendToDevice.add(jrbSendJMF);
+			jrbSendJMF.setActionCommand("JMF");
+			jrbSendJMF.addActionListener(this);
+
+			final JRadioButton jrbSendMIME = new JRadioButton(ResourceUtil.getMessage("sendMethodMIME"), "MIME".equals(methodSendToDevice));
+			d = jrbSendMIME.getPreferredSize();
+			jrbSendMIME.setBounds(10, 60, d.width, d.height);
+			jrbSendMIME.addActionListener(this);
+			jrbSendMIME.setActionCommand("MIME");
+			bgSendToDevice.add(jrbSendMIME);
+
+			final JRadioButton jrbSendUser = new JRadioButton(ResourceUtil.getMessage("sendMethodUser"), "USER".equals(methodSendToDevice));
+			d = jrbSendUser.getPreferredSize();
+			jrbSendUser.setBounds(10, 80, d.width, d.height);
+			jrbSendUser.addActionListener(this);
+			jrbSendUser.setActionCommand("USER");
+			bgSendToDevice.add(jrbSendUser);
+
+			sendPanel.add(jrbSendJMF);
+			sendPanel.add(jrbSendMIME);
+			sendPanel.add(jrbSendUser);
+
+			main.add(sendPanel, BorderLayout.CENTER);
+
+			return main;
 		}
-		final JRadioButton jrbSendMIME = new JRadioButton(ResourceUtil.getMessage("sendMethodMIME"), selected);
-		d = jrbSendMIME.getPreferredSize();
-		jrbSendMIME.setBounds(10, 60, d.width, d.height);
-		bgSendToDevice.add(jrbSendMIME);
-		jrbSendMIME.setActionCommand("MIME");
-		jrbSendMIME.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(final ActionEvent e)
-			{
-				setMethodSendToDevice(e.getActionCommand().toString());
-			}
-		});
 
-		if (getMethodSendToDevice().equals("User"))
+		@Override
+		public void actionPerformed(ActionEvent e)
 		{
-			selected = true;
+			String method = e.getActionCommand();
+			setMethodSendToDevice(method);
 		}
-		final JRadioButton jrbSendUser = new JRadioButton(ResourceUtil.getMessage("sendMethodUser"), selected);
-		d = jrbSendUser.getPreferredSize();
-		jrbSendUser.setBounds(10, 80, d.width, d.height);
-		bgSendToDevice.add(jrbSendUser);
-		jrbSendUser.setActionCommand("User");
-		jrbSendUser.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(final ActionEvent e)
-			{
-				setMethodSendToDevice(e.getActionCommand().toString());
-			}
-		});
-
-		sendPanel.add(jrbSendJMF);
-		sendPanel.add(jrbSendMIME);
-		sendPanel.add(jrbSendUser);
-
-		main.add(sendPanel, BorderLayout.CENTER);
-
-		return main;
 	}
 
 	class TabListener extends MouseAdapter

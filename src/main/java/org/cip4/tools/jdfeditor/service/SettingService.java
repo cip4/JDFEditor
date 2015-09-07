@@ -230,9 +230,9 @@ public class SettingService
 	 * @param key
 	 * @param value
 	 */
-	public void set(String key, boolean value)
+	public void set(SettingKey key, boolean value)
 	{
-		config.setProperty(key, value ? "true" : "false");
+		config.setProperty(key.getKey(), value ? "true" : "false");
 	}
 
 	/**
@@ -240,9 +240,9 @@ public class SettingService
 	 * @param key
 	 * @param value
 	 */
-	public void set(String key, int value)
+	public void set(SettingKey key, int value)
 	{
-		config.setProperty(key, "" + value);
+		config.setProperty(key.getKey(), "" + value);
 	}
 
 	/**
@@ -250,9 +250,9 @@ public class SettingService
 	 * @param key
 	 * @param value
 	 */
-	public void set(String key, String value)
+	public void set(SettingKey key, String value)
 	{
-		config.setProperty(key, value);
+		config.setProperty(key.getKey(), value);
 	}
 
 	/**
