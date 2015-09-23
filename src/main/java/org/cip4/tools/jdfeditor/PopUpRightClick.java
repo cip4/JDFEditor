@@ -333,7 +333,6 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		m_requiredElemPopupItem = addMenuItem("AddRequiredElKey");
 		add(separator);
 
-		// TODO add spawn
 		if (elem instanceof JDFNode)
 		{
 			m_saveXJDF = addMenuItem("SaveXJDFKey");

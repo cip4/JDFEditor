@@ -344,7 +344,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	/**
 	 * 
-	 * TODO Please insert comment!
+	 * 
 	 * @param pd
 	 */
 	public void applyLookAndFeel(final PreferenceDialog pd)
