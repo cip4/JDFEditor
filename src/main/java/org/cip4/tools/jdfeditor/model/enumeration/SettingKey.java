@@ -73,6 +73,7 @@ package org.cip4.tools.jdfeditor.model.enumeration;
 import javax.swing.UIManager;
 
 import org.cip4.jdflib.core.JDFConstants;
+import org.cip4.tools.jdfeditor.util.DirectoryUtil;
 
 /**
  * Enum of all setting keys.
@@ -90,7 +91,7 @@ public enum SettingKey
 	GOLDENTICKET_MISURL("goldenticket.misurl", null), GOLDENTICKET_BASELEVEL("goldenticket.baselevel", 1), GOLDENTICKET_MISLEVEL("goldenticket.mislevel", 1), GOLDENTICKET_JMFLEVEL(
 			"goldenticket.jmflevel", 1),
 
-	HTTP_STORE_PATH("http.store.path", "/var/tmp/JDFEditor/ReceivedMessages/"), HTTP_PRESELECTED_ADDRESS("http.preselected.address", "127.0.0.1"),
+	HTTP_STORE_PATH("http.store.path", DirectoryUtil.getReceivedMessagesDir()), HTTP_PRESELECTED_ADDRESS("http.preselected.address", "127.0.0.1"),
 
 	LOGGING_LEVEL("logging.level", "INFO"), LOGGING_ENABLED("logging.enabled", true),
 
@@ -198,7 +199,7 @@ public enum SettingKey
 	 */
 	public String getDefaultValue()
 	{
-		return this.defaultValue;
+		return defaultValue;
 	}
 
 	/**
@@ -208,6 +209,6 @@ public enum SettingKey
 	 */
 	public Class<?> getClazz()
 	{
-		return this.clazz;
+		return clazz;
 	}
 }

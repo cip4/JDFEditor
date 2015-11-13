@@ -13,6 +13,8 @@ public class DirectoryUtil {
     private static final String OSX_FOLDER = "Library/Preferences/" + CIP4_FOLDER;
     private static final String WINDOWS_FOLDER = "AppData/Local/" + CIP4_FOLDER;
 
+    private static final String MESSAGES_FOLDER = "JDFEditor/ReceivedMessages";
+
     /**
      * Returns the location of the JDFEditor folder in the CIP4Tool folder.
      * @return Location of the JDFEditor folder in the CIP4Tool folder.
@@ -29,15 +31,20 @@ public class DirectoryUtil {
 
         return pathDir;
     }
-    
+
+    public static String getReceivedMessagesDir() {
+    	final String messagesDir = FilenameUtils.concat(FileUtils.getUserDirectoryPath(), MESSAGES_FOLDER);
+    	return messagesDir;
+    }
+
     private static boolean isLinux() {
     	return SystemUtils.IS_OS_LINUX;
     }
-    
+
     private static boolean isOsX() {
     	return SystemUtils.IS_OS_MAC_OSX;
     }
-    
+
     private static boolean isWindows() {
     	return SystemUtils.IS_OS_WINDOWS;
     }
