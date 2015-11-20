@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -72,11 +72,14 @@ package org.cip4.tools.jdfeditor.transport;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
+import javax.mail.BodyPart;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.JDFDoc;
@@ -87,7 +90,9 @@ import org.cip4.jdflib.util.ByteArrayIOStream;
 import org.cip4.jdflib.util.ByteArrayIOStream.ByteArrayIOInputStream;
 import org.cip4.jdflib.util.ContainerUtil;
 import org.cip4.jdflib.util.FileUtil;
+import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.file.RollingBackupDirectory;
+import org.cip4.jdflib.util.mime.MimeReader;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.view.MainView;
@@ -99,6 +104,11 @@ import org.cip4.tools.jdfeditor.view.MainView;
  */
 public class JMFServlet extends HttpServlet
 {
+	private static final Log LOGGER = LogFactory.getLog(JMFServlet.class);
+	private static final String UTF_8 = "UTF-8";
+	private static final int INDENT = 2;
+	private static final long serialVersionUID = 1L;
+	private static String TIMESTAMP_PATTERN = "yyyy-MM-dd_hh-mm-ss-SSS";
 
 	private String lastDump;
 
@@ -122,12 +132,6 @@ public class JMFServlet extends HttpServlet
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-
-	private static final Log LOGGER = LogFactory.getLog(JMFServlet.class);
-
-	private static String TIMESTAMP_PATTERN = "yyyy-MM-dd_hh-mm-ss-SSS";
-	private static int INDENT = 2;
 
 	private RollingBackupDirectory dumpDir;
 
@@ -158,13 +162,25 @@ public class JMFServlet extends HttpServlet
 	public void processMessage(HttpServletRequest req, HttpServletResponse res) throws IOException
 	{
 		String msg = "Receiving message from " + req.getHeader("User-Agent") + " @ " + req.getRemoteHost() + " (" + req.getRemoteAddr() + ")...";
-		LOGGER.debug(msg);
+		LOGGER.info(msg);
 		//		Build incoming Message
 		String contentType = req.getHeader("Content-type");
-		LOGGER.debug("contentType: " + contentType);
-
-		ByteArrayIOInputStream inputStream = ByteArrayIOStream.getBufferedInputStream(req.getInputStream());
-		JDFDoc doc = JDFDoc.parseStream(inputStream);
+		LOGGER.info("contentType: " + contentType);
+		
+		final boolean isMultipart = MimeUtil.isMimeMultiPart(contentType);
+		LOGGER.info("isMultipart: " + isMultipart);
+		
+		InputStream inputStreamTemp = req.getInputStream();
+		String requestString = IOUtils.toString(inputStreamTemp, UTF_8);
+		LOGGER.info("requestString: " + requestString);
+		InputStream inputStream = IOUtils.toInputStream(requestString, UTF_8);
+		
+		if (isMultipart) {
+			processMultipartMessage(inputStream);
+		} else {
+		ByteArrayIOInputStream inputStream2 = ByteArrayIOStream.getBufferedInputStream(inputStream);
+		
+		JDFDoc doc = JDFDoc.parseStream(inputStream2);
 		if (doc == null)
 		{
 			LOGGER.error("error parsing jmf");
@@ -189,8 +205,52 @@ public class JMFServlet extends HttpServlet
 			String type = currMessage.getType();
 			LOGGER.debug("currMessage type: " + type);
 			File f = dumpDir.getNewFileWithExt(type);
-			FileUtil.streamToFile(ByteArrayIOStream.getBufferedInputStream(inputStream), f);
+			FileUtil.streamToFile(ByteArrayIOStream.getBufferedInputStream(inputStream2), f);
 			MainView.getFrame().getBottomTabs().getHttpPanel().addMessage(jmf, f);
+		}
+		} // else
+	}
+	
+	private void processMultipartMessage(InputStream inputStream) throws IOException
+	{
+		final MimeReader mr = new MimeReader(inputStream);
+		final BodyPart[] bp = mr.getBodyParts();
+
+		LOGGER.info("Received total parts: " + bp.length);
+
+		final JDFDoc docJDF[] = MimeUtil.getJMFSubmission(bp[0].getParent());
+		if (docJDF == null || docJDF.length == 0)
+		{
+			return;
+		}
+
+		for (int partNumber = 0; partNumber < docJDF.length; partNumber++) {
+			JDFJMF jmf = docJDF[partNumber].getJMFRoot();
+			if ((jmf == null) || (jmf.isJDFNode())) {
+				LOGGER.info("Skip partNumber: " + partNumber);
+				continue;
+			}
+
+			String originalJmf = jmf.toDisplayXML(INDENT);
+			LOGGER.info("partNumber: " + partNumber + ", originalJmf: " + originalJmf);
+			InputStream inputStreamJmf = IOUtils.toInputStream(originalJmf, UTF_8);
+
+			VElement e = jmf.getMessageVector(null, null);
+			LOGGER.debug("e.size: " + e.size());
+			if (getDump() == null)
+			{
+				LOGGER.error("no http dump defined");
+				return;
+			}
+			for (int i = 0; i < e.size(); i++)
+			{
+				JDFMessage currMessage = jmf.getMessageElement(null, null, i);
+				String type = currMessage.getType();
+				LOGGER.debug("currMessage type: " + type);
+				File f = dumpDir.getNewFileWithExt(type);
+				FileUtil.streamToFile(ByteArrayIOStream.getBufferedInputStream(inputStreamJmf), f);
+				MainView.getFrame().getBottomTabs().getHttpPanel().addMessage(jmf, f);
+			}
 		}
 	}
 }
