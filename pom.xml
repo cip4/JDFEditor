@@ -3,7 +3,7 @@
 
 	<groupId>org.cip4.tools.jdfeditor</groupId>
 	<artifactId>JDFEditor</artifactId>
-	<version>Paris-15.10</version>
+	<version>Paris-15.10.1-SNAPSHOT</version>
 	<name>CIP4 JDFEditor</name>
 	<description>CIP4 JDFEditor</description>
 	<properties>
