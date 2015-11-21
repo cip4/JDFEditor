@@ -3,7 +3,7 @@
 
 	<groupId>org.cip4.tools.jdfeditor</groupId>
 	<artifactId>JDFEditor</artifactId>
-	<version>Paris-15.11</version>
+	<version>Paris-15.11.1-SNAPSHOT</version>
 	<name>CIP4 JDFEditor</name>
 	<description>CIP4 JDFEditor</description>
 	<properties>
@@ -16,7 +16,7 @@
         <url>https://stash.cip4.org/scm/tool/jdfeditor.git</url>
         <developerConnection>scm:git:https://stash.cip4.org/scm/tool/jdfeditor.git</developerConnection>
         <connection>scm:git:https://stash.cip4.org/scm/tool/jdfeditor.git</connection>
-        <tag>JDFEditor-Paris-15.11</tag>
+        <tag>HEAD</tag>
     </scm>
     <issueManagement>
         <system>JIRA</system>
