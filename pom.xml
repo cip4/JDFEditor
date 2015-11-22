@@ -380,7 +380,7 @@
 										
 										<!-- create app file-->
 										<taskdef name="bundleapp" classname="com.oracle.appbundler.AppBundlerTask" classpath="${basedir}/src/main/assemble/macosx/lib/appbundler-1.0.jar" />
-										<bundleapp outputdirectory="${project.build.directory}/dmg" name="${project.build.finalName}" displayname="My Java Mac OS X App" identifier="org.cip4.tools.jdfeditor.Editor" icon="${basedir}/src/main/assemble/macosx/jdfeditor.icns" shortversion="1.0" applicationCategory="public.app-category.developer-tools" mainclassname="org.cip4.tools.jdfeditor.Editor">
+										<bundleapp outputdirectory="${project.build.directory}/dmg" name="${project.name}" displayname="${project.name}" identifier="org.cip4.tools.jdfeditor.Editor" icon="${basedir}/src/main/assemble/macosx/jdfeditor.icns" shortversion="${project.version}" applicationCategory="public.app-category.developer-tools" mainclassname="org.cip4.tools.jdfeditor.Editor">
 									        <classpath file="${project.build.directory}/${project.build.finalName}-app.jar" />
 									    </bundleapp>
 									    
@@ -410,7 +410,7 @@
 
 										<!-- create app file-->
 										<taskdef name="bundleapp" classname="com.oracle.appbundler.AppBundlerTask" classpath="${basedir}/src/main/assemble/macosx/lib/appbundler-1.0.jar" />
-										<bundleapp outputdirectory="${project.build.directory}/dmg-cli" name="${project.build.finalName}" displayname="My Java Mac OS X App" identifier="org.cip4.tools.jdfeditor.Editor" icon="${basedir}/src/main/assemble/macosx/jdfeditor.icns" shortversion="1.0" applicationCategory="public.app-category.developer-tools" mainclassname="org.cip4.tools.jdfeditor.Editor">
+										<bundleapp outputdirectory="${project.build.directory}/dmg-cli" name="${project.name}" displayname="${project.name}" identifier="org.cip4.tools.jdfeditor.Editor" icon="${basedir}/src/main/assemble/macosx/jdfeditor.icns" shortversion="${project.version}" applicationCategory="public.app-category.developer-tools" mainclassname="org.cip4.tools.jdfeditor.Editor">
 									        <classpath file="${project.build.directory}/${project.build.finalName}-app.jar" />
 									    </bundleapp>
 
