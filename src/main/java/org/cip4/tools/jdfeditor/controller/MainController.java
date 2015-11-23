@@ -12,6 +12,7 @@ import org.cip4.jdflib.core.JDFVersion;
 import org.cip4.tools.jdfeditor.Editor;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
+import org.cip4.tools.jdfeditor.util.BuildPropsUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
 /**
@@ -147,8 +148,20 @@ public class MainController implements ActionListener
 		LOGGER.info("Show Info Window.");
 
 		Editor editor = Editor.getEditor();
-		String msg = editor.getEditorName() + "\n" + editor.getEditorVersion() + " (" + editor.getEditorBuildDate() + ")\n\n" + JDFVersion.LIB_NAME + " ("
-				+ JDFVersion.LIB_ARTIFACT_ID + ")\n" + JDFVersion.LIB_VERSION + " (" + JDFVersion.LIB_RELEASE_DATE + ")";
+
+        String msg = String.format(
+                "%s\n" +
+                "%s (%s)\n\n" +
+                "%s\n" +
+                "%s (%s)",
+                BuildPropsUtil.getAppName(),
+                BuildPropsUtil.getAppVersion(),
+                BuildPropsUtil.getBuildDate(),
+                JDFVersion.LIB_NAME,
+                JDFVersion.LIB_VERSION,
+                JDFVersion.LIB_RELEASE_DATE
+        );
+
 		String title = "Version";
 
 		mainView.showMessageDialog(msg, title);

@@ -87,6 +87,7 @@ import org.cip4.jdflib.util.logging.LogConfigurator;
 import org.cip4.tools.jdfeditor.commandline.EditorCommandLine;
 import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.util.BuildPropsUtil;
 
 /**
  * @author AnderssA ThunellE
@@ -95,6 +96,7 @@ import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 public class Editor
 {
 	private static Editor my_Editor;
+
 	private static Log log = null;
 
 	/*
@@ -167,8 +169,8 @@ public class Editor
 		mainController.displayForm(file);
 
 		// read the initialization stuff
-		JDFAudit.setStaticAgentName(getEditorName());
-		JDFAudit.setStaticAgentVersion(getEditorVersion());
+		JDFAudit.setStaticAgentName(BuildPropsUtil.getAppName());
+		JDFAudit.setStaticAgentVersion(BuildPropsUtil.getAppVersion());
 		JMFBuilderFactory.setSenderID(getClass(), "JDFEditor");
 
 		KElement.setLongID(mainController.getSetting(SettingKey.GENERAL_LONG_ID, Boolean.class));
@@ -183,49 +185,6 @@ public class Editor
 	public static Editor getEditor()
 	{
 		return my_Editor;
-	}
-
-	/**
-	 * @return the about text
-	 */
-	public String getAboutText()
-	{
-		final String about = getEditorName() + "\n" + getEditorVersion() + "\nInternational Cooperation for Integration of Processes in Prepress, Press and Postpress,\n"
-				+ "hereinafter referred to as CIP4. All Rights Reserved\n\n"
-				+ "Authors: Anna Andersson, Evelina Thunell, Ingemar Svenonius, Elena Skobchenko, Rainer Prosi, Alex Khilov, Stefan Meissner\n\n"
-				+ "The APPLICATION is provided 'as is', without warranty of any kind, express, implied, or\n"
-				+ "otherwise, including but not limited to the warranties of merchantability,fitness for a\n"
-				+ "particular purpose and noninfringement. In no event will CIP4 be liable, for any claim,\n"
-				+ "damages or other liability whether in an action of contract, tort or otherwise, arising\n"
-				+ "from, out of, or in connection with the APPLICATION or the use or other dealings in the\n" + "APPLICATION.";
-		return about;
-	}
-
-	/**
-	 * 
-	 * @return the name of the editor
-	 */
-	public String getEditorName()
-	{
-		return "CIP4 JDF Editor -- Copyright (c) 2001-2015 CIP4";
-	}
-
-	/**
-	 * 
-	 * @return the editor build date
-	 */
-	public String getEditorBuildDate()
-	{
-		return "Estimated Build Date After September 23 2015";
-	}
-
-	/**
-	 * 
-	 * @return the editor version
-	 */
-	public String getEditorVersion()
-	{
-		return "Build version " + JDFAudit.software();
 	}
 
 	/**

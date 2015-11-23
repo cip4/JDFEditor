@@ -25,6 +25,7 @@ import org.cip4.tools.jdfeditor.JDFTreeArea;
 import org.cip4.tools.jdfeditor.JDFTreeModel;
 import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.util.BuildPropsUtil;
 
 /**
  * The MainView of the CIP4 JDFEditor.
@@ -115,8 +116,8 @@ public class MainView
 		setCursor(0, null);
 
 		// read the initialization stuff
-		JDFAudit.setStaticAgentName(Editor.getEditor().getEditorName());
-		JDFAudit.setStaticAgentVersion(getEditorVersion());
+		JDFAudit.setStaticAgentName(BuildPropsUtil.getAppName());
+		JDFAudit.setStaticAgentVersion(BuildPropsUtil.getAppVersion());
 		JDFElement.setDefaultJDFVersion(JDFElement.EnumVersion.getEnum(mainController.getSetting(SettingKey.VALIDATION_VERSION, String.class)));
 		JDFParser.m_searchStream = true;
 
