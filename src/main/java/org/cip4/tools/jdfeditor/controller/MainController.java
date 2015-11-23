@@ -152,6 +152,7 @@ public class MainController implements ActionListener
         String msg = String.format(
                 "%s\n" +
                 "%s (%s)\n\n" +
+				"based on\n" +
                 "%s\n" +
                 "%s (%s)",
                 BuildPropsUtil.getAppName(),
