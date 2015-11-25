@@ -75,6 +75,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import javax.mail.BodyPart;
+import javax.mail.MessagingException;
+import javax.mail.util.SharedByteArrayInputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -84,6 +86,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.VElement;
+import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFMessage;
 import org.cip4.jdflib.util.ByteArrayIOStream;
@@ -111,6 +114,7 @@ public class JMFServlet extends HttpServlet
 	private static String TIMESTAMP_PATTERN = "yyyy-MM-dd_hh-mm-ss-SSS";
 
 	private String lastDump;
+	private RollingBackupDirectory dumpDir;
 
 	public JMFServlet()
 	{
@@ -133,7 +137,6 @@ public class JMFServlet extends HttpServlet
 	 * 
 	 */
 
-	private RollingBackupDirectory dumpDir;
 
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException
@@ -159,11 +162,11 @@ public class JMFServlet extends HttpServlet
 		res.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, "HTTP GET not implemented.");
 	}
 
-	public void processMessage(HttpServletRequest req, HttpServletResponse res) throws IOException
+	private void processMessage(HttpServletRequest req, HttpServletResponse res) throws IOException
 	{
 		String msg = "Receiving message from " + req.getHeader("User-Agent") + " @ " + req.getRemoteHost() + " (" + req.getRemoteAddr() + ")...";
 		LOGGER.info(msg);
-		//		Build incoming Message
+//		Build incoming Message
 		String contentType = req.getHeader("Content-type");
 		LOGGER.info("contentType: " + contentType);
 		
@@ -210,7 +213,7 @@ public class JMFServlet extends HttpServlet
 		}
 		} // else
 	}
-	
+
 	private void processMultipartMessage(InputStream inputStream) throws IOException
 	{
 		final MimeReader mr = new MimeReader(inputStream);
@@ -218,38 +221,58 @@ public class JMFServlet extends HttpServlet
 
 		LOGGER.info("Received total parts: " + bp.length);
 
-		final JDFDoc docJDF[] = MimeUtil.getJMFSubmission(bp[0].getParent());
-		if (docJDF == null || docJDF.length == 0)
+		for (int bodyPartNumber = 0; bodyPartNumber < bp.length; bodyPartNumber++)
 		{
-			return;
-		}
-
-		for (int partNumber = 0; partNumber < docJDF.length; partNumber++) {
-			JDFJMF jmf = docJDF[partNumber].getJMFRoot();
-			if ((jmf == null) || (jmf.isJDFNode())) {
-				LOGGER.info("Skip partNumber: " + partNumber);
-				continue;
-			}
-
-			String originalJmf = jmf.toDisplayXML(INDENT);
-			LOGGER.info("partNumber: " + partNumber + ", originalJmf: " + originalJmf);
-			InputStream inputStreamJmf = IOUtils.toInputStream(originalJmf, UTF_8);
-
-			VElement e = jmf.getMessageVector(null, null);
-			LOGGER.debug("e.size: " + e.size());
-			if (getDump() == null)
+			BodyPart part = bp[bodyPartNumber];
+			try
 			{
-				LOGGER.error("no http dump defined");
-				return;
+				if (part.isMimeType("application/vnd.cip4-jmf+xml"))
+				{
+					LOGGER.info("Processing bodyPartNumber: " + bodyPartNumber);
+					SharedByteArrayInputStream is = (SharedByteArrayInputStream) part.getContent();
+					String jmfRequestString = IOUtils.toString(is, UTF_8);
+					LOGGER.info("jmfRequestString: " + jmfRequestString);
+
+//					next 4 lines are quite tricky, idea is - to get JDFJMF initialized from String
+					JDFDoc jdfDocTemp = new JDFDoc();
+					XMLDoc xmlDoc = jdfDocTemp.parseString(jmfRequestString);
+					JDFDoc jdfDoc = new JDFDoc(xmlDoc);
+					JDFJMF jmf = jdfDoc.getJMFRoot();
+
+					if ((jmf == null) || (jmf.isJDFNode()))
+					{
+						LOGGER.info("Skip bodyPartNumber: " + bodyPartNumber + ", jmf: " + jmf);
+						continue;
+					}
+
+					String originalJmf = jmf.toDisplayXML(INDENT);
+					LOGGER.info("bodyPartNumber: " + bodyPartNumber + ", originalJmf: \n" + originalJmf);
+					InputStream inputStreamJmf = IOUtils.toInputStream(originalJmf, UTF_8);
+
+					VElement e = jmf.getMessageVector(null, null);
+					LOGGER.info("e.size: " + e.size());
+					if (getDump() == null)
+					{
+						LOGGER.error("no http dump defined");
+						return;
+					}
+					for (int i = 0; i < e.size(); i++)
+					{
+						JDFMessage currMessage = jmf.getMessageElement(null, null, i);
+						String type = currMessage.getType();
+						LOGGER.debug("currMessage type: " + type);
+						File f = dumpDir.getNewFileWithExt(type);
+						FileUtil.streamToFile(ByteArrayIOStream.getBufferedInputStream(inputStreamJmf), f);
+						MainView.getFrame().getBottomTabs().getHttpPanel().addMessage(jmf, f);
+					}
+				} else
+				{
+					LOGGER.info("Skip bodyPartNumber: " + bodyPartNumber);
+				}
 			}
-			for (int i = 0; i < e.size(); i++)
+			catch (MessagingException e)
 			{
-				JDFMessage currMessage = jmf.getMessageElement(null, null, i);
-				String type = currMessage.getType();
-				LOGGER.debug("currMessage type: " + type);
-				File f = dumpDir.getNewFileWithExt(type);
-				FileUtil.streamToFile(ByteArrayIOStream.getBufferedInputStream(inputStreamJmf), f);
-				MainView.getFrame().getBottomTabs().getHttpPanel().addMessage(jmf, f);
+				LOGGER.error("Error: " + e.getMessage() + ", while processing bodyPartNumber: " + bodyPartNumber, e);
 			}
 		}
 	}
