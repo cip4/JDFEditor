@@ -115,7 +115,7 @@ public class JMFServletTest
 	@Mock
 	private HttpServerPane httpServerPane;
 
-	private StubServletInputStream stubServletInputStream = new StubServletInputStream();
+	private StubServletInputStream stubServletInputStream = new StubServletInputStream("samples/mime-multipart-related-two-jmf.txt");
 
 	@InjectMocks
 	@Spy
@@ -124,6 +124,7 @@ public class JMFServletTest
 	@Before
 	public void setUp() throws Exception
 	{
+		System.setProperty("java.awt.headless", "true");
 	}
 
 	@Test

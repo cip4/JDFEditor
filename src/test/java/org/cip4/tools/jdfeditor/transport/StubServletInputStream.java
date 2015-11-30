@@ -80,11 +80,11 @@ public class StubServletInputStream extends ServletInputStream
 {
 	private ByteArrayInputStream bais;
 
-	public StubServletInputStream()
+	public StubServletInputStream(String file)
 	{
 		try
 		{
-			bais = new ByteArrayInputStream(FileUtils.readFileToByteArray(new File("samples/mime-multipart-related-two-jmf.txt")));
+			bais = new ByteArrayInputStream(FileUtils.readFileToByteArray(new File(file)));
 		} catch (IOException e)
 		{
 			e.printStackTrace();
