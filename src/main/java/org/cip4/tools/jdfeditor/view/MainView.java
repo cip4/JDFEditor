@@ -160,6 +160,15 @@ public class MainView
 	}
 
 	/**
+	 * Allow not static access to frame.
+	 * This is due to specific of test framework, mockito.
+	 */
+	public JDFFrame getCurrentFrame()
+	{
+		return my_Frame;
+	}
+
+	/**
 	 * get the JDFDoc of the currently displayed JDF
 	 * @return the JDFDoc that is currently being displayed
 	 */

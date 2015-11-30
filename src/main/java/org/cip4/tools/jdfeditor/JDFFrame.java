@@ -215,6 +215,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds(0, 0, d.width, d.height - 30);
 		m_menuBar = new EditorMenuBar();
+		m_bottomTabs = new EditorTabbedPaneB();
 	}
 
 	/**
@@ -223,7 +224,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 */
 	public void registerController(final MainController mainController)
 	{
-
 		this.mainController = mainController;
 		m_menuBar.registerController(mainController);
 	}

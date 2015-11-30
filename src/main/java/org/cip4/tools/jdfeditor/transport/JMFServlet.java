@@ -115,10 +115,12 @@ public class JMFServlet extends HttpServlet
 
 	private String lastDump;
 	private RollingBackupDirectory dumpDir;
+	private MainView mainView;
 
 	public JMFServlet()
 	{
 		super();
+		mainView = new MainView();
 	}
 
 	private RollingBackupDirectory getDump()
@@ -181,36 +183,36 @@ public class JMFServlet extends HttpServlet
 		if (isMultipart) {
 			processMultipartMessage(inputStream);
 		} else {
-		ByteArrayIOInputStream inputStream2 = ByteArrayIOStream.getBufferedInputStream(inputStream);
-		
-		JDFDoc doc = JDFDoc.parseStream(inputStream2);
-		if (doc == null)
-		{
-			LOGGER.error("error parsing jmf");
-			return;
-		}
-		JDFJMF jmf = doc.getJMFRoot();
-		if (jmf == null)
-		{
-			LOGGER.error("no root jmf");
-			return;
-		}
-		VElement e = jmf.getMessageVector(null, null);
-		LOGGER.debug("e.size: " + e.size());
-		if (getDump() == null)
-		{
-			LOGGER.error("no http dump defined");
-			return;
-		}
-		for (int i = 0; i < e.size(); i++)
-		{
-			JDFMessage currMessage = jmf.getMessageElement(null, null, i);
-			String type = currMessage.getType();
-			LOGGER.debug("currMessage type: " + type);
-			File f = dumpDir.getNewFileWithExt(type);
-			FileUtil.streamToFile(ByteArrayIOStream.getBufferedInputStream(inputStream2), f);
-			MainView.getFrame().getBottomTabs().getHttpPanel().addMessage(jmf, f);
-		}
+			ByteArrayIOInputStream inputStream2 = ByteArrayIOStream.getBufferedInputStream(inputStream);
+
+			JDFDoc doc = JDFDoc.parseStream(inputStream2);
+			if (doc == null)
+			{
+				LOGGER.error("error parsing jmf");
+				return;
+			}
+			JDFJMF jmf = doc.getJMFRoot();
+			if (jmf == null)
+			{
+				LOGGER.error("no root jmf");
+				return;
+			}
+			VElement e = jmf.getMessageVector(null, null);
+			LOGGER.debug("e.size: " + e.size());
+			if (getDump() == null)
+			{
+				LOGGER.error("no http dump defined");
+				return;
+			}
+			for (int i = 0; i < e.size(); i++)
+			{
+				JDFMessage currMessage = jmf.getMessageElement(null, null, i);
+				String type = currMessage.getType();
+				LOGGER.debug("currMessage type: " + type);
+				File f = dumpDir.getNewFileWithExt(type);
+				FileUtil.streamToFile(ByteArrayIOStream.getBufferedInputStream(inputStream2), f);
+				mainView.getCurrentFrame().getBottomTabs().getHttpPanel().addMessage(jmf, f);
+			}
 		} // else
 	}
 
@@ -263,7 +265,7 @@ public class JMFServlet extends HttpServlet
 						LOGGER.debug("currMessage type: " + type);
 						File f = dumpDir.getNewFileWithExt(type);
 						FileUtil.streamToFile(ByteArrayIOStream.getBufferedInputStream(inputStreamJmf), f);
-						MainView.getFrame().getBottomTabs().getHttpPanel().addMessage(jmf, f);
+						mainView.getCurrentFrame().getBottomTabs().getHttpPanel().addMessage(jmf, f);
 					}
 				} else
 				{
