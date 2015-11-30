@@ -70,6 +70,7 @@
  */
 package org.cip4.tools.jdfeditor.transport;
 
+import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -120,7 +121,14 @@ public class JMFServlet extends HttpServlet
 	public JMFServlet()
 	{
 		super();
-		mainView = new MainView();
+		if (GraphicsEnvironment.isHeadless())
+		{
+//			TODO: finish with headless mode
+			System.err.println("Temporary workaround for headless mode used in Bamboo CI");
+		} else
+		{
+			mainView = new MainView();
+		}
 	}
 
 	private RollingBackupDirectory getDump()

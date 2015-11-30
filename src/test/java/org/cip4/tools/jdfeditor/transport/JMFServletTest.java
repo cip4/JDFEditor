@@ -71,7 +71,6 @@ package org.cip4.tools.jdfeditor.transport;
 import java.io.File;
 import java.io.IOException;
 
-import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -124,7 +123,6 @@ public class JMFServletTest
 	@Before
 	public void setUp() throws Exception
 	{
-		System.setProperty("java.awt.headless", "true");
 	}
 
 	@Test
