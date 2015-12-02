@@ -103,9 +103,6 @@ public class JMFServletTest
 	private HttpServletResponse httpServletResponse;
 
 	@Mock
-	private MainView mainView;
-
-	@Mock
 	private JDFFrame jdfFrame;
 
 	@Mock
@@ -128,7 +125,6 @@ public class JMFServletTest
 	@Test
 	public void shouldAddTwoItemsToHttpServerPane() throws IOException
 	{
-		when(mainView.getCurrentFrame()).thenReturn(jdfFrame);
 		when(jdfFrame.getBottomTabs()).thenReturn(editorTabbedPaneB);
 		when(editorTabbedPaneB.getHttpPanel()).thenReturn(httpServerPane);
 		

@@ -97,6 +97,7 @@ import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.file.RollingBackupDirectory;
 import org.cip4.jdflib.util.mime.MimeReader;
+import org.cip4.tools.jdfeditor.JDFFrame;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.view.MainView;
@@ -116,19 +117,10 @@ public class JMFServlet extends HttpServlet
 
 	private String lastDump;
 	private RollingBackupDirectory dumpDir;
-	private MainView mainView;
+	private JDFFrame jdfFrame = MainView.getFrame();
 
 	public JMFServlet()
 	{
-		super();
-		if (GraphicsEnvironment.isHeadless())
-		{
-//			TODO: finish with headless mode
-			System.err.println("Temporary workaround for headless mode used in Bamboo CI");
-		} else
-		{
-			mainView = new MainView();
-		}
 	}
 
 	private RollingBackupDirectory getDump()
@@ -142,11 +134,6 @@ public class JMFServlet extends HttpServlet
 		}
 		return dumpDir;
 	}
-
-	/**
-	 * 
-	 */
-
 
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException
@@ -219,7 +206,7 @@ public class JMFServlet extends HttpServlet
 				LOGGER.debug("currMessage type: " + type);
 				File f = dumpDir.getNewFileWithExt(type);
 				FileUtil.streamToFile(ByteArrayIOStream.getBufferedInputStream(inputStream2), f);
-				mainView.getCurrentFrame().getBottomTabs().getHttpPanel().addMessage(jmf, f);
+				jdfFrame.getBottomTabs().getHttpPanel().addMessage(jmf, f);
 			}
 		} // else
 	}
@@ -241,7 +228,7 @@ public class JMFServlet extends HttpServlet
 					LOGGER.info("Processing bodyPartNumber: " + bodyPartNumber);
 					SharedByteArrayInputStream is = (SharedByteArrayInputStream) part.getContent();
 					String jmfRequestString = IOUtils.toString(is, UTF_8);
-					LOGGER.info("jmfRequestString: " + jmfRequestString);
+//					LOGGER.info("jmfRequestString: " + jmfRequestString);
 
 //					next 4 lines are quite tricky, idea is - to get JDFJMF initialized from String
 					JDFDoc jdfDocTemp = new JDFDoc();
@@ -273,7 +260,7 @@ public class JMFServlet extends HttpServlet
 						LOGGER.debug("currMessage type: " + type);
 						File f = dumpDir.getNewFileWithExt(type);
 						FileUtil.streamToFile(ByteArrayIOStream.getBufferedInputStream(inputStreamJmf), f);
-						mainView.getCurrentFrame().getBottomTabs().getHttpPanel().addMessage(jmf, f);
+						jdfFrame.getBottomTabs().getHttpPanel().addMessage(jmf, f);
 					}
 				} else
 				{
