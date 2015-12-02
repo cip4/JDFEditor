@@ -111,7 +111,7 @@ public class JMFServletTest
 	@Mock
 	private HttpServerPane httpServerPane;
 
-	private StubServletInputStream stubServletInputStream = new StubServletInputStream("samples/mime-multipart-related-two-jmf.txt");
+	private StubServletInputStream stubServletInputStream = new StubServletInputStream("samples/mime-multipart-related-one-jmf.txt");
 
 	@InjectMocks
 	@Spy
@@ -123,16 +123,34 @@ public class JMFServletTest
 	}
 
 	@Test
-	public void shouldAddTwoItemsToHttpServerPane() throws IOException
+	public void shouldAddOneItemToHttpServerPane() throws IOException
 	{
+		stubServletInputStream = new StubServletInputStream("samples/mime-multipart-related-one-jmf.txt");
+
 		when(jdfFrame.getBottomTabs()).thenReturn(editorTabbedPaneB);
 		when(editorTabbedPaneB.getHttpPanel()).thenReturn(httpServerPane);
-		
+
 		when(httpServletRequest.getHeader("Content-type")).thenReturn("multipart/related");
 		when(httpServletRequest.getInputStream()).thenReturn(stubServletInputStream);
-		
+
 		jmfServlet.doPost(httpServletRequest, httpServletResponse);
-		
+
+		verify(httpServerPane, times(1)).addMessage(any(JDFJMF.class), any(File.class));
+	}
+
+	@Test
+	public void shouldAddTwoItemsToHttpServerPane() throws IOException
+	{
+		stubServletInputStream = new StubServletInputStream("samples/mime-multipart-related-two-jmf.txt");
+
+		when(jdfFrame.getBottomTabs()).thenReturn(editorTabbedPaneB);
+		when(editorTabbedPaneB.getHttpPanel()).thenReturn(httpServerPane);
+
+		when(httpServletRequest.getHeader("Content-type")).thenReturn("multipart/related");
+		when(httpServletRequest.getInputStream()).thenReturn(stubServletInputStream);
+
+		jmfServlet.doPost(httpServletRequest, httpServletResponse);
+
 		verify(httpServerPane, times(2)).addMessage(any(JDFJMF.class), any(File.class));
 	}
 }
