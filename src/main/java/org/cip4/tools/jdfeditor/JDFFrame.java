@@ -1069,7 +1069,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		{
 			exportToDevCap();
 		}
-		else if (eSrc == m_menuBar.m_quitItem)
+		else if (eSrc == m_menuBar.getMenuFile().m_quitItem)
 		{
 			if (closeFile(9999) != JOptionPane.CANCEL_OPTION)
 			{

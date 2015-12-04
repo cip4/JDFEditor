@@ -138,7 +138,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	protected JMenu m_helpMenu;
 
 	private JMenuItem m_nextItem;
-	JMenuItem m_quitItem;
 	JMenuItem m_exportItem;
 	JMenuItem m_copyItem;
 	JMenuItem m_cutItem;
@@ -194,6 +193,11 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	public void registerController(final MainController mainController)
 	{
 		this.mainController = mainController;
+	}
+
+	public EditorMenuBarFile getMenuFile()
+	{
+		return editorMenuBarFile;
 	}
 
 	public EditorMenuBarTools getMenuTools()

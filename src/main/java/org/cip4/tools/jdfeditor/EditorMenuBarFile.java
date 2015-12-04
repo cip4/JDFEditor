@@ -33,8 +33,8 @@ public class EditorMenuBarFile implements ActionListener
 	private JMenuItem[] m_subMenuItem = new JMenuItem[5];
 	private JMenuItem m_devcapOpenMenu;
 	private JMenuItem m_csvItem;
-	private JMenuItem m_quitItem;
-	
+	public JMenuItem m_quitItem;
+
 	public EditorMenuBarFile(final MainController mainController)
 	{
 		this.mainController = mainController;
