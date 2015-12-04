@@ -1088,7 +1088,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		{
 			getModel().validate();
 		}
-		else if (eSrc == m_menuBar.m_fixVersionItem)
+		else if (eSrc == m_menuBar.getMenuTools().m_fixVersionItem)
 		{
 			fixVersion();
 		}
@@ -1517,11 +1517,11 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 					if (elem instanceof JDFNode)
 					{
-						m_menuBar.setSpawnMergeEnabled(true);
+						m_menuBar.getMenuTools().setSpawnMergeEnabled(true);
 					}
 					else
 					{
-						m_menuBar.setSpawnMergeEnabled(false);
+						m_menuBar.getMenuTools().setSpawnMergeEnabled(false);
 					}
 					m_menuBar.m_pasteItem.setEnabled(m_copyNode != null);
 					m_buttonBar.m_pasteButton.setEnabled(m_copyNode != null);
@@ -1529,7 +1529,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				}
 				else
 				{
-					m_menuBar.setSpawnMergeEnabled(false);
+					m_menuBar.getMenuTools().setSpawnMergeEnabled(false);
 					m_menuBar.m_pasteItem.setEnabled(false);
 					m_buttonBar.m_pasteButton.setEnabled(false);
 				}
