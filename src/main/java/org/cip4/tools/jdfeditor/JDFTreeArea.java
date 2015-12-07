@@ -270,7 +270,7 @@ public class JDFTreeArea extends JTextArea
 		jdfTree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
 		m_treeSelectionListener = m_frame.getTreeSelectionListener();
 		jdfTree.addTreeSelectionListener(m_treeSelectionListener);
-		jdfTree.setRowHeight(18);
+//		jdfTree.setRowHeight(18);
 
 		// jdfTree.expandPath(new TreePath(((JDFTreeNode) root.getFirstChild()).getPath()));
 		// jdfTree.expandPath(eDoc.getLastSelection());
@@ -971,7 +971,4 @@ public class JDFTreeArea extends JTextArea
 		return target;
 	}
 
-	// //////////////////////////////////////////////////////////////////////////////////////
-	// //////////////////////////////////////////////////////////////////////////////////////
-	// //////////////////////////////////////////////////////////////////////////////////////
 }
