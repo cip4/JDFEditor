@@ -95,6 +95,7 @@ import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.extensions.XJDF20;
+import org.cip4.jdflib.extensions.xjdfwalker.jdftoxjdf.JDFToXJDF.EnumProcessPartition;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.jdflib.resource.JDFResource;
@@ -606,8 +607,14 @@ public class EditorUtils
 	{
 		XJDF20 xjdf20 = new XJDF20();
 		SettingService settingService = SettingService.getSettingService();
-
-		xjdf20.setSingleNode(settingService.getBool(SettingKey.XJDF_CONVERT_SINGLENODE));
+		String procMethod = settingService.getString(SettingKey.XJDF_CONVERT_SINGLENODE);
+		boolean single = "SingleNode".equals(procMethod);
+		xjdf20.setSingleNode(single);
+		if (!single)
+		{
+			EnumProcessPartition proc = EnumProcessPartition.valueOf(procMethod);
+			xjdf20.setProcessPart(proc);
+		}
 		xjdf20.setMergeLayout(settingService.getBool(SettingKey.XJDF_CONVERT_STRIPPING));
 		xjdf20.setSpanAsAttribute(settingService.getBool(SettingKey.XJDF_CONVERT_SPAN));
 		xjdf20.setMergeRunList(settingService.getBool(SettingKey.XJDF_CONVERT_RUNLIST));
