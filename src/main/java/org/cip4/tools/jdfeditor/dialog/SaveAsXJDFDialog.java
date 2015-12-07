@@ -75,14 +75,17 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Vector;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
+import org.cip4.jdflib.extensions.xjdfwalker.jdftoxjdf.JDFToXJDF.EnumProcessPartition;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
@@ -105,7 +108,7 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 	private final JButton bOK;
 	private final JButton bCancel;
 
-	private final JCheckBox cbSingleNode;
+	private final JComboBox<String> cbProcessPart;
 	private final JCheckBox cbConvertStripping;
 	private final JCheckBox cbSpanAttribute;
 	private final JCheckBox cbMergeRunList;
@@ -129,7 +132,8 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 		JPanel checkboxesPanel = new JPanel();
 		checkboxesPanel.setLayout(new BoxLayout(checkboxesPanel, BoxLayout.Y_AXIS));
 
-		cbSingleNode = new JCheckBox(ResourceUtil.getMessage("SingleNodeKey"));
+		cbProcessPart = createProcessBox();
+
 		cbConvertStripping = new JCheckBox(ResourceUtil.getMessage("ConvertStrippingKey"));
 		cbSpanAttribute = new JCheckBox(ResourceUtil.getMessage("SpanAsAttributeKey"));
 		cbMergeRunList = new JCheckBox(ResourceUtil.getMessage("MergeRunListKey"));
@@ -138,7 +142,7 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 		cbTypesafeJMF = new JCheckBox(ResourceUtil.getMessage("TypesafeJMF"));
 		cbParameter = new JCheckBox(ResourceUtil.getMessage("ParameterSplit"));
 
-		checkboxesPanel.add(cbSingleNode);
+		checkboxesPanel.add(cbProcessPart);
 		checkboxesPanel.add(cbConvertStripping);
 		checkboxesPanel.add(cbSpanAttribute);
 		checkboxesPanel.add(cbMergeRunList);
@@ -170,7 +174,7 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 		setSize(screenWidth / 4, screenHeight / 4);
 		setLocation(screenWidth / 4, screenHeight / 4);
 
-		cbSingleNode.setSelected(settingService.getBool(SettingKey.XJDF_CONVERT_SINGLENODE));
+		cbProcessPart.setSelectedItem(settingService.getString(SettingKey.XJDF_CONVERT_SINGLENODE));
 		cbConvertStripping.setSelected(settingService.getBool(SettingKey.XJDF_CONVERT_STRIPPING));
 		cbSpanAttribute.setSelected(settingService.getBool(SettingKey.XJDF_CONVERT_SPAN));
 		cbMergeRunList.setSelected(settingService.getBool(SettingKey.XJDF_CONVERT_RUNLIST));
@@ -180,6 +184,17 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 		cbParameter.setSelected(settingService.getBool(SettingKey.XJDF_SPLIT_PARAMETER));
 
 		setVisible(true);
+	}
+
+	private JComboBox<String> createProcessBox()
+	{
+		final Vector<String> allValues = new Vector<String>();
+		allValues.addElement("SingleNode");
+		allValues.addElement(EnumProcessPartition.processList.name());
+		allValues.addElement(EnumProcessPartition.processTypes.name());
+		allValues.addElement(EnumProcessPartition.jobPartID.name());
+		return new JComboBox<String>(allValues);
+		//cbProcessPartResourceUtil.getMessage("SingleNodeKey")
 	}
 
 	/**
@@ -201,14 +216,14 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 	{
 		if (e.getSource() == bOK)
 		{
-			settingService.setSetting(SettingKey.XJDF_CONVERT_SINGLENODE, cbSingleNode.isSelected());
-			settingService.setSetting(SettingKey.XJDF_CONVERT_STRIPPING, cbConvertStripping.isSelected());
-			settingService.setSetting(SettingKey.XJDF_CONVERT_SPAN, cbSpanAttribute.isSelected());
-			settingService.setSetting(SettingKey.XJDF_CONVERT_RUNLIST, cbMergeRunList.isSelected());
-			settingService.setSetting(SettingKey.XJDF_CONVERT_LAYOUTPREP, cbLoPrep.isSelected());
-			settingService.setSetting(SettingKey.XJDF_CONVERT_TILDE, cbTilde.isSelected());
-			settingService.setSetting(SettingKey.XJDF_TYPESAFE_JMF, cbTypesafeJMF.isSelected());
-			settingService.setSetting(SettingKey.XJDF_SPLIT_PARAMETER, cbParameter.isSelected());
+			settingService.set(SettingKey.XJDF_CONVERT_SINGLENODE, (String) cbProcessPart.getSelectedItem());
+			settingService.set(SettingKey.XJDF_CONVERT_STRIPPING, cbConvertStripping.isSelected());
+			settingService.set(SettingKey.XJDF_CONVERT_SPAN, cbSpanAttribute.isSelected());
+			settingService.set(SettingKey.XJDF_CONVERT_RUNLIST, cbMergeRunList.isSelected());
+			settingService.set(SettingKey.XJDF_CONVERT_LAYOUTPREP, cbLoPrep.isSelected());
+			settingService.set(SettingKey.XJDF_CONVERT_TILDE, cbTilde.isSelected());
+			settingService.set(SettingKey.XJDF_TYPESAFE_JMF, cbTypesafeJMF.isSelected());
+			settingService.set(SettingKey.XJDF_SPLIT_PARAMETER, cbParameter.isSelected());
 
 			choosedButton = BUTTON_OK;
 			dispose();
