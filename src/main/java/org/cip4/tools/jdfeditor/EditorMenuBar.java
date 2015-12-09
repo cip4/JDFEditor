@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2010 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -98,6 +98,7 @@ import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.tools.jdfeditor.controller.MainController;
+import org.cip4.tools.jdfeditor.menu.EditorMenuBarView;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.util.RecentFileUtil;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
@@ -112,10 +113,6 @@ import org.cip4.tools.jdfeditor.view.MainView;
  */
 public class EditorMenuBar extends JMenuBar implements ActionListener
 {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private MainController mainController;
@@ -127,10 +124,8 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	protected JMenu m_insertMenu;
 	
 	private EditorMenuBarFile editorMenuBarFile;
-	private JMenu m_fileMenu;
-	
+	private EditorMenuBarView editorMenuBarView;
 	private EditorMenuBarTools editorMenuBarTools;
-	private JMenu m_toolsMenu;
 	
 	protected JMenu m_editMenu;
 	protected JMenu m_validateMenu;
@@ -173,11 +168,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	JMenuItem m_insertAttrItem;
 	JMenuItem m_pastePopupItem;
 
-	private JRadioButtonMenuItem m_highlightFNRadioItem;
-	private JRadioButtonMenuItem m_showAttrRadioItem;
-	private JRadioButtonMenuItem m_showInhAttrRadioItem;
-	private JRadioButtonMenuItem m_DispDefAttrRadioItem;
-
 
 	/**
 	 * Default constructor.
@@ -203,22 +193,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	public EditorMenuBarTools getMenuTools()
 	{
 		return editorMenuBarTools;
-	}
-
-	private JMenu drawFileMenu()
-	{
-		editorMenuBarFile = new EditorMenuBarFile(mainController);
-		m_fileMenu = editorMenuBarFile.createMenu();
-		
-		return m_fileMenu;
-	}
-	
-	private JMenu drawToolsMenu()
-	{
-		editorMenuBarTools = new EditorMenuBarTools(mainController);
-		m_toolsMenu = editorMenuBarTools.createMenu();
-		
-		return m_toolsMenu;
 	}
 
 	/**
@@ -356,25 +330,33 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		setBackground(Color.lightGray);
 		final Color menuColor = getBackground();
 
-		final JMenu fileM = drawFileMenu();
-		fileM.setMnemonic('F');
-		fileM.setBackground(menuColor);
-		add(fileM);
+		editorMenuBarFile = new EditorMenuBarFile(mainController);
+		final JMenu m_fileMenu = editorMenuBarFile.createMenu();
+		m_fileMenu.setMnemonic('F');
+		m_fileMenu.setBackground(menuColor);
+		add(m_fileMenu);
 
 		final JMenu editM = drawEditMenu();
 		editM.setMnemonic('E');
 		editM.setBackground(menuColor);
 		add(editM);
 
+		editorMenuBarView = new EditorMenuBarView(mainController);
+		final JMenu m_viewMenu = editorMenuBarView.createMenu();
+		m_viewMenu.setMnemonic('V');
+		m_viewMenu.setBackground(menuColor);
+		add(m_viewMenu);
+
 		final JMenu insertM = drawInsertMenu();
 		insertM.setMnemonic('I');
 		insertM.setBackground(menuColor);
 		add(insertM);
 
-		final JMenu toolsM = drawToolsMenu();
-		toolsM.setMnemonic('T');
-		toolsM.setBackground(menuColor);
-		add(toolsM);
+		editorMenuBarTools = new EditorMenuBarTools(mainController);
+		final JMenu m_toolsMenu = editorMenuBarTools.createMenu();
+		m_toolsMenu.setMnemonic('T');
+		m_toolsMenu.setBackground(menuColor);
+		add(m_toolsMenu);
 
 		final JMenu validateM = drawValidateMenu();
 		validateM.setMnemonic('V');
@@ -488,26 +470,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		m_QuickValidateItem.setEnabled(false);
 		m_QuickValidateItem.setAccelerator(KeyStroke.getKeyStroke('A', menuKeyMask));
 		m_validateMenu.add(m_QuickValidateItem);
-
-		m_validateMenu.add(new JSeparator());
-
-		m_highlightFNRadioItem = new JRadioButtonMenuItem(ResourceUtil.getMessage("main.menu.tools.validate.highlight"), mainController.getSetting(SettingKey.VALIDATION_HIGHTLIGHT_FN, Boolean.class));
-		m_highlightFNRadioItem.addActionListener(this);
-		m_validateMenu.add(m_highlightFNRadioItem);
-
-		m_validateMenu.add(new JSeparator());
-
-		m_showAttrRadioItem = new JRadioButtonMenuItem(ResourceUtil.getMessage("main.menu.tools.validate.display.attributes"), mainController.getSetting(SettingKey.TREEVIEW_ATTRIBUTE, Boolean.class));
-		m_showAttrRadioItem.addActionListener(this);
-		m_validateMenu.add(m_showAttrRadioItem);
-
-		m_showInhAttrRadioItem = new JRadioButtonMenuItem(ResourceUtil.getMessage("main.menu.tools.validate.display.attributes.inherited"), mainController.getSetting(SettingKey.TREEVIEW_ATTRIBUTE_INHERITED, Boolean.class));
-		m_showInhAttrRadioItem.addActionListener(this);
-		m_validateMenu.add(m_showInhAttrRadioItem);
-
-		m_DispDefAttrRadioItem = new JRadioButtonMenuItem(ResourceUtil.getMessage("main.menu.tools.validate.display.attributes.default"), mainController.getSetting(SettingKey.GENERAL_DISPLAY_DEFAULT, Boolean.class));
-		m_DispDefAttrRadioItem.addActionListener(this);
-		m_validateMenu.add(m_DispDefAttrRadioItem);
 
 		m_validateMenu.add(new JSeparator());
 
@@ -733,7 +695,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 	// //////////////////////////////////////////////////////////////////////////////
 
-	class Menu_MouseListener extends MouseAdapter
+	public class Menu_MouseListener extends MouseAdapter
 	{
 		@Override
 		public void mouseEntered(final MouseEvent e)
@@ -765,32 +727,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		final JDFFrame frame = MainView.getFrame();
 		final JDFTreeArea ta = frame.m_treeArea;
 		
-		if (eSrc == m_showInhAttrRadioItem)
-		{
-			mainController.setSetting(SettingKey.TREEVIEW_ATTRIBUTE_INHERITED, m_showInhAttrRadioItem.isSelected());
-			if (getJDFDoc() != null)
-			{
-				ta.drawTreeView(frame.getEditorDoc());
-			}
-
-		}
-		if (eSrc == m_DispDefAttrRadioItem)
-		{
-			mainController.setSetting(SettingKey.GENERAL_DISPLAY_DEFAULT, m_DispDefAttrRadioItem.isSelected());
-			if (getJDFDoc() != null)
-			{
-				ta.drawTreeView(frame.getEditorDoc());
-			}
-		}
-		else if (eSrc == m_showAttrRadioItem)
-		{
-			toggleAttributes();
-		}
-		else if (eSrc == m_highlightFNRadioItem)
-		{
-			mainController.setSetting(SettingKey.VALIDATION_HIGHTLIGHT_FN, m_highlightFNRadioItem.isSelected());
-		}
-		else if (eSrc == m_nextItem)
+		if (eSrc == m_nextItem)
 		{
 			frame.nextFile(-1);
 		}
@@ -824,48 +761,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 		MainView.setCursor(0, null);
 
-	}
-
-	/**
-	 * toggle attributes on and off
-	 */
-	private void toggleAttributes()
-	{
-		final JDFFrame frame = MainView.getFrame();
-		final JDFTreeArea ta = frame.m_treeArea;
-
-		if (!m_showAttrRadioItem.isSelected())
-		{
-			m_showInhAttrRadioItem.setSelected(false);
-			m_showInhAttrRadioItem.setEnabled(false);
-			m_DispDefAttrRadioItem.setSelected(false);
-			m_DispDefAttrRadioItem.setEnabled(false);
-		}
-		else
-		{
-			m_showInhAttrRadioItem.setEnabled(true);
-			m_DispDefAttrRadioItem.setEnabled(true);
-		}
-
-		mainController.setSetting(SettingKey.TREEVIEW_ATTRIBUTE, m_showAttrRadioItem.isSelected());
-		mainController.setSetting(SettingKey.GENERAL_DISPLAY_DEFAULT, m_DispDefAttrRadioItem.isSelected());
-		mainController.setSetting(SettingKey.TREEVIEW_ATTRIBUTE_INHERITED, m_showInhAttrRadioItem.isSelected());
-		if (getJDFDoc() != null)
-		{
-			ta.drawTreeView(frame.getEditorDoc());
-		}
-	}
-
-	private JDFDoc getJDFDoc()
-	{
-		final EditorDocument ed = getEditorDoc();
-		return ed == null ? null : ed.getJDFDoc();
-	}
-
-	private EditorDocument getEditorDoc()
-	{
-		final EditorDocument ed = MainView.getFrame().getEditorDoc();
-		return ed;
 	}
 
 	/**

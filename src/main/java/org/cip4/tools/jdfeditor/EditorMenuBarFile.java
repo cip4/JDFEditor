@@ -12,16 +12,17 @@ import javax.swing.KeyStroke;
 
 import org.cip4.tools.jdfeditor.EditorMenuBar.Menu_MouseListener;
 import org.cip4.tools.jdfeditor.controller.MainController;
+import org.cip4.tools.jdfeditor.menu.MenuInterface;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.util.RecentFileUtil;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
-public class EditorMenuBarFile implements ActionListener
+public class EditorMenuBarFile implements ActionListener, MenuInterface
 {
 	private MainController mainController;
 	
-	private JMenu m_fileMenu;
+	private JMenu menu;
 	private JMenu m_recentFilesMenu;
 	
 	private JMenuItem m_newItem;
@@ -46,42 +47,42 @@ public class EditorMenuBarFile implements ActionListener
 		final Menu_MouseListener menuListener = new EditorMenuBar().new Menu_MouseListener();
 		final int menuKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
-		m_fileMenu = new JMenu(ResourceUtil.getMessage("main.menu.file"));
-		m_fileMenu.setBorderPainted(false);
-		m_fileMenu.addMouseListener(menuListener);
+		menu = new JMenu(ResourceUtil.getMessage("main.menu.file"));
+		menu.setBorderPainted(false);
+		menu.addMouseListener(menuListener);
 
 		m_newItem = new JMenuItem(ResourceUtil.getMessage("main.menu.file.new"));
 		m_newItem.addActionListener(this);
 		m_newItem.setAccelerator(KeyStroke.getKeyStroke('N', menuKeyMask));
-		m_fileMenu.add(m_newItem);
+		menu.add(m_newItem);
 
 		m_openItem = new JMenuItem(ResourceUtil.getMessage("main.menu.file.open"));
 		m_openItem.addActionListener(this);
 		m_openItem.setAccelerator(KeyStroke.getKeyStroke('O', menuKeyMask));
-		m_fileMenu.add(m_openItem);
+		menu.add(m_openItem);
 
 		m_closeItem = new JMenuItem(ResourceUtil.getMessage("main.menu.file.close"));
 		m_closeItem.addActionListener(this);
 		m_closeItem.setAccelerator(KeyStroke.getKeyStroke('W', menuKeyMask));
-		m_fileMenu.add(m_closeItem);
+		menu.add(m_closeItem);
 
 		m_closeAllItem = new JMenuItem(ResourceUtil.getMessage("main.menu.file.close.all"));
 		m_closeAllItem.addActionListener(this);
-		m_fileMenu.add(m_closeAllItem);
+		menu.add(m_closeAllItem);
 
-		m_fileMenu.add(new JSeparator());
+		menu.add(new JSeparator());
 		
 		m_saveItem = new JMenuItem(ResourceUtil.getMessage("main.menu.file.save"));
 		m_saveItem.addActionListener(this);
 		m_saveItem.setAccelerator(KeyStroke.getKeyStroke('S', menuKeyMask));
-		m_fileMenu.add(m_saveItem);
+		menu.add(m_saveItem);
 
 		m_saveAsItem = new JMenuItem(ResourceUtil.getMessage("main.menu.file.save.as"));
 		m_saveAsItem.addActionListener(this);
 		m_saveAsItem.setAccelerator(KeyStroke.getKeyStroke('S', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
-		m_fileMenu.add(m_saveAsItem);
+		menu.add(m_saveAsItem);
 		
-		m_fileMenu.add(new JSeparator());
+		menu.add(new JSeparator());
 		
 		m_recentFilesMenu = new JMenu(ResourceUtil.getMessage("main.menu.file.open.recent.file"));
 		final String[] vRecentFiles = recentFiles();
@@ -94,26 +95,26 @@ public class EditorMenuBarFile implements ActionListener
 			m_subMenuItem[i].setAccelerator(KeyStroke.getKeyStroke('1' + i, menuKeyMask));
 			m_recentFilesMenu.add(m_subMenuItem[i]);
 		}
-		m_fileMenu.add(m_recentFilesMenu);
+		menu.add(m_recentFilesMenu);
 		
-		m_fileMenu.add(new JSeparator());
+		menu.add(new JSeparator());
 		
 		m_devcapOpenMenu = new JMenuItem(ResourceUtil.getMessage("main.menu.file.open.recent.devcap"));
-		m_fileMenu.add(m_devcapOpenMenu);
+		menu.add(m_devcapOpenMenu);
 		m_devcapOpenMenu.addActionListener(this);
 
 		m_csvItem = new JMenuItem(ResourceUtil.getMessage("main.menu.file.export.csv"));
 		m_csvItem.addActionListener(this);
-		m_fileMenu.add(m_csvItem);
+		menu.add(m_csvItem);
 
-		m_fileMenu.add(new JSeparator());
+		menu.add(new JSeparator());
 
 		m_quitItem = new JMenuItem(ResourceUtil.getMessage("main.menu.file.quit"));
 		m_quitItem.addActionListener(frame); // TODO: this ?
 		m_quitItem.setAccelerator(KeyStroke.getKeyStroke('Q', menuKeyMask));
-		m_fileMenu.add(m_quitItem);
+		menu.add(m_quitItem);
 		
-		return m_fileMenu;
+		return menu;
 	}
 	
 	public void setEnableClose()
