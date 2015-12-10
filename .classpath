@@ -8,7 +8,7 @@
   <classpathentry kind="var" path="M2_REPO/javax/activation/activation/1.1/activation-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/javax/servlet/servlet-api/2.4/servlet-api-2.4.jar"/>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-  <classpathentry kind="var" path="M2_REPO/org/cip4/lib/jdf/JDFLibJ/2.1.5.90-SNAPSHOT/JDFLibJ-2.1.5.90-SNAPSHOT.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/cip4/lib/jdf/JDFLibJ/2.1.5.91-SNAPSHOT/JDFLibJ-2.1.5.91-SNAPSHOT.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-lang/commons-lang/2.5/commons-lang-2.5.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-io/commons-io/2.0/commons-io-2.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar"/>
