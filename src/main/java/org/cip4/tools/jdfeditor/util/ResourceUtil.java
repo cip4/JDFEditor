@@ -3,6 +3,7 @@ package org.cip4.tools.jdfeditor.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import javax.swing.ImageIcon;
@@ -18,7 +19,6 @@ import org.cip4.tools.jdfeditor.service.SettingService;
  */
 public class ResourceUtil
 {
-
 	private static final Log LOGGER = LogFactory.getLog(ResourceUtil.class);
 
 	private static final ResourceBundle messageBundle = initMessageBundle();
@@ -41,9 +41,17 @@ public class ResourceUtil
 	 */
 	public static String getMessage(String key)
 	{
-
-		// return localized message
-		return messageBundle.getString(key);
+		String result = "undefined";
+		try
+		{
+			result = messageBundle.getString(key);
+		}
+		catch (MissingResourceException e)
+		{
+			result = "?" + key + "?";
+			LOGGER.error("Error, no key found, key: " + key + ", result: " + result, e);
+		}
+		return result;
 	}
 
 	/**
