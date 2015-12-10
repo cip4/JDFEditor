@@ -486,7 +486,7 @@ public class SendToDevice extends JPanel implements ActionListener
 			}
 			else
 			{
-				JOptionPane.showMessageDialog(MainView.getFrame(), "No Message Response recieved");
+				JOptionPane.showMessageDialog(MainView.getFrame(), "No Message Response received");
 			}
 		}
 	}
