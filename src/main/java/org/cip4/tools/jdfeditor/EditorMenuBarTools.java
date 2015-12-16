@@ -19,10 +19,11 @@ import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.tools.jdfeditor.EditorMenuBar.Menu_MouseListener;
 import org.cip4.tools.jdfeditor.controller.MainController;
+import org.cip4.tools.jdfeditor.menu.MenuInterface;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
-public class EditorMenuBarTools implements ActionListener
+public class EditorMenuBarTools implements ActionListener, MenuInterface
 {
 	private MainController mainController;
 	

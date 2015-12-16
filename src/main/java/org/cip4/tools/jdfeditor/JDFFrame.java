@@ -358,7 +358,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			final EditorDocument ed = getEditorDoc();
 			if (ed != null && ed.getJDFTree() != null)
 			{
-				ed.getJDFTree().setRowHeight(18);
+//				ed.getJDFTree().setRowHeight(18);
 			}
 
 			if (pd != null)

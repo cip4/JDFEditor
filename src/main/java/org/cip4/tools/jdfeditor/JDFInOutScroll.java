@@ -720,7 +720,7 @@ public class JDFInOutScroll extends JScrollPane
 		resTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		final JDFResourceTreeCellRenderer resourceRenderer = new JDFResourceTreeCellRenderer();
 		resTree.setCellRenderer(resourceRenderer);
-		resTree.setRowHeight(18);
+//		resTree.setRowHeight(18);
 		resTree.setBackground(Color.white);
 
 		return resTree;
