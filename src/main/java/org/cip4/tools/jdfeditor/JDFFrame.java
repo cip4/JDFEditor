@@ -200,8 +200,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 */
 	final MyUndoManager undomanager = new MyUndoManager();
 	final UndoableEditSupport undoSupport = new UndoableEditSupport();
-	UndoAction undoAction = new UndoAction();
-	RedoAction redoAction = new RedoAction();
+	public UndoAction undoAction = new UndoAction();
+	public RedoAction redoAction = new RedoAction();
 
 	/**
 	 * constructor of the frame
@@ -1080,7 +1080,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		{
 
 		}
-		else if (eSrc == m_menuBar.m_findItem)
+		else if (eSrc == m_menuBar.getMenuEdit().m_findItem)
 		{
 			findIt();
 		}
@@ -1128,15 +1128,15 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		}
 		else if (!mainController.getSetting(SettingKey.GENERAL_READ_ONLY, Boolean.class))
 		{
-			if (eSrc == m_buttonBar.m_cutButton || eSrc == m_menuBar.m_cutItem)
+			if (eSrc == m_buttonBar.m_cutButton || eSrc == m_menuBar.getMenuEdit().m_cutItem)
 			{
 				cutSelectedNode();
 			}
-			else if (eSrc == m_buttonBar.m_copyButton || eSrc == m_menuBar.m_copyItem)
+			else if (eSrc == m_buttonBar.m_copyButton || eSrc == m_menuBar.getMenuEdit().m_copyItem)
 			{
 				copySelectedNode();
 			}
-			else if (eSrc == m_buttonBar.m_pasteButton || eSrc == m_menuBar.m_pastePopupItem || eSrc == m_menuBar.m_pasteItem)
+			else if (eSrc == m_buttonBar.m_pasteButton || eSrc == m_menuBar.m_pastePopupItem || eSrc == m_menuBar.getMenuEdit().m_pasteItem)
 			{
 				pasteCopiedNode();
 			}
@@ -1176,11 +1176,11 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			{
 				m_treeArea.insertAttrItem();
 			}
-			else if (eSrc == m_menuBar.m_renameItem)
+			else if (eSrc == m_menuBar.getMenuEdit().m_renameItem)
 			{
 				renameSelectedNode();
 			}
-			else if (eSrc == m_menuBar.m_modifyAttrValueItem)
+			else if (eSrc == m_menuBar.getMenuEdit().m_modifyAttrValueItem)
 			{
 				m_treeArea.modifyAttribute();
 			}
@@ -1523,14 +1523,14 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 					{
 						m_menuBar.getMenuTools().setSpawnMergeEnabled(false);
 					}
-					m_menuBar.m_pasteItem.setEnabled(m_copyNode != null);
+					m_menuBar.getMenuEdit().m_pasteItem.setEnabled(m_copyNode != null);
 					m_buttonBar.m_pasteButton.setEnabled(m_copyNode != null);
 
 				}
 				else
 				{
 					m_menuBar.getMenuTools().setSpawnMergeEnabled(false);
-					m_menuBar.m_pasteItem.setEnabled(false);
+					m_menuBar.getMenuEdit().m_pasteItem.setEnabled(false);
 					m_buttonBar.m_pasteButton.setEnabled(false);
 				}
 
@@ -1616,8 +1616,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			m_buttonBar.m_undoButton.setText(undomanager.getUndoPresentationName());
 			m_buttonBar.m_undoButton.setEnabled(undomanager.canUndo());
 
-			m_menuBar.m_undoItem.setText(undomanager.getUndoPresentationName());
-			m_menuBar.m_undoItem.setEnabled(undomanager.canUndo());
+			m_menuBar.getMenuEdit().m_undoItem.setText(undomanager.getUndoPresentationName());
+			m_menuBar.getMenuEdit().m_undoItem.setEnabled(undomanager.canUndo());
 		}
 	}
 
@@ -1650,8 +1650,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			m_buttonBar.m_redoButton.setText(undomanager.getRedoPresentationName());
 			m_buttonBar.m_redoButton.setEnabled(undomanager.canRedo());
 
-			m_menuBar.m_redoItem.setText(undomanager.getRedoPresentationName());
-			m_menuBar.m_redoItem.setEnabled(undomanager.canRedo());
+			m_menuBar.getMenuEdit().m_redoItem.setText(undomanager.getRedoPresentationName());
+			m_menuBar.getMenuEdit().m_redoItem.setEnabled(undomanager.canRedo());
 		}
 	}
 

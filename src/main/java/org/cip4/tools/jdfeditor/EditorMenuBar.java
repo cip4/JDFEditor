@@ -99,6 +99,7 @@ import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.menu.EditorMenuBarView;
+import org.cip4.tools.jdfeditor.menu.MenuEdit;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.util.RecentFileUtil;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
@@ -124,6 +125,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	protected JMenu m_insertMenu;
 	
 	private EditorMenuBarFile editorMenuBarFile;
+	private MenuEdit editorMenuBarEdit;
 	private EditorMenuBarView editorMenuBarView;
 	private EditorMenuBarTools editorMenuBarTools;
 	
@@ -134,26 +136,15 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 	private JMenuItem m_nextItem;
 	JMenuItem m_exportItem;
-	JMenuItem m_copyItem;
-	JMenuItem m_cutItem;
-	JMenuItem m_undoItem;
-	JMenuItem m_redoItem;
 	private JMenuItem m_onlineItem;
 	private JMenuItem m_QuickValidateItem;
 
 	JMenuItem m_copyValidationListItem;
-	JMenuItem m_findItem;
-	private JMenuItem m_findXPathItem;
 	JMenuItem m_infoItem;
-	JMenuItem m_renameItem;
-	JMenuItem m_modifyAttrValueItem;
 	JMenuItem m_requiredAttrItem;
 	JMenuItem m_requiredElemItem;
 
 	private JMenuItem m_Windows[] = null;
-
-	JMenuItem m_pasteItem;
-	private JMenuItem m_deleteItem;
 
 	JMenuItem m_devCapItem;
 	// popup menues
@@ -190,85 +181,14 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		return editorMenuBarFile;
 	}
 
+	public MenuEdit getMenuEdit()
+	{
+		return editorMenuBarEdit;
+	}
+
 	public EditorMenuBarTools getMenuTools()
 	{
 		return editorMenuBarTools;
-	}
-
-	/**
-	 * Creates the Edit menu.
-	 * @return The Edit menu with the menu items.
-	 */
-	private JMenu drawEditMenu()
-	{
-		final JDFFrame frame = MainView.getFrame();
-		final Menu_MouseListener menuListener = new Menu_MouseListener();
-		final int menuKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
-
-		m_editMenu = new JMenu(ResourceUtil.getMessage("main.menu.edit"));
-		m_editMenu.setBorderPainted(false);
-		m_editMenu.addMouseListener(menuListener);
-
-		m_undoItem = new JMenuItem(ResourceUtil.getMessage("main.menu.edit.undo"));
-		m_undoItem.addActionListener(frame.undoAction);
-		m_undoItem.setAccelerator(KeyStroke.getKeyStroke('Z', menuKeyMask));
-		m_undoItem.setEnabled(false);
-		m_editMenu.add(m_undoItem);
-
-		m_redoItem = new JMenuItem(ResourceUtil.getMessage("main.menu.edit.redo"));
-		m_redoItem.addActionListener(frame.redoAction);
-		m_redoItem.setAccelerator(KeyStroke.getKeyStroke('Y', menuKeyMask));
-		m_redoItem.setEnabled(false);
-		m_editMenu.add(m_redoItem);
-
-		m_editMenu.add(new JSeparator());
-
-		m_cutItem = new JMenuItem(ResourceUtil.getMessage("main.menu.edit.cut"));
-		m_cutItem.addActionListener(frame);
-		m_cutItem.setAccelerator(KeyStroke.getKeyStroke('X', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
-		m_cutItem.setEnabled(false);
-		m_editMenu.add(m_cutItem);
-
-		m_copyItem = new JMenuItem(ResourceUtil.getMessage("main.menu.edit.copy"));
-		m_copyItem.addActionListener(frame);
-		m_copyItem.setAccelerator(KeyStroke.getKeyStroke('C', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
-		m_copyItem.setEnabled(false);
-		m_editMenu.add(m_copyItem);
-
-		m_pasteItem = new JMenuItem(ResourceUtil.getMessage("main.menu.edit.paste"));
-		m_pasteItem.addActionListener(frame);
-		m_pasteItem.setAccelerator(KeyStroke.getKeyStroke('V', java.awt.event.InputEvent.CTRL_MASK + java.awt.event.InputEvent.SHIFT_MASK));
-		m_pasteItem.setEnabled(false);
-		m_editMenu.add(m_pasteItem);
-
-		m_deleteItem = new JMenuItem(ResourceUtil.getMessage("main.menu.edit.delete"));
-		m_deleteItem.addActionListener(this);
-		m_deleteItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
-		m_deleteItem.setEnabled(false);
-		m_editMenu.add(m_deleteItem);
-
-		m_editMenu.add(new JSeparator());
-
-		m_renameItem = new JMenuItem(ResourceUtil.getMessage("main.menu.edit.rename"));
-		m_renameItem.addActionListener(frame);
-		m_editMenu.add(m_renameItem);
-
-		m_modifyAttrValueItem = new JMenuItem(ResourceUtil.getMessage("main.menu.edit.modify"));
-		m_modifyAttrValueItem.addActionListener(frame);
-		m_editMenu.add(m_modifyAttrValueItem);
-
-		m_editMenu.add(new JSeparator());
-
-		m_findItem = new JMenuItem(ResourceUtil.getMessage("main.menu.edit.find"));
-		m_findItem.addActionListener(frame);
-		m_findItem.setAccelerator(KeyStroke.getKeyStroke('F', menuKeyMask));
-		m_editMenu.add(m_findItem);
-
-		m_findXPathItem = new JMenuItem(ResourceUtil.getMessage("main.menu.edit.find.xpath"));
-		m_findXPathItem.addActionListener(this);
-		m_editMenu.add(m_findXPathItem);
-
-		return m_editMenu;
 	}
 
 	/**
@@ -336,10 +256,11 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		m_fileMenu.setBackground(menuColor);
 		add(m_fileMenu);
 
-		final JMenu editM = drawEditMenu();
-		editM.setMnemonic('E');
-		editM.setBackground(menuColor);
-		add(editM);
+		editorMenuBarEdit = new MenuEdit(mainController);
+		final JMenu m_editMenu = editorMenuBarEdit.createMenu();
+		m_editMenu.setMnemonic('E');
+		m_editMenu.setBackground(menuColor);
+		add(m_editMenu);
 
 		editorMenuBarView = new EditorMenuBarView(mainController);
 		final JMenu m_viewMenu = editorMenuBarView.createMenu();
@@ -574,7 +495,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 			m_resourceMenu.setEnabled(true);
 			m_resourceLinkMenu.setEnabled(true);
 			m_requiredElemItem.setEnabled(true);
-			m_modifyAttrValueItem.setEnabled(false);
+			editorMenuBarEdit.setTwoProperties(parent != null, false);
 
 			KElement kElement = EditorUtils.getElement(path);
 			if (kElement == null)
@@ -582,7 +503,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 				kElement = node.getElement();
 			}
 
-			m_renameItem.setEnabled(parent != null);
 
 			if (((JDFTreeNode) m_frame.getRootNode().getFirstChild()).equals(node))
 			{
@@ -636,8 +556,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 			m_insertElementMenu.setEnabled(false);
 			m_resourceMenu.setEnabled(false);
 			m_requiredElemItem.setEnabled(false);
-			m_renameItem.setEnabled(parent != null);
-			m_modifyAttrValueItem.setEnabled(true);
+			editorMenuBarEdit.setTwoProperties(parent != null, true);
 		}
 	}
 
@@ -647,27 +566,19 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	public void setEnableClose()
 	{
 		editorMenuBarFile.setEnableClose();
+		editorMenuBarEdit.setEnableClose();
 		editorMenuBarTools.setEnableClose();
-		
-		m_cutItem.setEnabled(false);
-		m_copyItem.setEnabled(false);
-		m_pasteItem.setEnabled(false);
-		m_deleteItem.setEnabled(false);
+
 		m_insertElementMenu.setEnabled(false);
 		m_resourceMenu.setEnabled(false);
 		m_resourceLinkMenu.setEnabled(false);
 		m_insertAttrItem.setEnabled(false);
 		m_requiredAttrItem.setEnabled(false);
 		m_requiredElemItem.setEnabled(false);
-		m_modifyAttrValueItem.setEnabled(false);
-		m_renameItem.setEnabled(false);
-		m_findItem.setEnabled(false);
-		m_findXPathItem.setEnabled(false);
+
 		m_devCapItem.setEnabled(false);
 		m_exportItem.setEnabled(false);
 		m_QuickValidateItem.setEnabled(false);
-		m_undoItem.setEnabled(false);
-		m_redoItem.setEnabled(false);
 	}
 
 	/**
@@ -675,19 +586,15 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	 */
 	public void setEnableOpen(final boolean mode)
 	{
+		editorMenuBarEdit.setEnableOpen(mode);
 		editorMenuBarTools.setEnableOpen(mode);
-		
-		m_cutItem.setEnabled(mode);
-		m_copyItem.setEnabled(mode);
-		m_deleteItem.setEnabled(mode);
+
 		m_insertElementMenu.setEnabled(mode);
 		m_resourceMenu.setEnabled(mode);
 		m_resourceLinkMenu.setEnabled(mode);
 		m_insertAttrItem.setEnabled(mode);
 		m_requiredAttrItem.setEnabled(mode);
 		m_requiredElemItem.setEnabled(mode);
-		m_findItem.setEnabled(true);
-		m_findXPathItem.setEnabled(true);
 		m_devCapItem.setEnabled(true);
 		m_exportItem.setEnabled(true);
 		m_QuickValidateItem.setEnabled(true);
@@ -731,20 +638,9 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		{
 			frame.nextFile(-1);
 		}
-		/*
-		 * Action that is performed when select File->New
-		 */
 		else if (eSrc == m_QuickValidateItem && MainView.getModel() != null)
 		{
 			MainView.getModel().validate();
-		}
-		else if (eSrc == m_deleteItem)
-		{
-			MainView.getModel().deleteSelectedNodes();
-		}
-		else if (eSrc == m_findXPathItem)
-		{
-			MainView.getFrame().m_treeArea.findXPathElem();
 		}
 
 		// select
@@ -760,7 +656,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		}
 
 		MainView.setCursor(0, null);
-
 	}
 
 	/**
