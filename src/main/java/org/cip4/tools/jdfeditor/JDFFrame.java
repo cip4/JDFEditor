@@ -312,7 +312,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	/**
 	 * Choose which file to open.
 	 */
-	void openFile()
+	public void openFile()
 	{
 		File fileToSave = null; // Do this for GT
 		if (getJDFDoc() != null)
@@ -1203,7 +1203,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	/**
 	 * 
 	 */
-	void save()
+	public void save()
 	{
 		File fileToSave = null;
 

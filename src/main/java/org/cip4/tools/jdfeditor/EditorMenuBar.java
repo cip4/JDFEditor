@@ -98,6 +98,7 @@ import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.tools.jdfeditor.controller.MainController;
+import org.cip4.tools.jdfeditor.menu.MenuFile;
 import org.cip4.tools.jdfeditor.menu.EditorMenuBarView;
 import org.cip4.tools.jdfeditor.menu.MenuEdit;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
@@ -124,7 +125,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 	protected JMenu m_insertMenu;
 	
-	private EditorMenuBarFile editorMenuBarFile;
+	private MenuFile editorMenuBarFile;
 	private MenuEdit editorMenuBarEdit;
 	private EditorMenuBarView editorMenuBarView;
 	private EditorMenuBarTools editorMenuBarTools;
@@ -176,7 +177,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		this.mainController = mainController;
 	}
 
-	public EditorMenuBarFile getMenuFile()
+	public MenuFile getMenuFile()
 	{
 		return editorMenuBarFile;
 	}
@@ -250,7 +251,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		setBackground(Color.lightGray);
 		final Color menuColor = getBackground();
 
-		editorMenuBarFile = new EditorMenuBarFile(mainController);
+		editorMenuBarFile = new MenuFile(mainController);
 		final JMenu m_fileMenu = editorMenuBarFile.createMenu();
 		m_fileMenu.setMnemonic('F');
 		m_fileMenu.setBackground(menuColor);

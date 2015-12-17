@@ -68,7 +68,7 @@
  *  
  * 
  */
-package org.cip4.tools.jdfeditor;
+package org.cip4.tools.jdfeditor.menu;
 
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -80,15 +80,17 @@ import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 
+import org.cip4.tools.jdfeditor.EditorMenuBar;
+import org.cip4.tools.jdfeditor.EditorUtils;
+import org.cip4.tools.jdfeditor.JDFFrame;
 import org.cip4.tools.jdfeditor.EditorMenuBar.Menu_MouseListener;
 import org.cip4.tools.jdfeditor.controller.MainController;
-import org.cip4.tools.jdfeditor.menu.MenuInterface;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.util.RecentFileUtil;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
-public class EditorMenuBarFile implements ActionListener, MenuInterface
+public class MenuFile implements ActionListener, MenuInterface
 {
 	private MainController mainController;
 	
@@ -106,7 +108,7 @@ public class EditorMenuBarFile implements ActionListener, MenuInterface
 	private JMenuItem m_csvItem;
 	public JMenuItem m_quitItem;
 
-	public EditorMenuBarFile(final MainController mainController)
+	public MenuFile(final MainController mainController)
 	{
 		this.mainController = mainController;
 	}
