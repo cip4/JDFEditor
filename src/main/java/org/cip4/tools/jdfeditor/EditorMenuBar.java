@@ -99,7 +99,8 @@ import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.menu.MenuFile;
-import org.cip4.tools.jdfeditor.menu.EditorMenuBarView;
+import org.cip4.tools.jdfeditor.menu.MenuInsert;
+import org.cip4.tools.jdfeditor.menu.MenuView;
 import org.cip4.tools.jdfeditor.menu.MenuEdit;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.util.RecentFileUtil;
@@ -119,15 +120,12 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 	private MainController mainController;
 
-	private JMenu m_insertElementMenu;
-	private JMenu m_resourceMenu;
-	private JMenu m_resourceLinkMenu;
-
 	protected JMenu m_insertMenu;
 	
 	private MenuFile editorMenuBarFile;
 	private MenuEdit editorMenuBarEdit;
-	private EditorMenuBarView editorMenuBarView;
+	private MenuView editorMenuBarView;
+	private MenuInsert menuInsert;
 	private EditorMenuBarTools editorMenuBarTools;
 	
 	protected JMenu m_editMenu;
@@ -142,22 +140,11 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 	JMenuItem m_copyValidationListItem;
 	JMenuItem m_infoItem;
-	JMenuItem m_requiredAttrItem;
-	JMenuItem m_requiredElemItem;
 
 	private JMenuItem m_Windows[] = null;
 
 	JMenuItem m_devCapItem;
 	// popup menues
-	JMenuItem m_insertElemBeforeItem;
-	JMenuItem m_insertElemAfterItem;
-	JMenuItem m_insertElemIntoItem;
-	JMenuItem m_insertInResLinkItem;
-	JMenuItem m_insertOutResLinkItem;
-	JMenuItem m_insertInResItem;
-	JMenuItem m_insertOutResItem;
-	JMenuItem m_insertResItem;
-	JMenuItem m_insertAttrItem;
 	JMenuItem m_pastePopupItem;
 
 
@@ -185,6 +172,11 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	public MenuEdit getMenuEdit()
 	{
 		return editorMenuBarEdit;
+	}
+
+	public MenuInsert getMenuInsert()
+	{
+		return menuInsert;
 	}
 
 	public EditorMenuBarTools getMenuTools()
@@ -263,16 +255,17 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		m_editMenu.setBackground(menuColor);
 		add(m_editMenu);
 
-		editorMenuBarView = new EditorMenuBarView(mainController);
+		editorMenuBarView = new MenuView(mainController);
 		final JMenu m_viewMenu = editorMenuBarView.createMenu();
 		m_viewMenu.setMnemonic('V');
 		m_viewMenu.setBackground(menuColor);
 		add(m_viewMenu);
 
-		final JMenu insertM = drawInsertMenu();
-		insertM.setMnemonic('I');
-		insertM.setBackground(menuColor);
-		add(insertM);
+		menuInsert = new MenuInsert(mainController);
+		final JMenu insertMenu = menuInsert.createMenu();
+		insertMenu.setMnemonic('I');
+		insertMenu.setBackground(menuColor);
+		add(insertMenu);
 
 		editorMenuBarTools = new EditorMenuBarTools(mainController);
 		final JMenu m_toolsMenu = editorMenuBarTools.createMenu();
@@ -296,82 +289,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		add(helpM);
 
 		return this;
-	}
-
-	/**
-	 * Creates the Insert menu.
-	 * @return The Insert menu with the menu items.
-	 */
-	private JMenu drawInsertMenu()
-	{
-		final Menu_MouseListener menuListener = new Menu_MouseListener();
-
-		final JDFFrame m_frame = MainView.getFrame();
-		m_insertMenu = new JMenu(ResourceUtil.getMessage("main.menu.insert"));
-		m_insertMenu.setBorderPainted(false);
-		m_insertMenu.addMouseListener(menuListener);
-
-		m_insertElementMenu = new JMenu(ResourceUtil.getMessage("main.menu.insert.element"));
-
-		m_insertElemBeforeItem = new JMenuItem(ResourceUtil.getMessage("main.menu.insert.element.before"));
-		m_insertElemBeforeItem.addActionListener(m_frame);
-		m_insertElementMenu.add(m_insertElemBeforeItem);
-
-		m_insertElemIntoItem = new JMenuItem(ResourceUtil.getMessage("main.menu.insert.element.into"));
-		m_insertElemIntoItem.addActionListener(m_frame);
-		m_insertElementMenu.add(m_insertElemIntoItem);
-
-		m_insertElemAfterItem = new JMenuItem(ResourceUtil.getMessage("main.menu.insert.element.after"));
-		m_insertElemAfterItem.addActionListener(m_frame);
-		m_insertElementMenu.add(m_insertElemAfterItem);
-
-		m_insertMenu.add(m_insertElementMenu);
-
-		m_resourceMenu = new JMenu(ResourceUtil.getMessage("main.menu.insert.resource"));
-
-		m_insertInResItem = new JMenuItem(ResourceUtil.getMessage("main.menu.insert.resource.input"));
-		m_insertInResItem.addActionListener(m_frame);
-		m_resourceMenu.add(m_insertInResItem);
-
-		m_insertOutResItem = new JMenuItem(ResourceUtil.getMessage("main.menu.insert.resource.output"));
-		m_insertOutResItem.addActionListener(m_frame);
-		m_resourceMenu.add(m_insertOutResItem);
-
-		m_resourceMenu.add(new JSeparator());
-
-		m_insertResItem = new JMenuItem(ResourceUtil.getMessage("main.menu.insert.resource.resource"));
-		m_insertResItem.addActionListener(m_frame);
-		m_resourceMenu.add(m_insertResItem);
-
-		m_insertMenu.add(m_resourceMenu);
-
-		m_resourceLinkMenu = new JMenu(ResourceUtil.getMessage("main.menu.insert.reslink"));
-
-		m_insertInResLinkItem = new JMenuItem(ResourceUtil.getMessage("main.menu.insert.reslink.input"));
-		m_insertInResLinkItem.addActionListener(m_frame);
-		m_resourceLinkMenu.add(m_insertInResLinkItem);
-
-		m_insertOutResLinkItem = new JMenuItem(ResourceUtil.getMessage("main.menu.insert.reslink.output"));
-		m_insertOutResLinkItem.addActionListener(m_frame);
-		m_resourceLinkMenu.add(m_insertOutResLinkItem);
-
-		m_insertMenu.add(m_resourceLinkMenu);
-
-		m_insertAttrItem = new JMenuItem(ResourceUtil.getMessage("main.menu.insert.attribute"));
-		m_insertAttrItem.addActionListener(m_frame);
-		m_insertMenu.add(m_insertAttrItem);
-
-		m_insertMenu.add(new JSeparator());
-
-		m_requiredAttrItem = new JMenuItem(ResourceUtil.getMessage("main.menu.insert.required.attributes"));
-		m_requiredAttrItem.addActionListener(m_frame);
-		m_insertMenu.add(m_requiredAttrItem);
-
-		m_requiredElemItem = new JMenuItem(ResourceUtil.getMessage("main.menu.insert.required.elements"));
-		m_requiredElemItem.addActionListener(m_frame);
-		m_insertMenu.add(m_requiredElemItem);
-
-		return m_insertMenu;
 	}
 
 	/**
@@ -492,10 +409,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		}
 		if (node.isElement())
 		{
-			m_insertElementMenu.setEnabled(true);
-			m_resourceMenu.setEnabled(true);
-			m_resourceLinkMenu.setEnabled(true);
-			m_requiredElemItem.setEnabled(true);
+			menuInsert.setEnabled4(true);
 			editorMenuBarEdit.setTwoProperties(parent != null, false);
 
 			KElement kElement = EditorUtils.getElement(path);
@@ -507,56 +421,44 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 			if (((JDFTreeNode) m_frame.getRootNode().getFirstChild()).equals(node))
 			{
-				m_insertElemAfterItem.setEnabled(false);
-				m_insertElemBeforeItem.setEnabled(false);
+				menuInsert.setEnabled2(false);
 			}
 			else
 			{
-				m_insertElemAfterItem.setEnabled(true);
-				m_insertElemBeforeItem.setEnabled(true);
+				menuInsert.setEnabled2(true);
 			}
 
 			if (!(kElement instanceof JDFNode) && !kElement.getNodeName().equals("ResourcePool"))
 			{
-				m_resourceMenu.setEnabled(false);
+				menuInsert.m_resourceMenu.setEnabled(false);
 			}
 			if (!(kElement instanceof JDFNode) && !kElement.getNodeName().equals("ResourceLinkPool"))
 			{
-				m_resourceLinkMenu.setEnabled(false);
+				menuInsert.m_resourceLinkMenu.setEnabled(false);
 			}
 
 			if (kElement instanceof JDFResourcePool)
 			{
-				m_insertInResLinkItem.setEnabled(false);
-				m_insertOutResLinkItem.setEnabled(false);
-				m_insertInResItem.setEnabled(true);
-				m_insertOutResItem.setEnabled(true);
-				m_insertResItem.setEnabled(true);
+				menuInsert.setEnabledJDFResourcePool(false);
 			}
 			else if ((kElement instanceof JDFResourceLinkPool) && EditorUtils.getResourcesAllowedToLink(((JDFResourceLinkPool) kElement).getParentJDF(), null) != null)
 			{
-				m_insertInResItem.setEnabled(false);
-				m_insertOutResItem.setEnabled(false);
-				m_insertResItem.setEnabled(false);
-				m_insertInResLinkItem.setEnabled(true);
-				m_insertOutResLinkItem.setEnabled(true);
+				menuInsert.setEnabledJDFResourcePool(true);
 			}
 			else if (kElement instanceof JDFNode)
 			{
-				m_insertInResItem.setEnabled(true);
-				m_insertOutResItem.setEnabled(true);
-				m_insertResItem.setEnabled(true);
+				menuInsert.m_insertInResItem.setEnabled(true);
+				menuInsert.m_insertOutResItem.setEnabled(true);
+				menuInsert.m_insertResItem.setEnabled(true);
 
 				final boolean bSwitch = EditorUtils.getResourcesAllowedToLink((JDFNode) kElement, null) != null;
-				m_insertInResLinkItem.setEnabled(bSwitch);
-				m_insertOutResLinkItem.setEnabled(bSwitch);
+				menuInsert.m_insertInResLinkItem.setEnabled(bSwitch);
+				menuInsert.m_insertOutResLinkItem.setEnabled(bSwitch);
 			}
 		}
 		else
 		{
-			m_insertElementMenu.setEnabled(false);
-			m_resourceMenu.setEnabled(false);
-			m_requiredElemItem.setEnabled(false);
+			menuInsert.setEnabled3(false);
 			editorMenuBarEdit.setTwoProperties(parent != null, true);
 		}
 	}
@@ -569,13 +471,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		editorMenuBarFile.setEnableClose();
 		editorMenuBarEdit.setEnableClose();
 		editorMenuBarTools.setEnableClose();
-
-		m_insertElementMenu.setEnabled(false);
-		m_resourceMenu.setEnabled(false);
-		m_resourceLinkMenu.setEnabled(false);
-		m_insertAttrItem.setEnabled(false);
-		m_requiredAttrItem.setEnabled(false);
-		m_requiredElemItem.setEnabled(false);
+		menuInsert.setEnableClose();
 
 		m_devCapItem.setEnabled(false);
 		m_exportItem.setEnabled(false);
@@ -589,13 +485,8 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	{
 		editorMenuBarEdit.setEnableOpen(mode);
 		editorMenuBarTools.setEnableOpen(mode);
+		menuInsert.setEnableOpen(mode);
 
-		m_insertElementMenu.setEnabled(mode);
-		m_resourceMenu.setEnabled(mode);
-		m_resourceLinkMenu.setEnabled(mode);
-		m_insertAttrItem.setEnabled(mode);
-		m_requiredAttrItem.setEnabled(mode);
-		m_requiredElemItem.setEnabled(mode);
 		m_devCapItem.setEnabled(true);
 		m_exportItem.setEnabled(true);
 		m_QuickValidateItem.setEnabled(true);

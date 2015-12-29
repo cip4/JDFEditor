@@ -89,19 +89,19 @@ import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
-public class EditorMenuBarView implements MenuInterface, ActionListener
+public class MenuView implements MenuInterface, ActionListener
 {
 	private MainController mainController;
-	
+
 	private JMenu menu;
-	
+
 	private JRadioButtonMenuItem highlightFNRadioItem;
 	private JRadioButtonMenuItem showAttrRadioItem;
 	private JRadioButtonMenuItem showInhAttrRadioItem;
 	private JRadioButtonMenuItem dispDefAttrRadioItem;
-	
-	
-	public EditorMenuBarView(final MainController mainController)
+
+
+	public MenuView(final MainController mainController)
 	{
 		this.mainController = mainController;
 	}

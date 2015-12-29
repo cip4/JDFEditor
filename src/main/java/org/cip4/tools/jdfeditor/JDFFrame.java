@@ -1140,39 +1140,39 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			{
 				pasteCopiedNode();
 			}
-			else if (eSrc == m_menuBar.m_insertElemBeforeItem)
+			else if (eSrc == m_menuBar.getMenuInsert().m_insertElemBeforeItem)
 			{
 				m_treeArea.insertElementAtSelectedNode(-1);
 			}
-			else if (eSrc == m_menuBar.m_insertElemAfterItem)
+			else if (eSrc == m_menuBar.getMenuInsert().m_insertElemAfterItem)
 			{
 				m_treeArea.insertElementAtSelectedNode(1);
 			}
-			else if (eSrc == m_menuBar.m_insertElemIntoItem)
+			else if (eSrc == m_menuBar.getMenuInsert().m_insertElemIntoItem)
 			{
 				m_treeArea.insertElementAtSelectedNode(0);
 			}
-			else if (eSrc == m_menuBar.m_insertInResItem)
+			else if (eSrc == m_menuBar.getMenuInsert().m_insertInResItem)
 			{
 				m_treeArea.insertResourceWithLink(true, true);
 			}
-			else if (eSrc == m_menuBar.m_insertOutResItem)
+			else if (eSrc == m_menuBar.getMenuInsert().m_insertOutResItem)
 			{
 				m_treeArea.insertResourceWithLink(true, false);
 			}
-			else if (eSrc == m_menuBar.m_insertResItem)
+			else if (eSrc == m_menuBar.getMenuInsert().m_insertResItem)
 			{
 				m_treeArea.insertResourceWithLink(false, false);
 			}
-			else if (eSrc == m_menuBar.m_insertInResLinkItem)
+			else if (eSrc == m_menuBar.getMenuInsert().m_insertInResLinkItem)
 			{
 				m_treeArea.insertResourceLink(EnumUsage.Input);
 			}
-			else if (eSrc == m_menuBar.m_insertOutResLinkItem)
+			else if (eSrc == m_menuBar.getMenuInsert().m_insertOutResLinkItem)
 			{
 				m_treeArea.insertResourceLink(EnumUsage.Output);
 			}
-			else if (eSrc == m_menuBar.m_insertAttrItem)
+			else if (eSrc == m_menuBar.getMenuInsert().m_insertAttrItem)
 			{
 				m_treeArea.insertAttrItem();
 			}
@@ -1184,11 +1184,11 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			{
 				m_treeArea.modifyAttribute();
 			}
-			else if (eSrc == m_menuBar.m_requiredAttrItem)
+			else if (eSrc == m_menuBar.getMenuInsert().m_requiredAttrItem)
 			{
 				addRequiredAttrsToSelectedNode();
 			}
-			else if (eSrc == m_menuBar.m_requiredElemItem)
+			else if (eSrc == m_menuBar.getMenuInsert().m_requiredElemItem)
 			{
 				addRequiredElemsToSelectedNode();
 			}
