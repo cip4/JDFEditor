@@ -117,10 +117,9 @@ public class MenuInsert implements MenuInterface, ActionListener
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e)
+	public void actionPerformed(final ActionEvent e)
 	{
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

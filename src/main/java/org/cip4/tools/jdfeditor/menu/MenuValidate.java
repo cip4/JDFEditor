@@ -68,113 +68,108 @@
  *  
  * 
  */
-package org.cip4.tools.jdfeditor.util;
+package org.cip4.tools.jdfeditor.menu;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import javax.swing.ImageIcon;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JSeparator;
+import javax.swing.KeyStroke;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
-import org.cip4.tools.jdfeditor.service.SettingService;
+import org.cip4.tools.jdfeditor.EditorMenuBar;
+import org.cip4.tools.jdfeditor.JDFFrame;
+import org.cip4.tools.jdfeditor.EditorMenuBar.Menu_MouseListener;
+import org.cip4.tools.jdfeditor.controller.MainController;
+import org.cip4.tools.jdfeditor.util.ResourceUtil;
+import org.cip4.tools.jdfeditor.view.MainView;
 
-/**
- * Util class for Resource Bundle management.
- */
-public class ResourceUtil
+public class MenuValidate implements ActionListener, MenuInterface
 {
-	private static final Log LOGGER = LogFactory.getLog(ResourceUtil.class);
+	private MainController mainController;
 
-	private static /*final*/ ResourceBundle messageBundle;
+	private JMenu menu;
 
-	private static final String RES_MESSAGE_BUNDLE = "org.cip4.tools.jdfeditor.messages.JDFEditor";
-	private static final String ICONS_PATH = "/org/cip4/tools/jdfeditor/icons/";
-	private static ResourceUtil instance;
+	private JMenuItem m_QuickValidateItem;
+	public JMenuItem m_copyValidationListItem;
+	public JMenuItem m_exportItem;
+	public JMenuItem m_devCapItem;
 
-	static
+
+	public MenuValidate(final MainController mainController)
 	{
-		instance = new ResourceUtil();
+		this.mainController = mainController;
 	}
 
-	/**
-	 * Private constructor. This class cannot be instantiated.
-	 */
-	private ResourceUtil()
+	@Override
+	public JMenu createMenu()
 	{
-		messageBundle = initMessageBundle();
+		final JDFFrame frame = MainView.getFrame();
+		final Menu_MouseListener menuListener = new EditorMenuBar().new Menu_MouseListener();
+		final int menuKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+
+		menu = new JMenu(ResourceUtil.getMessage("main.menu.tools.validate"));
+		menu.setBorderPainted(false);
+		menu.addMouseListener(menuListener);
+
+		m_QuickValidateItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.validate.validate"));
+		m_QuickValidateItem.addActionListener(this);
+		m_QuickValidateItem.setEnabled(false);
+		m_QuickValidateItem.setAccelerator(KeyStroke.getKeyStroke('A', menuKeyMask));
+		menu.add(m_QuickValidateItem);
+
+		menu.add(new JSeparator());
+
+		m_copyValidationListItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.validate.copy"));
+		m_copyValidationListItem.addActionListener(frame);
+		m_copyValidationListItem.setEnabled(false);
+		menu.add(m_copyValidationListItem);
+
+		m_exportItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.validate.export"));
+		m_exportItem.addActionListener(frame);
+		m_exportItem.setAccelerator(KeyStroke.getKeyStroke('E', menuKeyMask));
+		menu.add(m_exportItem);
+
+		m_devCapItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.validate.test"));
+		m_devCapItem.addActionListener(frame);
+		m_devCapItem.setAccelerator(KeyStroke.getKeyStroke('D', menuKeyMask));
+		m_devCapItem.setEnabled(false);
+		menu.add(m_devCapItem);
+
+		return menu;
 	}
 
-	public static ResourceUtil getInstance()
+	@Override
+	public void setEnableClose()
 	{
-		return instance;
+		m_devCapItem.setEnabled(false);
+		m_exportItem.setEnabled(false);
+		m_QuickValidateItem.setEnabled(false);
 	}
 
-	/**
-	 * Return a localized message by key.
-	 * @param key Key of the message.
-	 * @return Localized message as String.
-	 */
-	public static String getMessage(String key)
+	@Override
+	public void setEnableOpen(final boolean mode)
 	{
-		String result = "undefined";
-		try
+		m_devCapItem.setEnabled(true);
+		m_exportItem.setEnabled(true);
+		m_QuickValidateItem.setEnabled(true);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e)
+	{
+		MainView.setCursor(1, null);
+		final Object eSrc = e.getSource();
+		final JDFFrame frame = MainView.getFrame();
+		
+		if (eSrc == m_QuickValidateItem && MainView.getModel() != null)
 		{
-			result = messageBundle.getString(key);
+			MainView.getModel().validate();
 		}
-		catch (MissingResourceException e)
-		{
-			result = "?" + key + "?";
-			LOGGER.error("Error, no key found, key: " + key + ", return result: " + result, e);
-		}
-		return result;
+		
+		MainView.setCursor(0, null);
 	}
 
-	/**
-	 * Returns a resource as ImageIcon object.
-	 * @param imageName Resource String of Icon.
-	 * @return The ImageIcon object.
-	 */
-	public static ImageIcon getImageIcon(final String imageName)
-	{
-		ImageIcon imageIcon = null;
-		InputStream is = ResourceUtil.class.getResourceAsStream(ICONS_PATH + imageName);
-
-		try
-		{
-			if (is == null)
-				throw new IOException("Image not existing: " + imageName);
-
-			byte[] bytes = IOUtils.toByteArray(is);
-			imageIcon = new ImageIcon(bytes);
-		}
-		catch (IOException e)
-		{
-			LOGGER.error("Error during loading image: " + imageName, e);
-		}
-
-		return imageIcon;
-	}
-
-	/**
-	 * Initializes and returns the localized message bundle.
-	 * @return The Messages ResourceBundle object.
-	 */
-	private static ResourceBundle initMessageBundle()
-	{
-
-		// setup application language
-		String language = SettingService.getSettingService().getSetting(SettingKey.GENERAL_LANGUAGE, String.class);
-		final Locale currentLocale = new Locale(language, language.toUpperCase());
-		Locale.setDefault(currentLocale);
-
-		// init and return
-		ResourceBundle messages = ResourceBundle.getBundle(RES_MESSAGE_BUNDLE, currentLocale);
-		return messages;
-	}
 }

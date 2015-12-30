@@ -98,8 +98,10 @@ import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.tools.jdfeditor.controller.MainController;
+import org.cip4.tools.jdfeditor.menu.MenuTools;
 import org.cip4.tools.jdfeditor.menu.MenuFile;
 import org.cip4.tools.jdfeditor.menu.MenuInsert;
+import org.cip4.tools.jdfeditor.menu.MenuValidate;
 import org.cip4.tools.jdfeditor.menu.MenuView;
 import org.cip4.tools.jdfeditor.menu.MenuEdit;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
@@ -121,29 +123,24 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	private MainController mainController;
 
 	protected JMenu m_insertMenu;
-	
-	private MenuFile editorMenuBarFile;
-	private MenuEdit editorMenuBarEdit;
-	private MenuView editorMenuBarView;
+
+	private MenuFile menuFile;
+	private MenuEdit menuEdit;
+	private MenuView menuView;
 	private MenuInsert menuInsert;
-	private EditorMenuBarTools editorMenuBarTools;
-	
-	protected JMenu m_editMenu;
-	protected JMenu m_validateMenu;
+	private MenuTools menuTools;
+	private MenuValidate menuValidate;
+
 	protected JMenu m_windowMenu;
 	protected JMenu m_helpMenu;
 
 	private JMenuItem m_nextItem;
-	JMenuItem m_exportItem;
 	private JMenuItem m_onlineItem;
-	private JMenuItem m_QuickValidateItem;
 
-	JMenuItem m_copyValidationListItem;
 	JMenuItem m_infoItem;
 
 	private JMenuItem m_Windows[] = null;
 
-	JMenuItem m_devCapItem;
 	// popup menues
 	JMenuItem m_pastePopupItem;
 
@@ -166,12 +163,12 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 	public MenuFile getMenuFile()
 	{
-		return editorMenuBarFile;
+		return menuFile;
 	}
 
 	public MenuEdit getMenuEdit()
 	{
-		return editorMenuBarEdit;
+		return menuEdit;
 	}
 
 	public MenuInsert getMenuInsert()
@@ -179,9 +176,14 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		return menuInsert;
 	}
 
-	public EditorMenuBarTools getMenuTools()
+	public MenuTools getMenuTools()
 	{
-		return editorMenuBarTools;
+		return menuTools;
+	}
+
+	public MenuValidate getMenuValidate()
+	{
+		return menuValidate;
 	}
 
 	/**
@@ -243,20 +245,20 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		setBackground(Color.lightGray);
 		final Color menuColor = getBackground();
 
-		editorMenuBarFile = new MenuFile(mainController);
-		final JMenu m_fileMenu = editorMenuBarFile.createMenu();
+		menuFile = new MenuFile(mainController);
+		final JMenu m_fileMenu = menuFile.createMenu();
 		m_fileMenu.setMnemonic('F');
 		m_fileMenu.setBackground(menuColor);
 		add(m_fileMenu);
 
-		editorMenuBarEdit = new MenuEdit(mainController);
-		final JMenu m_editMenu = editorMenuBarEdit.createMenu();
+		menuEdit = new MenuEdit(mainController);
+		final JMenu m_editMenu = menuEdit.createMenu();
 		m_editMenu.setMnemonic('E');
 		m_editMenu.setBackground(menuColor);
 		add(m_editMenu);
 
-		editorMenuBarView = new MenuView(mainController);
-		final JMenu m_viewMenu = editorMenuBarView.createMenu();
+		menuView = new MenuView(mainController);
+		final JMenu m_viewMenu = menuView.createMenu();
 		m_viewMenu.setMnemonic('V');
 		m_viewMenu.setBackground(menuColor);
 		add(m_viewMenu);
@@ -267,16 +269,17 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		insertMenu.setBackground(menuColor);
 		add(insertMenu);
 
-		editorMenuBarTools = new EditorMenuBarTools(mainController);
-		final JMenu m_toolsMenu = editorMenuBarTools.createMenu();
+		menuTools = new MenuTools(mainController);
+		final JMenu m_toolsMenu = menuTools.createMenu();
 		m_toolsMenu.setMnemonic('T');
 		m_toolsMenu.setBackground(menuColor);
 		add(m_toolsMenu);
 
-		final JMenu validateM = drawValidateMenu();
-		validateM.setMnemonic('V');
-		validateM.setBackground(menuColor);
-		add(validateM);
+		menuValidate = new MenuValidate(mainController);
+		final JMenu m_validateMenu = menuValidate.createMenu();
+		m_validateMenu.setMnemonic('V');
+		m_validateMenu.setBackground(menuColor);
+		add(m_validateMenu);
 
 		final JMenu windowM = drawWindowMenu();
 		windowM.setMnemonic('W');
@@ -292,46 +295,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	}
 
 	/**
-	 * Creates the Validate menu.
-	 * @return The Validate menu with the menu items.
-	 */
-	private JMenu drawValidateMenu()
-	{
-		final int menuKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
-		final JDFFrame m_frame = MainView.getFrame();
-
-		m_validateMenu = new JMenu(ResourceUtil.getMessage("main.menu.tools.validate"));
-		m_validateMenu.setBorderPainted(false);
-		m_validateMenu.addMouseListener(new Menu_MouseListener());
-
-		m_QuickValidateItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.validate.validate"));
-		m_QuickValidateItem.addActionListener(this);
-		m_QuickValidateItem.setEnabled(false);
-		m_QuickValidateItem.setAccelerator(KeyStroke.getKeyStroke('A', menuKeyMask));
-		m_validateMenu.add(m_QuickValidateItem);
-
-		m_validateMenu.add(new JSeparator());
-
-		m_copyValidationListItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.validate.copy"));
-		m_copyValidationListItem.addActionListener(m_frame);
-		m_copyValidationListItem.setEnabled(false);
-		m_validateMenu.add(m_copyValidationListItem);
-
-		m_exportItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.validate.export"));
-		m_exportItem.addActionListener(m_frame);
-		m_exportItem.setAccelerator(KeyStroke.getKeyStroke('E', menuKeyMask));
-		m_validateMenu.add(m_exportItem);
-
-		m_devCapItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.validate.test"));
-		m_devCapItem.addActionListener(m_frame);
-		m_devCapItem.setAccelerator(KeyStroke.getKeyStroke('D', menuKeyMask));
-		m_devCapItem.setEnabled(false);
-		m_validateMenu.add(m_devCapItem);
-
-		return m_validateMenu;
-	}
-
-	/**
 	 * Creates the Help menu.
 	 * @return The Help menu with the menu items.
 	 */
@@ -342,7 +305,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	 */
 	public void updateRecentFilesMenu(final String pathName)
 	{
-		editorMenuBarFile.updateRecentFilesMenu(pathName);
+		menuFile.updateRecentFilesMenu(pathName);
 		updateWindowsMenu();
 	}
 
@@ -410,7 +373,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		if (node.isElement())
 		{
 			menuInsert.setEnabled4(true);
-			editorMenuBarEdit.setTwoProperties(parent != null, false);
+			menuEdit.setTwoProperties(parent != null, false);
 
 			KElement kElement = EditorUtils.getElement(path);
 			if (kElement == null)
@@ -459,7 +422,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		else
 		{
 			menuInsert.setEnabled3(false);
-			editorMenuBarEdit.setTwoProperties(parent != null, true);
+			menuEdit.setTwoProperties(parent != null, true);
 		}
 	}
 
@@ -468,14 +431,11 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	 */
 	public void setEnableClose()
 	{
-		editorMenuBarFile.setEnableClose();
-		editorMenuBarEdit.setEnableClose();
-		editorMenuBarTools.setEnableClose();
+		menuFile.setEnableClose();
+		menuEdit.setEnableClose();
+		menuTools.setEnableClose();
 		menuInsert.setEnableClose();
-
-		m_devCapItem.setEnabled(false);
-		m_exportItem.setEnabled(false);
-		m_QuickValidateItem.setEnabled(false);
+		menuValidate.setEnableClose();
 	}
 
 	/**
@@ -483,13 +443,10 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	 */
 	public void setEnableOpen(final boolean mode)
 	{
-		editorMenuBarEdit.setEnableOpen(mode);
-		editorMenuBarTools.setEnableOpen(mode);
+		menuEdit.setEnableOpen(mode);
+		menuTools.setEnableOpen(mode);
 		menuInsert.setEnableOpen(mode);
-
-		m_devCapItem.setEnabled(true);
-		m_exportItem.setEnabled(true);
-		m_QuickValidateItem.setEnabled(true);
+		menuValidate.setEnableOpen(mode);
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////
@@ -530,12 +487,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		{
 			frame.nextFile(-1);
 		}
-		else if (eSrc == m_QuickValidateItem && MainView.getModel() != null)
-		{
-			MainView.getModel().validate();
-		}
 
-		// select
 		if (m_Windows != null)
 		{
 			for (int i = 0; i < m_Windows.length; i++)

@@ -969,7 +969,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 * fixes the version of a JDF by calling fixVersion for the selected JDF node ore the closest JDF parent.
 	 * 
 	 */
-	void cleanupSelected()
+	public void cleanupSelected()
 	{
 		final JDFDoc doc = getJDFDoc();
 		if (doc == null)
@@ -1016,7 +1016,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 * fixes the version of a JDF by calling fixVersion for the selected JDF node ore the closest JDF parent.
 	 * 
 	 */
-	void removeExtensionsfromSelected()
+	public void removeExtensionsfromSelected()
 	{
 		final JDFDoc doc = getJDFDoc();
 		if (doc == null)
@@ -1065,7 +1065,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		MainView.setCursor(1, null);
 
 		final Object eSrc = e.getSource();
-		if (eSrc == m_menuBar.m_exportItem)
+		if (eSrc == m_menuBar.getMenuValidate().m_exportItem)
 		{
 			exportToDevCap();
 		}
@@ -1117,12 +1117,12 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		{
 			m_topTabs.m_pArea.zoom('b');
 		}
-		else if (eSrc == m_menuBar.m_devCapItem)
+		else if (eSrc == m_menuBar.getMenuValidate().m_devCapItem)
 		{
 			openDeviceCapFile();
 		}
 		// copy the results of the validation to the system clip board
-		else if (eSrc == m_menuBar.m_copyValidationListItem)
+		else if (eSrc == m_menuBar.getMenuValidate().m_copyValidationListItem)
 		{
 			// TODO m_errorTabbedPane.copyValidationListToClipBoard();
 		}

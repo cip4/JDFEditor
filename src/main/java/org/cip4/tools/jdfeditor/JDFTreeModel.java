@@ -129,7 +129,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	 * Spawn informative TODO correctly dump into multiple file
 	 * @param bSpawnInformative 
 	 */
-	void spawn(final boolean bSpawnInformative)
+	public void spawn(final boolean bSpawnInformative)
 	{
 		final EditorDocument ed = MainView.getEditorDoc();
 		if (ed == null)
@@ -198,7 +198,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	/**
 	 * Merge
 	 */
-	void merge()
+	public void merge()
 	{
 		JDFFrame frame = MainView.getFrame();
 		try
