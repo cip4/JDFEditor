@@ -102,7 +102,7 @@ public abstract class AbstractTreeCellRenderer extends DefaultTreeCellRenderer
 		// basic appearance
 		this.setOpaque(true);
 		this.setBackground(isSelected ? colorSelection : colorDefault);
-		this.setFont(new Font(null, Font.PLAIN, 10));
+//		this.setFont(new Font(null, Font.PLAIN, 10));
 	}
 
 	/**
