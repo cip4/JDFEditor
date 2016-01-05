@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2016 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -1224,6 +1224,12 @@ public class JDFTreeModel extends DefaultTreeModel
 		XJDF20 xjdf20 = EditorUtils.getXJDFConverter();
 		if (e instanceof JDFNode)
 		{
+			String procMethod = settingService.getString(SettingKey.XJDF_CONVERT_SINGLENODE);
+			if ("zip".equals(procMethod))
+			{
+				final String fnNew = UrlUtil.newExtension(fn, "xjdf.zip");
+				xjdf20.saveZip(fnNew, (JDFNode) e, true);
+			}
 			xJDF = xjdf20.makeNewJDF((JDFNode) e, (VJDFAttributeMap) null);
 		}
 		else if (e instanceof JDFJMF)

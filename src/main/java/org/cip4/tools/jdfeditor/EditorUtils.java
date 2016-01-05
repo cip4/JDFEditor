@@ -610,7 +610,7 @@ public class EditorUtils
 		String procMethod = settingService.getString(SettingKey.XJDF_CONVERT_SINGLENODE);
 		boolean single = "SingleNode".equals(procMethod);
 		xjdf20.setSingleNode(single);
-		if (!single)
+		if (!single && !"zip".equals(procMethod))
 		{
 			EnumProcessPartition proc = EnumProcessPartition.valueOf(procMethod);
 			xjdf20.setProcessPart(proc);
