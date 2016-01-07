@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2016 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -270,7 +270,7 @@ public class JDFTreeArea extends JTextArea
 		jdfTree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
 		m_treeSelectionListener = m_frame.getTreeSelectionListener();
 		jdfTree.addTreeSelectionListener(m_treeSelectionListener);
-//		jdfTree.setRowHeight(18);
+		//		jdfTree.setRowHeight(18);
 
 		// jdfTree.expandPath(new TreePath(((JDFTreeNode) root.getFirstChild()).getPath()));
 		// jdfTree.expandPath(eDoc.getLastSelection());
@@ -890,7 +890,7 @@ public class JDFTreeArea extends JTextArea
 		if (node.isElement())
 		{
 
-			if ((kElement instanceof JDFResourceLink) || (kElement instanceof JDFRefElement) || (kElement instanceof JDFPart) || (kElement instanceof JDFCreated)
+			if ((JDFResourceLink.isResourceLink(kElement)) || (kElement instanceof JDFRefElement) || (kElement instanceof JDFPart) || (kElement instanceof JDFCreated)
 					|| (kElement instanceof JDFModified))
 			{
 				kElementTarget = getLinkTarget(kElement);
@@ -929,7 +929,7 @@ public class JDFTreeArea extends JTextArea
 	private KElement getLinkTarget(final KElement kElement)
 	{
 		KElement target = null;
-		if (kElement instanceof JDFResourceLink)
+		if (JDFResourceLink.isResourceLink(kElement))
 		{
 			target = ((JDFResourceLink) kElement).getTarget();
 			if (target == null)

@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2015 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2016 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -81,7 +81,6 @@ import org.cip4.jdflib.core.JDFCustomerInfo;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFElement.EnumNodeStatus;
 import org.cip4.jdflib.core.JDFNodeInfo;
-import org.cip4.jdflib.core.JDFPartAmount;
 import org.cip4.jdflib.core.JDFRefElement;
 import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
@@ -483,7 +482,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 					s += ": " + ref;
 				}
 			}
-			else if ((e instanceof JDFResourceLink) && !(e instanceof JDFPartAmount))
+			else if (JDFResourceLink.isResourceLink(e))
 			{
 				final JDFResourceLink rl = (JDFResourceLink) e;
 				final String ref = rl.getrRef();

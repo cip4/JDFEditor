@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2016 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -81,6 +81,7 @@ import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.jmf.JMFBuilder;
 import org.cip4.jdflib.jmf.JMFBuilderFactory;
+import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.util.MyArgs;
 import org.cip4.jdflib.util.file.UserDir;
 import org.cip4.jdflib.util.logging.LogConfigurator;
@@ -176,6 +177,8 @@ public class Editor
 		KElement.setLongID(mainController.getSetting(SettingKey.GENERAL_LONG_ID, Boolean.class));
 		JDFElement.setDefaultJDFVersion(JDFElement.EnumVersion.getEnum(mainController.getSetting(SettingKey.VALIDATION_VERSION, String.class)));
 		JDFParser.m_searchStream = true;
+
+		JDFResource.setAutoSubElementClass(false);
 	}
 
 	/**
