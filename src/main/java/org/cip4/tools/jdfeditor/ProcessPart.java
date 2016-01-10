@@ -117,11 +117,11 @@ public class ProcessPart extends JComponent
     private int xPos;
     private int yPos;
 
-    private boolean isPositioned=false;
+    private boolean isPositioned = false;
 
-    static private Font procFont = null;
-    static private Font resourceFont = null;
-    static private Font parentFont = null;
+    private static Font procFont = null;
+    private static Font resourceFont = null;
+    private static Font parentFont = null;
 
     public ProcessPart(KElement _elem, int _style, JDFResourceLink rl)
     {
@@ -133,16 +133,16 @@ public class ProcessPart extends JComponent
         switch (style)
         {
             case 0:
-                setFont(parentFont);                
+                setFont(parentFont);
                 break;
             case 1:
-                setFont(procFont);                
+                setFont(procFont);
                 break;
             case 2:
-                setFont(resourceFont);                
+                setFont(resourceFont);
                 break;
             case 3:
-                setFont(resourceFont);                
+                setFont(resourceFont);
                 break;
 
             default:
@@ -361,6 +361,7 @@ public class ProcessPart extends JComponent
     {
         return yPos;
     }
+
     public FontMetrics getFM()
     {
         return getFontMetrics(getFont());

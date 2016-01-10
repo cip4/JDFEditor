@@ -10,7 +10,7 @@ import org.cip4.tools.jdfeditor.service.SettingService;
 public class JDFTreeCellRenderer extends AbstractTreeCellRenderer
 {
 
-	private static final Log LOGGER = LogFactory.getLog(SettingService.class);
+	private static final Log LOGGER = LogFactory.getLog(JDFTreeCellRenderer.class);
 
 	private static final long serialVersionUID = 1526856515806803255L;
 

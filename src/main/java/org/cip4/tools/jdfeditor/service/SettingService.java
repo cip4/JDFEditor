@@ -147,7 +147,6 @@ public class SettingService
 
 		if (!configFile.exists())
 		{
-
 			// create config file
 			for (SettingKey key : SettingKey.values())
 			{
@@ -158,7 +157,6 @@ public class SettingService
 		// info log
 		LOG.info("Initialize settings completed.");
 
-		// return configuration
 		return config;
 	}
 
