@@ -74,29 +74,21 @@ import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 import javax.swing.tree.TreePath;
 
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.KElement;
-import org.cip4.jdflib.elementwalker.URLExtractor;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourceLinkPool;
 import org.cip4.jdflib.pool.JDFResourcePool;
-import org.cip4.jdflib.util.FileUtil;
-import org.cip4.jdflib.util.StringUtil;
-import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.menu.MenuTools;
 import org.cip4.tools.jdfeditor.menu.MenuFile;
@@ -104,8 +96,6 @@ import org.cip4.tools.jdfeditor.menu.MenuInsert;
 import org.cip4.tools.jdfeditor.menu.MenuValidate;
 import org.cip4.tools.jdfeditor.menu.MenuView;
 import org.cip4.tools.jdfeditor.menu.MenuEdit;
-import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
-import org.cip4.tools.jdfeditor.util.RecentFileUtil;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
@@ -243,52 +233,43 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	public JMenuBar drawMenu()
 	{
 		setBackground(Color.lightGray);
-		final Color menuColor = getBackground();
 
 		menuFile = new MenuFile(mainController);
 		final JMenu m_fileMenu = menuFile.createMenu();
 		m_fileMenu.setMnemonic('F');
-		m_fileMenu.setBackground(menuColor);
 		add(m_fileMenu);
 
 		menuEdit = new MenuEdit(mainController);
 		final JMenu m_editMenu = menuEdit.createMenu();
 		m_editMenu.setMnemonic('E');
-		m_editMenu.setBackground(menuColor);
 		add(m_editMenu);
 
 		menuView = new MenuView(mainController);
 		final JMenu m_viewMenu = menuView.createMenu();
 		m_viewMenu.setMnemonic('V');
-		m_viewMenu.setBackground(menuColor);
 		add(m_viewMenu);
 
 		menuInsert = new MenuInsert(mainController);
 		final JMenu insertMenu = menuInsert.createMenu();
 		insertMenu.setMnemonic('I');
-		insertMenu.setBackground(menuColor);
 		add(insertMenu);
 
 		menuTools = new MenuTools(mainController);
 		final JMenu m_toolsMenu = menuTools.createMenu();
 		m_toolsMenu.setMnemonic('T');
-		m_toolsMenu.setBackground(menuColor);
 		add(m_toolsMenu);
 
 		menuValidate = new MenuValidate(mainController);
 		final JMenu m_validateMenu = menuValidate.createMenu();
 		m_validateMenu.setMnemonic('V');
-		m_validateMenu.setBackground(menuColor);
 		add(m_validateMenu);
 
 		final JMenu windowM = drawWindowMenu();
 		windowM.setMnemonic('W');
-		windowM.setBackground(menuColor);
 		add(windowM);
 
 		final JMenu helpM = drawHelpMenu();
 		helpM.setMnemonic('H');
-		helpM.setBackground(menuColor);
 		add(helpM);
 
 		return this;

@@ -99,6 +99,7 @@ import org.cip4.jdflib.datatypes.JDFAttributeMap;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourceLinkPool;
 import org.cip4.jdflib.resource.JDFResource;
+import org.cip4.tools.jdfeditor.service.RuntimeProperties;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 import org.cip4.tools.jdfeditor.view.renderer.JDFResourceTreeCellRenderer;
@@ -203,7 +204,10 @@ public class JDFInOutScroll extends JScrollPane
 	private JLabel getTitleLabel(final String title, final int width)
 	{
 		final JLabel label = new JLabel(title);
-		label.setFont(new Font("Verdana", Font.BOLD, 12));
+
+		Font labelFont = new Font(RuntimeProperties.enlargedTextFontName, Font.PLAIN, RuntimeProperties.enlargedTextFontSize);
+		label.setFont(labelFont);
+
 		label.setBackground(Color.white);
 		label.setForeground(Color.black);
 		label.setBounds(5, 0, width, 50);
