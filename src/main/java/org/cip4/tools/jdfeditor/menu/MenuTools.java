@@ -94,6 +94,7 @@ import org.cip4.tools.jdfeditor.PreferenceDialog;
 import org.cip4.tools.jdfeditor.SendToDevice;
 import org.cip4.tools.jdfeditor.EditorMenuBar.Menu_MouseListener;
 import org.cip4.tools.jdfeditor.controller.MainController;
+import org.cip4.tools.jdfeditor.util.FontUtil;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
@@ -265,7 +266,14 @@ public class MenuTools implements ActionListener, MenuInterface
 			final EditorDocument ed = MainView.getEditorDoc();
 			if (ed != null && ed.getJDFTree() != null)
 			{
-				ed.getJDFTree().repaint();
+//				ed.getJDFTree().repaint();
+			}
+
+			FontUtil.calcFontSize();
+			if (getEditorDoc() != null)
+			{
+				MainView.getFrame().m_treeArea.drawTreeView(getEditorDoc());
+				MainView.getFrame().getBottomTabs().updateXmlEditorFontSize();
 			}
 		}
 	}

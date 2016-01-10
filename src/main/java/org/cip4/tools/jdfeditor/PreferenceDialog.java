@@ -160,6 +160,8 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private JButton defaultIconButton;
 	private JButton changeIconButton;
 	private JButton applyLnFButton;
+	private JTextField enlargeTextField;
+
 	private JCheckBox boxReadOnly;
 	private JCheckBox boxNormalizeOpen;
 	private JCheckBox boxRemDefault;
@@ -344,6 +346,9 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		 * BaseLevel=iniFile.getBaseLevel(); MISLevel=iniFile.getMISLevel(); JMFLevel=iniFile.getJMFLevel();
 		 */
 
+		enlargeTextField = new JTextField(3);
+		enlargeTextField.setText(settingService.getString(SettingKey.FONT_SIZE_ENLARGED));
+
 		this.setPreferredSize(new Dimension(390, 420));
 		this.addMouseListener(new TabListener());
 		drawPane();
@@ -501,7 +506,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	 * draw the flags etc. for the language preferences
 	 * @return
 	 */
-	JPanel createLanguagePref()
+	private JPanel createLanguagePref()
 	{
 		final JPanel main = new JPanel(new BorderLayout());
 
@@ -543,7 +548,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		return main;
 	}
 
-	JPanel createLnFPref()
+	private JPanel createLnFPref()
 	{
 		final ButtonGroup buttonGroup = new ButtonGroup();
 
@@ -592,10 +597,17 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		lnfPanel.add(applyLnFButton);
 		main.add(lnfPanel, BorderLayout.CENTER);
 
+		final JPanel enlargeTextSizePanel = new JPanel();
+		enlargeTextSizePanel.add(new JLabel("Enlarge text to"));
+		enlargeTextSizePanel.add(enlargeTextField);
+		enlargeTextSizePanel.add(new JLabel("%"));
+
+		main.add(enlargeTextSizePanel, BorderLayout.SOUTH);
+
 		return main;
 	}
 
-	JPanel createDirPref()
+	private JPanel createDirPref()
 	{
 		final JPanel main = new JPanel(new BorderLayout());
 
@@ -1062,7 +1074,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
 	public void writeToIni()
 	{
-		validTab.writeToIni();
+//		validTab.writeToIni();
 		settingService.setSetting(SettingKey.GENERAL_USE_SCHEMA, useSchema);
 
 		if (getSchemaURL() != null)
@@ -1102,6 +1114,8 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
 		String s = StringUtil.setvString(genericAttributes, " ", null, null);
 		settingService.setSetting(SettingKey.VALIDATION_GENERIC_ATTR, s);
+
+		settingService.setSetting(SettingKey.FONT_SIZE_ENLARGED, enlargeTextField.getText());
 	}
 
 	/**

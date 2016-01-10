@@ -17,6 +17,7 @@ import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.tools.jdfeditor.JDFTreeModel;
 import org.cip4.tools.jdfeditor.JDFTreeNode;
+import org.cip4.tools.jdfeditor.service.RuntimeProperties;
 
 /**
  * Abstract tree renderer class which renders jdf nodes and attributes to tree elements.
@@ -102,7 +103,9 @@ public abstract class AbstractTreeCellRenderer extends DefaultTreeCellRenderer
 		// basic appearance
 		this.setOpaque(true);
 		this.setBackground(isSelected ? colorSelection : colorDefault);
-//		this.setFont(new Font(null, Font.PLAIN, 10));
+
+		Font cellFont = new Font(RuntimeProperties.enlargedTextFontName, Font.PLAIN, RuntimeProperties.enlargedTextFontSize);
+		setFont(cellFont);
 	}
 
 	/**

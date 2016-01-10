@@ -72,6 +72,7 @@ package org.cip4.tools.jdfeditor;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.util.Enumeration;
 
 import javax.swing.BorderFactory;
@@ -83,6 +84,8 @@ import javax.swing.tree.TreePath;
 
 import org.cip4.jdflib.core.KElement;
 import org.cip4.tools.jdfeditor.pane.HttpServerPane;
+import org.cip4.tools.jdfeditor.service.RuntimeProperties;
+import org.cip4.tools.jdfeditor.util.FontUtil;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
@@ -159,6 +162,16 @@ public class EditorTabbedPaneB extends JTabbedPane
 		xmlArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_XML);
 		xmlArea.setAutoIndentEnabled(true);
 
+		if (RuntimeProperties.enlargedTextFontName.isEmpty()) {
+			Font originalFont = xmlArea.getFont();
+			RuntimeProperties.originalTextFontSize = originalFont.getSize();
+			RuntimeProperties.enlargedTextFontName = originalFont.getFontName();
+			FontUtil.calcFontSize();
+		}
+
+		Font xmlAreaFont = new Font(RuntimeProperties.enlargedTextFontName, Font.PLAIN, RuntimeProperties.enlargedTextFontSize);
+		xmlArea.setFont(xmlAreaFont);
+
 		xmlArea.setEditable(false);
 		RTextScrollPane sp = new RTextScrollPane(xmlArea);
 		xmlEditorPanel.add(sp);
@@ -192,6 +205,12 @@ public class EditorTabbedPaneB extends JTabbedPane
 	{
 		xmlEditorTextArea.setText(s);
 		xmlEditorTextArea.setCaretPosition(0);
+	}
+	
+	public void updateXmlEditorFontSize()
+	{
+		Font xmlAreaFont = new Font(RuntimeProperties.enlargedTextFontName, Font.PLAIN, RuntimeProperties.enlargedTextFontSize);
+		xmlEditorTextArea.setFont(xmlAreaFont);
 	}
 
 	/**

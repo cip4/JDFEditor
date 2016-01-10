@@ -93,6 +93,8 @@ public enum SettingKey
 
 	HTTP_STORE_PATH("http.store.path", DirectoryUtil.getReceivedMessagesDir()), HTTP_PRESELECTED_ADDRESS("http.preselected.address", "127.0.0.1"),
 
+	FONT_SIZE_ENLARGED("font.size.enlarged", "100"),
+
 	LOGGING_LEVEL("logging.level", "INFO"), LOGGING_ENABLED("logging.enabled", true),
 
 	RECENT_DEV_CAP("recent.dev.cap", null), RECENT_FILES("recent.files", null),
