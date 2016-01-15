@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- JNLP File for launching tcpmon with JavaWebStart -->
+<jnlp
+  spec="1.0+"
+  codebase="https://tcpmon.googlecode.com/hg/www" href="tcpmon.jnlp">
+  <information>
+    <title>tcpmon latest release</title>
+    <vendor>Inderjeet Singh</vendor>
+    <homepage href="http://code.google.com/p/tcpmon"/>
+    <description>Tool to Monitor Data on a TCP Connection</description>
+    <description kind="short">tcpmon utility</description>
+    <!-- icon href="http://tcpmon.dev.java.net/images/tcpmonlogo.gif"/ -->
+    <offline-allowed/>
+  </information>
+  <security>
+    <all-permissions/>
+  </security>
+  <resources>
+    <j2se version="1.4+"/>
+    <jar href="tcpmon-signed.jar" main="true" download="eager"/>
+  </resources>
+  <application-desc main-class="com.codegoogle.tcpmon.MainWindow"/>
+</jnlp>
