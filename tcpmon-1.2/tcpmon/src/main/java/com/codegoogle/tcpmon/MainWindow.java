@@ -69,18 +69,18 @@ public final class MainWindow extends javax.swing.JFrame {
     initComponents();
 
     // for non-generated UI stuff
-    initOtherComponents();
+//    initOtherComponents();
 
-    java.net.URL helpURL = MainWindow.class.getResource("/readme.html");
-    if (helpURL != null) {
-      try {
-        tpInfo.setPage(helpURL);
-      } catch (IOException e) {
-        System.err.println("Attempted to read a bad URL: " + helpURL);
-      }
-    } else {
-      System.err.println("Couldn't find file: readme.html");
-    }
+//    java.net.URL helpURL = MainWindow.class.getResource("/readme.html");
+//    if (helpURL != null) {
+//      try {
+//        tpInfo.setPage(helpURL);
+//      } catch (IOException e) {
+//        System.err.println("Attempted to read a bad URL: " + helpURL);
+//      }
+//    } else {
+//      System.err.println("Couldn't find file: readme.html");
+//    }
   }
 
   /**
@@ -106,8 +106,8 @@ public final class MainWindow extends javax.swing.JFrame {
     cbSsl = new javax.swing.JCheckBox();
     bAddMonitor = new javax.swing.JButton();
     pInfo = new javax.swing.JPanel();
-    spInfo = new javax.swing.JScrollPane();
-    tpInfo = new javax.swing.JTextPane();
+//    spInfo = new javax.swing.JScrollPane();
+//    tpInfo = new javax.swing.JTextPane();
 
     getContentPane().setLayout(new java.awt.BorderLayout(5, 5));
 
@@ -126,7 +126,7 @@ public final class MainWindow extends javax.swing.JFrame {
     gridBagConstraints.gridy = 0;
     gridBagConstraints.gridwidth = 2;
     gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-    gridBagConstraints.insets = new java.awt.Insets(20, 20, 0, 0);
+    gridBagConstraints.insets = new java.awt.Insets(50, 20, 0, 0);
     pConnection.add(jLabel1, gridBagConstraints);
 
     pConnectionInfo.setLayout(new java.awt.GridBagLayout());
@@ -244,10 +244,10 @@ public final class MainWindow extends javax.swing.JFrame {
 
     pInfo.setLayout(new java.awt.BorderLayout());
 
-    tpInfo.setEditable(false);
-    spInfo.setViewportView(tpInfo);
+//    tpInfo.setEditable(false);
+//    spInfo.setViewportView(tpInfo);
 
-    pInfo.add(spInfo, java.awt.BorderLayout.CENTER);
+//    pInfo.add(spInfo, java.awt.BorderLayout.CENTER);
 
     adminPanel.add(pInfo, java.awt.BorderLayout.CENTER);
 
@@ -280,7 +280,7 @@ public final class MainWindow extends javax.swing.JFrame {
   private javax.swing.JPanel pConnection;
   private javax.swing.JPanel pConnectionInfo;
   private javax.swing.JPanel pInfo;
-  private javax.swing.JScrollPane spInfo;
+//  private javax.swing.JScrollPane spInfo;
   private javax.swing.JTabbedPane tabbedPane;
   private javax.swing.JTextField tfLocalPort;
   private javax.swing.JTextField tfRemoteHost;

@@ -6,12 +6,14 @@
 	<version>Paris-15.10.1-SNAPSHOT</version>
 	<name>CIP4 JDFEditor</name>
 	<description>CIP4 JDFEditor</description>
+
 	<properties>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<buildDirectory>${project.basedir}/target</buildDirectory>
 	</properties>
+
     <scm>
         <url>https://stash.cip4.org/scm/tool/jdfeditor.git</url>
         <developerConnection>scm:git:https://stash.cip4.org/scm/tool/jdfeditor.git</developerConnection>
@@ -35,6 +37,7 @@
             </snapshots>
         </repository>
     </repositories>
+
 	<developers>
 		<developer>
 			<id>r.prosi</id>
@@ -58,6 +61,7 @@
 			<email>evelina@kth.se</email>
 		</developer>
 	</developers>
+
 	<build>
 		<directory>${buildDirectory}</directory>
         <finalName>${project.name} ${project.version}</finalName>
@@ -67,7 +71,27 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
+
 		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.10</version>
+				<executions>
+					<execution>
+						<id>add-extra-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>tcpmon-1.2/tcpmon/src/main/java</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -176,11 +200,11 @@
 			<artifactId>jetty</artifactId>
 			<version>5.1.10</version>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>ws-commons</groupId>
 			<artifactId>tcpmon</artifactId>
 			<version>1.0</version>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>com.fifesoft</groupId>
 			<artifactId>rsyntaxtextarea</artifactId>

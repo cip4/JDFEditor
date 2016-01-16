@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2016 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -72,11 +72,13 @@ package org.cip4.tools.jdfeditor;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Font;
 import java.util.Enumeration;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionListener;
@@ -90,6 +92,10 @@ import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
+
+import com.codegoogle.tcpmon.bookmark.BookmarkManager;
+import com.codegoogle.tcpmon.Configuration;
+import com.codegoogle.tcpmon.MainWindow;
 
 /**
  * 
@@ -138,12 +144,11 @@ public class EditorTabbedPaneB extends JTabbedPane
 		//        XML Editor tab
 		xmlEditorTextArea = createXMLPane();
 
-		// TODO
-		//        TCPMon tab
-		//		MainWindow mWindow = new MainWindow();
-		//		Container c = mWindow.getContentPane();
-		//		JScrollPane tcpMonScrPane = new JScrollPane(c);
-		//		addTab(ResourceUtil.getMessage("TCPMon"), null, tcpMonScrPane, ResourceUtil.getMessage("TCPMon"));
+//		TCPMon tab
+		MainWindow mWindow = new MainWindow(new BookmarkManager(""), new Configuration());
+		Container c = mWindow.getContentPane();
+		JScrollPane tcpMonScrPane = new JScrollPane(c);
+		addTab(ResourceUtil.getMessage("tab.TCPMon"), null, tcpMonScrPane, ResourceUtil.getMessage("tab.TCPMon"));
 
 		//		HTTP server tab
 		httpPanel = new HttpServerPane();
