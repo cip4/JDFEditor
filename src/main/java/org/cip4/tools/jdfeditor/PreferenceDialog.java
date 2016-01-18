@@ -149,8 +149,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private final ImageIcon spaFlag = ResourceUtil.getImageIcon("SpanishFlag.gif");
 	private final ImageIcon japFlag = ResourceUtil.getImageIcon("JapanFlag.gif");
 
-	protected JPanel[] panels;
-
 	public boolean useSchema = false;
 	private JCheckBox boxSchema = null;
 	public File schemaFile = null;
@@ -349,60 +347,42 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		enlargeTextField = new JTextField(3);
 		enlargeTextField.setText(settingService.getString(SettingKey.FONT_SIZE_ENLARGED));
 
-		this.setPreferredSize(new Dimension(390, 420));
-		this.addMouseListener(new TabListener());
-		drawPane();
-		this.setVisible(true);
+		setPreferredSize(new Dimension(390, 420));
+		drawTabs();
+		setVisible(true);
 	}
 
-	private void drawPane()
+	private void drawTabs()
 	{
-		MainView.setCursor(0, null);
+		MainView.setCursor(1, this);
 
-		panels = new JPanel[10];
-		int n = 0;
+		final JPanel generalPanel = createGeneralPref();
+		addTab(ResourceUtil.getMessage("GeneralKey"), generalPanel);
 
-		final JPanel gen = createGeneralPref();
-		prepareTab(n++, gen, "GeneralKey");
-		this.setSelectedIndex(0);
+		final JPanel langPanel = createLanguagePref();
+		addTab(ResourceUtil.getMessage("LanguageKey"), langPanel);
 
-		final JPanel lang = createLanguagePref();
-		prepareTab(n++, lang, "LanguageKey");
+		final JPanel lnfPanel = createLnFPref();
+		addTab(ResourceUtil.getMessage("LookAndFeelKey"), lnfPanel);
 
-		final JPanel lnf = createLnFPref();
-		prepareTab(n++, lnf, "LookAndFeelKey");
+		final JPanel dirPanel = createDirPref();
+		addTab(ResourceUtil.getMessage("DirectoriesKey"), dirPanel);
 
-		final JPanel dir = createDirPref();
-		prepareTab(n++, dir, "DirectoriesKey");
+		final JPanel sendPanel = new CommunicationTab().createSendToDevicePref();
+		addTab(ResourceUtil.getMessage("SendToDeviceKey"), sendPanel);
 
-		final JPanel send = new CommunicationTab().createSendToDevicePref();
-		prepareTab(n++, send, "SendToDeviceKey");
+		final JPanel validPanel = createValidatePref();
+		addTab(ResourceUtil.getMessage("ValidateKey"), validPanel);
 
-		final JPanel valid = createValidatePref();
-		prepareTab(n++, valid, "ValidateKey");
+		final JPanel goldenTicketPanel = createGoldenTicketPref();
+		addTab(ResourceUtil.getMessage("GoldenTicketKey"), goldenTicketPanel);
 
-		final JPanel goldenTicket = createGoldenTicketPref();
-		prepareTab(n++, goldenTicket, "GoldenTicketKey");
-
-		MainView.setCursor(0, null);
-	}
-
-	private void prepareTab(final int n, final JPanel gen, final String resKey)
-	{
-		final String resString = ResourceUtil.getMessage(resKey);
-		this.addTab(resString, null, gen, resString);
-		this.setComponentAt(n, gen);
-		panels[n] = gen;
+		MainView.setCursor(0, this);
 	}
 
 	private JPanel createGeneralPref()
 	{
 		final JPanel main = new JPanel(new BorderLayout());
-
-		main.add(Box.createVerticalStrut(5), BorderLayout.SOUTH);
-		main.add(Box.createHorizontalStrut(5), BorderLayout.EAST);
-		main.add(Box.createHorizontalStrut(5), BorderLayout.WEST);
-		main.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
 
 		final JPanel genPanel = new JPanel(null);
 		genPanel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("GeneralOptionsKey")));
@@ -495,7 +475,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		y += d.height + 9;
 		schemaBrowse.setBounds(10, y, d.width, d.height);
 		genPanel.add(schemaBrowse);
-		setVisible(true);
 
 		main.add(genPanel, BorderLayout.CENTER);
 
@@ -878,7 +857,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 			super();
 		}
 
-		// 20040906 MRE
 		JPanel createSendToDevicePref()
 		{
 			final JPanel main = new JPanel(new BorderLayout());
@@ -929,20 +907,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		{
 			String method = e.getActionCommand();
 			setMethodSendToDevice(method);
-		}
-	}
-
-	class TabListener extends MouseAdapter
-	{
-		@Override
-		public void mouseClicked(final MouseEvent e)
-		{
-			e.getID(); // fool compiler;
-			final int selectedIndex = getSelectedIndex();
-			if (selectedIndex >= 0 && selectedIndex < panels.length)
-			{
-				setComponentAt(selectedIndex, panels[selectedIndex]);
-			}
 		}
 	}
 
