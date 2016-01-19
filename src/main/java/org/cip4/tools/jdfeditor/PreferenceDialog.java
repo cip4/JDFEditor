@@ -384,6 +384,11 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	{
 		final JPanel main = new JPanel(new BorderLayout());
 
+		main.add(Box.createVerticalStrut(5), BorderLayout.SOUTH);
+		main.add(Box.createHorizontalStrut(5), BorderLayout.EAST);
+		main.add(Box.createHorizontalStrut(5), BorderLayout.WEST);
+		main.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
+
 		final JPanel genPanel = new JPanel(null);
 		genPanel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("GeneralOptionsKey")));
 

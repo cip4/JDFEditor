@@ -216,6 +216,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		setBounds(0, 0, d.width, d.height - 30);
 		m_menuBar = new EditorMenuBar();
 		m_bottomTabs = new EditorTabbedPaneB();
+		setExtendedState(MAXIMIZED_BOTH);
 	}
 
 	/**
@@ -233,7 +234,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 * @param window This window
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static void enableOSXFullscreen(Window window)
+	private static void enableOSXFullscreen(final Window window)
 	{
 		try
 		{
@@ -242,11 +243,13 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			Method method = util.getMethod("setWindowCanFullScreen", params);
 			method.invoke(util, window, true);
 		}
-		catch (ClassNotFoundException e1)
+		catch (ClassNotFoundException e)
 		{
+			LOGGER.debug("Exception: ", e);
 		}
 		catch (Exception e)
 		{
+			LOGGER.debug("Exception: ", e);
 		}
 	}
 
