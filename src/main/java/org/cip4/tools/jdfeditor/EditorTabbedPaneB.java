@@ -201,11 +201,6 @@ public class EditorTabbedPaneB extends JTabbedPane
 		}
 	}
 
-	/**
-	 * 
-	 *  
-	 * @param s
-	 */
 	public void refreshXmlEditor(String s)
 	{
 		xmlEditorTextArea.setText(s);
@@ -254,7 +249,6 @@ public class EditorTabbedPaneB extends JTabbedPane
 				JDFTreeNode theRoot = (JDFTreeNode) errTree.getModel().getRoot();
 				p = new TreePath(theRoot.getPath());
 				errTree.collapsePath(p);
-
 			}
 			else
 			{
@@ -312,23 +306,13 @@ public class EditorTabbedPaneB extends JTabbedPane
 	}
 
 	/**
-	 * Method clearViews.
-	 * clear all views before opening a new file
+	 * Clear all views before opening a new file.
 	 */
-	void clearViews()
+	public void clearViews()
 	{
 		m_devCapErrScroll.clearReport();
 		m_validErrScroll.clearReport();
 		m_SchemaErrScroll.clearReport();
-	}
-
-	/**
-	 * 
-	 *  
-	 */
-	public void clearAll()
-	{
-		clearViews();
 	}
 
 	public HttpServerPane getHttpPanel()

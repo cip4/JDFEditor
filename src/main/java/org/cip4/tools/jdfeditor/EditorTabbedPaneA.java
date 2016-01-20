@@ -159,7 +159,6 @@ public class EditorTabbedPaneA extends JTabbedPane
 			@Override
 			public void mouseClicked(MouseEvent e)
 			{
-				e.getID(); // fool compiler
 				onSelect();
 				EditorDocument ed = MainView.getEditorDoc();
 				if (ed != null)

@@ -148,9 +148,8 @@ public class ValidationScrollPane extends JScrollPane
 			xpandDevCapOutput.addActionListener(new ActionListener()
 			{
 				@Override
-				public void actionPerformed(ActionEvent ae)
+				public void actionPerformed(final ActionEvent ae)
 				{
-					ae.getID(); // fool compiler
 					final Enumeration e = node.postorderEnumeration();
 
 					while (e.hasMoreElements())
@@ -171,7 +170,6 @@ public class ValidationScrollPane extends JScrollPane
 				@Override
 				public void actionPerformed(ActionEvent ae)
 				{
-					ae.getID(); // fool compiler
 					final Enumeration e = node.postorderEnumeration();
 
 					while (e.hasMoreElements())
@@ -195,7 +193,6 @@ public class ValidationScrollPane extends JScrollPane
 		@Override
 		public void valueChanged(TreeSelectionEvent e)
 		{
-			e.getPath(); // fool compiler
 			final JDFTreeNode node = (JDFTreeNode) m_reportTree.getLastSelectedPathComponent();
 			if (node != null)
 			{

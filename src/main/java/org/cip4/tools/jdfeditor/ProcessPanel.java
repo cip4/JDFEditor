@@ -118,7 +118,7 @@ public class ProcessPanel extends JPanel
 {
 	private static final Log LOGGER = LogFactory.getLog(ProcessPanel.class);
 
-	class PartListener extends MouseAdapter
+	private class PartListener extends MouseAdapter
 	{
 		@Override
 		public void mouseClicked(MouseEvent e)
@@ -182,7 +182,6 @@ public class ProcessPanel extends JPanel
 	{
 		if (parentPart != null)
 		{
-
 			g.setFont(parentPart.getFont());
 			g.setColor(parentPart.getgColor());
 			g.fillRoundRect(parentPart.getxPos(), parentPart.getyPos(), parentPart.rawWidth, parentPart.rawHeight, 25, 25);
@@ -202,7 +201,6 @@ public class ProcessPanel extends JPanel
 			double zoom = MainView.getEditorDoc().getZoom();
 			parentPart.setBounds((int) (parentPart.getxPos() * zoom), (int) (parentPart.getyPos() * zoom), (int) (parentPart.rawWidth * zoom), (int) (parentPart.rawHeight * zoom));
 			add(parentPart, -1);
-
 		}
 	}
 
@@ -664,7 +662,7 @@ public class ProcessPanel extends JPanel
 	 * draws the process view for the selected node in the m_jdfTree
 	 * @param rootJDF
 	 */
-	public void drawProcessView(JDFNode rootJDF)
+	public void drawProcessView(final JDFNode rootJDF)
 	{
 		if (rootJDF == null)
 			return;
@@ -843,7 +841,6 @@ public class ProcessPanel extends JPanel
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				e.getID(); // fool compiler
 				//get the system clipboard
 				final Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
 				final Dimension size = getSize();

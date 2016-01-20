@@ -1510,7 +1510,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		@Override
 		public void valueChanged(final TreeSelectionEvent e)
 		{
-			e.getClass(); // fool compiler
 			if (m_treeArea.getSelectionPath() != null)
 			{
 				final JDFTreeNode node = (JDFTreeNode) m_treeArea.getSelectionPath().getLastPathComponent();
@@ -1631,7 +1630,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
-			e.getID(); // fool compiler
 			try
 			{
 				if (undomanager.canRedo())
@@ -1663,7 +1661,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		@Override
 		public void stateChanged(final ChangeEvent e)
 		{
-			e.getClass(); // fool compiler
 			if (m_treeArea != null)
 			{
 				m_treeArea.repaint();
