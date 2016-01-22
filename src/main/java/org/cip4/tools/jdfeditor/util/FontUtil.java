@@ -86,7 +86,7 @@ public class FontUtil
 	public static void calcFontSize()
 	{
 		int fontSize = (RuntimeProperties.originalTextFontSize * settingService.getInt(SettingKey.FONT_SIZE_ENLARGED)) / 100;
-		LOG.info("Recalc enlarged font size, set it to: " + fontSize);
+		LOG.info("Recalc font size, original: " + RuntimeProperties.originalTextFontSize + ", set it to: " + fontSize);
 		RuntimeProperties.enlargedTextFontSize = fontSize;
 	}
 }

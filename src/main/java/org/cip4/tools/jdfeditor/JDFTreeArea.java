@@ -138,7 +138,7 @@ public class JDFTreeArea extends JTextArea
 	private static final long serialVersionUID = 2036935468347224324L;
 	private final JScrollPane m_treeScroll;
 	JViewport m_treeView;
-	private JDFTreeCellRenderer m_renderer;
+	private JDFTreeCellRenderer treeCellRenderer;
 	JDFFrame m_frame;
 	private static String lastPath = "/JDF";
 
@@ -149,7 +149,6 @@ public class JDFTreeArea extends JTextArea
 	 */
 	public JDFTreeArea(final JDFFrame frame)
 	{
-		super();
 		m_frame = frame;
 		setEditable(false);
 		m_treeScroll = new JScrollPane();
@@ -167,6 +166,8 @@ public class JDFTreeArea extends JTextArea
 		m_treeView.setView(this);
 		m_treeScroll.setViewport(m_treeView);
 		m_treeScroll.setColumnHeaderView(treeLabel);
+
+		treeCellRenderer = new JDFTreeCellRenderer();
 	}
 
 	/**
@@ -263,14 +264,12 @@ public class JDFTreeArea extends JTextArea
 		jdfTree.setRootVisible(false);
 		jdfTree.setEditable(false);
 		jdfTree.setExpandsSelectedPaths(true);
-		jdfTree.putClientProperty("JTree.lineStyle", "Angled");
 		ToolTipManager.sharedInstance().registerComponent(jdfTree);
-		m_renderer = new JDFTreeCellRenderer();
-		jdfTree.setCellRenderer(m_renderer);
+		jdfTree.setCellRenderer(treeCellRenderer);
 		jdfTree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
 		m_treeSelectionListener = m_frame.getTreeSelectionListener();
 		jdfTree.addTreeSelectionListener(m_treeSelectionListener);
-		//		jdfTree.setRowHeight(18);
+		jdfTree.setRowHeight(0); // apply height of each cell from cell-renderer
 
 		// jdfTree.expandPath(new TreePath(((JDFTreeNode) root.getFirstChild()).getPath()));
 		// jdfTree.expandPath(eDoc.getLastSelection());
