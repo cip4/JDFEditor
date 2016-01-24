@@ -105,7 +105,6 @@ import com.codegoogle.tcpmon.MainWindow;
  */
 public class EditorTabbedPaneB extends JTabbedPane
 {
-
 	private static final long serialVersionUID = -6813043793787501763L;
 	final public int m_VAL_ERRORS_INDEX = 0;
 	final public int m_SCHEMA_ERRORS_INDEX = 1;
@@ -113,8 +112,8 @@ public class EditorTabbedPaneB extends JTabbedPane
 	final public int m_XML_EDITOR_INDEX = 3;
 
 	JDFDevCapErrScrollPane m_devCapErrScroll;
-	CheckJDFScrollPane m_validErrScroll;
-	SchemaScrollPane m_SchemaErrScroll;
+	public CheckJDFScrollPane m_validErrScroll;
+	public SchemaScrollPane m_SchemaErrScroll;
 
 	//    Pane containing XML editor
 	private final RSyntaxTextArea xmlEditorTextArea;
@@ -126,7 +125,6 @@ public class EditorTabbedPaneB extends JTabbedPane
 	 */
 	public EditorTabbedPaneB()
 	{
-		super();
 		setBorder(BorderFactory.createLineBorder(Color.black));
 
 		m_validErrScroll = new CheckJDFScrollPane();
@@ -212,12 +210,17 @@ public class EditorTabbedPaneB extends JTabbedPane
 		Font xmlAreaFont = new Font(RuntimeProperties.enlargedTextFontName, Font.PLAIN, RuntimeProperties.enlargedTextFontSize);
 		xmlEditorTextArea.setFont(xmlAreaFont);
 	}
+	
+	public void updateCheckJDFFontSize()
+	{
+		m_validErrScroll.updateCellRenderer();
+	}
 
-	/**
-	 * 
-	 *  
-	 * @param path
-	 */
+	public void updateSchemaFontSize()
+	{
+		m_SchemaErrScroll.updateCellRenderer();
+	}
+
 	public void selectNodeWithXPath(TreePath path)
 	{
 		JDFTreeNode node = (JDFTreeNode) path.getLastPathComponent();

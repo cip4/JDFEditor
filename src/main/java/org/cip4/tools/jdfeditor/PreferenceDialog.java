@@ -111,14 +111,6 @@ import org.cip4.tools.jdfeditor.view.MainView;
  * 
  * Jun 8, 2009
  */
-/*
- * PreferenceDialog.java
- * 
- * @author SvenoniusI
- * 
- * History: 20040906 MRE preferences for sending to device added
- */
-
 public class PreferenceDialog extends JTabbedPane implements ActionListener
 {
 	private final SettingService settingService = SettingService.getSettingService();
@@ -155,8 +147,8 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private JButton schemaBrowse;
 	private JTextField schemaPath;
 
-	private JButton defaultIconButton;
-	private JButton changeIconButton;
+//	private JButton defaultIconButton;
+//	private JButton changeIconButton;
 	private JButton applyLnFButton;
 	private JTextField enlargeTextField;
 
@@ -188,10 +180,10 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private JRadioButton ger;
 	private JRadioButton spa;
 	private JRadioButton jap;
-	private JLabel iconPreview;
+//	private JLabel iconPreview;
 	private final ButtonGroup langGroup = new ButtonGroup();
 	private String currLang;
-	private String currIcon;
+//	private String currIcon;
 	private String currLNF;
 	private boolean currRemoveDefault;
 	private boolean currDispDefault;
@@ -203,7 +195,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private boolean normalizeOpen;
 	private boolean longID;
 	private boolean updateJobID;
-	private boolean enableExtensions;
+//	private boolean enableExtensions;
 	private boolean structuredCaps;
 	private boolean generateFull;
 	private boolean ignoreDefaults;
@@ -231,8 +223,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	 */
 	public PreferenceDialog()
 	{
-		super();
-
 		validTab = new ValidationTab();
 		init();
 	}
@@ -855,7 +845,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		return langBox;
 	}
 
-	class CommunicationTab implements ActionListener
+	private class CommunicationTab implements ActionListener
 	{
 		public CommunicationTab()
 		{

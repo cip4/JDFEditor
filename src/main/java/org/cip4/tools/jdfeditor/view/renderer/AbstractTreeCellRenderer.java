@@ -94,10 +94,11 @@ import org.cip4.tools.jdfeditor.service.RuntimeProperties;
  */
 public abstract class AbstractTreeCellRenderer extends DefaultTreeCellRenderer
 {
+	private final Log LOGGER = getLogger();
 
 	private static final String ICON_ROOT_PATH = "/org/cip4/tools/jdfeditor/icons/treeview/";
-
-	private final Log LOGGER = getLogger();
+	private static final Color COLOR_SELECTED = new Color(110, 200, 240);
+	private static final Color COLOR_DEFAULT = new Color(255, 255, 255);
 
 	/**
 	 * All icons available for the tree view.
@@ -163,13 +164,9 @@ public abstract class AbstractTreeCellRenderer extends DefaultTreeCellRenderer
 	 */
 	protected void setBasicAppearance(JDFTreeNode node, boolean isSelected, boolean hasFocus)
 	{
-		// define colors
-		final Color colorSelection = new Color(110, 200, 240);
-		final Color colorDefault = new Color(255, 255, 255);
-
 		// basic appearance
 		setOpaque(true);
-		setBackground(isSelected ? colorSelection : colorDefault);
+		setBackground(isSelected ? COLOR_SELECTED : COLOR_DEFAULT);
 
 		Font cellFont = new Font(null, Font.PLAIN, RuntimeProperties.enlargedTextFontSize);
 		setFont(cellFont);

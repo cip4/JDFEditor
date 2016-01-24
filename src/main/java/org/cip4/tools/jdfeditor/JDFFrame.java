@@ -1913,10 +1913,11 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		return ed == null ? null : ed.getModel();
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
+	public EditorTabbedPaneA getTopTabs()
+	{
+		return m_topTabs;
+	}
+
 	public EditorTabbedPaneB getBottomTabs()
 	{
 		return m_bottomTabs;

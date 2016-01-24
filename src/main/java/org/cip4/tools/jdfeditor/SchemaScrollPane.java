@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2016 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -87,20 +87,23 @@ import org.cip4.tools.jdfeditor.view.renderer.SchemaOutputTreeCellRenderer;
  */
 public class SchemaScrollPane extends ValidationScrollPane
 {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 2367868076065696714L;
 
-	SchemaOutputWrapper m_checkRoot = null;
+	private SchemaOutputWrapper m_checkRoot;
+	private SchemaOutputTreeCellRenderer treeCellRenderer;
 
 	public SchemaScrollPane()
 	{
-		super();
+		treeCellRenderer = new SchemaOutputTreeCellRenderer();
 	}
 
-	public void drawSchemaOutputTree(XMLDoc bugReport)
+	public void updateCellRenderer()
+	{
+		treeCellRenderer = new SchemaOutputTreeCellRenderer();
+		m_reportTree.repaint();
+	}
+
+	public void drawSchemaOutputTree(final XMLDoc bugReport)
 	{
 		if (bugReport == null)
 			return;
@@ -128,11 +131,12 @@ public class SchemaScrollPane extends ValidationScrollPane
 		m_SelectionListener = new ValidationSelectionListener();
 		m_reportTree.addTreeSelectionListener(m_SelectionListener);
 
+		m_reportTree.setCellRenderer(treeCellRenderer);
+		m_reportTree.setRowHeight(0); // apply height of each cell from cell-renderer
+
 		final ValidationPopupListener popupListener = new ValidationPopupListener();
 		m_reportTree.addMouseListener(popupListener);
 
-		final SchemaOutputTreeCellRenderer dcRenderer = new SchemaOutputTreeCellRenderer();
-		m_reportTree.setCellRenderer(dcRenderer);
 		getViewport().setView(m_reportTree);
 	}
 

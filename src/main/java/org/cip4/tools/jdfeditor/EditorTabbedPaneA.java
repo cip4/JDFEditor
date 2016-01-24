@@ -114,8 +114,6 @@ public class EditorTabbedPaneA extends JTabbedPane
 	 */
 	public EditorTabbedPaneA()
 	{
-		super();
-
 		setBorder(BorderFactory.createLineBorder(Color.black));
 
 		m_inOutScrollPane = new JDFInOutScroll();
@@ -166,6 +164,11 @@ public class EditorTabbedPaneA extends JTabbedPane
 			}
 		};
 		addMouseListener(tabbedPaneListener);
+	}
+
+	public JDFInOutScroll getInOutScrollPane()
+	{
+		return m_inOutScrollPane;
 	}
 
 	/**

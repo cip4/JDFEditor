@@ -170,6 +170,11 @@ public class JDFTreeArea extends JTextArea
 		treeCellRenderer = new JDFTreeCellRenderer();
 	}
 
+	public void updateCellRenderer()
+	{
+		treeCellRenderer = new JDFTreeCellRenderer();
+	}
+
 	/**
 	 * Expands the TreePath and all of its subelements.
 	 * @param p - The TreePath to expand

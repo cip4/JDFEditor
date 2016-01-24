@@ -112,11 +112,8 @@ import org.cip4.tools.jdfeditor.view.renderer.JDFResourceTreeCellRenderer;
  */
 public class JDFInOutScroll extends JScrollPane
 {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 8635330186484361532L;
+
 	JPanel m_inOutArea;
 	private final JPanel m_inOutAreaLeft;
 	private final JPanel m_inOutAreaMiddle;
@@ -125,12 +122,8 @@ public class JDFInOutScroll extends JScrollPane
 	private int m_inTreePos = 0;
 	private int m_outTreePos = 0;
 
-	/**
-	 * 
-	 */
 	public JDFInOutScroll()
 	{
-		super();
 		m_inOutArea = new JPanel();
 		m_inOutArea.setLayout(null);
 		m_inOutArea.setBackground(Color.white);
@@ -154,6 +147,10 @@ public class JDFInOutScroll extends JScrollPane
 		getViewport().add(m_inOutArea, null);
 		getVerticalScrollBar().setUnitIncrement(20);
 		getHorizontalScrollBar().setUnitIncrement(20);
+	}
+
+	public void updateFontSize()
+	{
 	}
 
 	/**
@@ -205,7 +202,7 @@ public class JDFInOutScroll extends JScrollPane
 	{
 		final JLabel label = new JLabel(title);
 
-		Font labelFont = new Font(RuntimeProperties.enlargedTextFontName, Font.PLAIN, RuntimeProperties.enlargedTextFontSize);
+		Font labelFont = new Font(null, Font.PLAIN, RuntimeProperties.enlargedTextFontSize);
 		label.setFont(labelFont);
 
 		label.setBackground(Color.white);
@@ -256,7 +253,7 @@ public class JDFInOutScroll extends JScrollPane
 	}
 
 	/**
-	 * Searching after a string in the nextneigbour view, starting from the selected node.
+	 * Searching after a string in the next neighbour view, starting from the selected node.
 	 * @param inString - The String to search for
 	 * @param forwardDirection - Search forward or backward?
 	 * @param bIgnoreCase
@@ -724,7 +721,7 @@ public class JDFInOutScroll extends JScrollPane
 		resTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		final JDFResourceTreeCellRenderer resourceRenderer = new JDFResourceTreeCellRenderer();
 		resTree.setCellRenderer(resourceRenderer);
-//		resTree.setRowHeight(18);
+		resTree.setRowHeight(0);
 		resTree.setBackground(Color.white);
 
 		return resTree;

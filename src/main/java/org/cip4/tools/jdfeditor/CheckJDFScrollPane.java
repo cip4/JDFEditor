@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2016 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -88,20 +88,20 @@ import org.cip4.tools.jdfeditor.view.renderer.CheckJDFOutputTreeCellRenderer;
  */
 public class CheckJDFScrollPane extends ValidationScrollPane
 {
-	private CheckJDFOutputWrapper checkJDFRoot = null;
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 2367868076065696719L;
 
-	/**
-	 * 
-	 * @param frame
-	 */
+	private CheckJDFOutputWrapper checkJDFRoot;
+	private CheckJDFOutputTreeCellRenderer treeCellRenderer;
+
 	public CheckJDFScrollPane()
 	{
-		super();
+		treeCellRenderer = new CheckJDFOutputTreeCellRenderer();
+	}
+
+	public void updateCellRenderer()
+	{
+		treeCellRenderer = new CheckJDFOutputTreeCellRenderer();
+		m_reportTree.repaint();
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class CheckJDFScrollPane extends ValidationScrollPane
 	 * TODO Please insert comment!
 	 * @param bugReport
 	 */
-	public void drawCheckJDFOutputTree(XMLDoc bugReport)
+	public void drawCheckJDFOutputTree(final XMLDoc bugReport)
 	{
 		if (bugReport == null)
 			return;
@@ -133,15 +133,16 @@ public class CheckJDFScrollPane extends ValidationScrollPane
 		m_SelectionListener = new ValidationSelectionListener();
 		m_reportTree.addTreeSelectionListener(m_SelectionListener);
 
+		m_reportTree.setCellRenderer(treeCellRenderer);
+		m_reportTree.setRowHeight(0); // apply height of each cell from cell-renderer
+
 		final ValidationPopupListener popupListener = new ValidationPopupListener();
 		m_reportTree.addMouseListener(popupListener);
 
-		final CheckJDFOutputTreeCellRenderer dcRenderer = new CheckJDFOutputTreeCellRenderer();
-		m_reportTree.setCellRenderer(dcRenderer);
 		getViewport().setView(m_reportTree);
 	}
 
-	private void setCheckJDFOutputTree(CheckJDFOutputWrapper bugReport)
+	private void setCheckJDFOutputTree(final CheckJDFOutputWrapper bugReport)
 	{
 		KElement repElem = bugReport.getElement();
 		// now add the individual attributes
