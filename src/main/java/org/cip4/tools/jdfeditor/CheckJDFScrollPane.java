@@ -101,7 +101,8 @@ public class CheckJDFScrollPane extends ValidationScrollPane
 	public void updateCellRenderer()
 	{
 		treeCellRenderer = new CheckJDFOutputTreeCellRenderer();
-		m_reportTree.repaint();
+		if (m_reportTree != null)
+			m_reportTree.repaint();
 	}
 
 	/**

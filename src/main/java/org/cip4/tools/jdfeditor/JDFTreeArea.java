@@ -142,11 +142,7 @@ public class JDFTreeArea extends JTextArea
 	JDFFrame m_frame;
 	private static String lastPath = "/JDF";
 
-	/**
-	 * 
-	 *  
-	 * @param frame
-	 */
+
 	public JDFTreeArea(final JDFFrame frame)
 	{
 		m_frame = frame;

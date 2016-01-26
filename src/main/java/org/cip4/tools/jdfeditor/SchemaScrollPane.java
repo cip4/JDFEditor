@@ -100,7 +100,8 @@ public class SchemaScrollPane extends ValidationScrollPane
 	public void updateCellRenderer()
 	{
 		treeCellRenderer = new SchemaOutputTreeCellRenderer();
-		m_reportTree.repaint();
+		if (m_reportTree != null)
+			m_reportTree.repaint();
 	}
 
 	public void drawSchemaOutputTree(final XMLDoc bugReport)

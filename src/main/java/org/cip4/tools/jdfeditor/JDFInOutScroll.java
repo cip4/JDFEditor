@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2016 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -122,6 +122,10 @@ public class JDFInOutScroll extends JScrollPane
 	private int m_inTreePos = 0;
 	private int m_outTreePos = 0;
 
+	private JLabel leftLabel;
+	private JLabel middleLabel;
+	private JLabel rightLabel;
+
 	public JDFInOutScroll()
 	{
 		m_inOutArea = new JPanel();
@@ -149,10 +153,6 @@ public class JDFInOutScroll extends JScrollPane
 		getHorizontalScrollBar().setUnitIncrement(20);
 	}
 
-	public void updateFontSize()
-	{
-	}
-
 	/**
 	 * 
 	 * Draws the In & Output View Area with its components, except for the Input/JDF Producer and Output/JDF Consumer Trees. *
@@ -166,9 +166,13 @@ public class JDFInOutScroll extends JScrollPane
 		final Dimension d = getSize();
 		final int w = d.width / 3;
 
-		m_inOutAreaLeft.add(getTitleLabel(lStr, w));
-		m_inOutAreaMiddle.add(getTitleLabel(mStr, w));
-		m_inOutAreaRight.add(getTitleLabel(rStr, w));
+		leftLabel = getTitleLabel(lStr, w);
+		middleLabel = getTitleLabel(mStr, w);
+		rightLabel = getTitleLabel(rStr, w);
+
+		m_inOutAreaLeft.add(leftLabel);
+		m_inOutAreaMiddle.add(middleLabel);
+		m_inOutAreaRight.add(rightLabel);
 
 		final JTree mTree = getInOutNodes(element);
 		ToolTipManager.sharedInstance().registerComponent(mTree);
@@ -180,12 +184,14 @@ public class JDFInOutScroll extends JScrollPane
 		m_inOutAreaLeft.setBounds(0, 0, w, m_inTreePos);
 		m_inOutAreaMiddle.setBounds(w, 0, w, mHeight + 50);
 		m_inOutAreaRight.setBounds(2 * w, 0, w, m_outTreePos);
+
 		final int h = m_inTreePos < m_outTreePos ? m_outTreePos : m_inTreePos;
 		final Dimension dim = new Dimension(d.width - 20, h < mHeight + 50 ? mHeight + 50 : h);
 		m_inOutArea.setPreferredSize(dim);
 
 		m_inOutArea.repaint();
 		getViewport().add(m_inOutArea, null);
+
 		final JDFFrame m_frame = MainView.getFrame();
 		final EditorTabbedPaneA editorTabbedPaneA = m_frame.m_topTabs;
 		editorTabbedPaneA.setComponentAt(editorTabbedPaneA.m_IO_INDEX, this);
@@ -284,7 +290,6 @@ public class JDFInOutScroll extends JScrollPane
 
 					for (int i = 0; i < count; i++)
 					{
-
 						final Component component2 = areaPanel.getComponent(i);
 						if (!(component2 instanceof JTree))
 						{
