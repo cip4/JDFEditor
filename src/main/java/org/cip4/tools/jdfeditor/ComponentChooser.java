@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2016 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -150,7 +150,7 @@ public class ComponentChooser extends JPanel implements ActionListener
 		jdfTreeButton = new JRadioButton(ResourceUtil.getMessage("TreeViewKey"));
 		jdfTreeButton.setActionCommand(ResourceUtil.getMessage("TreeViewKey"));
 		rbg.add(jdfTreeButton);
-		if (frame.m_treeArea.jdfTreeIsNull())
+		if (frame.getJDFTreeArea().jdfTreeIsNull())
 			jdfTreeButton.setEnabled(false);
 		else
 		{

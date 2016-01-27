@@ -223,7 +223,7 @@ public class MenuEdit implements ActionListener, MenuInterface
 		}
 		else if (eSrc == m_findXPathItem)
 		{
-			MainView.getFrame().m_treeArea.findXPathElem();
+			MainView.getFrame().getJDFTreeArea().findXPathElem();
 		}
 
 		MainView.setCursor(0, null);

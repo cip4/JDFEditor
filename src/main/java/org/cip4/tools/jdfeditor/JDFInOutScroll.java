@@ -579,7 +579,7 @@ public class JDFInOutScroll extends JScrollPane
 		{
 			node = (JDFTreeNode) path.getLastPathComponent();
 		}
-		else if (m_frame.m_treeArea != null)
+		else if (m_frame.getJDFTreeArea() != null)
 		{
 			final JDFTreeNode rootNode = eDoc.getRootNode();
 			node = rootNode == null ? null : (JDFTreeNode) rootNode.getFirstChild();
@@ -698,7 +698,7 @@ public class JDFInOutScroll extends JScrollPane
 					final TreePath path = tree.getSelectionPath();
 					if (path != null)
 					{
-						m_frame.m_treeArea.findNode((JDFTreeNode) path.getLastPathComponent());
+						m_frame.getJDFTreeArea().findNode((JDFTreeNode) path.getLastPathComponent());
 					}
 				}
 				else if (SwingUtilities.isRightMouseButton(e) || e.isControlDown())
@@ -713,7 +713,7 @@ public class JDFInOutScroll extends JScrollPane
 						{
 							final JDFFrame m_frame = MainView.getFrame();
 
-							m_frame.m_treeArea.findNode(node);
+							m_frame.getJDFTreeArea().findNode(node);
 							clearInOutView();
 							initInOutView(null);
 						}

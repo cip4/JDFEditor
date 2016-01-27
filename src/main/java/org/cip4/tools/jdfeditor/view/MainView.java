@@ -132,7 +132,6 @@ public class MainView
 				if (my_Frame.closeFile(999) != JOptionPane.CANCEL_OPTION)
 				{
 					System.exit(0);
-					e.getID(); // make compile happy
 				}
 			}
 		};
@@ -194,14 +193,5 @@ public class MainView
 	public static JDFDoc getJDFDoc()
 	{
 		return my_Frame.getJDFDoc();
-	}
-
-	/**
-	 * Method getTreeArea.
-	 * @return ResourceBundle the static resource bundle BMI Created 07-08-31
-	 */
-	public static JDFTreeArea getTreeArea()
-	{
-		return my_Frame.m_treeArea;
 	}
 }

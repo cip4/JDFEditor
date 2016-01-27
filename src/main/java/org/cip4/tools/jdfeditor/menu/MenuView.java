@@ -163,14 +163,14 @@ public class MenuView implements MenuInterface, ActionListener
 			mainController.setSetting(SettingKey.TREEVIEW_ATTRIBUTE_INHERITED, showInhAttrRadioItem.isSelected());
 			if (getJDFDoc() != null)
 			{
-				MainView.getFrame().m_treeArea.drawTreeView(getEditorDoc());
+				MainView.getFrame().getJDFTreeArea().drawTreeView(getEditorDoc());
 			}
 		} else if (source == dispDefAttrRadioItem)
 		{
 			mainController.setSetting(SettingKey.GENERAL_DISPLAY_DEFAULT, dispDefAttrRadioItem.isSelected());
 			if (getJDFDoc() != null)
 			{
-				MainView.getFrame().m_treeArea.drawTreeView(getEditorDoc());
+				MainView.getFrame().getJDFTreeArea().drawTreeView(getEditorDoc());
 			}
 		}
 	}
@@ -195,7 +195,7 @@ public class MenuView implements MenuInterface, ActionListener
 		mainController.setSetting(SettingKey.TREEVIEW_ATTRIBUTE_INHERITED, showInhAttrRadioItem.isSelected());
 		if (getJDFDoc() != null)
 		{
-			MainView.getFrame().m_treeArea.drawTreeView(getEditorDoc());
+			MainView.getFrame().getJDFTreeArea().drawTreeView(getEditorDoc());
 		}
 	}
 	

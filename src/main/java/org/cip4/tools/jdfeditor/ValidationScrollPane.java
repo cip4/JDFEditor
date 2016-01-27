@@ -197,7 +197,7 @@ public class ValidationScrollPane extends JScrollPane
 			if (node != null)
 			{
 				final String path = node.getXPathAttr();
-				MainView.getFrame().m_treeArea.findInNode(path);
+				MainView.getFrame().getJDFTreeArea().findInNode(path);
 			}
 		}
 	}

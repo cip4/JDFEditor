@@ -178,7 +178,7 @@ public class EditorTabbedPaneA extends JTabbedPane
 	 */
 	public boolean processAreaIsNull()
 	{
-		if (m_pArea == null || getSelectedIndex() != m_PROC_INDEX || MainView.getFrame().m_treeArea.getTreeView().getComponent(0).getClass().equals(JTextArea.class))
+		if (m_pArea == null || getSelectedIndex() != m_PROC_INDEX || MainView.getFrame().getJDFTreeArea().getTreeView().getComponent(0).getClass().equals(JTextArea.class))
 			return true;
 
 		return false;
@@ -192,7 +192,7 @@ public class EditorTabbedPaneA extends JTabbedPane
 	public boolean inOutIsNull()
 	{
 		if (m_inOutScrollPane.m_inOutArea == null || getSelectedIndex() != m_IO_INDEX
-				|| MainView.getFrame().m_treeArea.getTreeView().getComponent(0).getClass().equals(JTextArea.class))
+				|| MainView.getFrame().getJDFTreeArea().getTreeView().getComponent(0).getClass().equals(JTextArea.class))
 			return true;
 
 		return false;

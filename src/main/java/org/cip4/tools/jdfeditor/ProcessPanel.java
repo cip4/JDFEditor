@@ -499,7 +499,7 @@ public class ProcessPanel extends JPanel
 			removeAll();
 			drawProcessView((JDFNode) element);
 			JDFTreeNode node = new JDFTreeNode(element);
-			m_frame.m_treeArea.findNode(node);
+			m_frame.getJDFTreeArea().findNode(node);
 		}
 		final JDFTreeNode rootNode = m_frame.getRootNode();
 		m_frame.m_buttonBar.m_upOneLevelButton.setEnabled(!element.equals(rootNode == null ? null : ((JDFTreeNode) rootNode.getFirstChild()).getElement()));
@@ -609,7 +609,7 @@ public class ProcessPanel extends JPanel
 			s.printStackTrace();
 		}
 		if (node != null)
-			MainView.getFrame().m_treeArea.findNode(node);
+			MainView.getFrame().getJDFTreeArea().findNode(node);
 	}
 
 	/**

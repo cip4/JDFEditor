@@ -168,9 +168,9 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	DocumentService documentService = new DocumentService();
 
-	public JDFTreeArea m_treeArea;
+	private JDFTreeArea m_treeArea;
 
-	EditorTabbedPaneA m_topTabs;
+	public EditorTabbedPaneA m_topTabs;
 
 	private EditorTabbedPaneB m_bottomTabs;
 
@@ -358,11 +358,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			m_buttonBar.removeAll();
 			m_buttonBar.drawButtonBar();
 			SwingUtilities.updateComponentTreeUI(JDFFrame.this);
-			final EditorDocument ed = getEditorDoc();
-			if (ed != null && ed.getJDFTree() != null)
-			{
-//				ed.getJDFTree().setRowHeight(18);
-			}
 
 			if (pd != null)
 			{
@@ -437,7 +432,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		}
 		try
 		{
-
 			cleanupSelected(); // remove all defaults etc. so that the generated file remains reasonable
 			final ExportDialog exportDialog = new ExportDialog(root);
 
@@ -1595,7 +1589,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		@Override
 		public void actionPerformed(final ActionEvent e)
 		{
-			e.getID();
 			try
 			{
 				if (undomanager.canUndo())
@@ -1911,6 +1904,11 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	{
 		final EditorDocument ed = getEditorDoc();
 		return ed == null ? null : ed.getModel();
+	}
+
+	public JDFTreeArea getJDFTreeArea()
+	{
+		return m_treeArea;
 	}
 
 	public EditorTabbedPaneA getTopTabs()

@@ -272,8 +272,8 @@ public class MenuTools implements ActionListener, MenuInterface
 			FontUtil.calcFontSize();
 			if (getEditorDoc() != null)
 			{
-				MainView.getFrame().m_treeArea.updateCellRenderer();
-				MainView.getFrame().m_treeArea.drawTreeView(getEditorDoc());
+				MainView.getFrame().getJDFTreeArea().updateCellRenderer();
+				MainView.getFrame().getJDFTreeArea().drawTreeView(getEditorDoc());
 
 				MainView.getFrame().getTopTabs().getInOutScrollPane().initInOutView(getEditorDoc());
 

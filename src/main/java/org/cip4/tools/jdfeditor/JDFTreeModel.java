@@ -117,8 +117,9 @@ import org.cip4.tools.jdfeditor.view.MainView;
 import org.w3c.dom.Attr;
 
 /**
- * @author rainer prosi This is a new dump for some of the JDFFrame classes anything related to the abstract datamodel in the jdf tree belongs here TODO move
- * some of the routines from JDFTreeArea to here, where they belong and reduce the dependencies with JDFFrame
+ * @author rainer prosi
+ * This is a new dump for some of the JDFFrame classes anything related to the abstract datamodel in the jdf tree belongs here
+ * TODO move some of the routines from JDFTreeArea to here, where they belong and reduce the dependencies with JDFFrame
  */
 public class JDFTreeModel extends DefaultTreeModel
 {
@@ -229,12 +230,11 @@ public class JDFTreeModel extends DefaultTreeModel
 	private static final long serialVersionUID = -5922527273385407946L;
 	private boolean m_ignoreAttributes = false;
 
-	JDFTreeModel(final JDFTreeNode _root, final boolean ignoreAttributes)
+	public JDFTreeModel(final JDFTreeNode _root, final boolean ignoreAttributes)
 	{
 		super(_root);
 		m_ignoreAttributes = ignoreAttributes;
 		validationResult = null;
-
 	}
 
 	/**
@@ -330,7 +330,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		m_frame.getBottomTabs().m_validErrScroll.drawCheckJDFOutputTree(validationResult);
 		m_frame.getBottomTabs().m_SchemaErrScroll.drawSchemaOutputTree(schemaValidationResult);
 		MainView.getEditorDoc().getJDFTree().repaint();
-		m_frame.m_treeArea.goToPath(m_frame.m_treeArea.getSelectionPath());
+		m_frame.getJDFTreeArea().goToPath(m_frame.getJDFTreeArea().getSelectionPath()); // TODO: what this code actually do ?
 		return validationResult.getRoot().getFirstChildElement().getBoolAttribute("IsValid", null, true);
 	}
 
@@ -510,7 +510,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	private JDFTreeNode setText(final JDFTreeNode parentNode, final String attValue)
 	{
 		JDFTreeNode nOld = parentNode.getNodeWithName(TEXT);
-		// we have an existing node, simply rename tha value and ciao!
+		// we have an existing node, simply rename the value and ciao!
 		if (nOld != null)
 		{
 			final String s = nOld.getText();
@@ -576,8 +576,6 @@ public class JDFTreeModel extends DefaultTreeModel
 		return addedAttributeNodesVector;
 	}
 
-	// /////////////////////////////////////////////////////
-
 	/**
 	 * append a new node into an existing parent
 	 * @param newNodeName
@@ -597,7 +595,6 @@ public class JDFTreeModel extends DefaultTreeModel
 		return newNode;
 	}
 
-	// ///////////////////////////////////////////////////////////////
 	/**
 	 * @param newNode 
 	 * @param parentNode 
@@ -923,7 +920,7 @@ public class JDFTreeModel extends DefaultTreeModel
 					if (originalElement instanceof JDFResource && parentElement instanceof JDFResourcePool)
 					{
 						final JDFNode parentResourceNode = ((JDFResource) originalElement).getJDFRoot();
-						selectedName = m_frame.m_treeArea.chooseResourceName(parentResourceNode);
+						selectedName = m_frame.getJDFTreeArea().chooseResourceName(parentResourceNode);
 					}
 					else
 					{
@@ -1071,8 +1068,6 @@ public class JDFTreeModel extends DefaultTreeModel
 		ed.setSelectionPath(treePath, true);
 		return true;
 	}
-
-	// /////////////////////////////////////////////////////////
 
 	private void autoValidate()
 	{
@@ -1374,7 +1369,6 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	}
 
-	// ///////////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * Methods moved from JDFFrame.java
 	 */
@@ -1401,6 +1395,4 @@ public class JDFTreeModel extends DefaultTreeModel
 
 		return node;
 	}
-
-	// ///////////////////////////////////////////////////////////////////////////////////////////////
 }

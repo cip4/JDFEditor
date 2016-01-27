@@ -340,7 +340,7 @@ public class SearchDialog extends JDialog implements ActionListener
 	{
 		m_LastResults = new Vector<JDFTreeNode>();
 		final boolean bForward = m_forwardRadioButton.isSelected();
-		final TreePath selectionPath = MainView.getFrame().m_treeArea.getSelectionPath();
+		final TreePath selectionPath = MainView.getFrame().getJDFTreeArea().getSelectionPath();
 		final JDFTreeNode currentNode = selectionPath == null ? null : (JDFTreeNode) selectionPath.getLastPathComponent();
 		String currentSearch = (String) searchComboBox.getEditor().getItem();
 		if (StringUtil.getNonEmpty(currentSearch) != null)

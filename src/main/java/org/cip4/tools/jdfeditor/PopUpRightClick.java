@@ -201,7 +201,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 			final JDFMessage m = jmf.getMessageElement(f, EnumType.getEnum(mService.getType()), 0);
 			extendMessage(m);
 			MainView.getFrame().setJDFDoc(doc, null);
-			MainView.getTreeArea().drawTreeView(MainView.getEditorDoc());
+			MainView.getFrame().getJDFTreeArea().drawTreeView(MainView.getEditorDoc());
 
 			return true;
 		}
@@ -472,7 +472,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 
 		final Object eSrc = e.getSource();
 		final JDFFrame frame = MainView.getFrame();
-		final JDFTreeArea treeArea = frame.m_treeArea;
+		final JDFTreeArea treeArea = frame.getJDFTreeArea();
 
 		if (!settingService.getSetting(SettingKey.GENERAL_READ_ONLY, Boolean.class))
 		{

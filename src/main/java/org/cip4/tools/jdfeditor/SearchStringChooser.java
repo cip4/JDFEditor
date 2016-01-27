@@ -10,11 +10,7 @@ import javax.swing.JTextField;
 
 /**
  * @author ThunellE
- * Which string to search for
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * Which string to search for.
  */
 public class SearchStringChooser extends JPanel implements ActionListener 
 {
@@ -76,13 +72,8 @@ public class SearchStringChooser extends JPanel implements ActionListener
     {
         infoLabel.setText(littleBundle.getString("StringNotFoundKey"));
     }
-    
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed (ActionEvent e)
+
+    public void actionPerformed(final ActionEvent e)
     {
-        e.getID(); // make compiler happy
-        //
     }
 }

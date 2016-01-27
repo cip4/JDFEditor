@@ -462,7 +462,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		MainView.setCursor(1, null);
 		final Object eSrc = e.getSource();
 		final JDFFrame frame = MainView.getFrame();
-		final JDFTreeArea ta = frame.m_treeArea;
+		final JDFTreeArea ta = frame.getJDFTreeArea();
 		
 		if (eSrc == m_nextItem)
 		{
