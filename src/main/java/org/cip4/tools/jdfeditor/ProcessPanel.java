@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2016 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -109,11 +109,10 @@ import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
-/*
- * FooProcessPanel.java
+/**
+ * 
  * @author SvenoniusI
  */
-
 public class ProcessPanel extends JPanel
 {
 	private static final Log LOGGER = LogFactory.getLog(ProcessPanel.class);
@@ -140,24 +139,21 @@ public class ProcessPanel extends JPanel
 		}
 	}
 
-	/**
-	 * Comment for <code>serialVersionUID</code>
-	 */
 	private static final long serialVersionUID = 5217687675396163701L;
 	// various variables needed for drawing
 	private int x = 0;
 	private int y = 0;
 	private int pPartStart = 10;
 
+//	The Empty Space between Nodes
 	private final int esX = 50;
-	private final int esY = 30; // The Empty Space between Nodes
+	private final int esY = 30;
 
 	protected Vector<ProcessPart> vParts = new Vector<ProcessPart>();
 	private ProcessPart parentPart = null;
 
 	public ProcessPanel()
 	{
-		super();
 	}
 
 	@Override
@@ -343,7 +339,6 @@ public class ProcessPanel extends JPanel
 	 */
 	private Vector sortPanels(Vector _v)
 	{
-
 		Vector v = (Vector) _v.clone();
 		Vector vRet = new Vector();
 		Vector vUnlinked = new Vector();
@@ -423,12 +418,21 @@ public class ProcessPanel extends JPanel
 			return;
 		double zoom = editorDoc.getZoom();
 		Dimension d = calcSize();
+
 		if (c == '+')
-			zoom *= 1.1;
+		{
+			if (zoom >= EditorButtonBar.MAX_ALLOWED_ZOOM)
+				return;
+			zoom += 0.1;
+		}
 		else if (c == '-')
-			zoom *= 0.9;
+		{
+			if (zoom <= EditorButtonBar.MIN_ALLOWED_ZOOM)
+				return;
+			zoom -= 0.1;
+		}
 		else if (c == 'o')
-			zoom = 1.0;
+			zoom = EditorButtonBar.DEFAULT_ZOOM;
 		else if (c == 'b')
 		{
 			final Dimension screen = getParent().getSize();
@@ -437,11 +441,12 @@ public class ProcessPanel extends JPanel
 
 			zoom = wFactor < hFactor ? wFactor : hFactor;
 		}
-		MainView.getFrame().m_buttonBar.setEnableZoom(zoom);
+		editorDoc.setZoom(zoom);
+		MainView.getFrame().m_buttonBar.updateZoomButtons(zoom);
+
 		revalidate();
 		d.width *= zoom;
 		d.height *= zoom;
-		editorDoc.setZoom(zoom);
 		setPreferredSize(d);
 		repaint();
 	}
@@ -483,7 +488,6 @@ public class ProcessPanel extends JPanel
 			_y = Math.max(_y, p.getyPos() + p.rawHeight);
 		}
 		return new Dimension(_x + 20, _y + 20);
-
 	}
 
 	/**

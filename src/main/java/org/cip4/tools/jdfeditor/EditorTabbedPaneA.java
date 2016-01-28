@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2016 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -289,7 +289,7 @@ public class EditorTabbedPaneA extends JTabbedPane
 		final int selectedIndex = getSelectedIndex();
 		final boolean bProcSel = selectedIndex == m_PROC_INDEX;
 		JDFFrame m_frame = MainView.getFrame();
-		m_frame.m_buttonBar.setEnableZoom(1.1);
+		m_frame.m_buttonBar.updateZoomButtons(1.1);
 		if (bProcSel)
 		{
 			m_pArea.initProcessView();

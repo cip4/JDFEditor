@@ -1,7 +1,7 @@
 /**
  * The CIP4 Software License, Version 1.0
  *
- * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2016 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -122,13 +122,13 @@ public class EditorDocument
 	 * @param jdfDoc The JDFDoc object.
 	 * @param packageName The package name as String
 	 */
-	public EditorDocument(JDFDoc jdfDoc, String packageName)
+	public EditorDocument(final JDFDoc jdfDoc, final String packageName)
 	{
 		this.historyPos = -1;
 		this.jdfDoc = jdfDoc;
 		this.jdfTreeNodesHistory = new Vector<JDFTreeNode>();
 		this.packageName = packageName;
-		this.zoom = 1.0;
+		this.zoom = EditorButtonBar.DEFAULT_ZOOM;
 	}
 
 	/**

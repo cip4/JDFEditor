@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2016 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -157,16 +157,13 @@ import org.cip4.tools.jdfeditor.view.MainView;
 
 public class JDFFrame extends JFrame implements ActionListener, DropTargetListener, DragSourceListener, DragGestureListener, ClipboardOwner
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private static final Log LOGGER = LogFactory.getLog(JDFFrame.class);
 
 	private MainController mainController;
 
-	DocumentService documentService = new DocumentService();
+	private DocumentService documentService = new DocumentService();
 
 	private JDFTreeArea m_treeArea;
 
@@ -684,7 +681,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	void clearViews()
 	{
 		m_topTabs.clearViews();
-		getBottomTabs().clearViews();
+		m_bottomTabs.clearViews();
 	}
 
 	/**
@@ -745,7 +742,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 * @param f 
 	 * @param type 
 	 */
-	void newJMF(final EnumFamily f, String type)
+	private void newJMF(final EnumFamily f, String type)
 	{
 		clearViews();
 		try
@@ -1848,7 +1845,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			{
 				m_VjdfDocument.add(new EditorDocument(doc, mimePackage));
 				m_DocPos = m_VjdfDocument.size() - 1;
-				// make sur that we have a global dirty policy in force
+				// make sure that we have a global dirty policy in force
 				doc.getCreateXMLDocUserData().setDirtyPolicy(EnumDirtyPolicy.Doc);
 
 			}

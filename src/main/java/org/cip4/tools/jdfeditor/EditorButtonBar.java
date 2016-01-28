@@ -101,6 +101,10 @@ import org.cip4.tools.jdfeditor.view.MainView;
 public class EditorButtonBar extends JToolBar implements ActionListener
 {
 
+	public static final double DEFAULT_ZOOM = 1.3;
+	public static final double MAX_ALLOWED_ZOOM = 2.5;
+	public static final double MIN_ALLOWED_ZOOM = 0.2;
+
 	private final SettingService settingService;
 
 	JButton m_newButton;
@@ -273,10 +277,9 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 	}
 
 	/**
-	 * enable or disable zoom buttons depending on the current zoom factor
-	 * @param zoom the current zoom factor
+	 * Update zoom buttons depending on the zoom factor.
 	 */
-	public void setEnableZoom(double zoom)
+	public void updateZoomButtons(final double zoom)
 	{
 		if (MainView.getEditorDoc() == null)
 		{
@@ -285,13 +288,12 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 			m_zoomOrigButton.setEnabled(false);
 			m_zoomBestButton.setEnabled(false);
 			m_upOneLevelButton.setEnabled(false);
-
 		}
 		else
 		{
-			m_zoomOutButton.setEnabled(zoom > 0.2);
-			m_zoomInButton.setEnabled(zoom < 2.5);
-			m_zoomOrigButton.setEnabled(zoom != 1.0);
+			m_zoomOutButton.setEnabled(zoom > MIN_ALLOWED_ZOOM);
+			m_zoomInButton.setEnabled(zoom < MAX_ALLOWED_ZOOM);
+			m_zoomOrigButton.setEnabled(zoom != DEFAULT_ZOOM);
 			m_zoomBestButton.setEnabled(true);
 		}
 	}
