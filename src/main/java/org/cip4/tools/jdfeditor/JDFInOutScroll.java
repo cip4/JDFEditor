@@ -114,6 +114,14 @@ public class JDFInOutScroll extends JScrollPane
 {
 	private static final long serialVersionUID = 8635330186484361532L;
 
+	private static final String TITLE_DEFAULT = "";
+	private static final String TITLE_JDF_ELEMENT = ResourceUtil.getMessage("JDFElementKey");
+	private static final String TITLE_RESOURCE = ResourceUtil.getMessage("ResourceKey");
+	private static final String TITLE_INPUT_RESOURCE = ResourceUtil.getMessage("InputResourceKey");
+	private static final String TITLE_OUTPUT_RESOURCE = ResourceUtil.getMessage("OutputResourceKey");
+	private static final String TITLE_JDF_PRODUCER = ResourceUtil.getMessage("JDFProducerKey");
+	private static final String TITLE_JDF_CONSUMER = ResourceUtil.getMessage("JDFConsumerKey");
+
 	JPanel m_inOutArea;
 	private final JPanel m_inOutAreaLeft;
 	private final JPanel m_inOutAreaMiddle;
@@ -601,15 +609,10 @@ public class JDFInOutScroll extends JScrollPane
 
 			if (kElement != null)
 			{
-
-				String lTitle = "";
-				String mTitle = "";
-				String rTitle = "";
 				boolean isJDFNode = false;
 
 				if (kElement instanceof JDFNode)
 				{
-					mTitle = ResourceUtil.getMessage("JDFElementKey");
 					isJDFNode = true;
 					final JDFNode n = (JDFNode) kElement;
 
@@ -619,9 +622,6 @@ public class JDFInOutScroll extends JScrollPane
 						if (resourceLinkPool != null && resourceLinkPool.hasChildNodes())
 						{
 							final VElement resourceLinks = resourceLinkPool.getPoolChildren(null, null, null);
-
-							lTitle = ResourceUtil.getMessage("InputResourceKey");
-							rTitle = ResourceUtil.getMessage("OutputResourceKey");
 
 							for (int i = 0; i < resourceLinks.size(); i++)
 							{
@@ -633,15 +633,12 @@ public class JDFInOutScroll extends JScrollPane
 							}
 						}
 					}
-					drawInOutView(kElement, lTitle, mTitle, rTitle);
+					drawInOutView(kElement, TITLE_INPUT_RESOURCE, TITLE_JDF_ELEMENT, TITLE_OUTPUT_RESOURCE);
 				}
 				else if (kElement instanceof JDFResource && (kElement.hasChildElements() || kElement.hasAttributes()))
 				{
 					final JDFResource r = (JDFResource) kElement;
 
-					mTitle = ResourceUtil.getMessage("ResourceKey");
-					rTitle = ResourceUtil.getMessage("JDFConsumerKey");
-					lTitle = ResourceUtil.getMessage("JDFProducerKey");
 					if (root instanceof JDFNode) // not in JMF
 					{
 						String id = r.getID();
@@ -659,12 +656,12 @@ public class JDFInOutScroll extends JScrollPane
 							}
 						}
 					}
-					drawInOutView(kElement, lTitle, mTitle, rTitle);
+					drawInOutView(kElement, TITLE_JDF_PRODUCER, TITLE_RESOURCE, TITLE_JDF_CONSUMER);
 				}
 				else
 				{
-					mTitle = kElement.getLocalName();
-					drawInOutView(kElement, lTitle, mTitle, rTitle);
+					String mTitle = kElement.getLocalName();
+					drawInOutView(kElement, TITLE_DEFAULT, mTitle, TITLE_DEFAULT);
 				}
 			}
 		}
