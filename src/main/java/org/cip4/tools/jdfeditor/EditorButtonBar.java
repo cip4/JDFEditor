@@ -419,19 +419,19 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		}
 		else if (eSrc == m_zoomInButton) // zoom in
 		{
-			m_frame.m_topTabs.m_pArea.zoom('+');
+			m_frame.m_topTabs.m_pArea.setZoom('+');
 		}
 		else if (eSrc == m_zoomOutButton) // zoom out
 		{
-			m_frame.m_topTabs.m_pArea.zoom('-');
+			m_frame.m_topTabs.m_pArea.setZoom('-');
 		}
 		else if (eSrc == m_zoomOrigButton) // zoom to original size
 		{
-			m_frame.m_topTabs.m_pArea.zoom('o');
+			m_frame.m_topTabs.m_pArea.setZoom('o');
 		}
 		else if (eSrc == m_zoomBestButton) // zoom to best fit
 		{
-			m_frame.m_topTabs.m_pArea.zoom('b');
+			m_frame.m_topTabs.m_pArea.setZoom('b');
 		}
 		else if (eSrc == m_closeButton) // close document
 		{

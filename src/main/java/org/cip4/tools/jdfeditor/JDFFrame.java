@@ -1097,19 +1097,19 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		}
 		else if (eSrc == m_buttonBar.m_zoomInButton)
 		{
-			m_topTabs.m_pArea.zoom('+');
+			m_topTabs.m_pArea.setZoom('+');
 		}
 		else if (eSrc == m_buttonBar.m_zoomOutButton)
 		{
-			m_topTabs.m_pArea.zoom('-');
+			m_topTabs.m_pArea.setZoom('-');
 		}
 		else if (eSrc == m_buttonBar.m_zoomOrigButton)
 		{
-			m_topTabs.m_pArea.zoom('o');
+			m_topTabs.m_pArea.setZoom('o');
 		}
 		else if (eSrc == m_buttonBar.m_zoomBestButton)
 		{
-			m_topTabs.m_pArea.zoom('b');
+			m_topTabs.m_pArea.setZoom('b');
 		}
 		else if (eSrc == m_menuBar.getMenuValidate().m_devCapItem)
 		{

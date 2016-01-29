@@ -411,7 +411,7 @@ public class ProcessPanel extends JPanel
 	 * <li>"b" for "best", aka "fit frame".
 	 * </ol>
 	 */
-	public void zoom(char c)
+	public void setZoom(final char c)
 	{
 		final EditorDocument editorDoc = MainView.getEditorDoc();
 		if (editorDoc == null)
