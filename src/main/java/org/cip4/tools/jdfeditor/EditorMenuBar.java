@@ -424,6 +424,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	 */
 	public void setEnableOpen(final boolean mode)
 	{
+		menuFile.setEnableOpen(mode);
 		menuEdit.setEnableOpen(mode);
 		menuTools.setEnableOpen(mode);
 		menuInsert.setEnableOpen(mode);

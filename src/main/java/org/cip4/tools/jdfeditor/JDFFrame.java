@@ -158,6 +158,8 @@ import org.cip4.tools.jdfeditor.view.MainView;
 public class JDFFrame extends JFrame implements ActionListener, DropTargetListener, DragSourceListener, DragGestureListener, ClipboardOwner
 {
 	private static final long serialVersionUID = 1L;
+	private static final String DEFAULT_TITLE = "CIP4 JDFEditor";
+	private static final String UNTITLED = "Untitled";
 
 	private static final Log LOGGER = LogFactory.getLog(JDFFrame.class);
 
@@ -179,17 +181,11 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 */
 	public JDFTreeCopyNode m_copyNode;
 
-	// q&d hack for multi doc support
+	// quick & dirty hack for multi doc support
 	Vector<EditorDocument> m_VjdfDocument = new Vector<EditorDocument>();
 	int m_DocPos = -1; // document position
 
-	/**
-	 * munues and buttons
-	 */
 	public EditorMenuBar m_menuBar = null;
-	/**
-	 * munues and buttons
-	 */
 	public EditorButtonBar m_buttonBar = null;
 
 	/**
@@ -548,7 +544,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 			m_treeArea.drawTreeView(eDoc);
 			m_topTabs.refreshView(eDoc);
-			this.setTitle(getWindowTitle());
+			setTitle(buildWindowTitleString());
 
 			getBottomTabs().refreshView(path);
 			getBottomTabs().refreshXmlEditor(eDoc.getJDFDoc().toXML());
@@ -572,22 +568,20 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 * retrieves the display name for the currently displayed file
-	 * @return
+	 * Build application title string for currently displayed file.
 	 */
-	private String getWindowTitle()
+	private String buildWindowTitleString()
 	{
-		final EditorDocument ediDoc = getEditorDoc();
-		String title = "CIP4 JDFEditor";
-		if (ediDoc == null)
+		final EditorDocument editorDoc = getEditorDoc();
+		if (editorDoc == null)
 		{
-			return title;
+			return DEFAULT_TITLE;
 		}
-		title += ": " + ediDoc.getSaveFileName();
-		final String packageName = ediDoc.getPackageName();
+		String title = DEFAULT_TITLE + ": " + editorDoc.getSaveFileName();
+		final String packageName = editorDoc.getPackageName();
 		if (packageName != null)
 		{
-			title += " (" + ediDoc.getOriginalFileName() + ")";
+			title += " (" + editorDoc.getOriginalFileName() + ")";
 		}
 		return title;
 	}
@@ -616,16 +610,16 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 * Method saveFile. Save As-chooser
+	 * Save As-chooser.
 	 */
 	public void saveAs()
 	{
-		final EditorDocument ediDoc = getEditorDoc();
-		if (ediDoc == null)
+		final EditorDocument editorDoc = getEditorDoc();
+		if (editorDoc == null)
 		{
 			return;
 		}
-		final String fileName = ediDoc.getSaveFileName();
+		final String fileName = editorDoc.getSaveFileName();
 
 		final File fileToSave = new File(fileName);
 		final EditorFileChooser saveChooser = new EditorFileChooser(fileToSave, EditorFileChooser.allFiles);
@@ -644,8 +638,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			}
 			if (newAnswer == JOptionPane.YES_OPTION)
 			{
-				ediDoc.saveFile(file);
-				this.setTitle(getWindowTitle());
+				editorDoc.saveFile(file);
+				setTitle(buildWindowTitleString());
 				m_menuBar.updateRecentFilesMenu(fileToSave.toString());
 			}
 		}
@@ -685,13 +679,11 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 * Method saveFileQuestion. ask if the user wants to save an unsaved file before closing
-	 * 
-	 * 
-	 * @return int
+	 * Ask user if he wants to save an unsaved file before closing.
 	 */
-	public int saveFileQuestion()
+	private int saveFileQuestion()
 	{
+		LOGGER.info("asking...");
 		int save = JOptionPane.YES_OPTION;
 		final EditorDocument doc = getEditorDoc();
 		if (doc != null)
@@ -701,7 +693,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				String originalFileName = doc.getOriginalFileName();
 				if (originalFileName == null)
 				{
-					originalFileName = "Untitled";
+					originalFileName = UNTITLED;
 				}
 
 				final String question = ResourceUtil.getMessage("SaveQuestionKey") + "\n" + '"' + originalFileName + '"';
@@ -712,7 +704,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 * Method newJDF. creates a new JDF file
+	 * Creates a new JDF document.
 	 */
 	private void newJDF()
 	{
@@ -722,12 +714,12 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			final JDFDoc jdfDoc = new JDFDoc("JDF");
 			final JDFNode jdfRoot = jdfDoc.getJDFRoot();
 			jdfRoot.setType("Product", true);
-			setJDFDoc(jdfDoc, null);
+			int position = setJDFDoc(jdfDoc, null);
+			LOGGER.info("New doc created with position: " + position);
 
 			m_treeArea.drawTreeView(getEditorDoc());
 			jdfDoc.setOriginalFileName("Untitled.jdf");
-			setTitle(getWindowTitle());
-
+			setTitle(buildWindowTitleString());
 		}
 		catch (final Exception s)
 		{
@@ -760,15 +752,14 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			}
 			if (type == null)
 			{
-				type = "untitled";
+				type = UNTITLED;
 			}
 
 			JDFDoc jmfDoc = jmf.getOwnerDocument_JDFElement();
 			setJDFDoc(jmfDoc, null);
 			m_treeArea.drawTreeView(getEditorDoc());
 			jmfDoc.setOriginalFileName(type + ".jmf");
-			setTitle(getWindowTitle());
-
+			setTitle(buildWindowTitleString());
 		}
 		catch (final Exception s)
 		{
@@ -810,7 +801,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 					// display the result.
 					m_treeArea.drawTreeView(getEditorDoc());
 					doc.setOriginalFileName(gtselect + "_GoldenTicket." + ((xjdf) ? "xjdf" : "jdf"));
-					setTitle(getWindowTitle());
+					setTitle(buildWindowTitleString());
 				}
 				catch (final Exception s)
 				{
@@ -831,12 +822,11 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	/**
 	 * Close the current file.
-	 * @param nMax 
-	 * @return 
 	 */
 	public int closeFile(final int nMax)
 	{
-		int save = 0;
+		LOGGER.info("Closing file with position: " + nMax);
+		int save = JOptionPane.YES_OPTION;
 		int n = 0;
 		EditorDocument doc = getEditorDoc();
 		while (doc != null)
@@ -858,14 +848,14 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			if (save != JOptionPane.CANCEL_OPTION)
 			{
 				final String originalFileName = doc.getOriginalFileName();
-				if (originalFileName != null && !originalFileName.startsWith("Untitled"))
+				if (originalFileName != null && !originalFileName.startsWith(UNTITLED))
 				{
 					m_menuBar.updateRecentFilesMenu(originalFileName);
 				}
 
 				if (save == JOptionPane.YES_OPTION)
 				{
-					if (originalFileName.startsWith("Untitled"))
+					if (originalFileName.startsWith(UNTITLED))
 					{
 						saveAs();
 					}
@@ -906,7 +896,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				m_topTabs.setSelectedIndex(m_topTabs.m_IO_INDEX);
 			}
 		}
-		setTitle(getWindowTitle());
+		setTitle(buildWindowTitleString());
 		return save;
 	}
 
@@ -931,7 +921,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			}
 			else if ((newFileChooser.getSelection()).equals("JMF"))
 			{
-				newJMF(EnumFamily.Query, "KnownMessages");
+				newJMF(EnumFamily.Query, null /*"KnownMessages"*/);
 			}
 			else
 			{
@@ -1095,22 +1085,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		{
 			printWhat();
 		}
-		else if (eSrc == m_buttonBar.m_zoomInButton)
-		{
-			m_topTabs.m_pArea.setZoom('+');
-		}
-		else if (eSrc == m_buttonBar.m_zoomOutButton)
-		{
-			m_topTabs.m_pArea.setZoom('-');
-		}
-		else if (eSrc == m_buttonBar.m_zoomOrigButton)
-		{
-			m_topTabs.m_pArea.setZoom('o');
-		}
-		else if (eSrc == m_buttonBar.m_zoomBestButton)
-		{
-			m_topTabs.m_pArea.setZoom('b');
-		}
 		else if (eSrc == m_menuBar.getMenuValidate().m_devCapItem)
 		{
 			openDeviceCapFile();
@@ -1212,7 +1186,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		}
 		if (fileToSave != null)
 		{
-			if (getTitle().equalsIgnoreCase("Untitled.jdf") || getTitle().equalsIgnoreCase("Untitled.jmf"))
+			if (getTitle().contains("Untitled.jdf") || getTitle().contains("Untitled.jmf"))
 			{
 				saveAs();
 				m_menuBar.updateRecentFilesMenu(fileToSave.toString());
@@ -1847,7 +1821,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				m_DocPos = m_VjdfDocument.size() - 1;
 				// make sure that we have a global dirty policy in force
 				doc.getCreateXMLDocUserData().setDirtyPolicy(EnumDirtyPolicy.Doc);
-
 			}
 		} // doc==null --> remove this entry
 		else if (m_DocPos >= 0 && m_DocPos < m_VjdfDocument.size())

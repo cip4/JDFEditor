@@ -100,7 +100,6 @@ import org.cip4.tools.jdfeditor.view.MainView;
  */
 public class EditorButtonBar extends JToolBar implements ActionListener
 {
-
 	public static final double DEFAULT_ZOOM = 1.3;
 	public static final double MAX_ALLOWED_ZOOM = 2.5;
 	public static final double MIN_ALLOWED_ZOOM = 0.2;
@@ -123,10 +122,12 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 	JButton m_LastButton;
 	JButton m_printButton;
 	JButton m_sendButton;
-	JButton m_zoomInButton;
-	JButton m_zoomOutButton;
-	JButton m_zoomOrigButton;
-	JButton m_zoomBestButton;
+
+	private JButton m_zoomInButton;
+	private JButton m_zoomOutButton;
+	private JButton m_zoomOrigButton;
+	private JButton m_zoomBestButton;
+
 	JButton m_refreshButton;
 	JButton m_closeButton;
 	JButton m_closeAllButton;
@@ -134,9 +135,6 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 
 	private final JDFFrame m_frame;
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 2161156231007579898L;
 
 	/**
@@ -144,7 +142,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 	 *  
 	 * @param frame
 	 */
-	public EditorButtonBar(JDFFrame frame)
+	public EditorButtonBar(final JDFFrame frame)
 	{
 		super(SwingConstants.HORIZONTAL);
 		settingService = SettingService.getSettingService();
@@ -366,7 +364,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		}
 		else if (eSrc == m_saveButton) // save document
 		{
-			if (m_frame.getTitle().equalsIgnoreCase("Untitled.jdf") || m_frame.getTitle().equalsIgnoreCase("Untitled.jmf"))
+			if (m_frame.getTitle().contains("Untitled.j") /*|| m_frame.getTitle().equalsIgnoreCase("Untitled.jmf")*/)
 			{
 				m_frame.saveAs();
 			}

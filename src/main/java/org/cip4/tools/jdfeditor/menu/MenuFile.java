@@ -93,6 +93,7 @@ import org.cip4.tools.jdfeditor.view.MainView;
 public class MenuFile implements ActionListener, MenuInterface
 {
 	private MainController mainController;
+	final JDFFrame frame = MainView.getFrame();
 	
 	private JMenu menu;
 	private JMenu m_recentFilesMenu;
@@ -115,7 +116,6 @@ public class MenuFile implements ActionListener, MenuInterface
 
 	public JMenu createMenu()
 	{
-		final JDFFrame frame = MainView.getFrame();
 		final Menu_MouseListener menuListener = new EditorMenuBar().new Menu_MouseListener();
 		final int menuKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
@@ -191,8 +191,8 @@ public class MenuFile implements ActionListener, MenuInterface
 	
 	public void setEnableClose()
 	{
-		m_saveAsItem.setEnabled(false);
 		m_saveItem.setEnabled(false);
+		m_saveAsItem.setEnabled(false);
 		m_csvItem.setEnabled(false);
 		m_closeItem.setEnabled(false);
 		m_closeAllItem.setEnabled(false);
@@ -214,8 +214,7 @@ public class MenuFile implements ActionListener, MenuInterface
 	{
 		MainView.setCursor(1, null);
 		final Object eSrc = e.getSource();
-		final JDFFrame frame = MainView.getFrame();
-		
+
 		if (eSrc == m_newItem)
 		{
 			frame.newFile();
@@ -226,19 +225,19 @@ public class MenuFile implements ActionListener, MenuInterface
 		}
 		else if (eSrc == m_closeItem)
 		{
-			MainView.getFrame().closeFile(1);
+			frame.closeFile(1);
 		}
 		else if (eSrc == m_closeAllItem)
 		{
-			MainView.getFrame().closeFile(99999);
+			frame.closeFile(99999);
 		}
 		else if (eSrc == m_saveAsItem)
 		{
-			MainView.getFrame().saveAs();
+			frame.saveAs();
 		}
 		else if (eSrc == m_saveItem)
 		{
-			MainView.getFrame().save();
+			frame.save();
 		}
 		else if (eSrc == m_csvItem)
 		{
@@ -312,7 +311,7 @@ public class MenuFile implements ActionListener, MenuInterface
 	private void openRecentFile(final File fileToSave)
 	{
 		MainView.setCursor(1, null);
-		final boolean b = MainView.getFrame().readFile(fileToSave);
+		final boolean b = frame.readFile(fileToSave);
 
 		if (b)
 		{
