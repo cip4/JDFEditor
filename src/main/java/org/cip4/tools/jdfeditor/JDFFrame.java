@@ -252,7 +252,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	public void drawWindow()
 	{
 		MainView.setCursor(1, null);
-		this.setJMenuBar(m_menuBar.drawMenu());
+		setJMenuBar(m_menuBar.drawMenu());
 		this.getContentPane().add(drawBoxContent());
 		this.setEnableClose();
 		this.setVisible(true);
@@ -1470,7 +1470,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	// ///////////////////////////////////////////////////////////
-	class MyTreeSelectionListener implements TreeSelectionListener
+	private class MyTreeSelectionListener implements TreeSelectionListener
 	{
 		@Override
 		public void valueChanged(final TreeSelectionEvent e)

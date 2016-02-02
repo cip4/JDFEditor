@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2016 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -96,7 +96,7 @@ public class MenuFile implements ActionListener, MenuInterface
 	final JDFFrame frame = MainView.getFrame();
 	
 	private JMenu menu;
-	private JMenu m_recentFilesMenu;
+	private JMenu recentFilesMenu;
 	
 	private JMenuItem m_newItem;
 	private JMenuItem m_openItem;
@@ -104,7 +104,7 @@ public class MenuFile implements ActionListener, MenuInterface
 	private JMenuItem m_closeAllItem;
 	private JMenuItem m_saveItem;
 	private JMenuItem m_saveAsItem;
-	private JMenuItem[] m_subMenuItem = new JMenuItem[5];
+	private JMenuItem[] recentFilesMenuItemArray = new JMenuItem[5];
 	private JMenuItem m_devcapOpenMenu;
 	private JMenuItem m_csvItem;
 	public JMenuItem m_quitItem;
@@ -156,18 +156,18 @@ public class MenuFile implements ActionListener, MenuInterface
 
 		menu.add(new JSeparator());
 
-		m_recentFilesMenu = new JMenu(ResourceUtil.getMessage("main.menu.file.open.recent.file"));
+		recentFilesMenu = new JMenu(ResourceUtil.getMessage("main.menu.file.open.recent.file"));
 		final String[] vRecentFiles = recentFiles();
-		m_recentFilesMenu.setEnabled(vRecentFiles.length > 0);
-		m_recentFilesMenu.setMnemonic('R');
+		recentFilesMenu.setEnabled(vRecentFiles.length > 0);
+		recentFilesMenu.setMnemonic('R');
 		for (int i = 0; i < vRecentFiles.length; i++)
 		{
-			m_subMenuItem[i] = new JMenuItem(vRecentFiles[i]);
-			m_subMenuItem[i].addActionListener(this);
-			m_subMenuItem[i].setAccelerator(KeyStroke.getKeyStroke('1' + i, menuKeyMask));
-			m_recentFilesMenu.add(m_subMenuItem[i]);
+			recentFilesMenuItemArray[i] = new JMenuItem(vRecentFiles[i]);
+			recentFilesMenuItemArray[i].addActionListener(this);
+			recentFilesMenuItemArray[i].setAccelerator(KeyStroke.getKeyStroke('1' + i, menuKeyMask));
+			recentFilesMenu.add(recentFilesMenuItemArray[i]);
 		}
-		menu.add(m_recentFilesMenu);
+		menu.add(recentFilesMenu);
 
 		menu.add(new JSeparator());
 
@@ -259,11 +259,11 @@ public class MenuFile implements ActionListener, MenuInterface
 				EditorUtils.errorBox("OpenJDFErrorKey", "No Devcap File defined");
 		}
 
-		for (int i = 0; i < m_subMenuItem.length; i++)
+		for (int i = 0; i < recentFilesMenuItemArray.length; i++)
 		{
-			if (eSrc == m_subMenuItem[i])
+			if (eSrc == recentFilesMenuItemArray[i])
 			{
-				final String newFile = m_subMenuItem[i].getText();
+				final String newFile = recentFilesMenuItemArray[i].getText();
 				openRecentFile(new File(newFile));
 			}
 		}
@@ -341,24 +341,24 @@ public class MenuFile implements ActionListener, MenuInterface
 
 		if (RecentFileUtil.nrOfRecentFiles() != 0)
 		{
-			m_recentFilesMenu.setEnabled(true);
+			recentFilesMenu.setEnabled(true);
 			for (int i = 0; i < RecentFileUtil.nrOfRecentFiles(); i++)
 			{
-				if (m_subMenuItem[i] == null)
+				if (recentFilesMenuItemArray[i] == null)
 				{
-					m_subMenuItem[i] = new JMenuItem(RecentFileUtil.getRecentFiles()[i]);
-					m_subMenuItem[i].addActionListener(this);
-					m_recentFilesMenu.add(m_subMenuItem[i]);
+					recentFilesMenuItemArray[i] = new JMenuItem(RecentFileUtil.getRecentFiles()[i]);
+					recentFilesMenuItemArray[i].addActionListener(this);
+					recentFilesMenu.add(recentFilesMenuItemArray[i]);
 				}
 				else
 				{
-					m_subMenuItem[i].setText(RecentFileUtil.getRecentFiles()[i]);
+					recentFilesMenuItemArray[i].setText(RecentFileUtil.getRecentFiles()[i]);
 				}
 			}
 		}
 		else
 		{
-			m_recentFilesMenu.setEnabled(false);
+			recentFilesMenu.setEnabled(false);
 		}
 	}
 }

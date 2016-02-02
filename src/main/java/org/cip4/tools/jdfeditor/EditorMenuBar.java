@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2016 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -276,11 +276,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	}
 
 	/**
-	 * Creates the Help menu.
-	 * @return The Help menu with the menu items.
-	 */
-
-	/**
 	 * Updates the order in the Recent Files Menu. also updates all windows and the ini file - just in case
 	 * @param pathName - The path to the file
 	 */
@@ -431,8 +426,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		menuValidate.setEnableOpen(mode);
 	}
 
-	// //////////////////////////////////////////////////////////////////////////////
-
 	public class Menu_MouseListener extends MouseAdapter
 	{
 		@Override
@@ -452,7 +445,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		}
 	}
 
-	// ///////////////////////////////////////////////////////////////////
 	/**
 	 * WHERE the process begins when you select File->New from the JDFEditor menu.
 	 * @param e
