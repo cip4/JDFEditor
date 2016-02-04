@@ -480,7 +480,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	public boolean readFile(final File fileToRead)
 	{
 		EditorDocument eDoc[] = null;
-		Runtime.getRuntime().gc(); // clean up before loading
 
 		if (fileToRead != null)
 		{
@@ -1208,7 +1207,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 * @param pos
 	 * @return
 	 */
-	EditorDocument nextFile(int pos)
+	public EditorDocument nextFile(int pos)
 	{
 		if (m_VjdfDocument.isEmpty())
 		{
@@ -1737,7 +1736,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				final java.util.List<File> fileList = (java.util.List<File>) flavor.getTransferData(DataFlavor.javaFileListFlavor);
 				final Iterator<File> files = fileList.iterator();
 
-				if (files.hasNext())
+				while (files.hasNext())
 				{
 					readFile(files.next());
 				}

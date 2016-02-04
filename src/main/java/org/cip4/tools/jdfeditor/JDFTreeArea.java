@@ -274,7 +274,7 @@ public class JDFTreeArea extends JTextArea
 
 		// jdfTree.expandPath(new TreePath(((JDFTreeNode) root.getFirstChild()).getPath()));
 		// jdfTree.expandPath(eDoc.getLastSelection());
-		new DropTarget(jdfTree, m_frame);
+		new DropTarget(jdfTree, m_frame); // apply drag&drop support again
 		m_treeView.setView(jdfTree);
 		jdfTree.setBackground(Color.white);
 		jdfTree.setShowsRootHandles(true);

@@ -243,7 +243,6 @@ public class JDFTreeModel extends DefaultTreeModel
 	 */
 	public boolean validate()
 	{
-		Runtime.getRuntime().gc(); // clean up before validating
 		// this may be what needs to be done (i.e. getFrame()) for the variables in other methods that are being moved from JDFFrame to here.
 		final JDFFrame m_frame = MainView.getFrame();
 		final JDFDoc theDoc = m_frame.getJDFDoc();

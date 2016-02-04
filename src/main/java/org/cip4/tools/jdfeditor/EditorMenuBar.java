@@ -454,12 +454,10 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	{
 		MainView.setCursor(1, null);
 		final Object eSrc = e.getSource();
-		final JDFFrame frame = MainView.getFrame();
-		final JDFTreeArea ta = frame.getJDFTreeArea();
-		
+
 		if (eSrc == m_nextItem)
 		{
-			frame.nextFile(-1);
+			MainView.getFrame().nextFile(-1);
 		}
 
 		if (m_Windows != null)
@@ -477,7 +475,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	}
 
 	/**
-	 * set the windows menuiten background color of pos
+	 * set the windows menu item background color of pos
 	 * @param pos the position in the document list
 	 */
 	public void setWindowMenuItemColor(final int pos)
