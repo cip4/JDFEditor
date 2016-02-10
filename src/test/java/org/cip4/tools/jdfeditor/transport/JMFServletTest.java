@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2015 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2016 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -68,17 +68,15 @@
  */
 package org.cip4.tools.jdfeditor.transport;
 
-import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.tools.jdfeditor.EditorTabbedPaneB;
 import org.cip4.tools.jdfeditor.JDFFrame;
 import org.cip4.tools.jdfeditor.pane.HttpServerPane;
-import org.cip4.tools.jdfeditor.view.MainView;
+import org.cip4.tools.jdfeditor.pane.MessageBean;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -96,6 +94,9 @@ import static org.mockito.AdditionalMatchers.*;
 @RunWith(MockitoJUnitRunner.class)
 public class JMFServletTest
 {
+	private static final String POST_MULTIPART_RELATED = "multipart/related";
+	private static final String POST_PLAIN_JMF = "application/vnd.cip4-jmf+xml";
+
 	@Mock
 	private HttpServletRequest httpServletRequest;
 
@@ -111,7 +112,7 @@ public class JMFServletTest
 	@Mock
 	private HttpServerPane httpServerPane;
 
-	private StubServletInputStream stubServletInputStream = new StubServletInputStream("samples/mime-multipart-related-one-jmf.txt");
+	private StubServletInputStream stubServletInputStream;
 
 	@InjectMocks
 	@Spy
@@ -123,34 +124,58 @@ public class JMFServletTest
 	}
 
 	@Test
+	public void shouldReturnErrorForHttpGetRequest() throws IOException
+	{
+		jmfServlet.doGet(httpServletRequest, httpServletResponse);
+		verify(httpServletResponse, times(1)).sendError(eq(HttpServletResponse.SC_NOT_IMPLEMENTED), any(String.class));
+	}
+
+	@Test
 	public void shouldAddOneItemToHttpServerPane() throws IOException
 	{
-		stubServletInputStream = new StubServletInputStream("samples/mime-multipart-related-one-jmf.txt");
+		stubServletInputStream = new StubServletInputStream("samples/mime-multipart-related/one-jmf-jdf.mjm");
 
 		when(jdfFrame.getBottomTabs()).thenReturn(editorTabbedPaneB);
 		when(editorTabbedPaneB.getHttpPanel()).thenReturn(httpServerPane);
 
-		when(httpServletRequest.getHeader("Content-type")).thenReturn("multipart/related");
+		when(httpServletRequest.getHeader("Content-type")).thenReturn(POST_MULTIPART_RELATED);
 		when(httpServletRequest.getInputStream()).thenReturn(stubServletInputStream);
 
 		jmfServlet.doPost(httpServletRequest, httpServletResponse);
 
-		verify(httpServerPane, times(1)).addMessage(any(JDFJMF.class), any(File.class));
+		verify(httpServerPane, times(1)).addMessage(any(MessageBean.class));
 	}
 
 	@Test
 	public void shouldAddTwoItemsToHttpServerPane() throws IOException
 	{
-		stubServletInputStream = new StubServletInputStream("samples/mime-multipart-related-two-jmf.txt");
+		stubServletInputStream = new StubServletInputStream("samples/mime-multipart-related/two-jmf-jdf.mjm");
 
 		when(jdfFrame.getBottomTabs()).thenReturn(editorTabbedPaneB);
 		when(editorTabbedPaneB.getHttpPanel()).thenReturn(httpServerPane);
 
-		when(httpServletRequest.getHeader("Content-type")).thenReturn("multipart/related");
+		when(httpServletRequest.getHeader("Content-type")).thenReturn(POST_MULTIPART_RELATED);
 		when(httpServletRequest.getInputStream()).thenReturn(stubServletInputStream);
 
 		jmfServlet.doPost(httpServletRequest, httpServletResponse);
 
-		verify(httpServerPane, times(2)).addMessage(any(JDFJMF.class), any(File.class));
+		verify(httpServerPane, times(2)).addMessage(any(MessageBean.class));
 	}
+
+	@Test
+	public void shouldAddItemsForPlainPost() throws IOException
+	{
+		stubServletInputStream = new StubServletInputStream("samples/plain-jmf/QueryKnownMessages.jmf");
+
+		when(jdfFrame.getBottomTabs()).thenReturn(editorTabbedPaneB);
+		when(editorTabbedPaneB.getHttpPanel()).thenReturn(httpServerPane);
+
+		when(httpServletRequest.getHeader("Content-type")).thenReturn(POST_PLAIN_JMF);
+		when(httpServletRequest.getInputStream()).thenReturn(stubServletInputStream);
+
+		jmfServlet.doPost(httpServletRequest, httpServletResponse);
+
+		verify(httpServerPane, times(1)).addMessage(any(MessageBean.class));
+	}
+
 }

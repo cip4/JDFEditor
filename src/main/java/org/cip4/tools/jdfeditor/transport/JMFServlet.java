@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2016 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -70,7 +70,6 @@
  */
 package org.cip4.tools.jdfeditor.transport;
 
-import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -99,6 +98,7 @@ import org.cip4.jdflib.util.file.RollingBackupDirectory;
 import org.cip4.jdflib.util.mime.MimeReader;
 import org.cip4.tools.jdfeditor.JDFFrame;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.pane.MessageBean;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.view.MainView;
 
@@ -159,59 +159,55 @@ public class JMFServlet extends HttpServlet
 		res.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, "HTTP GET not implemented.");
 	}
 
-	private void processMessage(HttpServletRequest req, HttpServletResponse res) throws IOException
+	private void processMessage(final HttpServletRequest req, final HttpServletResponse res) throws IOException
 	{
-		String msg = "Receiving message from " + req.getHeader("User-Agent") + " @ " + req.getRemoteHost() + " (" + req.getRemoteAddr() + ")...";
-		LOGGER.info(msg);
+		String logMessage = "Receiving message from " + req.getHeader("User-Agent") + " @ " + req.getRemoteHost() + " (" + req.getRemoteAddr() + ")...";
+		LOGGER.info(logMessage);
 //		Build incoming Message
-		String contentType = req.getHeader("Content-type");
-		LOGGER.info("contentType: " + contentType);
+		String headerContentType = req.getHeader("Content-type");
+		LOGGER.info("header Content-type: " + headerContentType);
 		
-		final boolean isMultipart = MimeUtil.isMimeMultiPart(contentType);
+		final boolean isMultipart = MimeUtil.isMimeMultiPart(headerContentType);
 		LOGGER.info("isMultipart: " + isMultipart);
 		
 		InputStream inputStreamTemp = req.getInputStream();
 		String requestString = IOUtils.toString(inputStreamTemp, UTF_8);
 		LOGGER.info("requestString: " + requestString);
 		InputStream inputStream = IOUtils.toInputStream(requestString, UTF_8);
-		
-		if (isMultipart) {
-			processMultipartMessage(inputStream);
-		} else {
-			ByteArrayIOInputStream inputStream2 = ByteArrayIOStream.getBufferedInputStream(inputStream);
 
-			JDFDoc doc = JDFDoc.parseStream(inputStream2);
-			if (doc == null)
-			{
-				LOGGER.error("error parsing jmf");
-				return;
-			}
-			JDFJMF jmf = doc.getJMFRoot();
-			if (jmf == null)
-			{
-				LOGGER.error("no root jmf");
-				return;
-			}
-			VElement e = jmf.getMessageVector(null, null);
-			LOGGER.debug("e.size: " + e.size());
-			if (getDump() == null)
-			{
-				LOGGER.error("no http dump defined");
-				return;
-			}
-			for (int i = 0; i < e.size(); i++)
-			{
-				JDFMessage currMessage = jmf.getMessageElement(null, null, i);
-				String type = currMessage.getType();
-				LOGGER.debug("currMessage type: " + type);
-				File f = dumpDir.getNewFileWithExt(type);
-				FileUtil.streamToFile(ByteArrayIOStream.getBufferedInputStream(inputStream2), f);
-				jdfFrame.getBottomTabs().getHttpPanel().addMessage(jmf, f);
-			}
-		} // else
+		if (getDump() == null)
+		{
+			LOGGER.error("no http dump defined");
+			return;
+		}
+
+		if (isMultipart) {
+			processMultipartPostMessage(inputStream);
+		} else {
+			processPlainPostMessage(inputStream);
+		}
 	}
 
-	private void processMultipartMessage(InputStream inputStream) throws IOException
+	private void processPlainPostMessage(final InputStream inputStream) throws IOException
+	{
+		ByteArrayIOInputStream inputStream2 = ByteArrayIOStream.getBufferedInputStream(inputStream);
+
+		JDFDoc doc = JDFDoc.parseStream(inputStream2);
+		if (doc == null)
+		{
+			LOGGER.error("error parsing jmf");
+			return;
+		}
+		JDFJMF jmf = doc.getJMFRoot();
+		if (jmf == null)
+		{
+			LOGGER.error("no root jmf");
+			return;
+		}
+		processJmfMessage(jmf, inputStream2);
+	}
+
+	private void processMultipartPostMessage(final InputStream inputStream) throws IOException
 	{
 		final MimeReader mr = new MimeReader(inputStream);
 		final BodyPart[] bp = mr.getBodyParts();
@@ -246,22 +242,7 @@ public class JMFServlet extends HttpServlet
 					LOGGER.info("bodyPartNumber: " + bodyPartNumber + ", originalJmf: \n" + originalJmf);
 					InputStream inputStreamJmf = IOUtils.toInputStream(originalJmf, UTF_8);
 
-					VElement e = jmf.getMessageVector(null, null);
-					LOGGER.info("e.size: " + e.size());
-					if (getDump() == null)
-					{
-						LOGGER.error("no http dump defined");
-						return;
-					}
-					for (int i = 0; i < e.size(); i++)
-					{
-						JDFMessage currMessage = jmf.getMessageElement(null, null, i);
-						String type = currMessage.getType();
-						LOGGER.debug("currMessage type: " + type);
-						File f = dumpDir.getNewFileWithExt(type);
-						FileUtil.streamToFile(ByteArrayIOStream.getBufferedInputStream(inputStreamJmf), f);
-						jdfFrame.getBottomTabs().getHttpPanel().addMessage(jmf, f);
-					}
+					processJmfMessage(jmf, inputStreamJmf);
 				} else
 				{
 					LOGGER.info("Skip bodyPartNumber: " + bodyPartNumber);
@@ -271,6 +252,23 @@ public class JMFServlet extends HttpServlet
 			{
 				LOGGER.error("Error: " + e.getMessage() + ", while processing bodyPartNumber: " + bodyPartNumber, e);
 			}
+		}
+	}
+
+	private void processJmfMessage(final JDFJMF jmf, final InputStream inputStream)
+	{
+		final VElement jmfMessagesVector = jmf.getMessageVector(null, null);
+		LOGGER.debug("jmfMessagesVector.size: " + jmfMessagesVector.size());
+
+		for (int i = 0; i < jmfMessagesVector.size(); i++)
+		{
+			JDFMessage jmfMessage = (JDFMessage) jmfMessagesVector.get(i); // jmf.getMessageElement(null, null, i);
+			String type = jmfMessage.getType();
+			LOGGER.debug("jmfMessage type: " + type);
+			File dumpFile = dumpDir.getNewFileWithExt(type);
+			FileUtil.streamToFile(ByteArrayIOStream.getBufferedInputStream(inputStream), dumpFile);
+			final MessageBean msg = new MessageBean(jmfMessage, dumpFile);
+			jdfFrame.getBottomTabs().getHttpPanel().addMessage(msg);
 		}
 	}
 }

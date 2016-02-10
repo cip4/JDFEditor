@@ -344,14 +344,18 @@ public class HttpServerPane implements ActionListener
 	}
 
 	/**
-	 * add a jmf to the list
-	 * @param jmf
-	 * @param f
+	 * Add a JMF to the list.
+	 * @deprecated
 	 */
 	public void addMessage(JDFJMF jmf, File f)
 	{
 		JDFMessage m = jmf.getMessageElement(null, null, 0);
 		MessageBean msg = new MessageBean(m, f);
+		tableModel.addMessage(msg);
+	}
+
+	public void addMessage(final MessageBean msg)
+	{
 		tableModel.addMessage(msg);
 	}
 
