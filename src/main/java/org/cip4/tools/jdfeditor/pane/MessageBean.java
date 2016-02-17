@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2016 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -78,8 +78,6 @@ import org.cip4.jdflib.util.JDFDate;
 
 /**
  * 
- * 
- *
  */
 public class MessageBean
 {
@@ -90,12 +88,7 @@ public class MessageBean
 	private final String size;
 	final private JDFDate messageDate;
 
-	/**
-	 * 
-	 * @param jmf
-	 * @param f
-	 */
-	public MessageBean(JDFMessage jmf, File f)
+	public MessageBean(final JDFMessage jmf, final File f)
 	{
 		timeReceived = new JDFDate();
 		senderId = jmf.getSenderID();
@@ -105,51 +98,41 @@ public class MessageBean
 		size = FileUtils.byteCountToDisplaySize(f.length());
 	}
 
+	public MessageBean(final String senderId, final JDFDate jmfTime, final String jmfType, final File f)
+	{
+		timeReceived = new JDFDate();
+		this.senderId = senderId;
+		messageDate = jmfTime;
+		messageType = jmfType;
+		filePathName = f.getAbsolutePath();
+		size = FileUtils.byteCountToDisplaySize(f.length());
+	}
+
 	public String getFilePathName()
 	{
 		return filePathName;
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
 	public String getSenderId()
 	{
 		return senderId;
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
 	public String getMessageType()
 	{
 		return messageType;
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
 	public String getTimeReceived()
 	{
 		return timeReceived.getFormattedDateTime(JDFDate.DATETIMEREADABLE);
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
 	public String getSize()
 	{
 		return size;
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
 	public String getMessageDate()
 	{
 		return messageDate.getFormattedDateTime(JDFDate.DATETIMEREADABLE);

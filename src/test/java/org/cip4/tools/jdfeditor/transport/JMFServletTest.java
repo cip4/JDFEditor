@@ -94,8 +94,8 @@ import static org.mockito.AdditionalMatchers.*;
 @RunWith(MockitoJUnitRunner.class)
 public class JMFServletTest
 {
-	private static final String POST_MULTIPART_RELATED = "multipart/related";
-	private static final String POST_PLAIN_JMF = "application/vnd.cip4-jmf+xml";
+	private static final String CONTENT_MULTIPART_RELATED = "multipart/related";
+	private static final String CONTENT_PLAIN_JMF = "application/vnd.cip4-jmf+xml";
 
 	@Mock
 	private HttpServletRequest httpServletRequest;
@@ -138,7 +138,7 @@ public class JMFServletTest
 		when(jdfFrame.getBottomTabs()).thenReturn(editorTabbedPaneB);
 		when(editorTabbedPaneB.getHttpPanel()).thenReturn(httpServerPane);
 
-		when(httpServletRequest.getHeader("Content-type")).thenReturn(POST_MULTIPART_RELATED);
+		when(httpServletRequest.getHeader("Content-type")).thenReturn(CONTENT_MULTIPART_RELATED);
 		when(httpServletRequest.getInputStream()).thenReturn(stubServletInputStream);
 
 		jmfServlet.doPost(httpServletRequest, httpServletResponse);
@@ -147,19 +147,19 @@ public class JMFServletTest
 	}
 
 	@Test
-	public void shouldAddTwoItemsToHttpServerPane() throws IOException
+	public void shouldAddOneItemToHttpServerPaneForTwoJmf() throws IOException
 	{
 		stubServletInputStream = new StubServletInputStream("samples/mime-multipart-related/two-jmf-jdf.mjm");
 
 		when(jdfFrame.getBottomTabs()).thenReturn(editorTabbedPaneB);
 		when(editorTabbedPaneB.getHttpPanel()).thenReturn(httpServerPane);
 
-		when(httpServletRequest.getHeader("Content-type")).thenReturn(POST_MULTIPART_RELATED);
+		when(httpServletRequest.getHeader("Content-type")).thenReturn(CONTENT_MULTIPART_RELATED);
 		when(httpServletRequest.getInputStream()).thenReturn(stubServletInputStream);
 
 		jmfServlet.doPost(httpServletRequest, httpServletResponse);
 
-		verify(httpServerPane, times(2)).addMessage(any(MessageBean.class));
+		verify(httpServerPane, times(1)).addMessage(any(MessageBean.class));
 	}
 
 	@Test
@@ -170,12 +170,12 @@ public class JMFServletTest
 		when(jdfFrame.getBottomTabs()).thenReturn(editorTabbedPaneB);
 		when(editorTabbedPaneB.getHttpPanel()).thenReturn(httpServerPane);
 
-		when(httpServletRequest.getHeader("Content-type")).thenReturn(POST_PLAIN_JMF);
+		when(httpServletRequest.getHeader("Content-type")).thenReturn(CONTENT_PLAIN_JMF);
 		when(httpServletRequest.getInputStream()).thenReturn(stubServletInputStream);
 
 		jmfServlet.doPost(httpServletRequest, httpServletResponse);
 
-		verify(httpServerPane, times(1)).addMessage(any(MessageBean.class));
+		verify(httpServerPane, times(2)).addMessage(any(MessageBean.class));
 	}
 
 }

@@ -2,5 +2,6 @@
 <JMF xmlns="http://www.CIP4.org/JDFSchema_1_1"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     SenderID="Alces" TimeStamp="2004-08-30T17:23:00+01:00" Version="1.2">
-    <Query ID="Q001" Type="KnownMessages"/>
+    <Query ID="Q0001" Type="KnownMessages"/>
+    <Query ID="Q0002" Type="KnownMessages"/>
 </JMF>

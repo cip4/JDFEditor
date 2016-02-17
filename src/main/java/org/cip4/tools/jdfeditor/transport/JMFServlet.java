@@ -93,6 +93,7 @@ import org.cip4.jdflib.util.ByteArrayIOStream;
 import org.cip4.jdflib.util.ByteArrayIOStream.ByteArrayIOInputStream;
 import org.cip4.jdflib.util.ContainerUtil;
 import org.cip4.jdflib.util.FileUtil;
+import org.cip4.jdflib.util.JDFDate;
 import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.file.RollingBackupDirectory;
 import org.cip4.jdflib.util.mime.MimeReader;
@@ -113,7 +114,9 @@ public class JMFServlet extends HttpServlet
 	private static final String UTF_8 = "UTF-8";
 	private static final int INDENT = 2;
 	private static final long serialVersionUID = 1L;
-	private static String TIMESTAMP_PATTERN = "yyyy-MM-dd_hh-mm-ss-SSS";
+	private static final String TIMESTAMP_PATTERN = "yyyy-MM-dd_hh-mm-ss-SSS";
+
+	private static final String CONTENT_PLAIN_JMF = "application/vnd.cip4-jmf+xml";
 
 	private String lastDump;
 	private RollingBackupDirectory dumpDir;
@@ -182,7 +185,7 @@ public class JMFServlet extends HttpServlet
 		}
 
 		if (isMultipart) {
-			processMultipartPostMessage(inputStream);
+			processMultipartPostMessage2(inputStream);
 		} else {
 			processPlainPostMessage(inputStream);
 		}
@@ -207,6 +210,17 @@ public class JMFServlet extends HttpServlet
 		processJmfMessage(jmf, inputStream2);
 	}
 
+	private void processMultipartPostMessage2(final InputStream inputStream) throws IOException
+	{
+		String type = "MJM";
+		File dumpFile = dumpDir.getNewFileWithExt(type);
+		LOGGER.debug("dumpFile path: " + dumpFile.getAbsolutePath());
+		FileUtil.streamToFile(ByteArrayIOStream.getBufferedInputStream(inputStream), dumpFile);
+
+		final MessageBean msg = new MessageBean("---", new JDFDate(0), type, dumpFile);
+		jdfFrame.getBottomTabs().getHttpPanel().addMessage(msg);
+	}
+
 	private void processMultipartPostMessage(final InputStream inputStream) throws IOException
 	{
 		final MimeReader mr = new MimeReader(inputStream);
@@ -219,7 +233,7 @@ public class JMFServlet extends HttpServlet
 			BodyPart part = bp[bodyPartNumber];
 			try
 			{
-				if (part.isMimeType("application/vnd.cip4-jmf+xml"))
+				if (part.isMimeType(CONTENT_PLAIN_JMF))
 				{
 					LOGGER.info("Processing bodyPartNumber: " + bodyPartNumber);
 					SharedByteArrayInputStream is = (SharedByteArrayInputStream) part.getContent();
@@ -258,13 +272,12 @@ public class JMFServlet extends HttpServlet
 	private void processJmfMessage(final JDFJMF jmf, final InputStream inputStream)
 	{
 		final VElement jmfMessagesVector = jmf.getMessageVector(null, null);
-		LOGGER.debug("jmfMessagesVector.size: " + jmfMessagesVector.size());
 
 		for (int i = 0; i < jmfMessagesVector.size(); i++)
 		{
 			JDFMessage jmfMessage = (JDFMessage) jmfMessagesVector.get(i); // jmf.getMessageElement(null, null, i);
 			String type = jmfMessage.getType();
-			LOGGER.debug("jmfMessage type: " + type);
+			LOGGER.debug("jmfMessage id: " + jmfMessage.getID() + ", type: " + type);
 			File dumpFile = dumpDir.getNewFileWithExt(type);
 			FileUtil.streamToFile(ByteArrayIOStream.getBufferedInputStream(inputStream), dumpFile);
 			final MessageBean msg = new MessageBean(jmfMessage, dumpFile);
