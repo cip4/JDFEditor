@@ -71,6 +71,7 @@
 package org.cip4.tools.jdfeditor.transport;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -81,6 +82,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -116,7 +118,9 @@ public class JMFServlet extends HttpServlet
 	private static final long serialVersionUID = 1L;
 	private static final String TIMESTAMP_PATTERN = "yyyy-MM-dd_hh-mm-ss-SSS";
 
-	private static final String CONTENT_PLAIN_JMF = "application/vnd.cip4-jmf+xml";
+	private static final String CONTENT_JMF = "application/vnd.cip4-jmf+xml";
+	private static final String CONTENT_JDF = "application/vnd.cip4-jdf+xml";
+	private static final String CONTENT_PDF = "application/pdf";
 
 	private String lastDump;
 	private RollingBackupDirectory dumpDir;
@@ -217,7 +221,48 @@ public class JMFServlet extends HttpServlet
 		LOGGER.debug("dumpFile path: " + dumpFile.getAbsolutePath());
 		FileUtil.streamToFile(ByteArrayIOStream.getBufferedInputStream(inputStream), dumpFile);
 
-		final MessageBean msg = new MessageBean("---", new JDFDate(0), type, dumpFile);
+		FileInputStream fis = FileUtils.openInputStream(dumpFile);
+
+		final MimeReader mr = new MimeReader(fis);
+		final BodyPart[] bp = mr.getBodyParts();
+		LOGGER.info("Received total parts: " + bp.length);
+
+		boolean hasJmfInside = false;
+		boolean hasJdfInside = false;
+		boolean hasPdfInside = false;
+		for (int bodyPartNumber = 0; bodyPartNumber < bp.length; bodyPartNumber++)
+		{
+			BodyPart part = bp[bodyPartNumber];
+			try {
+				if (part.isMimeType(CONTENT_JMF))
+				{
+					hasJmfInside = true;
+				} else if (part.isMimeType(CONTENT_JDF))
+				{
+					hasJdfInside = true;
+				} else if (part.isMimeType(CONTENT_PDF))
+				{
+					hasPdfInside = true;
+				}
+			} catch (MessagingException e) {
+				LOGGER.error("Error: " + e.getMessage() + ", while processing bodyPartNumber: " + bodyPartNumber, e);
+			}
+		}
+
+		String messageTypeFull = type;
+		if (hasJmfInside || hasJdfInside || hasPdfInside)
+		{
+			String partJmf = (hasJmfInside ? "JMF," : "");
+			String partJdf = (hasJdfInside ? "JDF," : "");
+			String partPdf = (hasPdfInside ? "PDF," : "");
+
+			messageTypeFull = type + " (" + partJmf + partJdf + partPdf;
+			messageTypeFull = messageTypeFull.substring(0, messageTypeFull.length() - 1);
+			messageTypeFull += ")";
+		}
+
+		fis.close();
+		final MessageBean msg = new MessageBean("---", new JDFDate(0), messageTypeFull, dumpFile);
 		jdfFrame.getBottomTabs().getHttpPanel().addMessage(msg);
 	}
 
@@ -233,7 +278,7 @@ public class JMFServlet extends HttpServlet
 			BodyPart part = bp[bodyPartNumber];
 			try
 			{
-				if (part.isMimeType(CONTENT_PLAIN_JMF))
+				if (part.isMimeType(CONTENT_JMF))
 				{
 					LOGGER.info("Processing bodyPartNumber: " + bodyPartNumber);
 					SharedByteArrayInputStream is = (SharedByteArrayInputStream) part.getContent();
