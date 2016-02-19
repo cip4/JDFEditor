@@ -266,7 +266,7 @@ public class JMFServlet extends HttpServlet
 		jdfFrame.getBottomTabs().getHttpPanel().addMessage(msg);
 	}
 
-	private void processMultipartPostMessage(final InputStream inputStream) throws IOException
+	/*private void processMultipartPostMessage(final InputStream inputStream) throws IOException
 	{
 		final MimeReader mr = new MimeReader(inputStream);
 		final BodyPart[] bp = mr.getBodyParts();
@@ -312,7 +312,7 @@ public class JMFServlet extends HttpServlet
 				LOGGER.error("Error: " + e.getMessage() + ", while processing bodyPartNumber: " + bodyPartNumber, e);
 			}
 		}
-	}
+	}*/
 
 	private void processJmfMessage(final JDFJMF jmf, final InputStream inputStream)
 	{

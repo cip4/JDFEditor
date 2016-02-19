@@ -10,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 <?xml version="1.0" encoding="UTF-8"?>
 <JMF SenderID="Alces" TimeStamp="2005-10-09T17:42:00+01:00" Version="1.2" xmlns="http://www.CIP4.org/JDFSchema_1_1"><Command ID="M001" Type="SubmitQueueEntry"><QueueSubmissionParams URL="cid:Alces-Approval.jdf"/><QueueFilter MaxEntries="4" QueueEntryDetails="Brief"/></Command></JMF>
 ------=_Part_0_2409003.1131706449797
-Content-Type: application/xml; name=Alces-Approval.jdf
+Content-Type: application/vnd.cip4-jdf+xml; name=Alces-Approval.jdf
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment; filename=Alces-Approval.jdf
 Content-ID: <Alces-Approval.jdf>

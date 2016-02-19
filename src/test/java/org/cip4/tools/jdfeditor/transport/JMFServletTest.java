@@ -80,6 +80,7 @@ import org.cip4.tools.jdfeditor.pane.MessageBean;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -88,6 +89,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.AdditionalMatchers.*;
 
@@ -131,7 +133,7 @@ public class JMFServletTest
 	}
 
 	@Test
-	public void shouldAddOneItemToHttpServerPane() throws IOException
+	public void shouldAddOneItemToHttpServerPaneSmallFile() throws IOException
 	{
 		stubServletInputStream = new StubServletInputStream("samples/mime-multipart-related/one-jmf-jdf.mjm");
 
@@ -144,6 +146,42 @@ public class JMFServletTest
 		jmfServlet.doPost(httpServletRequest, httpServletResponse);
 
 		verify(httpServerPane, times(1)).addMessage(any(MessageBean.class));
+
+		ArgumentCaptor<MessageBean> argument = ArgumentCaptor.forClass(MessageBean.class);
+		verify(httpServerPane).addMessage(argument.capture());
+
+		assertEquals("---", argument.getValue().getSenderId());
+		assertEquals("MJM (JMF,JDF)", argument.getValue().getMessageType());
+		assertNotNull(argument.getValue().getTimeReceived());
+		assertEquals("01 Jan 1970 03:00", argument.getValue().getMessageDate());
+		assertEquals("7 KB", argument.getValue().getSize());
+		assertNotNull(argument.getValue().getFilePathName());
+	}
+
+	@Test
+	public void shouldAddOneItemToHttpServerPaneBigFile() throws IOException
+	{
+		stubServletInputStream = new StubServletInputStream("samples/mime-multipart-jmf-jdf-pdf/elk-approval.mjm");
+
+		when(jdfFrame.getBottomTabs()).thenReturn(editorTabbedPaneB);
+		when(editorTabbedPaneB.getHttpPanel()).thenReturn(httpServerPane);
+
+		when(httpServletRequest.getHeader("Content-type")).thenReturn(CONTENT_MULTIPART_RELATED);
+		when(httpServletRequest.getInputStream()).thenReturn(stubServletInputStream);
+
+		jmfServlet.doPost(httpServletRequest, httpServletResponse);
+
+		verify(httpServerPane, times(1)).addMessage(any(MessageBean.class));
+
+		ArgumentCaptor<MessageBean> argument = ArgumentCaptor.forClass(MessageBean.class);
+		verify(httpServerPane).addMessage(argument.capture());
+
+		assertEquals("---", argument.getValue().getSenderId());
+		assertEquals("MJM (JMF,JDF,PDF)", argument.getValue().getMessageType());
+		assertNotNull(argument.getValue().getTimeReceived());
+		assertEquals("01 Jan 1970 03:00", argument.getValue().getMessageDate());
+		assertEquals("27 KB", argument.getValue().getSize());
+		assertNotNull(argument.getValue().getFilePathName());
 	}
 
 	@Test
