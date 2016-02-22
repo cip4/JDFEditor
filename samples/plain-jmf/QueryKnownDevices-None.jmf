@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<JMF xmlns="http://www.CIP4.org/JDFSchema_1_1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    SenderID="org.cip4.tools.controller" TimeStamp="2004-08-30T17:23:00+01:00" Version="1.2">
+    <Query ID="Q001" Type="KnownDevices" xsi:type="QueryKnownDevices">
+        <DeviceFilter DeviceDetails="None"/>
+    </Query>
+</JMF>

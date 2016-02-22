@@ -14,7 +14,7 @@ Content-Disposition: attachment; filename=SubmitQueueEntry.jmf
 ------=_Part_0_1536052634.1430733617155
 Content-Type: application/vnd.cip4-jdf+xml
 Content-Transfer-Encoding: quoted-printable
-Content-ID: <DPVector_IDP1.3.jdf>
+Content-ID: <DPVector_IDP1.3-error-in-filename.jdf>
 Content-Disposition: attachment; filename=DPVector_IDP1.3-error-in-filename.jdf
 
 <?xml version=3D"1.0" encoding=3D"UTF-8"?>
