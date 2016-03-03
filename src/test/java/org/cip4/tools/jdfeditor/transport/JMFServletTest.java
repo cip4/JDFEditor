@@ -68,6 +68,15 @@
  */
 package org.cip4.tools.jdfeditor.transport;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -83,15 +92,8 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import static org.mockito.AdditionalMatchers.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JMFServletTest
@@ -118,7 +120,7 @@ public class JMFServletTest
 
 	@InjectMocks
 	@Spy
-	private JMFServlet jmfServlet = new JMFServlet();
+	private final JMFServlet jmfServlet = new JMFServlet();
 
 	@Before
 	public void setUp() throws Exception
@@ -153,7 +155,7 @@ public class JMFServletTest
 		assertEquals("---", argument.getValue().getSenderId());
 		assertEquals("MJM (JMF,JDF)", argument.getValue().getMessageType());
 		assertNotNull(argument.getValue().getTimeReceived());
-		assertEquals("01 Jan 1970 03:00", argument.getValue().getMessageDate());
+		assertTrue(argument.getValue().getMessageDate().startsWith("01 Jan 1970"));
 		assertEquals("7 KB", argument.getValue().getSize());
 		assertNotNull(argument.getValue().getFilePathName());
 	}
@@ -179,7 +181,7 @@ public class JMFServletTest
 		assertEquals("---", argument.getValue().getSenderId());
 		assertEquals("MJM (JMF,JDF,PDF)", argument.getValue().getMessageType());
 		assertNotNull(argument.getValue().getTimeReceived());
-		assertEquals("01 Jan 1970 03:00", argument.getValue().getMessageDate());
+		assertTrue(argument.getValue().getMessageDate().startsWith("01 Jan 1970"));
 		assertEquals("27 KB", argument.getValue().getSize());
 		assertNotNull(argument.getValue().getFilePathName());
 	}
