@@ -15,9 +15,9 @@
 	</properties>
 
     <scm>
-        <url>https://stash.cip4.org/scm/tool/jdfeditor.git</url>
-        <developerConnection>scm:git:https://stash.cip4.org/scm/tool/jdfeditor.git</developerConnection>
-        <connection>scm:git:https://stash.cip4.org/scm/tool/jdfeditor.git</connection>
+        <url>https://bitbucket.cip4.org/scm/tool/jdfeditor.git</url>
+        <developerConnection>scm:git:https://bitbucket.cip4.org/scm/tool/jdfeditor.git</developerConnection>
+        <connection>scm:git:https://bitbucket.cip4.org/scm/tool/jdfeditor.git</connection>
         <tag>JDFEditor-Paris-15.10</tag>
     </scm>
     <issueManagement>
