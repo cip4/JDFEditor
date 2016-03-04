@@ -5,7 +5,7 @@ import org.junit.Test;
 
 
 /**
- * Created by s.meissner on 23.11.2015.
+ * Created by s.meissner on 23.11.2016.
  */
 public class BuildPropsUtilTest {
 
