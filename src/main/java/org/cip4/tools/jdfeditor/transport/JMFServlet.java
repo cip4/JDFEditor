@@ -70,6 +70,7 @@
  */
 package org.cip4.tools.jdfeditor.transport;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -81,6 +82,13 @@ import javax.mail.util.SharedByteArrayInputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -104,6 +112,10 @@ import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.pane.MessageBean;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.view.MainView;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * 
@@ -118,6 +130,7 @@ public class JMFServlet extends HttpServlet
 	private static final long serialVersionUID = 1L;
 	private static final String TIMESTAMP_PATTERN = "yyyy-MM-dd_hh-mm-ss-SSS";
 
+	private static final String HEADER_CONTENT_ID = "Content-ID";
 	private static final String CONTENT_JMF = "application/vnd.cip4-jmf+xml";
 	private static final String CONTENT_JDF = "application/vnd.cip4-jdf+xml";
 	private static final String CONTENT_PDF = "application/pdf";
@@ -221,25 +234,31 @@ public class JMFServlet extends HttpServlet
 		LOGGER.debug("dumpFile path: " + dumpFile.getAbsolutePath());
 		FileUtil.streamToFile(ByteArrayIOStream.getBufferedInputStream(inputStream), dumpFile);
 
-		FileInputStream fis = FileUtils.openInputStream(dumpFile);
+		FileInputStream fileInputStream = FileUtils.openInputStream(dumpFile);
 
-		final MimeReader mr = new MimeReader(fis);
-		final BodyPart[] bp = mr.getBodyParts();
-		LOGGER.info("Received total parts: " + bp.length);
+		final MimeReader mr = new MimeReader(fileInputStream);
+		final BodyPart[] bodyPartArray = mr.getBodyParts();
+		LOGGER.info("Received total parts: " + bodyPartArray.length);
 
 		boolean hasJmfInside = false;
 		boolean hasJdfInside = false;
 		boolean hasPdfInside = false;
-		for (int bodyPartNumber = 0; bodyPartNumber < bp.length; bodyPartNumber++)
+		for (int bodyPartNumber = 0; bodyPartNumber < bodyPartArray.length; bodyPartNumber++)
 		{
-			BodyPart part = bp[bodyPartNumber];
+			BodyPart part = bodyPartArray[bodyPartNumber];
 			try {
 				if (part.isMimeType(CONTENT_JMF))
 				{
 					hasJmfInside = true;
+					InputStream is = (InputStream) part.getContent();
+					String jmfRequestString = IOUtils.toString(is, UTF_8);
+					validateUrlResources(jmfRequestString, bodyPartNumber, bodyPartArray);
 				} else if (part.isMimeType(CONTENT_JDF))
 				{
 					hasJdfInside = true;
+					InputStream is = (InputStream) part.getContent();
+					String jdfRequestString = IOUtils.toString(is, UTF_8);
+					validateUrlResources(jdfRequestString, bodyPartNumber, bodyPartArray);
 				} else if (part.isMimeType(CONTENT_PDF))
 				{
 					hasPdfInside = true;
@@ -261,9 +280,58 @@ public class JMFServlet extends HttpServlet
 			messageTypeFull += ")";
 		}
 
-		fis.close();
+		fileInputStream.close();
 		final MessageBean msg = new MessageBean("---", new JDFDate(0), messageTypeFull, dumpFile);
 		jdfFrame.getBottomTabs().getHttpPanel().addMessage(msg);
+	}
+
+	private void validateUrlResources(final String jmfRequestString, final int bodyPartNumber, final BodyPart[] bodyPartArray) {
+		DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+		try {
+			DocumentBuilder builder = builderFactory.newDocumentBuilder();
+			Document document = builder.parse(new ByteArrayInputStream(jmfRequestString.getBytes()));
+			XPath xPath =  XPathFactory.newInstance().newXPath();
+			String prefix = "cid:";
+			String expressionUrl = "//@URL";
+			NodeList urlNodeList = (NodeList) xPath.compile(expressionUrl).evaluate(document, XPathConstants.NODESET);
+			for (int i = 0; i < urlNodeList.getLength(); i++) {
+				Node node = urlNodeList.item(i);
+				if (node.getNodeType() == Node.ATTRIBUTE_NODE) {
+					String url = node.getNodeValue();
+					LOGGER.debug("URL found: " + url + " at part number: " + bodyPartNumber);
+
+					if (url.startsWith(prefix)) {
+						final String exactCid = "<" + url.substring(prefix.length(), url.length()) + ">";
+						if (!isContentIdExistInParts(exactCid, bodyPartArray)) {
+							LOGGER.fatal("Validation error: Expected Content-ID does not exist");
+						}
+					}
+				}
+			}
+		} catch (ParserConfigurationException | SAXException | IOException | XPathExpressionException e) {
+			LOGGER.error("Exception occured: " + e.getMessage(), e);
+			return;
+		}
+	}
+
+	private boolean isContentIdExistInParts(final String resource, final BodyPart[] partsArray) {
+		for (int partNumber = 0; partNumber < partsArray.length; partNumber++) {
+			BodyPart part = partsArray[partNumber];
+			try {
+				if (part.getHeader(HEADER_CONTENT_ID) != null) {
+					String contentId = part.getHeader(HEADER_CONTENT_ID)[0];
+					if (contentId.equalsIgnoreCase(resource)) {
+						LOGGER.debug("Confirmed resource at bodyPartNumber: " + partNumber);
+						return true;
+					}
+				} else {
+					LOGGER.fatal("Potential validation error: No Content-ID exist in part of MIME, partNumber: " + partNumber);
+				}
+			} catch (MessagingException e) {
+				LOGGER.error("Error: " + e.getMessage(), e);
+			}
+		}
+		return false;
 	}
 
 	/*private void processMultipartPostMessage(final InputStream inputStream) throws IOException
