@@ -82,6 +82,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.cip4.jdflib.util.JDFDate;
 import org.cip4.tools.jdfeditor.EditorTabbedPaneB;
 import org.cip4.tools.jdfeditor.JDFFrame;
 import org.cip4.tools.jdfeditor.pane.HttpServerPane;
@@ -100,6 +101,8 @@ public class JMFServletTest
 {
 	private static final String CONTENT_MULTIPART_RELATED = "multipart/related";
 	private static final String CONTENT_PLAIN_JMF = "application/vnd.cip4-jmf+xml";
+
+	private static final String EXPECTED_BEGIN_OF_COMPUTER_ERA = new JDFDate(0).getFormattedDateTime(JDFDate.DATETIMEREADABLE);
 
 	@Mock
 	private HttpServletRequest httpServletRequest;
@@ -155,7 +158,7 @@ public class JMFServletTest
 		assertEquals("---", argument.getValue().getSenderId());
 		assertEquals("MJM (JMF,JDF)", argument.getValue().getMessageType());
 		assertNotNull(argument.getValue().getTimeReceived());
-		assertTrue(argument.getValue().getMessageDate().startsWith("01 Jan 1970"));
+		assertEquals(EXPECTED_BEGIN_OF_COMPUTER_ERA, argument.getValue().getMessageDate());
 		assertEquals("7 KB", argument.getValue().getSize());
 		assertNotNull(argument.getValue().getFilePathName());
 	}
@@ -181,7 +184,7 @@ public class JMFServletTest
 		assertEquals("---", argument.getValue().getSenderId());
 		assertEquals("MJM (JMF,JDF,PDF)", argument.getValue().getMessageType());
 		assertNotNull(argument.getValue().getTimeReceived());
-		assertTrue(argument.getValue().getMessageDate().startsWith("01 Jan 1970"));
+		assertEquals(EXPECTED_BEGIN_OF_COMPUTER_ERA, argument.getValue().getMessageDate());
 		assertEquals("27 KB", argument.getValue().getSize());
 		assertNotNull(argument.getValue().getFilePathName());
 	}
