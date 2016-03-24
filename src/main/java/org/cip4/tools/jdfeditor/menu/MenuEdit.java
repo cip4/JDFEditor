@@ -220,6 +220,7 @@ public class MenuEdit implements ActionListener, MenuInterface
 		if (eSrc == m_deleteItem)
 		{
 			MainView.getModel().deleteSelectedNodes();
+			MainView.getFrame().refreshTitle();
 		}
 		else if (eSrc == m_findXPathItem)
 		{

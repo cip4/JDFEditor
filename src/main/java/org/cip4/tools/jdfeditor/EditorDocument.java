@@ -117,33 +117,42 @@ public class EditorDocument
 
 	private int topTab;
 
+	private boolean dirtyFlag;
+
 	/**
 	 * Custom constructor. Accepting several attributes for initializing.
 	 * @param jdfDoc The JDFDoc object.
-	 * @param packageName The package name as String
+	 * @param mimeContent The package name as String
 	 */
-	public EditorDocument(final JDFDoc jdfDoc, final String packageName)
+	public EditorDocument(final JDFDoc jdfDoc, final String mimeContent)
 	{
 		this.historyPos = -1;
 		this.jdfDoc = jdfDoc;
 		this.jdfTreeNodesHistory = new Vector<JDFTreeNode>();
-		this.packageName = packageName;
+		this.packageName = mimeContent;
 		this.zoom = EditorButtonBar.DEFAULT_ZOOM;
 	}
 
-	/**
-	 * Getter for the zoom attribute value.
-	 * @return The zoom value as double.
-	 */
+	public boolean isDirtyFlag()
+	{
+		return dirtyFlag;
+	}
+
+	public void setDirtyFlag()
+	{
+		this.dirtyFlag = true;
+	}
+
+	public void resetDirtyFlag()
+	{
+		this.dirtyFlag = false;
+	}
+
 	public double getZoom()
 	{
 		return zoom;
 	}
 
-	/**
-	 * Setter for the zoom attribute value.
-	 * @param zoom The zoom attribute value as double.
-	 */
 	public void setZoom(double zoom)
 	{
 		this.zoom = zoom;
@@ -427,7 +436,6 @@ public class EditorDocument
 	 */
 	public JDFTreeModel createModel(final JDFTreeNode root)
 	{
-
 		jdfTreeModel = new JDFTreeModel(root, false);
 		final JDFDoc doc = getJDFDoc();
 		if (doc == null)
@@ -514,7 +522,6 @@ public class EditorDocument
 	 */
 	public void saveFile(File file)
 	{
-
 		if (jdfDoc == null)
 		{
 			return;
@@ -568,6 +575,7 @@ public class EditorDocument
 			}
 		}
 		jdfDoc.clearDirtyIDs();
+		resetDirtyFlag();
 	}
 
 	/**

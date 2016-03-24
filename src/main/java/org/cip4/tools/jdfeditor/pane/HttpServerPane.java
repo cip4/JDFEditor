@@ -343,26 +343,11 @@ public class HttpServerPane implements ActionListener
 		portValueLabel.setEnabled(enabled);
 	}
 
-	/*
-	 * Add a JMF to the list.
-	 * @deprecated
-	 */
-	/*public void addMessage(JDFJMF jmf, File f)
-	{
-		JDFMessage m = jmf.getMessageElement(null, null, 0);
-		MessageBean msg = new MessageBean(m, f);
-		tableModel.addMessage(msg);
-	}*/
-
 	public void addMessage(final MessageBean msg)
 	{
 		tableModel.addMessage(msg);
 	}
 
-	/**
-	 * 
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{

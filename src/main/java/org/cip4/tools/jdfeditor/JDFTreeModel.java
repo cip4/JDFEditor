@@ -351,7 +351,6 @@ public class JDFTreeModel extends DefaultTreeModel
 		JDFTreeNode newNode = null;
 		if (insertElementName != null && !insertElementName.equals(JDFConstants.EMPTYSTRING))
 		{
-
 			final String elemNS = getNSURI(parentElement, insertElementName);
 			final KElement siblingElement = beforeNode == null ? null : beforeNode.getElement();
 			final KElement newElement = parentElement.insertBefore(insertElementName, siblingElement, elemNS);
@@ -366,6 +365,7 @@ public class JDFTreeModel extends DefaultTreeModel
 			{
 				validate();
 			}
+			MainView.getFrame().getEditorDoc().setDirtyFlag();
 			final InsertElementEdit edit = new InsertElementEdit(beforeNode, newNode, "Insert Element");
 			MainView.getFrame().undoSupport.postEdit(edit);
 		}
@@ -978,6 +978,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		final TreePath[] paths = MainView.getEditorDoc().getSelectionPaths();
 		if (paths != null)
 		{
+			MainView.getFrame().getEditorDoc().setDirtyFlag();
 			final JDFFrame m_frame = MainView.getFrame();
 			for (int i = paths.length - 1; i >= 0; i--)
 			{

@@ -428,6 +428,7 @@ public class JDFTreeArea extends JTextArea
 				{
 					MainView.getModel().setAttribute((JDFTreeNode) attrNode.getParent(), attributeName, selectedValue, null, false);
 					MainView.getModel().nodeChanged(attrNode);
+					MainView.getFrame().getEditorDoc().setDirtyFlag();
 				}
 			}
 
@@ -852,6 +853,7 @@ public class JDFTreeArea extends JTextArea
 			final JDFTreeNode attrNode = MainView.getModel().insertAttributeIntoDoc(intoNode);
 			if (attrNode != null)
 			{
+				MainView.getFrame().getEditorDoc().setDirtyFlag();
 				final InsertAttrEdit edit = new InsertAttrEdit(path, attrNode);
 				m_frame.undoSupport.postEdit(edit);
 			}
