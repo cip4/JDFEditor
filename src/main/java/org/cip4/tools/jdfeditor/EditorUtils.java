@@ -86,6 +86,7 @@ import javax.swing.tree.TreePath;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.AttributeName;
+import org.cip4.jdflib.core.JDFConstants;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFElement.EnumValidationLevel;
@@ -384,15 +385,9 @@ public class EditorUtils
 		JOptionPane.showMessageDialog(frame, ResourceUtil.getMessage(errorKey) + addedString, ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 	}
 
-	// ////////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * @param fts the file to get inputstreams from
-	 * @return InputStream[] the array of inputstreams
-	 */
-	public static EditorDocument[] getEditorDocuments(final File fts)
+	public static EditorDocument[] getEditorDocuments(final File inputFile)
 	{
-		if (fts == null)
+		if (inputFile == null)
 		{
 			return null;
 		}
@@ -403,20 +398,19 @@ public class EditorUtils
 			try
 			{
 				// if i>0, the initial parse failed and we will try the other type
-				if (UrlUtil.isMIME(fts) ^ i == 1)
+				if (UrlUtil.isMIME(inputFile) ^ i == 1)
 				{
-					final String packageName = fts.getCanonicalPath();
-					ediDocs = unpackMIME(fts, packageName);
+					ediDocs = unpackMIME(inputFile);
 				}
 				else
 				// standard xml parse
 				{
 					ediDocs = new EditorDocument[1];
 
-					JDFDoc jdfDoc = parseInStream(fts, getSchemaLoc());
+					JDFDoc jdfDoc = parseInStream(inputFile, getSchemaLoc());
 					if (jdfDoc == null)
 					{
-						jdfDoc = parseInStream(fts, null);
+						jdfDoc = parseInStream(inputFile, null);
 					}
 
 					EditorDocument edidoc = null;
@@ -427,28 +421,30 @@ public class EditorUtils
 					}
 					if (edidoc != null)
 					{
-						edidoc.getJDFDoc().setOriginalFileName(fts.getPath());
+						edidoc.getJDFDoc().setOriginalFileName(inputFile.getPath());
 						ediDocs[0] = edidoc;
 					}
 					else
 					{
 						if (i == 1)
 						{
-							EditorUtils.errorBox("FileNotOpenKey", ": " + fts.getName());
+							EditorUtils.errorBox("FileNotOpenKey", ": " + inputFile.getName());
 						}
 						ediDocs = null;
 					}
 				}
 			}
-			catch (final IOException x)
+			catch (final IOException e)
 			{
+				LOGGER.error("Error: " + e.getMessage(), e);
 				if (i > 0)
 				{
 					return null;
 				}
 			}
-			catch (final MessagingException x)
+			catch (final MessagingException e)
 			{
+				LOGGER.error("Error: " + e.getMessage(), e);
 				if (i > 0)
 				{
 					return null;
@@ -460,16 +456,13 @@ public class EditorUtils
 			}
 		}
 		return ediDocs;
-
 	}
 
-	/**
-	 * unpack the mime packeage specified in fts
-	 */
-	private static EditorDocument[] unpackMIME(final File fts, final String packageName) throws FileNotFoundException, MessagingException, IOException
+	private static EditorDocument[] unpackMIME(final File inputFile) throws FileNotFoundException, MessagingException, IOException
 	{
-		EditorDocument[] ediDocs;
-		InputStream fileStream = FileUtil.getBufferedInputStream(fts);
+		final String inputFilePath = inputFile.getCanonicalPath();
+		EditorDocument[] editorDocsArray;
+		InputStream fileStream = FileUtil.getBufferedInputStream(inputFile);
 
 		// in case of spurious email header lines, skipem
 		final byte b[] = new byte[1000];
@@ -481,7 +474,7 @@ public class EditorUtils
 			posMime = s.toLowerCase().indexOf("mime-version:");
 		}
 		fileStream.close();
-		fileStream = new FileInputStream(fts);
+		fileStream = new FileInputStream(inputFile);
 		if (posMime > 0)
 		{
 			fileStream.skip(posMime);
@@ -506,10 +499,9 @@ public class EditorUtils
 		{
 			return null;
 		}
-
-		ediDocs = new EditorDocument[n];
-
+		editorDocsArray = new EditorDocument[n];
 		n = 0;
+
 		for (int i = 0; i < count; i++)
 		{
 			final BodyPart bp = mp.getBodyPart(i);
@@ -524,32 +516,52 @@ public class EditorUtils
 					is = bp.getInputStream();
 					parseInStream(is, null);
 				}
-				EditorDocument edidoc = null;
+				EditorDocument editorDocument = null;
 
 				if (jdfDoc != null)
 				{
-					edidoc = makeEditorDocument(jdfDoc, packageName);
+					editorDocument = makeEditorDocument(jdfDoc, inputFilePath);
 				}
-				if (edidoc != null)
+				if (editorDocument != null)
 				{
-					String fileName = bp.getFileName();
-					if (fileName == null)
+					String partFileNamePassed = bp.getFileName();
+					if (partFileNamePassed == null)
 					{
-						fileName = packageName + "_" + i + ".jdf";
+						partFileNamePassed = inputFilePath + "_" + i ;
+						if (isJDFMimeType(bp.getContentType()))
+								partFileNamePassed += ".jdf";
+						else if (isJMFMimeType(bp.getContentType()))
+							partFileNamePassed += ".jmf";
 					}
-					fileName = StringUtil.unEscape(fileName, "%", 16, 2);
-					fileName = StringUtil.getUTF8String(fileName.getBytes());
-					jdfDoc.setOriginalFileName(fileName);
+					partFileNamePassed = StringUtil.unEscape(partFileNamePassed, "%", 16, 2);
+					partFileNamePassed = StringUtil.getUTF8String(partFileNamePassed.getBytes());
+					jdfDoc.setOriginalFileName(partFileNamePassed);
 					jdfDoc.setBodyPart(bp);
-					edidoc.setCID(MimeUtil.getContentID(bp));
-					ediDocs[n++] = edidoc;
+					editorDocument.setCID(MimeUtil.getContentID(bp));
+					editorDocsArray[n++] = editorDocument;
 				}
 			}
 		}
-		return ediDocs;
+		return editorDocsArray;
 	}
 
-	static File getSchemaLoc()
+	private static boolean isJDFMimeType(String mimeType) {
+		if (mimeType == null) {
+			return false;
+		}
+		mimeType = StringUtil.token(mimeType, 0, ";");
+		return JDFConstants.MIME_JDF.equalsIgnoreCase(mimeType);
+	}
+
+	private static boolean isJMFMimeType(String mimeType) {
+		if (mimeType == null) {
+			return false;
+		}
+		mimeType = StringUtil.token(mimeType, 0, ";");
+		return JDFConstants.MIME_JMF.equalsIgnoreCase(mimeType);
+	}
+
+	protected static File getSchemaLoc()
 	{
 		File schemaloc = null;
 
@@ -562,12 +574,12 @@ public class EditorUtils
 			schemaloc = new File(validationSchemaUrl);
 		}
 
-		return (schemaloc);
+		return schemaloc;
 	}
 
 	private static EditorDocument makeEditorDocument(JDFDoc jdfDoc, String packageName)
 	{
-		EditorDocument edidoc = null;
+		EditorDocument editorDocument = null;
 
 		if (jdfDoc != null)
 		{
@@ -580,10 +592,10 @@ public class EditorUtils
 
 			final JDFFrame frame = MainView.getFrame();
 			frame.setJDFDoc(jdfDoc, packageName);
-			edidoc = frame.getEditorDoc();
+			editorDocument = frame.getEditorDoc();
 		}
 
-		return (edidoc);
+		return editorDocument;
 	}
 
 	private static JDFDoc parseInStream(InputStream inStream, File fileSchema) throws IOException
@@ -595,7 +607,7 @@ public class EditorUtils
 			p.setJDFSchemaLocation(fileSchema);
 		}
 
-		return (p.parseStream(inStream));
+		return p.parseStream(inStream);
 	}
 
 	/**
@@ -633,7 +645,7 @@ public class EditorUtils
 	 * @return
 	 * @throws IOException
 	 */
-	static JDFDoc parseInStream(File fileJDF, File fileSchema) throws IOException
+	protected static JDFDoc parseInStream(File fileJDF, File fileSchema) throws IOException
 	{
 		JDFDoc jdfDoc = null;
 

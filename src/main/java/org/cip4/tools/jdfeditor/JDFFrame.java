@@ -175,10 +175,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	JTree m_searchTree;
 
-	/**
-	 * handles all copying and pasting
-	 * 
-	 */
+//	handles all copying and pasting
 	public JDFTreeCopyNode m_copyNode;
 
 	// quick & dirty hack for multi doc support
@@ -310,7 +307,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 */
 	public void openFile()
 	{
-		File fileToSave = null; // Do this for GT
+		File fileToSave = null; // Do this for GoldenTicket (?)
 		if (getJDFDoc() != null)
 		{
 			final String originalFileName = getJDFDoc().getOriginalFileName();
@@ -333,16 +330,11 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 		if (answer == JFileChooser.APPROVE_OPTION)
 		{
-			fileToSave = chooser.getSelectedFile(); // Do this GT
-			readFile(fileToSave); // Do this as well for GT
+			fileToSave = chooser.getSelectedFile(); // Do this GoldenTicket (?)
+			readFile(fileToSave); // Do this as well for GoldenTicket (?)
 		}
 	}
 
-	/**
-	 * 
-	 * 
-	 * @param pd
-	 */
 	public void applyLookAndFeel(final PreferenceDialog pd)
 	{
 		try
@@ -379,10 +371,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		}
 	}
 
-	/**
-	 * 
-	 *  
-	 */
 	public void printWhat()
 	{
 		final String[] options = { ResourceUtil.getMessage("OkKey"), ResourceUtil.getMessage("CancelKey") };
@@ -515,12 +503,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		return eDoc != null;
 	}
 
-	/**
-	 * 
-	 *  
-	 * @param eDoc
-	 * @param path
-	 */
 	public void refreshView(EditorDocument eDoc, TreePath path)
 	{
 		if (eDoc == null)
@@ -692,7 +674,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 */
 	private int saveFileQuestion()
 	{
-		LOGGER.info("asking...");
+		LOGGER.info("saveFileQuestion asking...");
 		int save = JOptionPane.YES_OPTION;
 		final EditorDocument doc = getEditorDoc();
 		if (doc != null)
@@ -718,8 +700,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	private void newJDF()
 	{
 		clearViews();
-		try
-		{
+//		try
+//		{
 			final JDFDoc jdfDoc = new JDFDoc("JDF");
 			final JDFNode jdfRoot = jdfDoc.getJDFRoot();
 			jdfRoot.setType("Product", true);
@@ -730,14 +712,14 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			document.setDirtyFlag();
 
 			m_treeArea.drawTreeView(document);
-			jdfDoc.setOriginalFileName("Untitled.jdf");
+			jdfDoc.setOriginalFileName(UNTITLED + ".jdf");
 			setTitle(buildWindowTitleString());
-		}
-		catch (final Exception s)
-		{
-			s.printStackTrace();
-			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("FileNotOpenKey"), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
-		}
+//		}
+//		catch (final Exception s)
+//		{
+//			s.printStackTrace();
+//			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("FileNotOpenKey"), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+//		}
 
 	}
 
