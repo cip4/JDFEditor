@@ -75,6 +75,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -82,6 +84,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.elementwalker.URLExtractor;
 import org.cip4.jdflib.util.FileUtil;
@@ -100,6 +104,8 @@ import org.cip4.tools.jdfeditor.view.MainView;
 
 public class MenuTools implements ActionListener, MenuInterface
 {
+	private static final Log LOG = LogFactory.getLog(MenuTools.class);
+
 	private MainController mainController;
 	
 	private JMenu menu;
@@ -263,11 +269,6 @@ public class MenuTools implements ActionListener, MenuInterface
 		if (option == JOptionPane.OK_OPTION)
 		{
 			pd.writeToIni();
-			final EditorDocument ed = MainView.getEditorDoc();
-			if (ed != null && ed.getJDFTree() != null)
-			{
-//				ed.getJDFTree().repaint();
-			}
 
 			FontUtil.calcFontSize();
 			if (getEditorDoc() != null)
@@ -287,21 +288,48 @@ public class MenuTools implements ActionListener, MenuInterface
 	
 	private void extractAll()
 	{
-		MainView.setCursor(1, null);
-		EditorDocument d = getEditorDoc();
+		EditorDocument editorDocument = getEditorDoc();
 
-		String name = d == null ? null : StringUtil.getNonEmpty(d.getSaveFileName());
-		if (name != null)
+		String documentFileName = editorDocument == null ? null : StringUtil.getNonEmpty(editorDocument.getSaveFileName());
+		if (documentFileName != null)
 		{
-			String dir = UrlUtil.newExtension(name, null);
+			String initialDirectoryToExtract = UrlUtil.newExtension(documentFileName, null); // convert file name to directory by removing extension
 
-			File dirFile = FileUtil.getFileInDirectory(new File(dir), new File("extracted"));
-			if (dirFile.mkdirs() || dirFile.isDirectory())
+			File targetDirectory = FileUtil.getFileInDirectory(new File(initialDirectoryToExtract), new File("extracted"));
+			String canonicalPath = "";
+			try
 			{
-				new URLExtractor(dirFile, null, null).convert(getJDFDoc().getRoot());
+				canonicalPath = targetDirectory.getCanonicalPath();
+			} catch (IOException e)
+			{
+				LOG.error("Error: " + e.getMessage(), e);
+				return;
 			}
+
+			if (!targetDirectory.exists())
+			{
+				boolean result = targetDirectory.mkdirs();
+				if (!result)
+				{
+					String errorMessage = String.format(ResourceUtil.getMessage("main.menu.tools.extract.cannot.create.output.dir"), canonicalPath);
+					LOG.error(errorMessage);
+					JOptionPane.showMessageDialog(MainView.getFrame(), errorMessage, ResourceUtil.getMessage("main.menu.tools.extract.error"), JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+			}
+
+			if (!Files.isWritable(targetDirectory.toPath()))
+			{
+				String errorMessage = String.format(ResourceUtil.getMessage("main.menu.tools.extract.directory.read.only"), canonicalPath);
+				LOG.error(errorMessage);
+				JOptionPane.showMessageDialog(MainView.getFrame(), errorMessage, ResourceUtil.getMessage("main.menu.tools.extract.error"), JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
+			MainView.setCursor(1, null);
+			new URLExtractor(targetDirectory, null, null).convert(getJDFDoc().getRoot());
+			MainView.setCursor(0, null);
 		}
-		MainView.setCursor(0, null);
 	}
 	
 	private JDFDoc getJDFDoc()
