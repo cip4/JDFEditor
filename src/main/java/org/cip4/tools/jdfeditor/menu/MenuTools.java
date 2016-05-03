@@ -327,11 +327,36 @@ public class MenuTools implements ActionListener, MenuInterface
 			}
 
 			MainView.setCursor(1, null);
-			new URLExtractor(targetDirectory, null, null).convert(getJDFDoc().getRoot());
+			URLExtractor extractor = new URLExtractor(targetDirectory, null, null);
+			extractor.setWantLog(true);
+			extractor.convert(getJDFDoc().getRoot());
 			MainView.setCursor(0, null);
+
+			StringBuilder sb = new StringBuilder();
+			if (!extractor.getSaved().isEmpty())
+			{
+				sb.append(ResourceUtil.getMessage("main.menu.tools.extract.files.successfully.extracted"));
+				for (String fileName : extractor.getSaved())
+				{
+					sb.append(fileName + "\n");
+				}
+				sb.append("\n");
+			}
+
+//			if (!extractor.getNotSaved().isEmpty()) // FIXME: implement this method
+//			{
+//				sb.append(ResourceUtil.getMessage("main.menu.tools.extract.files.not.extracted"));
+//				for (String fileName : extractor.getNotSaved())
+//				{
+//					sb.append(fileName + "\n");
+//				}
+//			}
+
+			String finalExtractedMessage = sb.toString();
+			JOptionPane.showMessageDialog(MainView.getFrame(), finalExtractedMessage, ResourceUtil.getMessage("main.menu.tools.extract.results"), JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
-	
+
 	private JDFDoc getJDFDoc()
 	{
 		final EditorDocument ed = getEditorDoc();
