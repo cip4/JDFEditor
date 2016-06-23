@@ -117,6 +117,8 @@ public class Editor
 			log = LogFactory.getLog(Editor.class);
 		log.info("Starting editor");
 
+		preInit();
+
 		File file = null;
 		// mac may have 2nd argument
 		for (int i = args.length - 1; i >= 0; i--)
@@ -149,6 +151,14 @@ public class Editor
 	}
 
 	/**
+	 * preliminary initialization done here
+	 */
+	protected static void preInit()
+	{
+		JDFResource.setAutoSubElementClass(false);
+	}
+
+	/**
 	 * 
 	 */
 	public Editor()
@@ -177,8 +187,6 @@ public class Editor
 		KElement.setLongID(mainController.getSetting(SettingKey.GENERAL_LONG_ID, Boolean.class));
 		JDFElement.setDefaultJDFVersion(JDFElement.EnumVersion.getEnum(mainController.getSetting(SettingKey.VALIDATION_VERSION, String.class)));
 		JDFParser.m_searchStream = true;
-
-		JDFResource.setAutoSubElementClass(false);
 	}
 
 	/**
