@@ -88,6 +88,7 @@ import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFElement.EnumVersion;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.elementwalker.FixVersion;
+import org.cip4.jdflib.elementwalker.RemoveEmpty;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFAuditPool;
 import org.cip4.jdflib.resource.JDFModified;
@@ -287,7 +288,14 @@ public class FixVersionDialog extends JPanel implements ActionListener
 				fv.setFixICSVersions(bFixICSVersion);
 				fv.setLayoutPrepToStripping(bConvertLPP);
 				fv.walkTree(element, null);
-				element.eraseEmptyNodes(true);
+				if (element instanceof JDFNode)
+				{
+					new RemoveEmpty().removEmpty((JDFNode) element);
+				}
+				else
+				{
+					new RemoveEmpty().removEmptyElement(element);
+				}
 			}
 
 			MainView.getFrame().refreshView(MainView.getEditorDoc(), path);
