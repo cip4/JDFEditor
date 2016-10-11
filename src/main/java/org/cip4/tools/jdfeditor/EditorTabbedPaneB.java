@@ -93,9 +93,9 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
-import com.codegoogle.tcpmon.bookmark.BookmarkManager;
 import com.codegoogle.tcpmon.Configuration;
 import com.codegoogle.tcpmon.MainWindow;
+import com.codegoogle.tcpmon.bookmark.BookmarkManager;
 
 /**
  * 
@@ -103,7 +103,7 @@ import com.codegoogle.tcpmon.MainWindow;
  * @author rainer prosi
  * @date Apr 11, 2013
  */
-public class EditorTabbedPaneB extends JTabbedPane
+public class EditorTabbedPaneB extends JTabbedPane implements Runnable
 {
 	private static final long serialVersionUID = -6813043793787501763L;
 	final public int m_VAL_ERRORS_INDEX = 0;
@@ -142,7 +142,7 @@ public class EditorTabbedPaneB extends JTabbedPane
 		//        XML Editor tab
 		xmlEditorTextArea = createXMLPane();
 
-//		TCPMon tab
+		//		TCPMon tab
 		MainWindow mWindow = new MainWindow(new BookmarkManager(""), new Configuration());
 		Container c = mWindow.getContentPane();
 		JScrollPane tcpMonScrPane = new JScrollPane(c);
@@ -150,7 +150,7 @@ public class EditorTabbedPaneB extends JTabbedPane
 
 		//		HTTP server tab
 		httpPanel = new HttpServerPane();
-		addTab(ResourceUtil.getMessage("HTTPserver"), null, getHttpPanel().createPane(), ResourceUtil.getMessage("HTTPserver"));
+		new Thread(this).start();
 	}
 
 	/**
@@ -165,7 +165,8 @@ public class EditorTabbedPaneB extends JTabbedPane
 		xmlArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_XML);
 		xmlArea.setAutoIndentEnabled(true);
 
-		if (RuntimeProperties.enlargedTextFontName.isEmpty()) {
+		if (RuntimeProperties.enlargedTextFontName.isEmpty())
+		{
 			Font originalFont = xmlArea.getFont();
 			RuntimeProperties.originalTextFontSize = originalFont.getSize();
 			RuntimeProperties.enlargedTextFontName = originalFont.getFontName();
@@ -204,13 +205,13 @@ public class EditorTabbedPaneB extends JTabbedPane
 		xmlEditorTextArea.setText(s);
 		xmlEditorTextArea.setCaretPosition(0);
 	}
-	
+
 	public void updateXmlEditorFontSize()
 	{
 		Font xmlAreaFont = new Font(RuntimeProperties.enlargedTextFontName, Font.PLAIN, RuntimeProperties.enlargedTextFontSize);
 		xmlEditorTextArea.setFont(xmlAreaFont);
 	}
-	
+
 	public void updateCheckJDFFontSize()
 	{
 		m_validErrScroll.updateCellRenderer();
@@ -321,6 +322,15 @@ public class EditorTabbedPaneB extends JTabbedPane
 	public HttpServerPane getHttpPanel()
 	{
 		return httpPanel;
+	}
+
+	/** 
+	 * take this guy offline
+	 */
+	@Override
+	public void run()
+	{
+		addTab(ResourceUtil.getMessage("HTTPserver"), null, getHttpPanel().createPane(), ResourceUtil.getMessage("HTTPserver"));
 	}
 
 }
