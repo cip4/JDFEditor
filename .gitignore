@@ -2,3 +2,7 @@
 /.settings/
 /bin/
 /schema-1.5/
+.classpath
+.project
+.idea
+*.iml
