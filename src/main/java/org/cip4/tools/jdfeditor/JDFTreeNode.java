@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2016 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2018 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -87,7 +87,9 @@ import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.datatypes.JDFAttributeMap;
+import org.cip4.jdflib.extensions.ResourceHelper;
 import org.cip4.jdflib.extensions.XJDF20;
+import org.cip4.jdflib.extensions.XJDFConstants;
 import org.cip4.jdflib.jmf.JDFDeviceInfo;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFJobPhase;
@@ -141,7 +143,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 	private static final long serialVersionUID = -2778264565816334126L;
 
 	/**
-	 * 
+	 *
 	 */
 	public boolean isInherited;
 
@@ -165,10 +167,8 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		this.isInherited = _isInherited;
 	}
 
-	// /////////////////////////////////////////////////////////////////////
-
 	/**
-	 * 
+	 *
 	 */
 	public JDFTreeNode()
 	{
@@ -416,8 +416,6 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		return ((Attr) userObject).getNodeValue();
 	}
 
-	// /////////////////////////////////////////////////////////////////////
-
 	/**
 	 * this is the display of the object
 	 */
@@ -426,8 +424,6 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 	{
 		return toDisplayString();
 	}
-
-	// /////////////////////////////////////////////////////////////////////
 
 	/**
 	 * this is the display of the object in the tree
@@ -454,424 +450,636 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		else
 		// element
 		{
-			final KElement e = (KElement) o;
-			s = e.getNodeName();
-			String nodeName = e.getLocalName();
-			if (e instanceof JDFAudit)
-			{
-				final JDFAudit a = (JDFAudit) e;
-				final JDFDate d = a.getTimeStamp();
-				if (d != null)
-				{
-					s += d.getFormattedDateTime(" MMM dd yyyy - HH:mm");
-				}
-			}
-			else if (e instanceof JDFComment)
-			{
-				final String nam = e.getAttribute("Name", null, null);
-				if (nam != null)
-				{
-					s += ": " + nam;
-				}
-			}
-			else if (e instanceof JDFRefElement)
-			{
-				final String ref = e.getAttribute("rRef", null, null);
-				if (ref != null)
-				{
-					s += ": " + ref;
-				}
-			}
-			else if (JDFResourceLink.isResourceLink(e))
-			{
-				final JDFResourceLink rl = (JDFResourceLink) e;
-				final String ref = rl.getrRef();
-				final EnumUsage u = rl.getUsage();
-				boolean bUsage = false;
-				if (EnumUsage.Input.equals(u) || EnumUsage.Output.equals(u))
-				{
-					s += "(" + u.getName();
-					bUsage = true;
-				}
-				final String pu = rl.getProcessUsage();
-				if (!pu.equals(""))
-				{
-					s += " [" + pu + "]";
-				}
-				if (bUsage)
-				{
-					s += ") : " + ref;
-				}
-			}
-			else if ((e instanceof JDFDevCap) || (e instanceof JDFDevCaps) || (e instanceof JDFAbstractState) || (e instanceof JDFSeparationSpec) || (e instanceof JDFColor))
-			{
-				final String nam = e.getAttribute(AttributeName.NAME, null, null);
-				if (nam != null)
-				{
-					s += ": " + nam;
-				}
-			}
-			else if (e instanceof JDFMessage)
-			{
-				final String typ = e.getAttribute(AttributeName.TYPE, null, null);
-				if (typ != null)
-				{
-					s += ": " + typ;
-				}
-				final String senderID = StringUtil.getNonEmpty(((JDFMessage) e).getSenderID());
-				if (senderID != null)
-				{
-					s += " SenderID: " + senderID;
-				}
-			}
-			else if (e instanceof JDFJMF)
-			{
-				final String senderID = StringUtil.getNonEmpty(((JDFJMF) e).getSenderID());
-				if (senderID != null)
-				{
-					s += " SenderID: " + senderID;
-				}
-			}
-			else if (e instanceof JDFNode || XJDF20.rootName.equals(nodeName))
-			{
-				String typ = e.getAttribute(AttributeName.TYPE, null, null);
-				if (typ != null)
-				{
-					s += ": " + typ;
-				}
-				typ = e.getAttribute(AttributeName.CATEGORY, null, null);
-				if (typ != null)
-				{
-					s += "-" + typ;
-				}
-				typ = e.getAttribute(AttributeName.JOBID, null, null);
-				if (typ != null)
-				{
-					s += " JobID=" + typ;
-				}
-				typ = e.getAttribute(AttributeName.JOBPARTID, null, null);
-				if (typ != null)
-				{
-					s += " JobPartID=" + typ;
-				}
-				final String stat = e.getAttribute(AttributeName.STATUS, null, null);
-				if (stat != null)
-				{
-					s += " Status=" + stat;
-				}
-			}
-			else if (e instanceof JDFMessageService)
-			{
-				String typ = e.getAttribute(AttributeName.TYPE, null, null);
-				if (typ != null)
-				{
-					s += ": " + typ;
-				}
-				typ = e.getAttribute("JMFRole", null, null);
-				if (typ != null)
-				{
-					s += " - " + typ;
-				}
-			}
-			else if (e instanceof JDFSpanBase)
-			{
-				final String act = e.getAttribute("Actual", null, null);
-				if (act != null)
-				{
-					s += " actual: " + act;
-				}
-				else
-				{
-					final String pref = e.getAttribute(AttributeName.PREFERRED, null, null);
-					if (pref != null)
-					{
-						s += " preferred: " + pref;
-					}
-				}
-			}
-			else if ((e instanceof JDFContact))
-			{
-				final String contactTypes = e.getAttribute(AttributeName.CONTACTTYPES, null, null);
-				if (contactTypes != null)
-				{
-					s += " - " + contactTypes;
-				}
-			}
-			else if ((e instanceof JDFContentObject) || (e instanceof JDFMarkObject))
-			{
-				final String ord = e.getAttribute("Ord", null, null);
-				if (ord != null)
-				{
-					s += " Ord=" + ord;
-				}
-				final String ctm = e.getAttribute("CTM", null, null);
-				if (ord != null)
-				{
-					s += " CTM=" + ctm;
-				}
-			}
-			else if (e instanceof JDFDevice)
-			{
-				final String att = e.getAttribute(AttributeName.DEVICEID, null, null);
-				if (att != null)
-				{
-					s += " DeviceID=" + att;
-				}
-			}
-			else if (e instanceof JDFDropItemIntent)
-			{
-				final String att = e.getAttribute(AttributeName.AMOUNT, null, null);
-				if (att != null)
-				{
-					s += " Amount=" + att;
-				}
-			}
-			else if (e instanceof JDFLayoutElement)
-			{
-				final String att = e.getXPathAttribute("FileSpec/@URL", null);
-				if (att != null)
-				{
-					s += " URL=" + att;
-				}
-			}
-			else if (e instanceof JDFFileSpec)
-			{
-				final String att = e.getAttribute(AttributeName.URL, null, null);
-				if (att != null)
-				{
-					s += " URL=" + att;
-				}
-			}
-			else if (e instanceof JDFEmployee)
-			{
-				final String att = e.getAttribute(AttributeName.PERSONALID, null, null);
-				if (att != null)
-				{
-					s += " PersonalID=" + att;
-				}
-			}
-			else if (e instanceof JDFQueueEntry)
-			{
-				String att = e.getAttribute(AttributeName.QUEUEENTRYID, null, null);
-				if (att != null)
-				{
-					s += " QEID=" + att;
-				}
-				att = e.getAttribute(AttributeName.STATUS, null, null);
-				if (att != null)
-				{
-					s += " Status=" + att;
-				}
-			}
-			else if (e instanceof JDFPhaseTime || e instanceof JDFJobPhase)
-			{
-				String att = e.getAttribute(AttributeName.STATUS, null, null);
-				if (att != null)
-				{
-					s += " " + att;
-				}
-				att = e.getAttribute(AttributeName.STATUSDETAILS, null, null);
-				if (att != null)
-				{
-					s += "/" + att;
-				}
-				if (e instanceof JDFJobPhase)
-				{
-					att = e.getAttribute(AttributeName.JOBID, null, null);
-					if (att != null)
-					{
-						s += " JobID=" + att;
-					}
-				}
-			}
-			else if (e instanceof JDFDeviceInfo)
-			{
-				final JDFDeviceInfo di = (JDFDeviceInfo) e;
-				String att = di.getDeviceID();
-				if (!KElement.isWildCard(att))
-				{
-					s += " " + att;
-				}
-				att = e.getAttribute(AttributeName.DEVICESTATUS, null, null);
-				if (att != null)
-				{
-					s += " " + att;
-				}
-				att = e.getAttribute(AttributeName.STATUSDETAILS, null, null);
-				if (att != null)
-				{
-					s += "/" + att;
-				}
-			}
-			else if (e instanceof JDFNotification)
-			{
-				final JDFNotification no = (JDFNotification) e;
-				final String att = no.getType();
-				if (!KElement.isWildCard(att))
-				{
-					s += " " + att;
-				}
-				final String att2 = e.getAttribute(AttributeName.CLASS, null, null);
-				if (att2 != null)
-				{
-					s += " - " + att2;
-				}
-
-			}
-			else if (e instanceof JDFEvent)
-			{
-				final JDFEvent di = (JDFEvent) e;
-				final String att = di.getEventID();
-				if (!KElement.isWildCard(att))
-				{
-					s += " EventID=" + att;
-				}
-			}
-			else if (e instanceof JDFPart)
-			{
-				final JDFPart p = (JDFPart) e;
-				final JDFAttributeMap map = p.getPartMap();
-				s = addPartMap(s, map);
-			}
-			else if (e instanceof JDFIdentical)
-			{
-				final JDFIdentical p = (JDFIdentical) e;
-				final JDFAttributeMap map = p.getPartMap();
-				s = addPartMap(s, map);
-			}
-			else if (e instanceof JDFSourceResource)
-			{
-				final JDFSourceResource p = (JDFSourceResource) e;
-				JDFRefElement re = p.getRefElement();
-				if (re != null)
-				{
-					s += " rRef: " + re.getrRef();
-					s = addPartMap(s, re.getPartMap());
-				}
-			}
-			else if (e instanceof JDFGeneralID)
-			{
-				final JDFGeneralID p = (JDFGeneralID) e;
-				s += " " + p.getIDUsage() + " = " + p.getIDValue();
-			}
-			else if (e instanceof JDFPerson)
-			{
-				final JDFPerson p = (JDFPerson) e;
-				s += " " + p.getDescriptiveName();
-			}
-			else if (e instanceof JDFCompany)
-			{
-				final JDFCompany c = (JDFCompany) e;
-				s += " " + c.getOrganizationName();
-			}
-			else if (e instanceof JDFBinderySignature)
-			{
-				final JDFBinderySignature bs = (JDFBinderySignature) e;
-				String foldCatalog = bs.getFoldCatalog();
-				if (!"".equals(foldCatalog))
-					s += " " + foldCatalog;
-			}
-			else if (e instanceof JDFRuleLength)
-			{
-				final JDFRuleLength rl = (JDFRuleLength) e;
-				s += " " + rl.getDDESCutType();
-				double l = rl.getLengthJDF();
-				if (l > 0)
-					s += " Len=" + l;
-			}
-			else if (e instanceof JDFStation)
-			{
-				final JDFStation rl = (JDFStation) e;
-				s += " " + rl.getStationName();
-				int l = rl.getStationAmount();
-				if (l > 0)
-					s += " Amount=" + l;
-			}
-			else if (e instanceof JDFComChannel)
-			{
-				final JDFComChannel p = (JDFComChannel) e;
-				s += " " + p.getLocator();
-			}
-			else if (e instanceof JDFCustomerInfo)
-			{
-				final JDFCustomerInfo p = (JDFCustomerInfo) e;
-				s += " " + p.getCustomerID();
-			}
-			else if (e instanceof JDFRefAnchor)
-			{
-				final JDFRefAnchor p = (JDFRefAnchor) e;
-				final EnumAnchor anchor = p.getAnchor();
-				if (anchor != null)
-				{
-					s += " " + anchor.getName();
-				}
-			}
-			else if (s.endsWith("Set") || s.equals("Intent"))
-			{
-				String name = e.getAttribute("Name", null, null);
-				String usage = e.getAttribute(AttributeName.USAGE, null, null);
-				String procUsage = e.getAttribute(AttributeName.PROCESSUSAGE, null, null);
-				String prefix = null;
-				if (usage != null)
-				{
-					prefix = usage;
-				}
-				if (procUsage != null)
-				{
-					prefix += "/" + procUsage;
-				}
-				if (prefix != null)
-				{
-					s = prefix + " " + s;
-				}
-				if (name != null)
-				{
-					s += " " + name;
-				}
-			}
-			else if (s.equals("Price"))
-			{
-				String name = e.getAttribute(AttributeName.DESCRIPTIVENAME, null, null);
-				if (name != null)
-				{
-					s += " " + name;
-				}
-				String price = e.getAttribute(AttributeName.PRICE, null, null);
-				if (price != null)
-				{
-					s += " " + price;
-				}
-			}
-
-			// always add id 
-			final String id = e.getAttribute_KElement(AttributeName.ID, null, null);
-			if (id != null)
-			{
-				s += ", " + id;
-			}
-
-			// add any partidkeys in resources
-			if (e instanceof JDFResource)
-			{
-				if (e instanceof JDFMedia && e.hasAttribute(AttributeName.MEDIATYPE))
-				{
-					s += "/" + e.getAttribute(AttributeName.MEDIATYPE);
-				}
-				else if (e instanceof JDFNodeInfo)
-				{
-					EnumNodeStatus nodeStatus = ((JDFNodeInfo) e).getNodeStatus();
-					if (nodeStatus != null)
-						s += " " + nodeStatus.getName();
-				}
-				final JDFResource r = (JDFResource) e;
-				final String partKey = r.getLocalPartitionKey();
-				if (partKey != null)
-				{
-					s += " [@" + partKey + "=" + r.getAttribute(partKey) + "]";
-				}
-			}
+			s = elementDisplay(o);
 		}
 
+		return s;
+	}
+
+	/**
+	 *
+	 * @param o
+	 * @return
+	 */
+	protected String elementDisplay(final Object o)
+	{
+		final KElement e = (KElement) o;
+		String s = e.getNodeName();
+		final String nodeName = e.getLocalName();
+		s = displaySpecial(e, s, nodeName);
+
+		// always add id
+		final String id = e.getAttribute_KElement(AttributeName.ID, null, null);
+		if (id != null)
+		{
+			s += ", " + id;
+		}
+
+		// add any partidkeys in resources
+		if (e instanceof JDFResource)
+		{
+			s = displayResource(e, s);
+		}
+		return s;
+	}
+
+	protected String displaySpecial(final KElement e, String s, final String nodeName)
+	{
+		if (e instanceof JDFAudit)
+		{
+			s = displayAudit(e, s);
+		}
+		else if (e instanceof JDFComment)
+		{
+			s = displayComment(e, s);
+		}
+		else if (e instanceof JDFRefElement)
+		{
+			final String ref = e.getAttribute("rRef", null, null);
+			if (ref != null)
+			{
+				s += ": " + ref;
+			}
+		}
+		else if (JDFResourceLink.isResourceLink(e))
+		{
+			s = displayResourceLink(e, s);
+		}
+		else if ((e instanceof JDFDevCap) || (e instanceof JDFDevCaps) || (e instanceof JDFAbstractState) || (e instanceof JDFSeparationSpec) || (e instanceof JDFColor))
+		{
+			final String nam = e.getAttribute(AttributeName.NAME, null, null);
+			if (nam != null)
+			{
+				s += ": " + nam;
+			}
+		}
+		else if (e instanceof JDFMessage)
+		{
+			s = displayMessage(e, s);
+		}
+		else if (e instanceof JDFJMF)
+		{
+			final String senderID = StringUtil.getNonEmpty(((JDFJMF) e).getSenderID());
+			if (senderID != null)
+			{
+				s += " SenderID: " + senderID;
+			}
+		}
+		else if (e instanceof JDFNode || XJDF20.rootName.equals(nodeName))
+		{
+			s = displayJDF(e, s);
+		}
+		else if (e instanceof JDFMessageService)
+		{
+			s = displayMessageService(e, s);
+		}
+		else if (e instanceof JDFSpanBase)
+		{
+			s = displaySpanBase(e, s);
+		}
+		else if ((e instanceof JDFContact))
+		{
+			final String contactTypes = e.getAttribute(AttributeName.CONTACTTYPES, null, null);
+			if (contactTypes != null)
+			{
+				s += " - " + contactTypes;
+			}
+		}
+		else if ((e instanceof JDFContentObject) || (e instanceof JDFMarkObject) || XJDFConstants.PlacedObject.equals(nodeName))
+		{
+			s = displayPlacedObject(e, s);
+		}
+		else if (e instanceof JDFDevice)
+		{
+			final String att = e.getAttribute(AttributeName.DEVICEID, null, null);
+			if (att != null)
+			{
+				s += " DeviceID=" + att;
+			}
+		}
+		else if (e instanceof JDFDropItemIntent)
+		{
+			final String att = e.getAttribute(AttributeName.AMOUNT, null, null);
+			if (att != null)
+			{
+				s += " Amount=" + att;
+			}
+		}
+		else if (e instanceof JDFLayoutElement)
+		{
+			final String att = e.getXPathAttribute("FileSpec/@URL", null);
+			if (att != null)
+			{
+				s += " URL=" + att;
+			}
+		}
+		else if (e instanceof JDFFileSpec)
+		{
+			final String att = e.getAttribute(AttributeName.URL, null, null);
+			if (att != null)
+			{
+				s += " URL=" + att;
+			}
+		}
+		else if (e instanceof JDFEmployee)
+		{
+			final String att = e.getAttribute(AttributeName.PERSONALID, null, null);
+			if (att != null)
+			{
+				s += " PersonalID=" + att;
+			}
+		}
+		else if (e instanceof JDFQueueEntry)
+		{
+			String att = e.getAttribute(AttributeName.QUEUEENTRYID, null, null);
+			if (att != null)
+			{
+				s += " QEID=" + att;
+			}
+			att = e.getAttribute(AttributeName.STATUS, null, null);
+			if (att != null)
+			{
+				s += " Status=" + att;
+			}
+		}
+		else if (e instanceof JDFPhaseTime || e instanceof JDFJobPhase)
+		{
+			s = displayPhase(e, s);
+		}
+		else if (e instanceof JDFDeviceInfo)
+		{
+			s = displayDeviceInfo(e, s);
+		}
+		else if (e instanceof JDFNotification)
+		{
+			s = displayNotification(e, s);
+		}
+		else if (e instanceof JDFNodeInfo)
+		{
+			s = displayNodeInfo(e, s);
+		}
+		else if (e instanceof JDFEvent)
+		{
+			final JDFEvent di = (JDFEvent) e;
+			final String att = di.getEventID();
+			if (!KElement.isWildCard(att))
+			{
+				s += " EventID=" + att;
+			}
+		}
+		else if (e instanceof JDFPart)
+		{
+			final JDFPart p = (JDFPart) e;
+			final JDFAttributeMap map = p.getPartMap();
+			s = addPartMap(s, map);
+		}
+		else if (e instanceof JDFIdentical)
+		{
+			final JDFIdentical p = (JDFIdentical) e;
+			final JDFAttributeMap map = p.getPartMap();
+			s = addPartMap(s, map);
+		}
+		else if (e instanceof JDFSourceResource)
+		{
+			final JDFSourceResource p = (JDFSourceResource) e;
+			final JDFRefElement re = p.getRefElement();
+			if (re != null)
+			{
+				s += " rRef: " + re.getrRef();
+				s = addPartMap(s, re.getPartMap());
+			}
+		}
+		else if (e instanceof JDFGeneralID)
+		{
+			final JDFGeneralID p = (JDFGeneralID) e;
+			s += " " + p.getIDUsage() + " = " + p.getIDValue();
+		}
+		else if (e instanceof JDFPerson)
+		{
+			final JDFPerson p = (JDFPerson) e;
+			s += " " + p.getDescriptiveName();
+		}
+		else if (e instanceof JDFCompany)
+		{
+			final JDFCompany c = (JDFCompany) e;
+			s += " " + c.getOrganizationName();
+		}
+		else if (e instanceof JDFBinderySignature)
+		{
+			final JDFBinderySignature bs = (JDFBinderySignature) e;
+			final String foldCatalog = bs.getFoldCatalog();
+			if (!"".equals(foldCatalog))
+				s += " " + foldCatalog;
+		}
+		else if (e instanceof JDFRuleLength)
+		{
+			final JDFRuleLength rl = (JDFRuleLength) e;
+			s += " " + rl.getDDESCutType();
+			final double l = rl.getLengthJDF();
+			if (l > 0)
+				s += " Len=" + l;
+		}
+		else if (e instanceof JDFStation)
+		{
+			final JDFStation rl = (JDFStation) e;
+			s += " " + rl.getStationName();
+			final int l = rl.getStationAmount();
+			if (l > 0)
+				s += " Amount=" + l;
+		}
+		else if (e instanceof JDFComChannel)
+		{
+			final JDFComChannel p = (JDFComChannel) e;
+			s += " " + p.getLocator();
+		}
+		else if (e instanceof JDFCustomerInfo)
+		{
+			final JDFCustomerInfo p = (JDFCustomerInfo) e;
+			s += " " + p.getCustomerID();
+		}
+		else if (e instanceof JDFRefAnchor)
+		{
+			final JDFRefAnchor p = (JDFRefAnchor) e;
+			final EnumAnchor anchor = p.getAnchor();
+			if (anchor != null)
+			{
+				s += " " + anchor.getName();
+			}
+		}
+		else if (nodeName.endsWith("Set") || nodeName.equals("Intent"))
+		{
+			s = displaySet(e, s);
+		}
+		else if (XJDFConstants.Product.equals(nodeName))
+		{
+			s = displayProduct(e, s);
+		}
+		else if (ResourceHelper.isAsset(e))
+		{
+			s = displayXRes(e, s);
+		}
+		else if (XJDFConstants.Header.equals(nodeName))
+		{
+			s = displayHeader(e, s);
+		}
+		else if (nodeName.equals("Price"))
+		{
+			s = displayPrice(e, s);
+		}
+		return s;
+	}
+
+	protected String displayMessageService(final KElement e, String s)
+	{
+		String typ = e.getAttribute(AttributeName.TYPE, null, null);
+		if (typ != null)
+		{
+			s += ": " + typ;
+		}
+		typ = e.getAttribute("JMFRole", null, null);
+		if (typ != null)
+		{
+			s += " - " + typ;
+		}
+		return s;
+	}
+
+	protected String displayMessage(final KElement e, String s)
+	{
+		final String typ = e.getAttribute(AttributeName.TYPE, null, null);
+		if (typ != null)
+		{
+			s += ": " + typ;
+		}
+		final String senderID = StringUtil.getNonEmpty(((JDFMessage) e).getSenderID());
+		if (senderID != null)
+		{
+			s += " SenderID: " + senderID;
+		}
+		return s;
+	}
+
+	protected String displayAudit(final KElement e, String s)
+	{
+		final JDFAudit a = (JDFAudit) e;
+		final JDFDate d = a.getTimeStamp();
+		if (d != null)
+		{
+			s += d.getFormattedDateTime(" MMM dd yyyy - HH:mm");
+		}
+		return s;
+	}
+
+	protected String displayResourceLink(final KElement e, String s)
+	{
+		final JDFResourceLink rl = (JDFResourceLink) e;
+		final String ref = rl.getrRef();
+		final EnumUsage u = rl.getUsage();
+		boolean bUsage = false;
+		if (EnumUsage.Input.equals(u) || EnumUsage.Output.equals(u))
+		{
+			s += "(" + u.getName();
+			bUsage = true;
+		}
+		final String pu = rl.getProcessUsage();
+		if (!pu.equals(""))
+		{
+			s += " [" + pu + "]";
+		}
+		if (bUsage)
+		{
+			s += ") : " + ref;
+		}
+		return s;
+	}
+
+	protected String displayPlacedObject(final KElement e, String s)
+	{
+		final String ord = e.getAttribute("Ord", null, null);
+		if (ord != null)
+		{
+			s += " Ord=" + ord;
+		}
+		final String ctm = e.getAttribute("CTM", null, null);
+		if (ord != null)
+		{
+			s += " CTM=" + ctm;
+		}
+		return s;
+	}
+
+	protected String displayJDF(final KElement e, String s)
+	{
+		String typ = e.getNonEmpty(AttributeName.TYPE);
+		if (typ != null)
+		{
+			s += ": " + typ;
+		}
+		else
+		{
+			typ = e.getNonEmpty(AttributeName.TYPES);
+			if (typ != null)
+			{
+				s += ": " + typ;
+			}
+		}
+		typ = e.getAttribute(AttributeName.CATEGORY, null, null);
+		if (typ != null)
+		{
+			s += "-" + typ;
+		}
+		typ = e.getAttribute(AttributeName.JOBID, null, null);
+		if (typ != null)
+		{
+			s += " JobID=" + typ;
+		}
+		typ = e.getAttribute(AttributeName.JOBPARTID, null, null);
+		if (typ != null)
+		{
+			s += " JobPartID=" + typ;
+		}
+		final String stat = e.getAttribute(AttributeName.STATUS, null, null);
+		if (stat != null)
+		{
+			s += " Status=" + stat;
+		}
+		return s;
+	}
+
+	protected String displaySpanBase(final KElement e, String s)
+	{
+		final String act = e.getAttribute("Actual", null, null);
+		if (act != null)
+		{
+			s += " actual: " + act;
+		}
+		else
+		{
+			final String pref = e.getAttribute(AttributeName.PREFERRED, null, null);
+			if (pref != null)
+			{
+				s += " preferred: " + pref;
+			}
+		}
+		return s;
+	}
+
+	protected String displayComment(final KElement e, String s)
+	{
+		final String nam = e.getAttribute("Name", null, null);
+		if (nam != null)
+		{
+			s += ": " + nam;
+		}
+		else
+		{
+			final String nam2 = e.getAttribute("Type", null, null);
+			if (nam2 != null)
+			{
+				s += ": " + nam2;
+			}
+		}
+		final String txt = e.getText();
+		if (txt != null)
+		{
+			s += " " + StringUtil.leftStr(txt, 42);
+			if (txt.length() > 42)
+			{
+				s += "...";
+			}
+		}
+		return s;
+	}
+
+	protected String displayPhase(final KElement e, String s)
+	{
+		String att = e.getAttribute(AttributeName.STATUS, null, null);
+		if (att != null)
+		{
+			s += " " + att;
+		}
+		att = e.getAttribute(AttributeName.STATUSDETAILS, null, null);
+		if (att != null)
+		{
+			s += "/" + att;
+		}
+		if (e instanceof JDFJobPhase)
+		{
+			att = e.getAttribute(AttributeName.JOBID, null, null);
+			if (att != null)
+			{
+				s += " JobID=" + att;
+			}
+		}
+		return s;
+	}
+
+	protected String displayDeviceInfo(final KElement e, String s)
+	{
+		final JDFDeviceInfo di = (JDFDeviceInfo) e;
+		String att = di.getDeviceID();
+		if (!KElement.isWildCard(att))
+		{
+			s += " " + att;
+		}
+		att = e.getAttribute(AttributeName.DEVICESTATUS, null, null);
+		if (att != null)
+		{
+			s += " " + att;
+		}
+		att = e.getAttribute(AttributeName.STATUSDETAILS, null, null);
+		if (att != null)
+		{
+			s += "/" + att;
+		}
+		return s;
+	}
+
+	protected String displayNotification(final KElement e, String s)
+	{
+		final JDFNotification no = (JDFNotification) e;
+		final String att = no.getType();
+		if (!KElement.isWildCard(att))
+		{
+			s += " " + att;
+		}
+		final String att2 = e.getAttribute(AttributeName.CLASS, null, null);
+		if (att2 != null)
+		{
+			s += " - " + att2;
+		}
+		return s;
+	}
+
+	protected String displayNodeInfo(final KElement e, String s)
+	{
+		final JDFNodeInfo no = (JDFNodeInfo) e;
+		final JDFDate start = no.getStart();
+		if (start != null)
+		{
+			s += " start:" + start.getFormattedDateTime(JDFDate.DATETIMEREADABLE);
+		}
+		final JDFDate end = no.getEnd();
+		if (end != null)
+		{
+			s += " end:" + end.getFormattedDateTime(JDFDate.DATETIMEREADABLE);
+		}
+		return s;
+	}
+
+	private String displayHeader(final KElement e, String s)
+	{
+		final String extID = e.getNonEmpty(AttributeName.DEVICEID);
+		if (extID != null)
+		{
+			s += " " + extID;
+		}
+		final String an = e.getNonEmpty(AttributeName.AGENTNAME);
+		if (an != null)
+		{
+			s += " " + an;
+		}
+		return s;
+	}
+
+	protected String displayResource(final KElement e, String s)
+	{
+		if (e instanceof JDFMedia && e.hasAttribute(AttributeName.MEDIATYPE))
+		{
+			s += "/" + e.getAttribute(AttributeName.MEDIATYPE);
+		}
+		else if (e instanceof JDFNodeInfo)
+		{
+			final EnumNodeStatus nodeStatus = ((JDFNodeInfo) e).getNodeStatus();
+			if (nodeStatus != null)
+				s += " " + nodeStatus.getName();
+		}
+		final JDFResource r = (JDFResource) e;
+		final String partKey = r.getLocalPartitionKey();
+		if (partKey != null)
+		{
+			s += " [@" + partKey + "=" + r.getAttribute(partKey) + "]";
+		}
+		return s;
+	}
+
+	protected String displayPrice(final KElement e, String s)
+	{
+		final String name = e.getAttribute(AttributeName.DESCRIPTIVENAME, null, null);
+		if (name != null)
+		{
+			s += " " + name;
+		}
+		final String price = e.getAttribute(AttributeName.PRICE, null, null);
+		if (price != null)
+		{
+			s += " " + price;
+		}
+		return s;
+	}
+
+	protected String displayProduct(final KElement e, String s)
+	{
+		final String r = e.getNonEmpty(XJDFConstants.IsRoot);
+		if (r != null)
+		{
+			s += " root=" + r;
+		}
+		final int a = e.getIntAttribute(AttributeName.AMOUNT, null, 0);
+		if (a > 1)
+		{
+			s += " " + a;
+		}
+		final String name = e.getNonEmpty(AttributeName.PRODUCTTYPE);
+		if (name != null)
+		{
+			s += " " + name;
+		}
+		final String det = e.getNonEmpty(AttributeName.PRODUCTTYPEDETAILS);
+		if (det != null)
+		{
+			s += " " + det;
+		}
+		return s;
+	}
+
+	protected String displaySet(final KElement e, String s)
+	{
+		final String name = e.getAttribute("Name", null, null);
+		final String usage = e.getAttribute(AttributeName.USAGE, null, null);
+		final String procUsage = e.getAttribute(AttributeName.PROCESSUSAGE, null, null);
+		String prefix = null;
+		if (usage != null)
+		{
+			prefix = usage;
+		}
+		if (procUsage != null)
+		{
+			prefix += "/" + procUsage;
+		}
+		if (prefix != null)
+		{
+			s = prefix + " " + s;
+		}
+		if (name != null)
+		{
+			s += " " + name;
+		}
+		return s;
+	}
+
+	protected String displayXRes(final KElement e, String s)
+	{
+		final String extID = e.getNonEmpty(XJDFConstants.ExternalID);
+		if (extID != null)
+		{
+			s += " " + extID;
+		}
+		final String desc = e.getNonEmpty(AttributeName.DESCRIPTIVENAME);
+		if (desc != null)
+		{
+			s += ": " + desc;
+		}
 		return s;
 	}
 
@@ -924,7 +1132,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 	}
 
 	/**
-	 * 
+	 *
 	 * @param attName
 	 * @param prefix
 	 * @param postFix

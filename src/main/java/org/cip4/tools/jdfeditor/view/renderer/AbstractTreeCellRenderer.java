@@ -3,8 +3,8 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2016 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * Copyright (c) 2001-2018 The International Cooperation for the Integration of
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +12,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -20,17 +20,17 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
+ *        The International Cooperation for the Integration of
  *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of
  *    Processes in  Prepress, Press and Postpress" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact info@cip4.org.
  *
  * 5. Products derived from this software may not be called "CIP4",
@@ -56,17 +56,17 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
+ * individuals on behalf of the The International Cooperation for the Integration
  * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
+ * originally based on software
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V.
+ *
+ * For more information on The International Cooperation for the
  * Integration of Processes in  Prepress, Press and Postpress , please see
  * <http://www.cip4.org/>.
- *  
- * 
+ *
+ *
  */
 package org.cip4.tools.jdfeditor.view.renderer;
 
@@ -106,13 +106,13 @@ public abstract class AbstractTreeCellRenderer extends DefaultTreeCellRenderer
 	protected enum TreeIcon
 	{
 
-		NODE_JDF("node_jdf.png"), NODE_XJDF("node_xjdf.png"), NODE_REF("node_link.png"), NODE_REF_IN("node_link.png"), NODE_REF_OUT("node_link.png"), NODE_WARN("WarnElemIcon.gif"), NODE_ERR(
-				"ErrorElemIcon.gif"), NODE_DEFAULT("node.png"), ATTR_PARTKEYS("leaf_keys.png"), ATTR_INHERITED("leaf_inherit.png"), ATTR_REF("leaf_ref.png"), ATTR_WARN(
-				"WarnAttIcon.gif"), ATTR_ERR("leaf_error.png"), ATTR_DEFAULT("leaf.png");
+		NODE_JDF("node_jdf.png"), NODE_XJDF("node_xjdf.png"), NODE_REF("node_link.png"), NODE_REF_IN("node_link.png"), NODE_REF_OUT("node_link.png"), NODE_WARN(
+				"WarnElemIcon.gif"), NODE_ERR("ErrorElemIcon.gif"), NODE_DEFAULT("node.png"), ATTR_PARTKEYS("leaf_keys.png"), ATTR_INHERITED(
+						"leaf_inherit.png"), ATTR_REF("leaf_ref.png"), ATTR_WARN("WarnAttIcon.gif"), ATTR_ERR("leaf_error.png"), ATTR_DEFAULT("leaf.png");
 
 		private final String fileName;
 
-		TreeIcon(String fileName)
+		TreeIcon(final String fileName)
 		{
 			this.fileName = fileName;
 		}
@@ -137,10 +137,10 @@ public abstract class AbstractTreeCellRenderer extends DefaultTreeCellRenderer
 	protected abstract Log getLogger();
 
 	@Override
-	public final Component getTreeCellRendererComponent(JTree jTree, Object value, boolean isSelected, boolean expanded, boolean leaf, int row, boolean hasFocus)
+	public final Component getTreeCellRendererComponent(final JTree jTree, final Object value, final boolean isSelected, final boolean expanded, final boolean leaf, final int row, final boolean hasFocus)
 	{
-		JDFTreeNode node = (JDFTreeNode) value;
-		JDFTreeModel model = (JDFTreeModel) jTree.getModel();
+		final JDFTreeNode node = (JDFTreeNode) value;
+		final JDFTreeModel model = (JDFTreeModel) jTree.getModel();
 
 		// basic appearance
 		setBasicAppearance(node, isSelected, hasFocus);
@@ -162,13 +162,13 @@ public abstract class AbstractTreeCellRenderer extends DefaultTreeCellRenderer
 	 *
 	 * @param isSelected Indicator whether or not the element is selected.
 	 */
-	protected void setBasicAppearance(JDFTreeNode node, boolean isSelected, boolean hasFocus)
+	protected void setBasicAppearance(final JDFTreeNode node, final boolean isSelected, final boolean hasFocus)
 	{
 		// basic appearance
 		setOpaque(true);
 		setBackground(isSelected ? COLOR_SELECTED : COLOR_DEFAULT);
 
-		Font cellFont = new Font(null, Font.PLAIN, RuntimeProperties.enlargedTextFontSize);
+		final Font cellFont = new Font(null, Font.PLAIN, RuntimeProperties.enlargedTextFontSize);
 		setFont(cellFont);
 	}
 
@@ -177,20 +177,24 @@ public abstract class AbstractTreeCellRenderer extends DefaultTreeCellRenderer
 	 *
 	 * @param node The JDFTreeNode object for the element.
 	 */
-	protected void setNodeText(JDFTreeNode node)
+	protected void setNodeText(final JDFTreeNode node)
 	{
-		String text = node.toDisplayString();
+		final String text = node.toDisplayString();
 		String toolTip = text;
 
 		if (node.isElement())
 		{
-			KElement e = node.getElement();
+			final KElement e = node.getElement();
 			toolTip = e.getText();
 
-			String descName = e.getAttribute(AttributeName.DESCRIPTIVENAME, null, null);
+			final String descName = e.getAttribute(AttributeName.DESCRIPTIVENAME, null, null);
 			if (descName != null && toolTip != null)
 			{
 				toolTip += "\n " + descName;
+			}
+			else if (toolTip == null)
+			{
+				toolTip = descName;
 			}
 		}
 
@@ -204,7 +208,7 @@ public abstract class AbstractTreeCellRenderer extends DefaultTreeCellRenderer
 	 * @param node  The JDFTreeNode object for the element.
 	 * @param model The model for the element.
 	 */
-	protected void setTextColor(JDFTreeNode node, JDFTreeModel model)
+	protected void setTextColor(final JDFTreeNode node, final JDFTreeModel model)
 	{
 
 		// define colors
@@ -241,12 +245,12 @@ public abstract class AbstractTreeCellRenderer extends DefaultTreeCellRenderer
 	 * @param node  The JDFTreeNode object for the element.
 	 * @param model The model for the element.
 	 */
-	protected void setNodeIcon(JDFTreeNode node, JDFTreeModel model)
+	protected void setNodeIcon(final JDFTreeNode node, final JDFTreeModel model)
 	{
 
-		KElement elem = node.getElement();
+		final KElement elem = node.getElement();
 
-		String errType = model.getErrorType(node);
+		final String errType = model.getErrorType(node);
 
 		if (errType == null)
 		{
@@ -364,19 +368,19 @@ public abstract class AbstractTreeCellRenderer extends DefaultTreeCellRenderer
 	 * @param treeIcon Name of the icon to be loaded.
 	 * @return The icon as ImageIcon object.
 	 */
-	protected ImageIcon loadImageIcon(TreeIcon treeIcon)
+	protected ImageIcon loadImageIcon(final TreeIcon treeIcon)
 	{
 
-		String resPath = ICON_ROOT_PATH + treeIcon.getFileName();
+		final String resPath = ICON_ROOT_PATH + treeIcon.getFileName();
 		byte[] bytes = null;
 
 		try
 		{
-			InputStream is = JDFTreeCellRenderer.class.getResourceAsStream(resPath);
+			final InputStream is = JDFTreeCellRenderer.class.getResourceAsStream(resPath);
 			bytes = IOUtils.toByteArray(is);
 			is.close();
 		}
-		catch (IOException e)
+		catch (final IOException e)
 		{
 			LOGGER.error(e);
 		}
