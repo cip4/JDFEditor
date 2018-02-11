@@ -232,8 +232,7 @@ public class SettingService
 	 */
 	public void set(final SettingKey key, final boolean value)
 	{
-		LOG.info("Setting " + key + "=" + value);
-		config.setProperty(key.getKey(), value ? "true" : "false");
+		setSetting(key, Boolean.valueOf(value));
 	}
 
 	/**
@@ -243,8 +242,7 @@ public class SettingService
 	 */
 	public void set(final SettingKey key, final int value)
 	{
-		LOG.info("Setting " + key + "=" + value);
-		config.setProperty(key.getKey(), "" + value);
+		setSetting(key, Integer.valueOf(value));
 	}
 
 	/**
@@ -254,8 +252,7 @@ public class SettingService
 	 */
 	public void set(final SettingKey key, final String value)
 	{
-		LOG.info("Setting " + key + "=" + value);
-		config.setProperty(key.getKey(), value);
+		setSetting(key, value);
 	}
 
 	/**
@@ -265,7 +262,9 @@ public class SettingService
 	 */
 	public void setSetting(final SettingKey key, final Object value)
 	{
-
+		final Object oldVal = config.getProperty(key.getKey());
+		if ((value == null && oldVal != null) || value.toString().equals(oldVal.toString()))
+			return;
 		final Class<?> clazz = key.getClazz();
 		LOG.info("Setting " + key + "=" + value);
 
