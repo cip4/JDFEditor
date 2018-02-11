@@ -182,28 +182,25 @@ public class MainController implements ActionListener
 	private void openOnlineHelp()
 	{
 
-		LOGGER.info("Display Online Help.");
-
-		// define url
-		final String url = "http://cip4.org/jdfeditor";
-
+		final String url = "https://confluence.cip4.org/display/PUB/JDFEditor+Online+Help";
 		// open in browser (if possible)
 		if (Desktop.isDesktopSupported())
 		{
 			try
 			{
 				Desktop.getDesktop().browse(new URI(url));
-
+				LOGGER.info("Opening Online Help at:" + url);
 			}
 			catch (final Exception ex)
 			{
-				LOGGER.error("Error opening Online Help.", ex);
+				LOGGER.error("Error opening Online Help at:" + url, ex);
 			}
 		}
 		else
 		{
 			final String msg = "see " + url;
 			final String title = "Online Help";
+			LOGGER.info("No Desktop - Cannot Open Online Help at:" + url);
 
 			mainView.showMessageDialog(msg, title);
 		}

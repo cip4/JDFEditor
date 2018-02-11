@@ -3,8 +3,8 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * Copyright (c) 2001-2018 The International Cooperation for the Integration of
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +12,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -20,17 +20,17 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
+ *        The International Cooperation for the Integration of
  *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of
  *    Processes in  Prepress, Press and Postpress" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact info@cip4.org.
  *
  * 5. Products derived from this software may not be called "CIP4",
@@ -56,17 +56,17 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
+ * individuals on behalf of the The International Cooperation for the Integration
  * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
+ * originally based on software
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V.
+ *
+ * For more information on The International Cooperation for the
  * Integration of Processes in  Prepress, Press and Postpress , please see
  * <http://www.cip4.org/>.
- *  
- * 
+ *
+ *
  */
 package org.cip4.tools.jdfeditor.service;
 
@@ -124,7 +124,7 @@ public class SettingService
 	{
 
 		// path config file
-		String pathDir = new UserDir("JDFEditor").getToolPath();
+		final String pathDir = new UserDir("JDFEditor").getToolPath();
 
 		configFile = new File(FilenameUtils.concat(pathDir, confFileName));
 		LOG.info("Initialize settings from " + configFile.getAbsolutePath());
@@ -139,7 +139,7 @@ public class SettingService
 			config.setAutoSave(true);
 
 		}
-		catch (ConfigurationException e)
+		catch (final ConfigurationException e)
 		{
 			LOG.error("Error during initializing configuration service.", e);
 			return null;
@@ -148,7 +148,7 @@ public class SettingService
 		if (!configFile.exists())
 		{
 			// create config file
-			for (SettingKey key : SettingKey.values())
+			for (final SettingKey key : SettingKey.values())
 			{
 				config.addProperty(key.getKey(), key.getDefaultValue());
 			}
@@ -161,35 +161,35 @@ public class SettingService
 	}
 
 	/**
-	 * 
+	 *
 	 * @param key
 	 * @return
 	 */
-	public boolean getBool(SettingKey key)
+	public boolean getBool(final SettingKey key)
 	{
-		String value = config.getString(key.getKey(), key.getDefaultValue());
+		final String value = config.getString(key.getKey(), key.getDefaultValue());
 		return StringUtil.parseBoolean(value, false);
 	}
 
 	/**
-	 * 
+	 *
 	 * @param key
 	 * @return
 	 */
-	public int getInt(SettingKey key)
+	public int getInt(final SettingKey key)
 	{
-		String value = config.getString(key.getKey(), key.getDefaultValue());
+		final String value = config.getString(key.getKey(), key.getDefaultValue());
 		return StringUtil.parseInt(value, 0);
 	}
 
 	/**
-	 * 
+	 *
 	 * @param key
 	 * @return
 	 */
-	public String getString(SettingKey key)
+	public String getString(final SettingKey key)
 	{
-		String value = config.getString(key.getKey(), key.getDefaultValue());
+		final String value = config.getString(key.getKey(), key.getDefaultValue());
 		return value;
 	}
 
@@ -199,11 +199,11 @@ public class SettingService
 	 * @param c The type of the setting value.
 	 * @return The typed setting value.
 	 */
-	public <T> T getSetting(SettingKey key, Class<T> c)
+	public <T> T getSetting(final SettingKey key, final Class<T> c)
 	{
 
-		Class<?> clazz = key.getClazz();
-		String value = config.getString(key.getKey(), key.getDefaultValue());
+		final Class<?> clazz = key.getClazz();
+		final String value = config.getString(key.getKey(), key.getDefaultValue());
 
 		if (Boolean.class.equals(clazz))
 		{
@@ -226,32 +226,35 @@ public class SettingService
 	}
 
 	/**
-	 * 
+	 *
 	 * @param key
 	 * @param value
 	 */
-	public void set(SettingKey key, boolean value)
+	public void set(final SettingKey key, final boolean value)
 	{
+		LOG.info("Setting " + key + "=" + value);
 		config.setProperty(key.getKey(), value ? "true" : "false");
 	}
 
 	/**
-	 * 
+	 *
 	 * @param key
 	 * @param value
 	 */
-	public void set(SettingKey key, int value)
+	public void set(final SettingKey key, final int value)
 	{
+		LOG.info("Setting " + key + "=" + value);
 		config.setProperty(key.getKey(), "" + value);
 	}
 
 	/**
-	 * 
+	 *
 	 * @param key
 	 * @param value
 	 */
-	public void set(SettingKey key, String value)
+	public void set(final SettingKey key, final String value)
 	{
+		LOG.info("Setting " + key + "=" + value);
 		config.setProperty(key.getKey(), value);
 	}
 
@@ -260,10 +263,11 @@ public class SettingService
 	 * @param key   The configuration key.
 	 * @param value The configuration setting value as String.
 	 */
-	public void setSetting(SettingKey key, Object value)
+	public void setSetting(final SettingKey key, final Object value)
 	{
 
-		Class<?> clazz = key.getClazz();
+		final Class<?> clazz = key.getClazz();
+		LOG.info("Setting " + key + "=" + value);
 
 		if (Boolean.class.equals(clazz))
 		{
@@ -279,6 +283,10 @@ public class SettingService
 		{
 			config.setProperty(key.getKey(), Integer.toString((Integer) value));
 
+		}
+		else
+		{
+			LOG.error("Not Setting unknown type; " + key + "=" + value);
 		}
 	}
 
