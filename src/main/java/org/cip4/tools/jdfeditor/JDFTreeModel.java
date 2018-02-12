@@ -3,8 +3,8 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2016 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * Copyright (c) 2001-2018 The International Cooperation for the Integration of
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +12,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -20,17 +20,17 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
+ *        The International Cooperation for the Integration of
  *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of
  *    Processes in  Prepress, Press and Postpress" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact info@cip4.org.
  *
  * 5. Products derived from this software may not be called "CIP4",
@@ -56,17 +56,17 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
+ * individuals on behalf of the The International Cooperation for the Integration
  * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
+ * originally based on software
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V.
+ *
+ * For more information on The International Cooperation for the
  * Integration of Processes in  Prepress, Press and Postpress , please see
  * <http://www.cip4.org/>.
- *  
- * 
+ *
+ *
  */
 package org.cip4.tools.jdfeditor;
 
@@ -128,7 +128,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * Spawn informative TODO correctly dump into multiple file
-	 * @param bSpawnInformative 
+	 * @param bSpawnInformative
 	 */
 	public void spawn(final boolean bSpawnInformative)
 	{
@@ -137,7 +137,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		{
 			return;
 		}
-		JDFFrame frame = MainView.getFrame();
+		final JDFFrame frame = MainView.getFrame();
 		try
 		{
 			final JDFTreeNode node = (JDFTreeNode) ed.getSelectionPath().getLastPathComponent();
@@ -158,7 +158,8 @@ public class JDFTreeModel extends DefaultTreeModel
 		}
 		catch (final Exception e)
 		{
-			JOptionPane.showMessageDialog(frame, ResourceUtil.getMessage("SpawnErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(frame, ResourceUtil.getMessage("SpawnErrorKey") + e.getClass() + " \n"
+					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -172,7 +173,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		{
 			return;
 		}
-		JDFFrame frame = MainView.getFrame();
+		final JDFFrame frame = MainView.getFrame();
 		try
 		{
 			final JDFTreeNode node = (JDFTreeNode) ed.getSelectionPath().getLastPathComponent();
@@ -181,7 +182,7 @@ public class JDFTreeModel extends DefaultTreeModel
 			while (true)
 			{
 				selectedNode.setPartStatus((JDFAttributeMap) null, EnumNodeStatus.Waiting, null);
-				JDFNode unspawned = new JDFSpawn(selectedNode).unSpawn(null);
+				final JDFNode unspawned = new JDFSpawn(selectedNode).unSpawn(null);
 				if (unspawned == null)
 					break;
 			}
@@ -192,7 +193,8 @@ public class JDFTreeModel extends DefaultTreeModel
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(frame, ResourceUtil.getMessage("SpawnErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(frame, ResourceUtil.getMessage("SpawnErrorKey") + e.getClass() + " \n"
+					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -201,7 +203,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	 */
 	public void merge()
 	{
-		JDFFrame frame = MainView.getFrame();
+		final JDFFrame frame = MainView.getFrame();
 		try
 		{
 			final MergeDialog mergeResult = new MergeDialog(MainView.getJDFDoc().getJDFRoot());
@@ -215,17 +217,18 @@ public class JDFTreeModel extends DefaultTreeModel
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(frame, ResourceUtil.getMessage("MergeErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(frame, ResourceUtil.getMessage("MergeErrorKey") + e.getClass() + " \n"
+					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String TEXT = "#text"; // string for element content text labels
 	private XMLDoc validationResult; // the checkJDF XML output result
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -5922527273385407946L;
 	private boolean m_ignoreAttributes = false;
@@ -238,7 +241,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean validate()
@@ -275,7 +278,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		{
 
 			File f = theDoc.getSchemaLocationFile(JDFElement.getSchemaURL());
-			String validationSchemaUrl = settingService.getSetting(SettingKey.VALIDATION_SCHEMA_URL, String.class);
+			final String validationSchemaUrl = settingService.getSetting(SettingKey.VALIDATION_SCHEMA_URL, String.class);
 
 			if (!UrlUtil.isFileOK(f) && validationSchemaUrl != null)
 			{
@@ -296,7 +299,7 @@ public class JDFTreeModel extends DefaultTreeModel
 					{
 						tmpDoc = EditorUtils.parseInStream(tmpFile, null);
 					}
-					//					
+					//
 					//					FileInputStream inStream = new FileInputStream(tmpFile);
 					//					JDFDoc tmpDoc = EditorUtils.parseInStream(inStream, true);
 					//					if (tmpDoc == null)
@@ -328,15 +331,18 @@ public class JDFTreeModel extends DefaultTreeModel
 
 		m_frame.getBottomTabs().m_validErrScroll.drawCheckJDFOutputTree(validationResult);
 		m_frame.getBottomTabs().m_SchemaErrScroll.drawSchemaOutputTree(schemaValidationResult);
-		MainView.getEditorDoc().getJDFTree().repaint();
-		m_frame.getJDFTreeArea().goToPath(m_frame.getJDFTreeArea().getSelectionPath()); // TODO: what this code actually do ?
+		if (MainView.getEditorDoc().getJDFTree() != null)
+		{
+			MainView.getEditorDoc().getJDFTree().repaint();
+			m_frame.getJDFTreeArea().goToPath(m_frame.getJDFTreeArea().getSelectionPath()); // TODO: what this code actually do ?
+		}
 		return validationResult.getRoot().getFirstChildElement().getBoolAttribute("IsValid", null, true);
 	}
 
 	/**
 	 * inserts element before selected node
-	 * @param parentNode 
-	 * @param beforeNode 
+	 * @param parentNode
+	 * @param beforeNode
 	 */
 	public void insertElementBefore(final JDFTreeNode parentNode, final JDFTreeNode beforeNode)
 	{
@@ -429,12 +435,12 @@ public class JDFTreeModel extends DefaultTreeModel
 	// /////////////////////////////////////////////////////////////
 	/**
 	 * Method insertAttribute. inserts a new AttributeNode into the m_jdfTree
-	 * @param parentNode 
-	 * @param attName 
-	 * @param attValue 
-	 * @param attNS 
-	 * @param bInherit 
-	 * @return 
+	 * @param parentNode
+	 * @param attName
+	 * @param attValue
+	 * @param attNS
+	 * @param bInherit
+	 * @return
 	 */
 	public JDFTreeNode setAttribute(final JDFTreeNode parentNode, final String attName, final String attValue, final String attNS, final boolean bInherit)
 	{
@@ -547,7 +553,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	/**
 	 * Method addRequiredAttributes. adds the required attributes to an element
 	 * @param newNode
-	 * @return 
+	 * @return
 	 */
 	public Vector<JDFTreeNode> addRequiredAttributes(final JDFTreeNode newNode)
 	{
@@ -595,10 +601,10 @@ public class JDFTreeModel extends DefaultTreeModel
 	}
 
 	/**
-	 * @param newNode 
-	 * @param parentNode 
-	 * @param pos 
-	 * 
+	 * @param newNode
+	 * @param parentNode
+	 * @param pos
+	 *
 	 */
 	public void insertInto(final JDFTreeNode newNode, final JDFTreeNode parentNode, int pos)
 	{
@@ -616,7 +622,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	/**
 	 * Method addRequiredElements. adds the required elements to an element
 	 * @param node
-	 * @return 
+	 * @return
 	 */
 	public Vector<JDFTreeNode> addRequiredElements(final JDFTreeNode node)
 	{
@@ -672,7 +678,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		VString vAttNames = elem.getAttributeVector_KElement();
 
 		vAttNames = processDefaultAttributes(vAttNames, elem, showDefaultAtts);
-		for (String attName : vAttNames)
+		for (final String attName : vAttNames)
 		{
 			if (!m_ignoreAttributes || attName.equals(AttributeName.TYPE) || attName.equals(AttributeName.TYPES) || attName.equals(AttributeName.DESCRIPTIVENAME)
 					|| attName.equals(AttributeName.ID))
@@ -687,7 +693,7 @@ public class JDFTreeModel extends DefaultTreeModel
 			final JDFResource res = (JDFResource) elem;
 			if (node.getParent() == null)
 			{
-				String id = StringUtil.getNonEmpty(res.getID());
+				final String id = StringUtil.getNonEmpty(res.getID());
 				if (id != null)
 					setAttribute(node, AttributeName.ID, id, null, true);
 
@@ -774,7 +780,7 @@ public class JDFTreeModel extends DefaultTreeModel
 			{
 				for (int i = 0; i < nNode.getChildCount(); i++)
 				{
-					JDFTreeNode n = (JDFTreeNode) nNode.getChildAt(i);
+					final JDFTreeNode n = (JDFTreeNode) nNode.getChildAt(i);
 					if (n.toString().equals(sNodeString))
 					{
 						return n;
@@ -1103,7 +1109,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	}
 
 	/**
-	 * 
+	 *
 	 * @param treeNode
 	 * @return
 	 */
@@ -1132,7 +1138,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	/**
 	 * Method insertAttributeIntoDoc. creates a new attribute and adds it to the jdfDoc
 	 * @param node
-	 * @return 
+	 * @return
 	 */
 	public JDFTreeNode insertAttributeIntoDoc(JDFTreeNode node)
 	{
@@ -1216,10 +1222,10 @@ public class JDFTreeModel extends DefaultTreeModel
 		final EditorDocument eDoc = MainView.getEditorDoc();
 		final String fn = eDoc.getOriginalFileName();
 		KElement xJDF = null;
-		XJDF20 xjdf20 = EditorUtils.getXJDFConverter();
+		final XJDF20 xjdf20 = EditorUtils.getXJDFConverter();
 		if (e instanceof JDFNode)
 		{
-			String procMethod = settingService.getString(SettingKey.XJDF_CONVERT_SINGLENODE);
+			final String procMethod = settingService.getString(SettingKey.XJDF_CONVERT_SINGLENODE);
 			if ("zip".equals(procMethod))
 			{
 				final String fnNew = UrlUtil.newExtension(fn, "xjdf.zip");
@@ -1264,7 +1270,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		{
 			walker = new XPathWalker(new File(fn));
 		}
-		catch (FileNotFoundException x)
+		catch (final FileNotFoundException x)
 		{
 			return;
 		}
@@ -1281,7 +1287,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	 * @param selectionPath
 	 * @experimental
 	 */
-	public void saveAsJDF(final TreePath selectionPath, XJDFToJDFConverter c)
+	public void saveAsJDF(final TreePath selectionPath, final XJDFToJDFConverter c)
 	{
 		final JDFTreeNode node = selectionPath == null ? (JDFTreeNode) getRootNode().getChildAt(0) : (JDFTreeNode) selectionPath.getLastPathComponent();
 		if (node == null || node.getElement() instanceof JDFNode)
@@ -1310,7 +1316,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	 * @param structuredCaps if true, create a slightly more structured version of caps
 	 * @experimental
 	 */
-	public void saveAsXJDFCaps(final TreePath selectionPath, boolean structuredCaps)
+	public void saveAsXJDFCaps(final TreePath selectionPath, final boolean structuredCaps)
 	{
 		final JDFTreeNode node = (JDFTreeNode) selectionPath.getLastPathComponent();
 		if (node == null)
