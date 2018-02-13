@@ -3,8 +3,8 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * Copyright (c) 2001-2018 The International Cooperation for the Integration of
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +12,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -20,17 +20,17 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
+ *        The International Cooperation for the Integration of
  *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of
  *    Processes in  Prepress, Press and Postpress" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact info@cip4.org.
  *
  * 5. Products derived from this software may not be called "CIP4",
@@ -56,17 +56,17 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
+ * individuals on behalf of the The International Cooperation for the Integration
  * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
+ * originally based on software
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V.
+ *
+ * For more information on The International Cooperation for the
  * Integration of Processes in  Prepress, Press and Postpress , please see
  * <http://www.cip4.org/>.
- *  
- * 
+ *
+ *
  */
 package org.cip4.tools.jdfeditor.model.enumeration;
 
@@ -83,13 +83,13 @@ public enum SettingKey
 
 	FIND_PATTERN("find.pattern", null), FIND_CASE_SENSITIVE("find.case.sensitive", true), FIND_WRAP("find.warp", true),
 
-	GENERAL_LANGUAGE("general.language", "en"), GENERAL_LOOK("general.look", UIManager.getSystemLookAndFeelClassName()), GENERAL_READ_ONLY("general.readonly", false), GENERAL_NORMALIZE(
-			"general.normalize", true), GENERAL_AUTO_VALIDATE("general.auto.validate", false), GENERAL_DISPLAY_DEFAULT("general.display.default", true), GENERAL_REMOVE_DEFAULT(
-			"general.remove.default", true), GENERAL_REMOVE_WHITE("general.remove.white", true), GENERAL_INDENT("general.indent", true), GENERAL_LONG_ID("general.long.id", false), GENERAL_UPDATE_JOBID(
-			"general.update.jobid", false), GENERAL_USE_SCHEMA("general.use.schema", false),
+	GENERAL_LANGUAGE("general.language", "en"), GENERAL_LOOK("general.look", UIManager.getSystemLookAndFeelClassName()), GENERAL_READ_ONLY("general.readonly",
+			false), GENERAL_NORMALIZE("general.normalize", true), GENERAL_AUTO_VALIDATE("general.auto.validate", false), GENERAL_DISPLAY_DEFAULT("general.display.default",
+					true), GENERAL_REMOVE_DEFAULT("general.remove.default", true), GENERAL_REMOVE_WHITE("general.remove.white", true), GENERAL_INDENT("general.indent",
+							true), GENERAL_LONG_ID("general.long.id", false), GENERAL_UPDATE_JOBID("general.update.jobid", false), GENERAL_USE_SCHEMA("general.use.schema", false),
 
-	GOLDENTICKET_MISURL("goldenticket.misurl", null), GOLDENTICKET_BASELEVEL("goldenticket.baselevel", 1), GOLDENTICKET_MISLEVEL("goldenticket.mislevel", 1), GOLDENTICKET_JMFLEVEL(
-			"goldenticket.jmflevel", 1),
+	GOLDENTICKET_MISURL("goldenticket.misurl", null), GOLDENTICKET_BASELEVEL("goldenticket.baselevel", 1), GOLDENTICKET_MISLEVEL("goldenticket.mislevel",
+			1), GOLDENTICKET_JMFLEVEL("goldenticket.jmflevel", 1),
 
 	HTTP_STORE_PATH("http.store.path", DirectoryUtil.getReceivedMessagesDir()), HTTP_PRESELECTED_ADDRESS("http.preselected.address", "127.0.0.1"),
 
@@ -99,20 +99,21 @@ public enum SettingKey
 
 	RECENT_DEV_CAP("recent.dev.cap", null), RECENT_FILES("recent.files", null),
 
-	SEND_METHOD("send.method", "MIME"), SEND_PACKAGE("send.package", true), SEND_JOB_INCREMENT("send.job.increment", 1), SEND_URL_SEND("send.url.send", "http://"), SEND_URL_RETURN(
-			"send.url.return", "http://"),
+	SEND_METHOD("send.method", "MIME"), SEND_PACKAGE("send.package", true), SEND_JOB_INCREMENT("send.job.increment", 1), SEND_URL_SEND("send.url.send",
+			"http://"), SEND_URL_RETURN("send.url.return", "http://"),
 
 	TREEVIEW_ATTRIBUTE("treeview.attribute", true), TREEVIEW_ATTRIBUTE_INHERITED("treeview.attribute.inherited", true),
 
-	VALIDATION_EXPORT("validation.export", false), VALIDATION_HIGHTLIGHT_FN("validation.highlight.fn", true), VALIDATION_SCHEMA_URL("validation.schema.url", null), VALIDATION_VERSION(
-			"validation.version", "1.5"), VALIDATION_LEVEL("validation.level", JDFConstants.VALIDATIONLEVEL_RECURSIVECOMPLETE), VALIDATION_IGNORE_DEFAULT(
-			"validation.ignore.default", true), VALIDATION_CHECK_URL("validation.check.url", false), VALIDATION_FIX_ICS_VERSION("validation.fix.ics.version", false), VALIDATION_CONVERT_LPP(
-			"validation.convert.lpp", false), VALIDATION_GENERATE_FULL("validation.generate.full", true), VALIDATION_GENERIC_ATTR("validation.generic.attr", initGenericAttr()),
+	VALIDATION_EXPORT("validation.export", false), VALIDATION_HIGHTLIGHT_FN("validation.highlight.fn", true), VALIDATION_SCHEMA_URL("validation.schema.url",
+			null), VALIDATION_VERSION("validation.version", "1.5"), VALIDATION_LEVEL("validation.level",
+					JDFConstants.VALIDATIONLEVEL_RECURSIVECOMPLETE), VALIDATION_IGNORE_DEFAULT("validation.ignore.default", true), VALIDATION_CHECK_URL("validation.check.url",
+							false), VALIDATION_FIX_ICS_VERSION("validation.fix.ics.version", false), VALIDATION_CONVERT_LPP("validation.convert.lpp",
+									false), VALIDATION_GENERATE_FULL("validation.generate.full", true), VALIDATION_GENERIC_ATTR("validation.generic.attr", initGenericAttr()),
 
-	XJDF_CONVERT_SINGLENODE("xjdf.convert.singlenode", true), XJDF_CONVERT_STRIPPING("xjdf.convert.stripping", true), XJDF_CONVERT_SPAN("xjdf.convert.span", true), XJDF_CONVERT_RUNLIST(
-			"xjdf.convert.runlist", true), XJDF_CONVERT_LAYOUTPREP("xjdf.convert.layoutprep", true), XJDF_CONVERT_TILDE("xjdf.convert.tilde", true), XJDF_TYPESAFE_JMF(
-			"xjdf.typesave_jmf", true), XJDF_FROM_RETAIN_PRODUCT("xjdf.from.retain.product", false), XJDF_FROM_HEURISTIC_LINK("xjdf.from.heuristic.link", false), XJDF_SPLIT_PARAMETER(
-			"xjdf.split.parameter", false);
+	XJDF_CONVERT_SINGLENODE("xjdf.convert.singlenode", "zip"), XJDF_CONVERT_STRIPPING("xjdf.convert.stripping", true), XJDF_CONVERT_SPAN("xjdf.convert.span",
+			true), XJDF_CONVERT_RUNLIST("xjdf.convert.runlist", true), XJDF_CONVERT_LAYOUTPREP("xjdf.convert.layoutprep", true), XJDF_CONVERT_TILDE("xjdf.convert.tilde",
+					true), XJDF_TYPESAFE_JMF("xjdf.typesave_jmf", true), XJDF_FROM_RETAIN_PRODUCT("xjdf.from.retain.product",
+							false), XJDF_FROM_HEURISTIC_LINK("xjdf.from.heuristic.link", false), XJDF_SPLIT_PARAMETER("xjdf.split.parameter", false);
 
 	private final String key;
 
@@ -126,7 +127,7 @@ public enum SettingKey
 	 * @param key          The Setting key as String.
 	 * @param defaultValue The default value as String.
 	 */
-	SettingKey(String key, String defaultValue)
+	SettingKey(final String key, final String defaultValue)
 	{
 		this.key = key;
 		this.defaultValue = defaultValue;
@@ -139,7 +140,7 @@ public enum SettingKey
 	 * @param key          The Setting key as String.
 	 * @param defaultValue The default value as Boolean.
 	 */
-	SettingKey(String key, boolean defaultValue)
+	SettingKey(final String key, final boolean defaultValue)
 	{
 		this.key = key;
 		this.defaultValue = Boolean.toString(defaultValue);
@@ -152,7 +153,7 @@ public enum SettingKey
 	 * @param key          The Setting key as String.
 	 * @param defaultValue The default value as Integer.
 	 */
-	SettingKey(String key, int defaultValue)
+	SettingKey(final String key, final int defaultValue)
 	{
 		this.key = key;
 		this.defaultValue = Integer.toString(defaultValue);
@@ -169,13 +170,13 @@ public enum SettingKey
 
 		String result = "";
 
-		String[] generics = new String[] { "ID", "Type", "JobID", "JobPartID", "ProductID", "CustomerID", "SpawnIDs", "Class", "Status", "PartIDKeys", "xmlns", "xmlns:xsi",
+		final String[] generics = new String[] { "ID", "Type", "JobID", "JobPartID", "ProductID", "CustomerID", "SpawnIDs", "Class", "Status", "PartIDKeys", "xmlns", "xmlns:xsi",
 				"xsi:Type", "SettingsPolicy", "BestEffortExceptions", "OperatorInterventionExceptions", "MustHonorExceptions", "DocIndex", "Locked", "DescriptiveName", "Brand" };
 
 		// build string
-		for (int i = 0; i < generics.length; i++)
+		for (final String generic : generics)
 		{
-			result += generics[i] + " ";
+			result += generic + " ";
 		}
 
 		result = result.trim();
