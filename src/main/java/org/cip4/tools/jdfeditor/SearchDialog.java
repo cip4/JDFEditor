@@ -3,8 +3,8 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * Copyright (c) 2001-2018 The International Cooperation for the Integration of
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +12,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -20,17 +20,17 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
+ *        The International Cooperation for the Integration of
  *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of
  *    Processes in  Prepress, Press and Postpress" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact info@cip4.org.
  *
  * 5. Products derived from this software may not be called "CIP4",
@@ -56,17 +56,17 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
+ * individuals on behalf of the The International Cooperation for the Integration
  * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
+ * originally based on software
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V.
+ *
+ * For more information on The International Cooperation for the
  * Integration of Processes in  Prepress, Press and Postpress , please see
  * <http://www.cip4.org/>.
- *  
- * 
+ *
+ *
  */
 package org.cip4.tools.jdfeditor;
 
@@ -104,7 +104,7 @@ import org.cip4.tools.jdfeditor.view.MainView;
 
 /**
  * Class that implements "Find" dialog.
- * 
+ *
  */
 public class SearchDialog extends JDialog implements ActionListener
 {
@@ -119,7 +119,8 @@ public class SearchDialog extends JDialog implements ActionListener
 	private final SettingService settingService = SettingService.getSettingService();
 
 	/**
-	 * @param sComp the searchComponent
+	 * @param sComp
+	 *            the searchComponent
 	 */
 	public void setSearchComponent(final String sComp)
 	{
@@ -140,6 +141,7 @@ public class SearchDialog extends JDialog implements ActionListener
 
 	/**
 	 * Constructor for SearchDialog.
+	 *
 	 * @param _searchComponent
 	 */
 	public SearchDialog(final String _searchComponent)
@@ -160,9 +162,9 @@ public class SearchDialog extends JDialog implements ActionListener
 
 		searchComboBoxModel = new SearchComboBoxModel();
 
-		String findPattern = settingService.getSetting(SettingKey.FIND_PATTERN, String.class); // conf.getFindPattern();
+		final String findPattern = settingService.getSetting(SettingKey.FIND_PATTERN, String.class); // conf.getFindPattern();
 
-		List<String> findItems = new ArrayList<String>();
+		final List<String> findItems = new ArrayList<>();
 
 		if (findPattern != null || findPattern == "")
 		{
@@ -172,9 +174,10 @@ public class SearchDialog extends JDialog implements ActionListener
 		searchComboBoxModel.addAll(findItems);
 		if (findPattern != null && findItems.size() > 0)
 			searchComboBoxModel.setSelectedItem(findItems.get(findItems.size() - 1));
-		searchComboBox = new JComboBox<String>(searchComboBoxModel);
+		searchComboBox = new JComboBox<>(searchComboBoxModel);
 
 		searchComboBox.setEditable(true);
+		searchComboBox.getEditor().selectAll();
 		box2.add(searchComboBox);
 		middleBox.add(box2);
 
@@ -250,8 +253,9 @@ public class SearchDialog extends JDialog implements ActionListener
 		if (eSrc == m_findNextButton)
 		{
 			findNext();
-			String searchFor = (String) searchComboBox.getEditor().getItem();
+			final String searchFor = (String) searchComboBox.getEditor().getItem();
 			searchComboBoxModel.addItem(searchFor);
+			searchComboBoxModel.refresh();
 		}
 		// close the search m_dialog
 		else if (eSrc == m_cancelButton)
@@ -274,7 +278,7 @@ public class SearchDialog extends JDialog implements ActionListener
 		final boolean wrap = m_Wrap.isSelected();
 		final boolean ignoreCase = m_IgnoreCase.isSelected();
 
-		String currentSearch = (String) searchComboBox.getEditor().getItem();
+		final String currentSearch = (String) searchComboBox.getEditor().getItem();
 		if (searchComponent.equals("JDFTree"))
 		{
 			if (m_LastResults == null || !ContainerUtil.equals(currentSearch, lastSearch))
@@ -286,7 +290,7 @@ public class SearchDialog extends JDialog implements ActionListener
 			int nextPos = -1;
 			if (m_LastResults.size() > 0)
 			{
-				int next = forwardDirection ? 1 : -1;
+				final int next = forwardDirection ? 1 : -1;
 				nextPos = getNext(wrap, lastPos, next);
 				if (lastPos < 0)
 					lastPos = 0;
@@ -296,7 +300,7 @@ public class SearchDialog extends JDialog implements ActionListener
 				while ((bFirst || (node == null && nextPos != lastPos) && nextPos >= 0))
 				{
 					bFirst = false;
-					JDFTreeNode tmpNode = m_LastResults.get(nextPos);
+					final JDFTreeNode tmpNode = m_LastResults.get(nextPos);
 
 					if (ignoreCase)
 						node = tmpNode;
@@ -309,7 +313,7 @@ public class SearchDialog extends JDialog implements ActionListener
 					}
 				}
 			}
-			TreePath path = node == null ? null : new TreePath(node.getPath());
+			final TreePath path = node == null ? null : new TreePath(node.getPath());
 			if (path != null)
 			{
 				lastPos = nextPos;
@@ -326,7 +330,7 @@ public class SearchDialog extends JDialog implements ActionListener
 		}
 	}
 
-	private int getNext(final boolean wrap, int pos, int next)
+	private int getNext(final boolean wrap, final int pos, final int next)
 	{
 		int nextPos = pos + next;
 		if (nextPos >= m_LastResults.size())
@@ -338,11 +342,11 @@ public class SearchDialog extends JDialog implements ActionListener
 
 	private void fillResults()
 	{
-		m_LastResults = new Vector<JDFTreeNode>();
+		m_LastResults = new Vector<>();
 		final boolean bForward = m_forwardRadioButton.isSelected();
 		final TreePath selectionPath = MainView.getFrame().getJDFTreeArea().getSelectionPath();
 		final JDFTreeNode currentNode = selectionPath == null ? null : (JDFTreeNode) selectionPath.getLastPathComponent();
-		String currentSearch = (String) searchComboBox.getEditor().getItem();
+		final String currentSearch = (String) searchComboBox.getEditor().getItem();
 		if (StringUtil.getNonEmpty(currentSearch) != null)
 		{
 			@SuppressWarnings("unchecked")
@@ -351,7 +355,7 @@ public class SearchDialog extends JDialog implements ActionListener
 			while (tmpEnumeration.hasMoreElements())
 			{
 				final JDFTreeNode checkNode = tmpEnumeration.nextElement();
-				String tmpString = checkNode.toString().toUpperCase();
+				final String tmpString = checkNode.toString().toUpperCase();
 				// calculate search position of current node in results vector
 				if (checkNode.equals(currentNode))
 				{
