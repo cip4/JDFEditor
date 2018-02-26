@@ -12,6 +12,7 @@
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<buildDirectory>${project.basedir}/target</buildDirectory>
+		<additionalparam>-Xdoclint:none</additionalparam>
 	</properties>
 
     <scm>
