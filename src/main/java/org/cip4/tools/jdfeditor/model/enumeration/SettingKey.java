@@ -104,8 +104,8 @@ public enum SettingKey
 
 	TREEVIEW_ATTRIBUTE("treeview.attribute", true), TREEVIEW_ATTRIBUTE_INHERITED("treeview.attribute.inherited", true),
 
-	VALIDATION_EXPORT("validation.export", false), VALIDATION_HIGHTLIGHT_FN("validation.highlight.fn", true), VALIDATION_SCHEMA_URL("validation.schema.url",
-			null), VALIDATION_VERSION("validation.version", "1.5"), VALIDATION_LEVEL("validation.level",
+	VALIDATION_EXPORT("validation.export", false), IGNORE_PRIVATE_VALIDATION("validation.ignoreprivate", false), VALIDATION_HIGHTLIGHT_FN("validation.highlight.fn",
+			true), VALIDATION_SCHEMA_URL("validation.schema.url", null), VALIDATION_VERSION("validation.version", "1.5"), VALIDATION_LEVEL("validation.level",
 					JDFConstants.VALIDATIONLEVEL_RECURSIVECOMPLETE), VALIDATION_IGNORE_DEFAULT("validation.ignore.default", true), VALIDATION_CHECK_URL("validation.check.url",
 							false), VALIDATION_FIX_ICS_VERSION("validation.fix.ics.version", false), VALIDATION_CONVERT_LPP("validation.convert.lpp",
 									false), VALIDATION_GENERATE_FULL("validation.generate.full", true), VALIDATION_GENERIC_ATTR("validation.generic.attr", initGenericAttr()),

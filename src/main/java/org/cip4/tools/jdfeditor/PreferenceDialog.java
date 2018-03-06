@@ -3,8 +3,8 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2016 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * Copyright (c) 2001-2018 The International Cooperation for the Integration of
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +12,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -20,17 +20,17 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
+ *        The International Cooperation for the Integration of
  *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of
  *    Processes in  Prepress, Press and Postpress" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact info@cip4.org.
  *
  * 5. Products derived from this software may not be called "CIP4",
@@ -56,17 +56,17 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
+ * individuals on behalf of the The International Cooperation for the Integration
  * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
+ * originally based on software
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V.
+ *
+ * For more information on The International Cooperation for the
  * Integration of Processes in  Prepress, Press and Postpress , please see
  * <http://www.cip4.org/>.
- *  
- * 
+ *
+ *
  */
 package org.cip4.tools.jdfeditor;
 
@@ -74,8 +74,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.Vector;
 
@@ -95,6 +93,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 
 import org.cip4.jdflib.core.JDFElement.EnumValidationLevel;
 import org.cip4.jdflib.core.JDFElement.EnumVersion;
@@ -108,7 +107,7 @@ import org.cip4.tools.jdfeditor.view.MainView;
 
 /**
  * @author Dr. Rainer Prosi, Heidelberger Druckmaschinen AG
- * 
+ *
  * Jun 8, 2009
  */
 public class PreferenceDialog extends JTabbedPane implements ActionListener
@@ -118,15 +117,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	// TODO subclass
 	private class ValidationTab
 	{
-
-		/**
-		 * 
-		 */
-		public void writeToIni()
-		{
-			// TODO Auto-generated method stub
-
-		}
 	}
 
 	/**
@@ -147,8 +137,8 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private JButton schemaBrowse;
 	private JTextField schemaPath;
 
-//	private JButton defaultIconButton;
-//	private JButton changeIconButton;
+	//	private JButton defaultIconButton;
+	//	private JButton changeIconButton;
 	private JButton applyLnFButton;
 	private JTextField enlargeTextField;
 
@@ -180,10 +170,10 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private JRadioButton ger;
 	private JRadioButton spa;
 	private JRadioButton jap;
-//	private JLabel iconPreview;
+	//	private JLabel iconPreview;
 	private final ButtonGroup langGroup = new ButtonGroup();
 	private String currLang;
-//	private String currIcon;
+	//	private String currIcon;
 	private String currLNF;
 	private boolean currRemoveDefault;
 	private boolean currDispDefault;
@@ -195,11 +185,10 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private boolean normalizeOpen;
 	private boolean longID;
 	private boolean updateJobID;
-//	private boolean enableExtensions;
-	private boolean structuredCaps;
 	private boolean generateFull;
 	private boolean ignoreDefaults;
 	private boolean exportValidation;
+	private boolean ignorePrivateValidation;
 
 	private JTextField fieldGenericStrings;
 	private String genericStrings;
@@ -212,6 +201,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private JComboBox chooseValidLevel;
 	private JComboBox chooseVersion;
 	private JCheckBox boxExportValidation;
+	private JCheckBox boxIgnorePrivateValidation;
 
 	public EnumValidationLevel validationLevel = null;
 	public EnumVersion validationVersion = null;
@@ -219,7 +209,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private final ValidationTab validTab;
 
 	/**
-	 * 
+	 *
 	 */
 	public PreferenceDialog()
 	{
@@ -328,6 +318,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 			validationLevel = EnumValidationLevel.Complete;
 		}
 		this.exportValidation = settingService.getSetting(SettingKey.VALIDATION_EXPORT, Boolean.class);
+		this.ignorePrivateValidation = settingService.getSetting(SettingKey.IGNORE_PRIVATE_VALIDATION, Boolean.class);
 		this.misURL = settingService.getSetting(SettingKey.GOLDENTICKET_MISURL, String.class);
 
 		/*
@@ -544,11 +535,11 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		lnfPanel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("LnFSelectKey")));
 		int y = 30;
 
-		for (int i = 0; i < aLnF.length; i++)
+		for (final LookAndFeelInfo element : aLnF)
 		{
-			final String lnfStr = aLnF[i].getClassName();
+			final String lnfStr = element.getClassName();
 			final boolean sel = lnfStr.equals(currLNF) ? true : false;
-			final JRadioButton jrb = new JRadioButton(aLnF[i].getName(), sel);
+			final JRadioButton jrb = new JRadioButton(element.getName(), sel);
 			jrb.setActionCommand(lnfStr);
 			jrb.addActionListener(new ActionListener()
 			{
@@ -656,7 +647,14 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		panel.add(boxExportValidation);
 
 		y += d.height + 3;
-		final VString allowedValues = EnumUtil.getNamesVector(EnumValidationLevel.class);
+		boxIgnorePrivateValidation = new JCheckBox(ResourceUtil.getMessage("IgnorePrivateValidation"), ignorePrivateValidation);
+		d = boxIgnorePrivateValidation.getPreferredSize();
+		boxIgnorePrivateValidation.setBounds(10, y, d.width, d.height);
+		boxIgnorePrivateValidation.addActionListener(this);
+		panel.add(boxIgnorePrivateValidation);
+
+		y += d.height + 3;
+		final VString allowedValues = getValidationLevels();
 		chooseValidLevel = new JComboBox(allowedValues);
 		chooseValidLevel.setSelectedItem(validationLevel.getName());
 		chooseValidLevel.addActionListener(this);
@@ -677,6 +675,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		allValues.addElement(EnumVersion.Version_1_3.getName());
 		allValues.addElement(EnumVersion.Version_1_4.getName());
 		allValues.addElement(EnumVersion.Version_1_5.getName());
+		allValues.addElement(EnumVersion.Version_1_6.getName());
 		//		allValues.addElement("2.0");
 		final JPanel versionPanel = new JPanel();
 		versionPanel.setBorder(BorderFactory.createTitledBorder("JDFVersion"));
@@ -694,6 +693,14 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
 		main.add(panel, BorderLayout.CENTER);
 		return main;
+	}
+
+	private VString getValidationLevels()
+	{
+		final VString allowedValues = EnumUtil.getNamesVector(EnumValidationLevel.class);
+		allowedValues.remove(EnumValidationLevel.RecursiveComplete.getName());
+		allowedValues.remove(EnumValidationLevel.RecursiveIncomplete.getName());
+		return allowedValues;
 	}
 
 	private JPanel createGoldenTicketPref()
@@ -866,7 +873,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 			final JPanel sendPanel = new JPanel(null);
 			sendPanel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("DefaultSendToDeviceKey")));
 
-			String methodSendToDevice = getMethodSendToDevice();
+			final String methodSendToDevice = getMethodSendToDevice();
 			final JRadioButton jrbSendJMF = new JRadioButton(ResourceUtil.getMessage("sendMethodJMF"), "JMF".equals(methodSendToDevice));
 			Dimension d = jrbSendJMF.getPreferredSize();
 			jrbSendJMF.setBounds(10, 40, d.width, d.height);
@@ -898,9 +905,9 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e)
+		public void actionPerformed(final ActionEvent e)
 		{
-			String method = e.getActionCommand();
+			final String method = e.getActionCommand();
 			setMethodSendToDevice(method);
 		}
 	}
@@ -975,6 +982,10 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		{
 			generateFull = boxGenerateFull.isSelected();
 		}
+		else if (source == boxIgnorePrivateValidation)
+		{
+			ignorePrivateValidation = boxIgnorePrivateValidation.isSelected();
+		}
 		else if (source == boxSchema)
 		{
 			useSchema = boxSchema.isSelected();
@@ -1033,7 +1044,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
 	public void writeToIni()
 	{
-//		validTab.writeToIni();
+		//		validTab.writeToIni();
 		settingService.setSetting(SettingKey.GENERAL_USE_SCHEMA, useSchema);
 
 		if (getSchemaURL() != null)
@@ -1063,6 +1074,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		settingService.setSetting(SettingKey.VALIDATION_LEVEL, validationLevel.getName());
 		settingService.setSetting(SettingKey.VALIDATION_VERSION, validationVersion.getName());
 		settingService.setSetting(SettingKey.VALIDATION_EXPORT, exportValidation);
+		settingService.setSetting(SettingKey.IGNORE_PRIVATE_VALIDATION, ignorePrivateValidation);
 		misURL = fieldMISURL.getText();
 
 		settingService.setSetting(SettingKey.GOLDENTICKET_MISURL, misURL);
@@ -1071,7 +1083,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		final VString genericAttributes = new VString(genericStrings, null);
 		genericAttributes.unify();
 
-		String s = StringUtil.setvString(genericAttributes, " ", null, null);
+		final String s = StringUtil.setvString(genericAttributes, " ", null, null);
 		settingService.setSetting(SettingKey.VALIDATION_GENERIC_ATTR, s);
 
 		settingService.setSetting(SettingKey.FONT_SIZE_ENLARGED, enlargeTextField.getText());

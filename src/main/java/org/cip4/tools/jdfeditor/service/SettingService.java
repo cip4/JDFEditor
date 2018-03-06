@@ -263,7 +263,7 @@ public class SettingService
 	public void setSetting(final SettingKey key, final Object value)
 	{
 		final Object oldVal = config.getProperty(key.getKey());
-		if ((value == null && oldVal != null) || value.toString().equals(oldVal.toString()))
+		if ((oldVal != null) && (value == null || value.toString().equals(oldVal.toString())))
 			return;
 		final Class<?> clazz = key.getClazz();
 		LOG.info("Setting " + key + "=" + value);
