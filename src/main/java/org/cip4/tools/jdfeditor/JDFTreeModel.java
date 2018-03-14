@@ -97,6 +97,7 @@ import org.cip4.jdflib.datatypes.JDFAttributeMap;
 import org.cip4.jdflib.datatypes.VJDFAttributeMap;
 import org.cip4.jdflib.elementwalker.XPathWalker;
 import org.cip4.jdflib.extensions.XJDF20;
+import org.cip4.jdflib.extensions.XJDFHelper;
 import org.cip4.jdflib.extensions.xjdfwalker.XJDFToJDFConverter;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.node.JDFNode;
@@ -1225,13 +1226,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		final XJDF20 xjdf20 = EditorUtils.getXJDFConverter();
 		if (e instanceof JDFNode)
 		{
-			final String procMethod = settingService.getString(SettingKey.XJDF_CONVERT_SINGLENODE);
-			if ("zip".equals(procMethod))
-			{
-				final String fnNew = UrlUtil.newExtension(fn, "xjdf.zip");
-				xjdf20.saveZip(fnNew, (JDFNode) e, true);
-			}
-			xJDF = xjdf20.makeNewJDF((JDFNode) e, (VJDFAttributeMap) null);
+			xJDF = convertJDF(e, fn, xJDF, xjdf20);
 		}
 		else if (e instanceof JDFJMF)
 		{
@@ -1244,6 +1239,30 @@ public class JDFTreeModel extends DefaultTreeModel
 			d.write2File(fnNew, 2, false);
 			MainView.getFrame().readFile(new File(fnNew));
 		}
+	}
+
+	private KElement convertJDF(final KElement e, final String fn, KElement xJDF, final XJDF20 xjdf20)
+	{
+		final String procMethod = settingService.getString(SettingKey.XJDF_CONVERT_SINGLENODE);
+		final JDFNode currentNode = (JDFNode) e;
+		if ("zip".equals(procMethod))
+		{
+			final String fnNew = UrlUtil.newExtension(fn, "xjdf.zip");
+			xjdf20.saveZip(fnNew, currentNode, true);
+		}
+		else if (xjdf20.isSingleNode())
+		{
+			final XJDFHelper combined = xjdf20.getCombined(currentNode);
+			if (combined != null)
+			{
+				xJDF = combined.getRoot();
+			}
+		}
+		if (xJDF == null)
+		{
+			xJDF = xjdf20.makeNewJDF(currentNode, (VJDFAttributeMap) null);
+		}
+		return xJDF;
 	}
 
 	/**
