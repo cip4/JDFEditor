@@ -3,7 +3,7 @@
 
 	<groupId>org.cip4.tools.jdfeditor</groupId>
 	<artifactId>JDFEditor</artifactId>
-	<version>Boulder-18.10-SNAPSHOT</version>
+	<version>Copenhagen-19.03</version>
 	<name>CIP4 JDFEditor</name>
 	<description>CIP4 JDFEditor</description>
 
@@ -19,7 +19,7 @@
         <url>https://bitbucket.cip4.org/scm/tool/jdfeditor.git</url>
         <developerConnection>scm:git:https://bitbucket.cip4.org/scm/tool/jdfeditor.git</developerConnection>
         <connection>scm:git:https://bitbucket.cip4.org/scm/tool/jdfeditor.git</connection>
-        <tag>JDFEditor-Bologna-18.03</tag>
+        <tag>JDFEditor-Copenhagen-19.03</tag>
     </scm>
     <issueManagement>
         <system>JIRA</system>
