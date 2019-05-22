@@ -2,68 +2,36 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2018 The International Cooperation for the Integration of
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights
- * reserved.
+ * Copyright (c) 2001-2018 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
+ * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  *
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ * 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
  *
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in
- *    the documentation and/or other materials provided with the
- *    distribution.
+ * 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the
+ * distribution.
  *
- * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
- *       "This product includes software developed by the
- *        The International Cooperation for the Integration of
- *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
- *    Alternately, this acknowledgment mrSubRefay appear in the software itself,
- *    if and wherever such third-party acknowledgments normally appear.
+ * 3. The end-user documentation included with the redistribution, if any, must include the following acknowledgment: "This product includes software developed by the The International Cooperation for
+ * the Integration of Processes in Prepress, Press and Postpress (www.cip4.org)" Alternately, this acknowledgment mrSubRefay appear in the software itself, if and wherever such third-party
+ * acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of
- *    Processes in  Prepress, Press and Postpress" must
- *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
- *    permission, please contact info@cip4.org.
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of Processes in Prepress, Press and Postpress" must not be used to endorse or promote products derived from this software
+ * without prior written permission. For written permission, please contact info@cip4.org.
  *
- * 5. Products derived from this software may not be called "CIP4",
- *    nor may "CIP4" appear in their name, without prior writtenrestartProcesses()
- *    permission of the CIP4 organization
+ * 5. Products derived from this software may not be called "CIP4", nor may "CIP4" appear in their name, without prior writtenrestartProcesses() permission of the CIP4 organization
  *
- * Usage of this software in commercial products is subject to restrictions. For
- * details please consult info@cip4.org.
+ * Usage of this software in commercial products is subject to restrictions. For details please consult info@cip4.org.
  *
- * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED.  IN NO EVENT SHALL THE INTERNATIONAL COOPERATION FOR
- * THE INTEGRATION OF PROCESSES IN PREPRESS, PRESS AND POSTPRESS OR
- * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIrSubRefAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
- * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
- * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- * ====================================================================
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE INTERNATIONAL COOPERATION FOR THE INTEGRATION OF PROCESSES IN PREPRESS, PRESS AND POSTPRESS OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIrSubRefAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE. ====================================================================
  *
- * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration
- * of Processes in Prepress, Press and Postpress and was
- * originally based on software restartProcesses()
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
- * copyright (c) 1999-2001, Agfa-Gevaert N.V.
+ * This software consists of voluntary contributions made by many individuals on behalf of the The International Cooperation for the Integration of Processes in Prepress, Press and Postpress and was
+ * originally based on software restartProcesses() copyright (c) 1999-2001, Heidelberger Druckmaschinen AG copyright (c) 1999-2001, Agfa-Gevaert N.V.
  *
- * For more information on The International Cooperation for the
- * Integration of Processes in  Prepress, Press and Postpress , please see
- * <http://www.cip4.org/>.
+ * For more information on The International Cooperation for the Integration of Processes in Prepress, Press and Postpress , please see <http://www.cip4.org/>.
  *
  */
 package org.cip4.tools.jdfeditor;
@@ -77,6 +45,7 @@ import org.cip4.jdflib.auto.JDFAutoRefAnchor.EnumAnchor;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFAudit;
 import org.cip4.jdflib.core.JDFComment;
+import org.cip4.jdflib.core.JDFConstants;
 import org.cip4.jdflib.core.JDFCustomerInfo;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFElement.EnumNodeStatus;
@@ -96,6 +65,7 @@ import org.cip4.jdflib.jmf.JDFJobPhase;
 import org.cip4.jdflib.jmf.JDFMessage;
 import org.cip4.jdflib.jmf.JDFMessageService;
 import org.cip4.jdflib.jmf.JDFQueueEntry;
+import org.cip4.jdflib.jmf.JDFResourceInfo;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.resource.JDFDevice;
 import org.cip4.jdflib.resource.JDFEvent;
@@ -132,8 +102,8 @@ import org.cip4.jdflib.util.StringUtil;
 import org.w3c.dom.Attr;
 
 /**
- * @author AnderssA ThunellE The tree node in the JTree To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates. To enable and disable the creation of type comments go to Window>Preferences>Java>Code Generation.
+ * @author AnderssA ThunellE The tree node in the JTree To change this generated comment edit the template variable "typecomment": Window>Preferences>Java>Templates. To enable and disable the creation
+ *         of type comments go to Window>Preferences>Java>Code Generation.
  */
 public class JDFTreeNode extends DefaultMutableTreeNode
 {
@@ -149,6 +119,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 
 	/**
 	 * constructor for an element node
+	 *
 	 * @param elem the element
 	 */
 	public JDFTreeNode(final KElement elem)
@@ -158,6 +129,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 
 	/**
 	 * constructor for an attribute node
+	 *
 	 * @param atr the attribute
 	 * @param _isInherited
 	 */
@@ -205,6 +177,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 
 	/**
 	 * return the KElement related to this node. In case of attribute or text nodes, it is the parent KElement
+	 *
 	 * @return the related element
 	 */
 	public KElement getElement()
@@ -227,6 +200,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 
 	/**
 	 * return the text string related to this node. In case of attribute or element nodes, it is null
+	 *
 	 * @return the related element
 	 */
 	public String getText()
@@ -242,6 +216,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 
 	/**
 	 * set the text string related to this node. In case of attribute or text nodes, it is null
+	 *
 	 * @param text
 	 */
 	public void setText(final String text)
@@ -251,6 +226,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 
 	/**
 	 * return the Attr related to this node. In case of attribute or text nodes, it is null
+	 *
 	 * @return the related element
 	 */
 	public Attr getAttr()
@@ -317,6 +293,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 
 	/**
 	 * get the child with name name
+	 *
 	 * @param name the name of the child node
 	 * @return JDFTreeNode the child with name=name
 	 */
@@ -340,6 +317,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 
 	/**
 	 * get the insert index for a child with name name always place attributes in front of elements
+	 *
 	 * @param name the name of the child node
 	 * @param bAttribute if true, the placed element is an attribute, else it is an element
 	 * @return the index for insertinto
@@ -427,6 +405,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 
 	/**
 	 * this is the display of the object in the tree
+	 *
 	 * @return the string to be displayed in the tree view
 	 */
 	public String toDisplayString()
@@ -709,6 +688,14 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		else if (nodeName.endsWith("Set") || nodeName.equals("Intent"))
 		{
 			s = displaySet(e, s);
+		}
+		else if (e instanceof JDFResourceInfo)
+		{
+			final KElement ee = e.getElement(XJDFConstants.ResourceSet);
+			if (ee != null)
+			{
+				s = displaySet(ee, s);
+			}
 		}
 		else if (XJDFConstants.Product.equals(nodeName))
 		{
@@ -1045,9 +1032,10 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 
 	protected String displaySet(final KElement e, String s)
 	{
-		final String name = e.getAttribute("Name", null, null);
-		final String usage = e.getAttribute(AttributeName.USAGE, null, null);
-		final String procUsage = e.getAttribute(AttributeName.PROCESSUSAGE, null, null);
+		final String name = e.getNonEmpty("Name");
+		final String usage = e.getNonEmpty(AttributeName.USAGE);
+		final String procUsage = e.getNonEmpty(AttributeName.PROCESSUSAGE);
+		final String cpi = e.getNonEmpty(AttributeName.COMBINEDPROCESSINDEX);
 		String prefix = null;
 		if (usage != null)
 		{
@@ -1055,7 +1043,11 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		}
 		if (procUsage != null)
 		{
-			prefix += "/" + procUsage;
+			prefix += JDFConstants.SLASH + procUsage;
+		}
+		if (cpi != null)
+		{
+			prefix += "(" + cpi + ")";
 		}
 		if (prefix != null)
 		{
@@ -1158,6 +1150,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 
 	/**
 	 * get the index of a TreeNode, -1 if null
+	 *
 	 * @see javax.swing.tree.DefaultMutableTreeNode#getIndex(javax.swing.tree.TreeNode)
 	 */
 	@Override
