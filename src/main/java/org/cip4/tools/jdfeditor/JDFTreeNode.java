@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2018 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
+ * Copyright (c) 2001-2019 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  *
@@ -81,6 +81,7 @@ import org.cip4.jdflib.resource.devicecapability.JDFDevCaps;
 import org.cip4.jdflib.resource.intent.JDFDropItemIntent;
 import org.cip4.jdflib.resource.process.JDFBinderySignature;
 import org.cip4.jdflib.resource.process.JDFColor;
+import org.cip4.jdflib.resource.process.JDFColorantAlias;
 import org.cip4.jdflib.resource.process.JDFComChannel;
 import org.cip4.jdflib.resource.process.JDFCompany;
 import org.cip4.jdflib.resource.process.JDFContact;
@@ -597,6 +598,10 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		{
 			s = displayNodeInfo(e, s);
 		}
+		else if (e instanceof JDFColorantAlias)
+		{
+			s = displayColorantAlias(e, s);
+		}
 		else if (e instanceof JDFEvent)
 		{
 			final JDFEvent di = (JDFEvent) e;
@@ -712,6 +717,29 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		else if (nodeName.equals("Price"))
 		{
 			s = displayPrice(e, s);
+		}
+		return s;
+	}
+
+	/**
+	 *
+	 * @param e
+	 * @param s
+	 * @return
+	 */
+	String displayColorantAlias(final KElement e, String s)
+	{
+		final JDFColorantAlias ca = (JDFColorantAlias) e;
+		final String rep = ca.getReplacementColorantName();
+		ca.getSeparations();
+		if (!StringUtil.isEmpty(rep))
+		{
+			s += JDFConstants.SPACE + rep;
+			final VString aliases = ca.getSeparations();
+			if (!VString.isEmpty(aliases))
+			{
+				s += " -> " + aliases.getString();
+			}
 		}
 		return s;
 	}
