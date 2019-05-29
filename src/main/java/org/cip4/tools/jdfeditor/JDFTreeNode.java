@@ -53,6 +53,7 @@ import org.cip4.jdflib.core.JDFNodeInfo;
 import org.cip4.jdflib.core.JDFRefElement;
 import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
+import org.cip4.jdflib.core.JDFSeparationList;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.datatypes.JDFAttributeMap;
@@ -598,6 +599,10 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		{
 			s = displayNodeInfo(e, s);
 		}
+		else if (e instanceof JDFSeparationList)
+		{
+			s = displaySepList(e, s);
+		}
 		else if (e instanceof JDFColorantAlias)
 		{
 			s = displayColorantAlias(e, s);
@@ -738,8 +743,26 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 			final VString aliases = ca.getSeparations();
 			if (!VString.isEmpty(aliases))
 			{
-				s += " -> " + aliases.getString();
+				s += " -> " + aliases.getString(JDFConstants.COMMA, null, null);
 			}
+		}
+		return s;
+	}
+
+	/**
+	 *
+	 * @param e
+	 * @param s
+	 * @return
+	 */
+	String displaySepList(final KElement e, String s)
+	{
+		final JDFSeparationList ca = (JDFSeparationList) e;
+		ca.getSeparations();
+		final VString aliases = ca.getSeparations();
+		if (!VString.isEmpty(aliases))
+		{
+			s += ": " + aliases.getString(JDFConstants.COMMA, null, null);
 		}
 		return s;
 	}

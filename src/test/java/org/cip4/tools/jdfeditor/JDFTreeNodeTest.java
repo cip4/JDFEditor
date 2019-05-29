@@ -40,6 +40,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFDoc;
+import org.cip4.jdflib.core.JDFSeparationList;
 import org.cip4.jdflib.resource.process.JDFColorantAlias;
 import org.junit.Test;
 
@@ -58,7 +59,7 @@ public class JDFTreeNodeTest
 		ca.setReplacementColorantName("rep");
 		ca.appendSeparation("s1");
 		ca.appendSeparation("s2");
-		assertEquals(" rep -> s1 s2", new JDFTreeNode(ca).displayColorantAlias(ca, ""));
+		assertEquals(" rep -> s1,s2", new JDFTreeNode(ca).displayColorantAlias(ca, ""));
 	}
 
 	@Test
@@ -68,7 +69,7 @@ public class JDFTreeNodeTest
 		ca.setReplacementColorantName("rep");
 		ca.appendSeparation("s1");
 		ca.appendSeparation("s2");
-		assertEquals(" rep -> s1 s2", new JDFTreeNode(ca).displaySpecial(ca, "", "ca"));
+		assertEquals(" rep -> s1,s2", new JDFTreeNode(ca).displaySpecial(ca, "", "ca"));
 	}
 
 	@Test
@@ -78,7 +79,16 @@ public class JDFTreeNodeTest
 		ca.setReplacementColorantName("rep");
 		ca.appendSeparation("s1");
 		ca.appendSeparation("s2");
-		assertEquals("ColorantAlias rep -> s1 s2", new JDFTreeNode(ca).elementDisplay(ca));
+		assertEquals("ColorantAlias rep -> s1,s2", new JDFTreeNode(ca).elementDisplay(ca));
+	}
+
+	@Test
+	public void testeDispSepList()
+	{
+		final JDFSeparationList ca = (JDFSeparationList) new JDFDoc(ElementName.DEVICECOLORANTORDER).getRoot();
+		ca.appendSeparation("s1");
+		ca.appendSeparation("s2");
+		assertEquals("DeviceColorantOrder: s1,s2", new JDFTreeNode(ca).elementDisplay(ca));
 	}
 
 }
