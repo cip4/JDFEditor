@@ -3,8 +3,8 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2016 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * Copyright (c) 2001-2016 The International Cooperation for the Integration of
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +12,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -20,17 +20,17 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
+ *        The International Cooperation for the Integration of
  *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of
  *    Processes in  Prepress, Press and Postpress" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact info@cip4.org.
  *
  * 5. Products derived from this software may not be called "CIP4",
@@ -56,17 +56,17 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
+ * individuals on behalf of the The International Cooperation for the Integration
  * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
+ * originally based on software
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V.
+ *
+ * For more information on The International Cooperation for the
  * Integration of Processes in  Prepress, Press and Postpress , please see
  * <http://www.cip4.org/>.
- *  
- * 
+ *
+ *
  */
 
 package org.cip4.tools.jdfeditor;
@@ -126,9 +126,9 @@ import org.cip4.tools.jdfeditor.view.renderer.JDFTreeCellRenderer;
  * This is a new dump for some of the JDFFrame classes that relate to the actual tree view
  * TODO move some of the routines here into the model
  * where they belong and reduce the dependencies with JDFFrame
- * 
+ *
  * @author prosirai
- * 
+ *
  */
 public class JDFTreeArea extends JTextArea
 {
@@ -141,7 +141,6 @@ public class JDFTreeArea extends JTextArea
 	private JDFTreeCellRenderer treeCellRenderer;
 	JDFFrame m_frame;
 	private static String lastPath = "/JDF";
-
 
 	public JDFTreeArea(final JDFFrame frame)
 	{
@@ -195,6 +194,8 @@ public class JDFTreeArea extends JTextArea
 				getJDFTree().expandPath(new TreePath(treeNode.getPath()));
 			}
 		}
+		getJDFTree().makeVisible(p);
+
 	}
 
 	/**
@@ -224,7 +225,7 @@ public class JDFTreeArea extends JTextArea
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean jdfTreeIsNull()
@@ -238,7 +239,7 @@ public class JDFTreeArea extends JTextArea
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public JScrollPane getScrollPane()
@@ -252,9 +253,7 @@ public class JDFTreeArea extends JTextArea
 	 */
 	public void drawTreeView(final EditorDocument eDoc)
 	{
-		// TODO create a root that is not a null element!
-		final JDFTreeNode root = new JDFTreeNode();
-		eDoc.createModel(root);
+		eDoc.createModel();
 		final JTree jdfTree = new JTree();
 		eDoc.setJDFTree(jdfTree);
 		jdfTree.setModel(eDoc.getModel());
@@ -506,7 +505,7 @@ public class JDFTreeArea extends JTextArea
 	/**
 	 * Possibility for user to choose ResourceName he wants to insert into the parentNode All resource names are the allowed resources for this parentNode + user
 	 * defined "Other.." choice
-	 * 
+	 *
 	 * @param parentNode - parentNode we want to insert the resource into
 	 * @return String - resourceName
 	 */
@@ -579,7 +578,7 @@ public class JDFTreeArea extends JTextArea
 	}
 
 	/**
-	 * 
+	 *
 	 * get the tree view
 	 * @return
 	 */
@@ -719,7 +718,7 @@ public class JDFTreeArea extends JTextArea
 	}
 
 	/**
-	 * 
+	 *
 	 * get thr currently selected path
 	 * @return
 	 */
@@ -769,7 +768,8 @@ public class JDFTreeArea extends JTextArea
 						}
 						else
 						{
-							JOptionPane.showMessageDialog(this, "Insert ResourceLink operation was not completed." + "\nInternal error occured", "Insert ResourceLink", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(this, "Insert ResourceLink operation was not completed."
+									+ "\nInternal error occured", "Insert ResourceLink", JOptionPane.ERROR_MESSAGE);
 						}
 					}
 					else
@@ -834,7 +834,8 @@ public class JDFTreeArea extends JTextArea
 					}
 					else
 					{
-						JOptionPane.showMessageDialog(this, "Insert Resource operation was not completed." + "\nInternal error occured", "Insert Resource", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(this, "Insert Resource operation was not completed."
+								+ "\nInternal error occured", "Insert Resource", JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			}
@@ -869,7 +870,7 @@ public class JDFTreeArea extends JTextArea
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public KElement getPathTarget()
@@ -911,7 +912,7 @@ public class JDFTreeArea extends JTextArea
 		// attribute
 		{
 			final String name = node.getName();
-			String lowerCase = name.toLowerCase();
+			final String lowerCase = name.toLowerCase();
 			if (lowerCase.endsWith("ref") || lowerCase.endsWith("refs"))
 			{
 				String value = node.getValue();

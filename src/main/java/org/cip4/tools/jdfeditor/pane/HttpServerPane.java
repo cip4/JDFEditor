@@ -3,8 +3,8 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * Copyright (c) 2001-2020 The International Cooperation for the Integration of
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +12,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -20,17 +20,17 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
+ *        The International Cooperation for the Integration of
  *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of
  *    Processes in  Prepress, Press and Postpress" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact info@cip4.org.
  *
  * 5. Products derived from this software may not be called "CIP4",
@@ -56,17 +56,17 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
+ * individuals on behalf of the The International Cooperation for the Integration
  * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
+ * originally based on software
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V.
+ *
+ * For more information on The International Cooperation for the
  * Integration of Processes in  Prepress, Press and Postpress , please see
  * <http://www.cip4.org/>.
- *  
- * 
+ *
+ *
  */
 package org.cip4.tools.jdfeditor.pane;
 
@@ -104,8 +104,7 @@ import javax.swing.table.TableRowSorter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.VString;
-import org.cip4.jdflib.jmf.JDFJMF;
-import org.cip4.jdflib.jmf.JDFMessage;
+import org.cip4.jdflib.util.StringUtil;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.transport.HttpReceiver;
@@ -135,7 +134,7 @@ public class HttpServerPane implements ActionListener
 	private final MessageTableModel tableModel = new MessageTableModel();
 
 	/**
-	 * 
+	 *
 	 */
 	public HttpServerPane()
 	{
@@ -144,16 +143,16 @@ public class HttpServerPane implements ActionListener
 
 	public JPanel createPane()
 	{
-		JPanel httpPanel = new JPanel(new BorderLayout());
+		final JPanel httpPanel = new JPanel(new BorderLayout());
 
-		JPanel leftPanel = new JPanel(new BorderLayout());
+		final JPanel leftPanel = new JPanel(new BorderLayout());
 		leftPanel.add(new JLabel(ResourceUtil.getMessage("HTTPserver") + ":"), BorderLayout.NORTH);
 
-		JPanel settingsPanel = new JPanel();
-		SpringLayout settingsLayout = new SpringLayout();
+		final JPanel settingsPanel = new JPanel();
+		final SpringLayout settingsLayout = new SpringLayout();
 		settingsPanel.setLayout(settingsLayout);
 
-		JLabel ipLabel = new JLabel(ResourceUtil.getMessage("IPAddress") + ":");
+		final JLabel ipLabel = new JLabel(ResourceUtil.getMessage("IPAddress") + ":");
 		settingsLayout.putConstraint(SpringLayout.WEST, ipLabel, 5, SpringLayout.WEST, settingsPanel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, ipLabel, 10, SpringLayout.NORTH, settingsPanel);
 
@@ -162,7 +161,7 @@ public class HttpServerPane implements ActionListener
 		settingsLayout.putConstraint(SpringLayout.WEST, ipComboBox, 5, SpringLayout.EAST, ipLabel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, ipComboBox, 10, SpringLayout.NORTH, settingsPanel);
 
-		JLabel portLabel = new JLabel(ResourceUtil.getMessage("Port") + ":");
+		final JLabel portLabel = new JLabel(ResourceUtil.getMessage("Port") + ":");
 		settingsLayout.putConstraint(SpringLayout.WEST, portLabel, 5, SpringLayout.WEST, settingsPanel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, portLabel, 10, SpringLayout.SOUTH, ipLabel);
 
@@ -170,7 +169,7 @@ public class HttpServerPane implements ActionListener
 		settingsLayout.putConstraint(SpringLayout.WEST, portValueLabel, 0, SpringLayout.WEST, ipComboBox);
 		settingsLayout.putConstraint(SpringLayout.NORTH, portValueLabel, 10, SpringLayout.SOUTH, ipLabel);
 
-		JLabel statusLabel = new JLabel(ResourceUtil.getMessage("Status") + ":");
+		final JLabel statusLabel = new JLabel(ResourceUtil.getMessage("Status") + ":");
 		settingsLayout.putConstraint(SpringLayout.WEST, statusLabel, 5, SpringLayout.WEST, settingsPanel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, statusLabel, 10, SpringLayout.SOUTH, portLabel);
 
@@ -193,7 +192,7 @@ public class HttpServerPane implements ActionListener
 
 		leftPanel.add(settingsPanel, BorderLayout.CENTER);
 
-		JPanel buttonsPanel = new JPanel();
+		final JPanel buttonsPanel = new JPanel();
 		buttonStart = new JButton(ResourceUtil.getMessage("Start"));
 		buttonStart.addActionListener(this);
 		buttonStop = new JButton(ResourceUtil.getMessage("Stop"));
@@ -204,37 +203,37 @@ public class HttpServerPane implements ActionListener
 
 		leftPanel.add(buttonsPanel, BorderLayout.SOUTH);
 
-		JPanel rightTopPanel = new JPanel(new BorderLayout());
+		final JPanel rightTopPanel = new JPanel(new BorderLayout());
 		rightTopPanel.add(new JLabel(ResourceUtil.getMessage("ReceivedMessages") + ":"), BorderLayout.NORTH);
 
-		JTable table = new JTable(tableModel);
+		final JTable table = new JTable(tableModel);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		JScrollPane scrollPane = new JScrollPane(table);
+		final JScrollPane scrollPane = new JScrollPane(table);
 		table.setFillsViewportHeight(true);
 		table.addMouseListener(new MouseAdapter()
 		{
 			@Override
-			public void mouseClicked(MouseEvent e)
+			public void mouseClicked(final MouseEvent e)
 			{
 				if (e.getClickCount() == 2)
 				{
-					JTable target = (JTable) e.getSource();
-					int row = target.getSelectedRow();
+					final JTable target = (JTable) e.getSource();
+					final int row = target.getSelectedRow();
 					LOGGER.debug("row: " + row);
 					if (row == -1)
 						return;
-					int modelRow = target.convertRowIndexToModel(row);
+					final int modelRow = target.convertRowIndexToModel(row);
 					LOGGER.debug("modelRow: " + modelRow);
-					MessageBean msg = tableModel.getItem(modelRow);
+					final MessageBean msg = tableModel.getItem(modelRow);
 					LOGGER.debug("file to load: " + msg.getFilePathName());
-					File f = new File(msg.getFilePathName());
+					final File f = new File(msg.getFilePathName());
 					MainView.getFrame().readFile(f);
 				}
 			}
 		});
-		TableRowSorter<MessageTableModel> sorter = new TableRowSorter<MessageTableModel>((MessageTableModel) table.getModel());
+		final TableRowSorter<MessageTableModel> sorter = new TableRowSorter<MessageTableModel>((MessageTableModel) table.getModel());
 		table.setRowSorter(sorter);
-		List<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
+		final List<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
 		sortKeys.add(new RowSorter.SortKey(2, SortOrder.DESCENDING));
 		sorter.setSortKeys(sortKeys);
 
@@ -244,11 +243,11 @@ public class HttpServerPane implements ActionListener
 		buttonClear.addActionListener(this);
 		rightTopPanel.add(buttonClear, BorderLayout.SOUTH);
 
-		JPanel rightPanel = new JPanel(new BorderLayout());
+		final JPanel rightPanel = new JPanel(new BorderLayout());
 
-		JPanel rightBottomPanel = new JPanel(new BorderLayout());
+		final JPanel rightBottomPanel = new JPanel(new BorderLayout());
 		rightBottomPanel.add(new JLabel(ResourceUtil.getMessage("PathMessages") + ":"), BorderLayout.NORTH);
-		JPanel pathPanel = new JPanel();
+		final JPanel pathPanel = new JPanel();
 		pathPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		buttonSelectPath = new JButton("...");
 		buttonSelectPath.addActionListener(this);
@@ -265,7 +264,7 @@ public class HttpServerPane implements ActionListener
 		httpPanel.add(leftPanel, BorderLayout.WEST);
 		httpPanel.add(rightPanel, BorderLayout.CENTER);
 
-		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
+		final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
 		splitPane.setOneTouchExpandable(true);
 		splitPane.setDividerLocation(220);
 		httpPanel.add(splitPane);
@@ -275,8 +274,8 @@ public class HttpServerPane implements ActionListener
 
 	private void createGatewaylabel()
 	{
-	    String interfaceAddress = (String) ipComboBox.getSelectedItem();
-	    
+		final String interfaceAddress = (String) ipComboBox.getSelectedItem();
+
 		gatewayValueLabel = new JTextField(HttpReceiver.DEF_PROTOCOL + "://" + interfaceAddress + ":" + portValueLabel.getText() + HttpReceiver.DEF_PATH);
 		gatewayValueLabel.setEnabled(true);
 		gatewayValueLabel.setEditable(false);
@@ -286,56 +285,59 @@ public class HttpServerPane implements ActionListener
 	{
 		ipComboBox.removeAllItems();
 		ipComboBox.setEditable(false);
-		VString ipReal = new VString();
-		VString ipLoopback = new VString();
+		final VString ipReal = new VString();
+		final VString ipLoopback = new VString();
 		try
 		{
-			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+			final Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
 			while (interfaces.hasMoreElements())
 			{
-				NetworkInterface ni = interfaces.nextElement();
-				LOGGER.debug("network interface: " + ni +
-				        ", isLoopback: " + ni.isLoopback() + ", isVirtual: " + ni.isVirtual());
-				
-				Enumeration<InetAddress> inetAddress = ni.getInetAddresses();
+				final NetworkInterface ni = interfaces.nextElement();
+				LOGGER.debug("network interface: " + ni + ", isLoopback: " + ni.isLoopback() + ", isVirtual: " + ni.isVirtual());
+
+				final Enumeration<InetAddress> inetAddress = ni.getInetAddresses();
 				while (inetAddress.hasMoreElements())
 				{
-					InetAddress address = inetAddress.nextElement();
+					final InetAddress address = inetAddress.nextElement();
 					if (address instanceof Inet6Address)
-                        continue; // skip IPv6 addresses
+						continue; // skip IPv6 addresses
 					LOGGER.debug("host name: " + address.getHostName() + ", host address: " + address.getHostAddress());
-					
-					if (address.isLoopbackAddress()) {
-					    ipLoopback.appendUnique(address.getHostAddress());
-					} else {
-					    ipReal.appendUnique(address.getHostAddress());
-					    ipReal.appendUnique(address.getHostName());
+
+					if (address.isLoopbackAddress())
+					{
+						ipLoopback.appendUnique(address.getHostAddress());
+					}
+					else
+					{
+						ipReal.appendUnique(address.getHostAddress());
+						ipReal.appendUnique(address.getHostName());
 					}
 				}
 				LOGGER.debug("------- next interface");
 			}
 		}
-		catch (SocketException e)
+		catch (final SocketException e)
 		{
 			LOGGER.error("Snafu filling addresses", e);
 		}
-		
+
 		sortIPFillComboBox(ipReal);
 		sortIPFillComboBox(ipLoopback);
-		
-		String preselectAddress = settingService.getSetting(SettingKey.HTTP_PRESELECTED_ADDRESS, String.class);
+
+		final String preselectAddress = settingService.getSetting(SettingKey.HTTP_PRESELECTED_ADDRESS, String.class);
 		ipComboBox.setSelectedItem(preselectAddress);
 	}
-	
-	private void sortIPFillComboBox(final VString list) {
-	    list.sort();
-        for (String s : list)
-        {
-            ipComboBox.addItem(s);
-        }
+
+	private void sortIPFillComboBox(final VString list)
+	{
+		list.sort();
+		for (final String s : list)
+		{
+			ipComboBox.addItem(s);
+		}
 	}
 
-	private void updateControls(boolean enabled)
+	private void updateControls(final boolean enabled)
 	{
 		buttonStart.setEnabled(enabled);
 		buttonStop.setEnabled(!enabled);
@@ -349,21 +351,23 @@ public class HttpServerPane implements ActionListener
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e)
+	public void actionPerformed(final ActionEvent e)
 	{
 		if (e.getSource() == buttonStart)
 		{
 			try
 			{
-			    String interfaceAddress = (String) ipComboBox.getSelectedItem();
-				HttpReceiver.getInstance().startServer(interfaceAddress, Integer.parseInt(portValueLabel.getText()));
+				final String interfaceAddress = (String) ipComboBox.getSelectedItem();
+				final HttpReceiver server = HttpReceiver.getInstance();
+				server.setPort(StringUtil.parseInt(portValueLabel.getText(), 8080));
+				server.start();
 				statusValueLabel.setText(ResourceUtil.getMessage("Started"));
 				gatewayValueLabel.setText(HttpReceiver.DEF_PROTOCOL + "://" + (String) ipComboBox.getSelectedItem() + ":" + portValueLabel.getText() + HttpReceiver.DEF_PATH);
 				updateControls(false);
-				
+
 				settingService.setSetting(SettingKey.HTTP_PRESELECTED_ADDRESS, interfaceAddress);
 			}
-			catch (Exception ex)
+			catch (final Exception ex)
 			{
 				ex.printStackTrace();
 				JOptionPane.showMessageDialog(MainView.getFrame(), "Could not start server", "Error", JOptionPane.ERROR_MESSAGE);
@@ -371,7 +375,7 @@ public class HttpServerPane implements ActionListener
 		}
 		else if (e.getSource() == buttonStop)
 		{
-			HttpReceiver.getInstance().stopServer();
+			HttpReceiver.getInstance().stop();
 			statusValueLabel.setText(ResourceUtil.getMessage("Stopped"));
 			updateControls(true);
 		}
@@ -381,7 +385,7 @@ public class HttpServerPane implements ActionListener
 		}
 		else if (e.getSource() == buttonSelectPath)
 		{
-			JFileChooser chooser = new JFileChooser();
+			final JFileChooser chooser = new JFileChooser();
 			chooser.setCurrentDirectory(new File(settingService.getSetting(SettingKey.HTTP_STORE_PATH, String.class)));
 			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			chooser.setAcceptAllFileFilterUsed(false);

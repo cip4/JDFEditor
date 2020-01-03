@@ -72,6 +72,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 
+import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 
 import org.apache.commons.io.FileUtils;
@@ -80,12 +81,13 @@ public class StubServletInputStream extends ServletInputStream
 {
 	private ByteArrayInputStream bais;
 
-	public StubServletInputStream(String file)
+	public StubServletInputStream(final String file)
 	{
 		try
 		{
 			bais = new ByteArrayInputStream(FileUtils.readFileToByteArray(new File(file)));
-		} catch (IOException e)
+		}
+		catch (final IOException e)
 		{
 			e.printStackTrace();
 		}
@@ -95,6 +97,27 @@ public class StubServletInputStream extends ServletInputStream
 	public int read() throws IOException
 	{
 		return bais.read();
+	}
+
+	@Override
+	public boolean isFinished()
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isReady()
+	{
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public void setReadListener(final ReadListener readListener)
+	{
+		// TODO Auto-generated method stub
+
 	}
 
 }

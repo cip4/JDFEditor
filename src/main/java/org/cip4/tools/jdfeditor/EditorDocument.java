@@ -1,8 +1,8 @@
 /**
  * The CIP4 Software License, Version 1.0
  *
- * Copyright (c) 2001-2016 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * Copyright (c) 2001-2016 The International Cooperation for the Integration of
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,17 +18,17 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
+ *        The International Cooperation for the Integration of
  *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of
  *    Processes in  Prepress, Press and Postpress" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact info@cip4.org.
  *
  * 5. Products derived from this software may not be called "CIP4",
@@ -54,17 +54,17 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
+ * individuals on behalf of the The International Cooperation for the Integration
  * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
+ * originally based on software
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V.
+ *
+ * For more information on The International Cooperation for the
  * Integration of Processes in  Prepress, Press and Postpress , please see
  * <http://www.cip4.org/>.
- *  
- * 
+ *
+ *
  */
 package org.cip4.tools.jdfeditor;
 
@@ -153,7 +153,7 @@ public class EditorDocument
 		return zoom;
 	}
 
-	public void setZoom(double zoom)
+	public void setZoom(final double zoom)
 	{
 		this.zoom = zoom;
 	}
@@ -201,7 +201,7 @@ public class EditorDocument
 	}
 
 	/**
-	 * 
+	 *
 	 * @param model
 	 */
 	public void setModel(final JDFTreeModel model)
@@ -210,7 +210,7 @@ public class EditorDocument
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public JDFTreeModel getModel()
@@ -248,7 +248,7 @@ public class EditorDocument
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public TreePath getSelectionPath()
@@ -261,7 +261,7 @@ public class EditorDocument
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public TreePath[] getSelectionPaths()
@@ -274,7 +274,7 @@ public class EditorDocument
 	}
 
 	/**
-	 * 
+	 *
 	 * @param jdfTree
 	 */
 	public void setJDFTree(final JTree jdfTree)
@@ -285,7 +285,7 @@ public class EditorDocument
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public JTree getJDFTree()
@@ -294,7 +294,7 @@ public class EditorDocument
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public JDFTreeNode getRootNode()
@@ -304,7 +304,7 @@ public class EditorDocument
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public void setLastSelection()
 	{
@@ -323,9 +323,9 @@ public class EditorDocument
 	}
 
 	/**
-	 * @param selNode 
-	 * @param trackHistory 
-	 * 
+	 * @param selNode
+	 * @param trackHistory
+	 *
 	 */
 	private void setSelectionNode(final JDFTreeNode selNode, final boolean trackHistory)
 	{
@@ -371,7 +371,7 @@ public class EditorDocument
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public TreePath getLastSelection()
@@ -381,7 +381,7 @@ public class EditorDocument
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public JDFTreeNode getLastTreeNode()
@@ -401,7 +401,7 @@ public class EditorDocument
 	// ///////////////////////////////////////////////////////////////
 
 	/**
-	 * 
+	 *
 	 */
 	public void setNextSelection()
 	{
@@ -434,17 +434,18 @@ public class EditorDocument
 	 * @param root
 	 * @return TreeModel
 	 */
-	public JDFTreeModel createModel(final JDFTreeNode root)
+	public JDFTreeModel createModel()
 	{
-		jdfTreeModel = new JDFTreeModel(root, false);
 		final JDFDoc doc = getJDFDoc();
 		if (doc == null)
 		{
+			jdfTreeModel = new JDFTreeModel(new JDFTreeNode(), false);
 			return null;
 		}
+		final JDFTreeNode root = new JDFTreeNode(doc.getRoot());
+		jdfTreeModel = new JDFTreeModel(root, false);
 
-		root.add(new JDFTreeNode(doc.getRoot()));
-		jdfTreeModel.buildModel((JDFTreeNode) root.getFirstChild());
+		jdfTreeModel.buildModel(root);
 		jdfTreeModel.addTreeModelListener(new MyTreeModelListener());
 		if (settingService.getSetting(SettingKey.GENERAL_AUTO_VALIDATE, Boolean.class))
 		{
@@ -579,13 +580,13 @@ public class EditorDocument
 	}
 
 	/**
-	 * 
-	 * 
+	 *
+	 *
 	 * @param file
 	 */
-	private void writeToFile(File file)
+	private void writeToFile(final File file)
 	{
-		int indent = settingService.getSetting(SettingKey.GENERAL_INDENT, Boolean.class) ? 2 : 0;
+		final int indent = settingService.getSetting(SettingKey.GENERAL_INDENT, Boolean.class) ? 2 : 0;
 		jdfDoc.write2File(file.getAbsolutePath(), indent, !settingService.getSetting(SettingKey.GENERAL_INDENT, Boolean.class));
 	}
 
@@ -633,8 +634,8 @@ public class EditorDocument
 
 	// ////////////////////////////////////////////////////////
 	/**
-	 * @return 
-	 * 
+	 * @return
+	 *
 	 */
 	public boolean isDirty()
 	{
