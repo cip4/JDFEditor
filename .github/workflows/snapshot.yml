@@ -1,0 +1,51 @@
+name: JDFEditor Snapshot
+
+# "on" is a trigger
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+# here are the jobs- one job in this case, to build on macos
+jobs:
+  build:
+    runs-on: macos-latest # this is a raw docker container
+    # steps to be executed in the container
+    steps:
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11  # want to always have Java 11
+
+      - name: Check out sources...
+        uses: actions/checkout@v2  # default is that it checks out sources from....
+
+      - name: Build with Maven # Core of the build!
+        run: mvn install # sources become compiled architecture with this command;
+
+      - name: Debug  
+        run: ls -l target # this shows the contents of the target folder, the files created by mvn install
+
+      - name: Upload dmg
+        uses: actions/upload-artifact@v1
+        with:
+          name: dmg file
+          path: target/EasyXJDF-latest.dmg
+
+      - name: Upload exe
+        uses: actions/upload-artifact@v1
+        with:
+          name: exe file
+          path: target/EasyXJDF-latest.exe
+
+      - name: Upload bin.zip
+        uses: actions/upload-artifact@v1
+        with:
+          name: zip file
+          path: target/EasyXJDF-latest-bin.zip
+
+      - name: Upload bin.tar.gz
+        uses: actions/upload-artifact@v1
+        with:
+          name: tar.gz file
+          path: target/EasyXJDF-latest-bin.zip
