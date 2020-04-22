@@ -8,7 +8,7 @@ on:
     branches: [ master ]
 # here are the jobs- one job in this case, to build on macos
 jobs:
-  build:
+  build-snapshot: 
     runs-on: macos-latest # this is a raw docker container
     # steps to be executed in the container
     steps:
@@ -30,22 +30,22 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: dmg file
-          path: target/EasyXJDF-latest.dmg
+          path: target/JDFEditor-latest.dmg
 
       - name: Upload exe
         uses: actions/upload-artifact@v1
         with:
           name: exe file
-          path: target/EasyXJDF-latest.exe
+          path: target/JDFEditor-latest.exe
 
       - name: Upload bin.zip
         uses: actions/upload-artifact@v1
         with:
           name: zip file
-          path: target/EasyXJDF-latest-bin.zip
+          path: target/JDFEditor-latest-bin.zip
 
       - name: Upload bin.tar.gz
         uses: actions/upload-artifact@v1
         with:
           name: tar.gz file
-          path: target/EasyXJDF-latest-bin.zip
+          path: target/JDFEditor-latest-bin.zip
