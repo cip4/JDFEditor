@@ -20,32 +20,20 @@ jobs:
       - name: Check out sources...
         uses: actions/checkout@v2  # default is that it checks out sources from....
 
-      - name: Build with Maven # Core of the build!
-        run: mvn install # sources become compiled architecture with this command;
+      - name: Build with Gradle # Core of the build!
+        run: gradlew createExe # sources become compiled architecture with this command;
 
       - name: Debug  
         run: ls -l target # this shows the contents of the target folder, the files created by mvn install
-
-      - name: Upload dmg
+        
+      - name: Upload jar
         uses: actions/upload-artifact@v1
         with:
-          name: dmg file
-          path: target/JDFEditor-latest.dmg
-
+          name: jar file
+          path: build/launch4j/JDFEditor.exe
+          
       - name: Upload exe
         uses: actions/upload-artifact@v1
         with:
-          name: exe file
-          path: target/JDFEditor-latest.exe
-
-      - name: Upload bin.zip
-        uses: actions/upload-artifact@v1
-        with:
-          name: zip file
-          path: target/JDFEditor-latest-bin.zip
-
-      - name: Upload bin.tar.gz
-        uses: actions/upload-artifact@v1
-        with:
-          name: tar.gz file
-          path: target/JDFEditor-latest-bin.zip
+          name: jar file
+          path: libs/JDFEditor.jar
