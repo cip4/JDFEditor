@@ -23,14 +23,14 @@ jobs:
       - name: Build with Gradle # Core of the build!
         run: ./gradlew createExe # sources become compiled architecture with this command;
         
+      - name: Upload exe
+        uses: actions/upload-artifact@v1
+        with:
+          name: exe file
+          path: build/launch4j/JDFEditor.exe
+          
       - name: Upload jar
         uses: actions/upload-artifact@v1
         with:
           name: jar file
-          path: build/launch4j/JDFEditor.exe
-          
-      - name: Upload exe
-        uses: actions/upload-artifact@v1
-        with:
-          name: jar file
-          path: libs/JDFEditor.jar
+          path: build/libs/JDFEditor.jar
