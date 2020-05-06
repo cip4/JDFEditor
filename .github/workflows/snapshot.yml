@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v2  # default is that it checks out sources from....
 
       - name: Build with Gradle # Core of the build!
-        run: gradlew createExe # sources become compiled architecture with this command;
+        run: ./gradlew createExe # sources become compiled architecture with this command;
 
       - name: Debug  
         run: ls -l target # this shows the contents of the target folder, the files created by mvn install
