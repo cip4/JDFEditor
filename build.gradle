@@ -27,7 +27,7 @@ jar {
 }
 
 launch4j {
-    mainClassName = 'com.example.myapp.Start'
+    mainClassName = 'org.cip4.tools.jdfeditor.Editor'
     icon = "${projectDir}/src/main/assemble/windows/jdfeditor_128.ico"
 }
 
