@@ -93,9 +93,6 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
-import com.codegoogle.tcpmon.Configuration;
-import com.codegoogle.tcpmon.MainWindow;
-import com.codegoogle.tcpmon.bookmark.BookmarkManager;
 
 /**
  * 
@@ -119,10 +116,6 @@ public class EditorTabbedPaneB extends JTabbedPane implements Runnable
 	private final RSyntaxTextArea xmlEditorTextArea;
 	private final HttpServerPane httpPanel;
 
-	/**
-	 * 
-	 * @param frame
-	 */
 	public EditorTabbedPaneB()
 	{
 		setBorder(BorderFactory.createLineBorder(Color.black));
@@ -141,12 +134,6 @@ public class EditorTabbedPaneB extends JTabbedPane implements Runnable
 
 		//        XML Editor tab
 		xmlEditorTextArea = createXMLPane();
-
-		//		TCPMon tab
-		MainWindow mWindow = new MainWindow(new BookmarkManager(""), new Configuration());
-		Container c = mWindow.getContentPane();
-		JScrollPane tcpMonScrPane = new JScrollPane(c);
-		addTab(ResourceUtil.getMessage("tab.TCPMon"), null, tcpMonScrPane, ResourceUtil.getMessage("tab.TCPMon"));
 
 		//		HTTP server tab
 		httpPanel = new HttpServerPane();

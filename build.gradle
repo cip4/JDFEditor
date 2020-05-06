@@ -1,0 +1,49 @@
+apply plugin: 'java'
+apply plugin: 'edu.sc.seis.launch4j'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'edu.sc.seis.gradle:launch4j:2.4.6'
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'org.cip4.tools.jdfeditor.Editor'
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+launch4j {
+    mainClassName = 'com.example.myapp.Start'
+    icon = "${projectDir}/src/main/assemble/windows/jdfeditor_128.ico"
+}
+
+dependencies {
+    compile 'org.cip4.lib.jdf:JDFLibJ:2.1.6.22-SNAPSHOT'
+    compile 'org.cip4.tools.jdfutility:JDFUtility:1.6-SNAPSHOT'
+    compile 'org.apache.logging.log4j:log4j-api:2.0-rc1'
+    compile 'org.apache.logging.log4j:log4j-core:2.0-rc1'
+    compile 'commons-configuration:commons-configuration:1.10'
+    compile 'commons-collections:commons-collections:3.2.1'
+    compile 'com.sun.woodstock.dependlibs:jhall:2.0'
+    compile 'org.eclipse.jetty:jetty-servlet:9.4.24.v20191120'
+    compile 'org.eclipse.jetty:jetty-server:9.4.24.v20191120'
+    compile 'org.eclipse.jetty:jetty-webapp:9.4.24.v20191120'
+    compile 'com.fifesoft:rsyntaxtextarea:1.4.1'
+
+    testCompile 'junit:junit:4.13'
+    testCompile 'org.mockito:mockito-all:2.0.2-beta'
+}
