@@ -22,9 +22,6 @@ jobs:
 
       - name: Build with Gradle # Core of the build!
         run: ./gradlew createExe # sources become compiled architecture with this command;
-
-      - name: Debug  
-        run: ls -l target # this shows the contents of the target folder, the files created by mvn install
         
       - name: Upload jar
         uses: actions/upload-artifact@v1
