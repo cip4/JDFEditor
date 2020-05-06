@@ -6,3 +6,5 @@
 .project
 .idea
 *.iml
+build
+.gradle
