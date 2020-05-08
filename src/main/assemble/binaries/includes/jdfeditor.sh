@@ -1,1 +1,0 @@
-sh ./bin/jdfeditor.sh
