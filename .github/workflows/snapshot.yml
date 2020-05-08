@@ -33,4 +33,4 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: jar file
-          path: build/libs/JDFEditor.jar
+          path: build/libs/JDFEditor-development.jar
