@@ -1,20 +1,11 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'edu.sc.seis.gradle:launch4j:2.4.6'
-    }
-}
-
 plugins {
     id 'java'
     id 'application'
+    id "edu.sc.seis.launch4j" version "2.4.6"
+    id "edu.sc.seis.macAppBundle" version "2.3.0"
 }
-
-apply plugin: 'edu.sc.seis.launch4j'
 
 version = 'development'
 
@@ -56,8 +47,14 @@ processResources {
 
 launch4j {
     mainClassName = 'org.cip4.tools.jdfeditor.Editor'
-    icon = "${projectDir}/src/main/dist/windows/jdfeditor_128.ico"
+    icon = 'src/main/dist/windows/jdfeditor_128.ico'
 }
+
+macAppBundle {
+    mainClassName = 'org.cip4.tools.jdfeditor.Editor'
+    icon = 'src/main/dist/macosx/jdfeditor.icns'
+}
+
 
 dependencies {
     compile 'org.cip4.lib.jdf:JDFLibJ:2.1.6.22-SNAPSHOT'

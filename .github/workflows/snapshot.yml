@@ -1,35 +1,39 @@
 name: JDFEditor Snapshot
 
-# "on" is a trigger
 on:
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-# here are the jobs- one job in this case, to build on macos
+
 jobs:
   build-snapshot: 
-    runs-on: macos-latest # this is a raw docker container
-    # steps to be executed in the container
+    runs-on: macos-latest
     steps:
-      - name: Set up JDK 8 # This is just to indicate Java; set the version in the line 'java-version'
+      - name: Setup JDK 8
         uses: actions/setup-java@v1
         with:
-          java-version: 1.8 #11  # could also be, for example, Java 11
+          java-version: 1.8
 
       - name: Check out sources...
-        uses: actions/checkout@v2  # default is that it checks out sources from....
+        uses: actions/checkout@v2
 
-      - name: Build with Gradle # Core of the build!
-        run: ./gradlew createExe # sources become compiled architecture with this command;
+      - name: Build with Gradle
+        run: ./gradlew createExe
         
-      - name: Upload exe
+      - name: Upload EXE
         uses: actions/upload-artifact@v1
         with:
           name: exe file
           path: build/launch4j/JDFEditor.exe
+
+      - name: Upload MacOSX App
+        uses: actions/upload-artifact@v1
+        with:
+          name: macosx app file
+          path: build/macApp/JDFEditor
           
-      - name: Upload jar
+      - name: Upload JAR
         uses: actions/upload-artifact@v1
         with:
           name: jar file
