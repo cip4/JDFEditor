@@ -70,7 +70,6 @@
  */
 package org.cip4.tools.jdfeditor.transport;
 
-import org.cip4.jdfutility.server.JettyServer;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
