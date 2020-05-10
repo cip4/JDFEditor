@@ -19,13 +19,13 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build with Gradle
-        run: ./gradlew createApp
+        run: ./gradlew createDmg
 
       - name: Upload MacOSX App
         uses: actions/upload-artifact@v1
         with:
           name: macosx app file
-          path: build/macApp/JDFEditor.app
+          path: build/distributions/JDFEditor-development.dmg
 
       - name: Upload JAR
         uses: actions/upload-artifact@v1
