@@ -42,13 +42,12 @@ application {
 
 launch4j {
     mainClassName = 'org.cip4.tools.jdfeditor.Editor'
-    bundledJre64Bit = true
-    icon = 'src/main/dist/windows/jdfeditor_128.ico'
+    icon = "${projectDir}/src/main/dist/windows/jdfeditor_128.ico"
 }
 
 macAppBundle {
     mainClassName = 'org.cip4.tools.jdfeditor.Editor'
-    icon = 'src/main/dist/macosx/jdfeditor.icns'
+    icon = "${projectDir}/src/main/dist/macosx/jdfeditor.icns"
     bundleJRE = true
     javaProperties.put("apple.laf.useScreenMenuBar", "true")
 }
