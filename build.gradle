@@ -9,12 +9,6 @@ plugins {
 
 version = 'development'
 
-processResources {
-    from('src/main/resources') {
-        include '**/*.properties'
-    }
-}
-
 repositories {
     mavenCentral()
     maven {
@@ -22,9 +16,6 @@ repositories {
     }
 }
 
-application {
-    mainClass = 'org.cip4.tools.jdfeditor.Editor'
-}
 
 jar {
     manifest {
@@ -45,8 +36,13 @@ processResources {
     }
 }
 
+application {
+    mainClass = 'org.cip4.tools.jdfeditor.Editor'
+}
+
 launch4j {
     mainClassName = 'org.cip4.tools.jdfeditor.Editor'
+    bundledJre64Bit = true
     icon = 'src/main/dist/windows/jdfeditor_128.ico'
 }
 
@@ -56,7 +52,6 @@ macAppBundle {
     bundleJRE = true
     javaProperties.put("apple.laf.useScreenMenuBar", "true")
 }
-
 
 dependencies {
     compile 'org.cip4.lib.jdf:JDFLibJ:2.1.6.22-SNAPSHOT'

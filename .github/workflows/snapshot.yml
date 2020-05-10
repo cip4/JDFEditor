@@ -25,7 +25,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: macosx app file
-          path: build/macApp/JDFEditor
+          path: build/macApp/JDFEditor.app
 
       - name: Upload JAR
         uses: actions/upload-artifact@v1
