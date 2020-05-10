@@ -7,8 +7,34 @@ on:
     branches: [ master ]
 
 jobs:
-  build-snapshot: 
-    runs-on: macos-latest
+  macosx-snapshot:
+    runs-on: macosx-latest
+    steps:
+      - name: Setup JDK 8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Check out sources...
+        uses: actions/checkout@v2
+
+      - name: Build with Gradle
+        run: ./gradlew createApp
+
+      - name: Upload MacOSX App
+        uses: actions/upload-artifact@v1
+        with:
+          name: macosx app file
+          path: build/macApp/JDFEditor
+
+      - name: Upload JAR
+        uses: actions/upload-artifact@v1
+        with:
+          name: jar file
+          path: build/libs/JDFEditor-development.jar
+
+  windows-snapshot:
+    runs-on: winodws-latest
     steps:
       - name: Setup JDK 8
         uses: actions/setup-java@v1
@@ -26,15 +52,3 @@ jobs:
         with:
           name: exe file
           path: build/launch4j/JDFEditor.exe
-
-      - name: Upload MacOSX App
-        uses: actions/upload-artifact@v1
-        with:
-          name: macosx app file
-          path: build/macApp/JDFEditor
-          
-      - name: Upload JAR
-        uses: actions/upload-artifact@v1
-        with:
-          name: jar file
-          path: build/libs/JDFEditor-development.jar
