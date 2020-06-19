@@ -1,13 +1,14 @@
-name: JDFEditor Snapshot
+
+name: Snapshot
 
 on:
+  schedule:
+    - cron:  '0 3 * * *'
   push:
-    branches: [ master ]
-  pull_request:
     branches: [ master ]
 
 jobs:
-  macosx-snapshot:
+  macos-build:
     runs-on: macos-latest
     steps:
       - name: Setup JDK 8
@@ -21,10 +22,10 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew createDmg
 
-      - name: Upload MacOSX App
+      - name: Upload MacOS App
         uses: actions/upload-artifact@v1
         with:
-          name: macosx app file
+          name: macos app file
           path: build/distributions/JDFEditor-development.dmg
 
       - name: Upload JAR
@@ -33,7 +34,7 @@ jobs:
           name: jar file
           path: build/libs/JDFEditor-development.jar
 
-  windows-snapshot:
+  windows-build:
     runs-on: windows-latest
     steps:
       - name: Setup JDK 8
@@ -46,9 +47,12 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew createExe
-        
+
+      - name: Debug
+        run: ls -l build/launch4j
+
       - name: Upload EXE
         uses: actions/upload-artifact@v1
         with:
           name: exe file
-          path: build/launch4j/JDFEditor.exe
+          path: build/launch4j/JDFEditor-development.exe

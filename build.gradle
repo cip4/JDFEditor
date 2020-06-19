@@ -7,7 +7,11 @@ plugins {
     id "edu.sc.seis.macAppBundle" version "2.3.0"
 }
 
-version = 'development'
+if (project.hasProperty('projectVersion')) {
+    version = project.projectVersion
+} else {
+    version = 'development'
+}
 
 repositories {
     mavenCentral()
@@ -15,7 +19,6 @@ repositories {
         url "https://oss.sonatype.org/content/repositories/snapshots"
     }
 }
-
 
 jar {
     manifest {
@@ -43,17 +46,17 @@ application {
 launch4j {
     mainClassName = 'org.cip4.tools.jdfeditor.Editor'
     icon = "${projectDir}/src/main/dist/windows/jdfeditor_128.ico"
+    outfile = project.name + '-' + project.version + '.exe'
 }
 
 macAppBundle {
     mainClassName = 'org.cip4.tools.jdfeditor.Editor'
     icon = "${projectDir}/src/main/dist/macosx/jdfeditor.icns"
-    bundleJRE = true
     javaProperties.put("apple.laf.useScreenMenuBar", "true")
 }
 
 dependencies {
-    compile 'org.cip4.lib.jdf:JDFLibJ:2.1.6.22-SNAPSHOT'
+    compile 'org.cip4.lib.jdf:JDFLibJ:2.1.7.x-SNAPSHOT'
     compile 'org.apache.logging.log4j:log4j-api:2.0-rc1'
     compile 'org.apache.logging.log4j:log4j-core:2.0-rc1'
     compile 'commons-configuration:commons-configuration:1.10'
