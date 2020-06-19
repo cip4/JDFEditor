@@ -1,6 +1,6 @@
 # CIP4 JDF / XJDF Editor
 
-[![License (CIP4 Software License)](https://img.shields.io/badge/license-CIP4%20Software%20License-blue)](https://github.com/cip4/xJdfLib/blob/master/LICENSE.md) ![JDFEditor Snapshot](https://github.com/cip4/JDFEditor/workflows/JDFEditor%20Snapshot/badge.svg)
+[![License (CIP4 Software License)](https://img.shields.io/badge/license-CIP4%20Software%20License-blue)](https://github.com/cip4/xJdfLib/blob/master/LICENSE.md) ![Snapshot](https://github.com/cip4/JDFEditor/workflows/Snapshot/badge.svg)
 
 
 ## Issue Tracking
