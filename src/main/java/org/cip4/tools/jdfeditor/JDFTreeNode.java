@@ -37,6 +37,7 @@
 package org.cip4.tools.jdfeditor;
 
 import java.util.Collections;
+import java.util.Enumeration;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
@@ -1248,5 +1249,21 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 			return getElement().matchesPath(elementString, true);
 		}
 		return getElement().matchesPath(path, true);
+	}
+
+	public Enumeration<JDFTreeNode> depthFirstJdfEnumeration() {
+		return new JDFTreeNodeEnumeration(super.depthFirstEnumeration());
+	}
+
+	public Enumeration<JDFTreeNode> breadthFirstJdfEnumeration() {
+		return new JDFTreeNodeEnumeration(super.breadthFirstEnumeration());
+	}
+
+	public Enumeration<JDFTreeNode> preorderJdfEnumeration() {
+		return new JDFTreeNodeEnumeration(super.preorderEnumeration());
+	}
+
+	public Enumeration<JDFTreeNode> postorderJdfEnumeration() {
+		return new JDFTreeNodeEnumeration(super.postorderEnumeration());
 	}
 }

@@ -825,7 +825,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		}
 		else
 		{
-			final Enumeration<JDFTreeNode> e = node.breadthFirstEnumeration();
+			final Enumeration<JDFTreeNode> e = node.breadthFirstJdfEnumeration();
 
 			while (e.hasMoreElements() && !bFound)
 			{
@@ -880,7 +880,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		else
 		{
 			final String xpath = rLinkPoolElm.buildXPath(null, 1);
-			final Enumeration<JDFTreeNode> e = node.breadthFirstEnumeration();
+			final Enumeration<JDFTreeNode> e = node.breadthFirstJdfEnumeration();
 
 			while (e.hasMoreElements() && !bFound)
 			{

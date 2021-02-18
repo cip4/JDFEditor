@@ -174,7 +174,6 @@ public class JDFTreeArea extends JTextArea
 	 * Expands the TreePath and all of its subelements.
 	 * @param p - The TreePath to expand
 	 */
-	@SuppressWarnings("unchecked")
 	public void xpand(TreePath p)
 	{
 		if (p == null)
@@ -183,7 +182,7 @@ public class JDFTreeArea extends JTextArea
 		}
 		final JDFTreeNode node = (JDFTreeNode) p.getLastPathComponent();
 		getJDFTree().expandPath(p);
-		final Enumeration<JDFTreeNode> e = node.preorderEnumeration();
+		final Enumeration<JDFTreeNode> e = node.preorderJdfEnumeration();
 
 		while (e.hasMoreElements())
 		{
@@ -210,7 +209,7 @@ public class JDFTreeArea extends JTextArea
 		}
 
 		final JDFTreeNode node = (JDFTreeNode) p.getLastPathComponent();
-		final Enumeration<JDFTreeNode> e = node.postorderEnumeration();
+		final Enumeration<JDFTreeNode> e = node.postorderJdfEnumeration();
 
 		while (e.hasMoreElements())
 		{
@@ -484,7 +483,7 @@ public class JDFTreeArea extends JTextArea
 				goToPath(new TreePath(theRoot.getPath()));
 				return;
 			}
-			final Enumeration<JDFTreeNode> e = theRoot.depthFirstEnumeration();
+			final Enumeration<JDFTreeNode> e = theRoot.depthFirstJdfEnumeration();
 			int i = 0;
 			while (e.hasMoreElements())
 			{

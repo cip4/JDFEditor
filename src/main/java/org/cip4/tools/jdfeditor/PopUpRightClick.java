@@ -653,11 +653,10 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 	 * copies the content of the marked node to the system clip board
 	 * @param p - The TreePath to collapse
 	 */
-	@SuppressWarnings("unchecked")
 	private void copyToClipBoard(final TreePath p)
 	{
 		final JDFTreeNode node = (JDFTreeNode) p.getLastPathComponent();
-		final Enumeration<JDFTreeNode> e = node.postorderEnumeration();
+		final Enumeration<JDFTreeNode> e = node.postorderJdfEnumeration();
 
 		while (e.hasMoreElements())
 		{

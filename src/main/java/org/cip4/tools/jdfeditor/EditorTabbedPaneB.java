@@ -72,13 +72,11 @@ package org.cip4.tools.jdfeditor;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Font;
 import java.util.Enumeration;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionListener;
@@ -259,7 +257,6 @@ public class EditorTabbedPaneB extends JTabbedPane implements Runnable
 	 * @param xpath
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	private JDFTreeNode findNodeWithXPath(String xpath)
 	{
 		JTree errTree = null;
@@ -282,7 +279,7 @@ public class EditorTabbedPaneB extends JTabbedPane implements Runnable
 		if (theRoot == null)
 			return null;
 
-		final Enumeration<JDFTreeNode> e = theRoot.depthFirstEnumeration();
+		final Enumeration<JDFTreeNode> e = theRoot.depthFirstJdfEnumeration();
 		while (e.hasMoreElements())
 		{
 			JDFTreeNode tn = e.nextElement();
