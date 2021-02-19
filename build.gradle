@@ -3,9 +3,12 @@ import org.apache.tools.ant.filters.ReplaceTokens
 plugins {
     id 'java'
     id 'application'
-    id "edu.sc.seis.launch4j" version "2.4.6"
+    id "edu.sc.seis.launch4j" version "2.4.9"
     id "edu.sc.seis.macAppBundle" version "2.3.0"
 }
+
+sourceCompatibility = 11
+targetCompatibility = 11
 
 if (project.hasProperty('projectVersion')) {
     version = project.projectVersion
@@ -43,7 +46,7 @@ application {
     mainClass = 'org.cip4.tools.jdfeditor.Editor'
 }
 
-launch4j {
+createExe {
     mainClassName = 'org.cip4.tools.jdfeditor.Editor'
     icon = "${projectDir}/src/main/dist/windows/jdfeditor_128.ico"
     outfile = project.name + '-' + project.version + '.exe'

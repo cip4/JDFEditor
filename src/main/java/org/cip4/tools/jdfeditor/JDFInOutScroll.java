@@ -315,7 +315,7 @@ public class JDFInOutScroll extends JScrollPane
 						{
 							if (((JDFTreeNode) (tmpTree.getPathForRow(0)).getLastPathComponent()).equals(m_searchInOutNode))
 							{
-								final Enumeration<JDFTreeNode> e = m_searchInOutNode.preorderEnumeration();
+								final Enumeration<JDFTreeNode> e = m_searchInOutNode.preorderJdfEnumeration();
 
 								if (!finishedFirstSearch)
 								{
@@ -423,7 +423,7 @@ public class JDFInOutScroll extends JScrollPane
 						{
 							if (!((JDFTreeNode) (tmpTree.getPathForRow(0)).getLastPathComponent()).equals(m_searchInOutNode))
 							{
-								final Enumeration<JDFTreeNode> e = ((JDFTreeNode) (tmpTree.getPathForRow(0)).getLastPathComponent()).preorderEnumeration();
+								final Enumeration<JDFTreeNode> e = ((JDFTreeNode) (tmpTree.getPathForRow(0)).getLastPathComponent()).preorderJdfEnumeration();
 								final Stack<JDFTreeNode> tmpStack = new Stack<JDFTreeNode>();
 
 								while (e.hasMoreElements())

@@ -340,7 +340,6 @@ public class EditorDocument
 	 * @param selNode
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	private TreePath getPathFromNode(final JDFTreeNode selNode)
 	{
 		final JDFTreeModel model = MainView.getModel();
@@ -356,7 +355,7 @@ public class EditorDocument
 		}
 		else
 		{
-			final Enumeration<JDFTreeNode> e = theRoot.depthFirstEnumeration();
+			final Enumeration<JDFTreeNode> e = theRoot.depthFirstJdfEnumeration();
 			while (e.hasMoreElements())
 			{
 				final JDFTreeNode node = e.nextElement();
