@@ -9,7 +9,7 @@ on:
 
 jobs:
   linux-build:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       -   name: Setup JDK 11
           uses: actions/setup-java@v1
@@ -22,22 +22,22 @@ jobs:
       -   name: Build with Gradle
           run: ./gradlew distZip distTar
 
-      -   name: ZIP Package
-          uses: actions/upload-artifact@v1
-          with:
-            name: zip package
-            path: build/distributions/JDFEditor-development.zip
+      - name: Rename .ZIP
+        run: mv build/distributions/JDFEditor-development.zip build/distributions/JDFEditor-SNAPSHOT-${{ github.run_number }}.zip
 
-      -   name: TAR Package
-          uses: actions/upload-artifact@v1
-          with:
-            name: tar package
-            path: build/distributions/JDFEditor-development.tar
+      - name: Rename .TAR
+        run: mv build/distributions/JDFEditor-development.tar build/distributions/JDFEditor-SNAPSHOT-${{ github.run_number }}.tar
+
+      - name: Upload binaries
+        uses: actions/upload-artifact@v2
+        with:
+          name: binaries
+          path: build/distributions/Alces-SNAPSHOT-*.*
 
   macos-build:
     runs-on: macos-latest
     steps:
-      - name: Setup JDK 1
+      - name: Setup JDK 11
         uses: actions/setup-java@v1
         with:
           java-version: 11
@@ -48,17 +48,14 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew createDmg
 
-      - name: Upload MacOS App
-        uses: actions/upload-artifact@v1
-        with:
-          name: macos app file
-          path: build/distributions/JDFEditor-development.dmg
+      - name: Rename .DMG
+        run: mv build/distributions/JDFEditor-development.dmg build/distributions/JDFEditor-SNAPSHOT-${{ github.run_number }}.dmg
 
-      - name: Upload JAR
-        uses: actions/upload-artifact@v1
+      - name: Upload Binaries
+        uses: actions/upload-artifact@v2
         with:
-          name: jar file
-          path: build/libs/JDFEditor-development.jar
+          name: binaries
+          path: build/distributions/JDFEditor-SNAPSHOT-*.*
 
   windows-build:
     runs-on: windows-latest
@@ -74,11 +71,39 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew createExe
 
+      - name: Rename binaries
+        run: mv build/launch4j/JDFEditor-development.exe build/launch4j/JDFEditor-SNAPSHOT-${{ github.run_number }}.exe
+
       - name: Debug
         run: ls -l build/launch4j
 
       - name: Upload EXE
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
-          name: exe file
-          path: build/launch4j/JDFEditor-development.exe
+          name: binaries
+          path: build/launch4j/JDFEditor-SNAPSHOT-*.exe
+
+  publish-snapshot:
+    needs:
+      - linux-build
+      - macos-build
+      - windows-build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all workflow run artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: binaries
+          path: binaries
+      - name: Display structure of downloaded files
+        run: ls -R
+        working-directory: binaries
+      - name: Confluence Upload
+        uses: cip4/action-confluence-upload@master
+        with:
+          url: 'https://confluence.cip4.org'
+          username: ${{ secrets.CONFLUENCE_USER }}
+          password: ${{ secrets.CONFLUENCE_PASSWORD }}
+          contentId: 5309046
+          label: 'jdfeditor-snapshot,snapshot'
+          filePattern: 'binaries/**/JDFEditor-SNAPSHOT-*.*'
