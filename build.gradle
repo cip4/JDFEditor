@@ -50,6 +50,7 @@ createExe {
     mainClassName = 'org.cip4.tools.jdfeditor.Editor'
     icon = "${projectDir}/src/main/dist/windows/jdfeditor_128.ico"
     outfile = project.name + '-' + project.version + '.exe'
+    downloadUrl = "https://adoptopenjdk.net/installation.html#windows-msi"
 }
 
 macAppBundle {
