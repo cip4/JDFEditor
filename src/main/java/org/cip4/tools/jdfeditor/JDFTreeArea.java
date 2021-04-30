@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2016 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2021 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -93,6 +93,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -260,7 +261,7 @@ public class JDFTreeArea extends JTextArea
 		final PopupListener popupListener = new PopupListener();
 		jdfTree.addMouseListener(popupListener);
 
-		jdfTree.setRootVisible(false);
+		jdfTree.setRootVisible(true);
 		jdfTree.setEditable(false);
 		jdfTree.setExpandsSelectedPaths(true);
 		ToolTipManager.sharedInstance().registerComponent(jdfTree);
@@ -484,10 +485,8 @@ public class JDFTreeArea extends JTextArea
 				return;
 			}
 			final Enumeration<JDFTreeNode> e = theRoot.depthFirstJdfEnumeration();
-			int i = 0;
 			while (e.hasMoreElements())
 			{
-				i++;
 				final JDFTreeNode node = e.nextElement();
 				if (node.matchesPath(path))
 				{
@@ -597,10 +596,10 @@ public class JDFTreeArea extends JTextArea
 			return;
 		}
 
-		final JDFTreeNode theRoot = (JDFTreeNode) MainView.getModel().getRootNode().getFirstChild();
+		final JDFTreeNode theRoot = MainView.getModel().getRootNode();
 
 		boolean bRoot = false;
-		final Enumeration e = theRoot.depthFirstEnumeration();
+		final Enumeration<TreeNode> e = theRoot.depthFirstEnumeration();
 		JDFTreeNode nodeFound = null;
 		if (theRoot.equals(searchNode))
 		{
