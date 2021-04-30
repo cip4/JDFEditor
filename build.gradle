@@ -59,6 +59,10 @@ macAppBundle {
     javaProperties.put("apple.laf.useScreenMenuBar", "true")
 }
 
+configurations {
+   all*.exclude group: 'xml-apis', module: 'xml-apis'
+ }
+
 dependencies {
     compile 'org.cip4.lib.jdf:JDFLibJ:2.1.7.x-SNAPSHOT'
     compile 'org.apache.logging.log4j:log4j-api:2.0-rc1'
