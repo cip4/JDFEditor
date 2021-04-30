@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2015 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2021 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -114,7 +114,7 @@ import org.cip4.tools.jdfeditor.view.MainView;
 /**
  * static utilities for the editor
  * @author prosirai
- * 
+ *
  */
 public class EditorUtils
 {
@@ -138,8 +138,8 @@ public class EditorUtils
 
 	/**
 	 * gets all resources from this node and from all its ancestors.
-	 * @param jdfNode 
-	 * @param usage 
+	 * @param jdfNode
+	 * @param usage
 	 * @return - vector of all resources allowed to be linked from the level of jdfNode
 	 */
 	public static VElement getResourcesAllowedToLink(final JDFNode jdfNode, final EnumUsage usage)
@@ -222,7 +222,7 @@ public class EditorUtils
 		VString validElementsVector = new VString();
 		if (parentElement instanceof JDFElement)
 		{
-			JDFElement jParent = (JDFElement) parentElement;
+			final JDFElement jParent = (JDFElement) parentElement;
 			validElementsVector = jParent.knownElements();
 			final VString uniqueElementsVector = jParent.uniqueElements();
 
@@ -268,7 +268,7 @@ public class EditorUtils
 
 	/**
 	 * Method getAttributeOptions
-	 * @param element 
+	 * @param element
 	 * @return
 	 */
 	public static String[] getAttributeOptions(final KElement element)
@@ -315,7 +315,7 @@ public class EditorUtils
 		JDFTreeNode node;
 		if (path == null)
 		{
-			node = (JDFTreeNode) MainView.getModel().getRootNode().getFirstChild();
+			node = MainView.getModel().getRootNode();
 		}
 		else
 		{
@@ -368,7 +368,7 @@ public class EditorUtils
 	/**
 	 * creates the standard error box
 	 * @param errorKey the key in the resources that will be used to display the message
-	 * @param addedString 
+	 * @param addedString
 	 */
 	public static void errorBox(final String errorKey, String addedString)
 	{
@@ -509,7 +509,7 @@ public class EditorUtils
 			{
 				InputStream is = bp.getInputStream();
 
-				JDFDoc jdfDoc = parseInStream(is, getSchemaLoc());
+				final JDFDoc jdfDoc = parseInStream(is, getSchemaLoc());
 				if (jdfDoc == null)
 				{
 					is.close();
@@ -527,9 +527,9 @@ public class EditorUtils
 					String partFileNamePassed = bp.getFileName();
 					if (partFileNamePassed == null)
 					{
-						partFileNamePassed = inputFilePath + "_" + i ;
+						partFileNamePassed = inputFilePath + "_" + i;
 						if (isJDFMimeType(bp.getContentType()))
-								partFileNamePassed += ".jdf";
+							partFileNamePassed += ".jdf";
 						else if (isJMFMimeType(bp.getContentType()))
 							partFileNamePassed += ".jmf";
 					}
@@ -545,16 +545,20 @@ public class EditorUtils
 		return editorDocsArray;
 	}
 
-	private static boolean isJDFMimeType(String mimeType) {
-		if (mimeType == null) {
+	private static boolean isJDFMimeType(String mimeType)
+	{
+		if (mimeType == null)
+		{
 			return false;
 		}
 		mimeType = StringUtil.token(mimeType, 0, ";");
 		return JDFConstants.MIME_JDF.equalsIgnoreCase(mimeType);
 	}
 
-	private static boolean isJMFMimeType(String mimeType) {
-		if (mimeType == null) {
+	private static boolean isJMFMimeType(String mimeType)
+	{
+		if (mimeType == null)
+		{
 			return false;
 		}
 		mimeType = StringUtil.token(mimeType, 0, ";");
@@ -565,9 +569,9 @@ public class EditorUtils
 	{
 		File schemaloc = null;
 
-		SettingService s = SettingService.getSettingService();
-		boolean generalUseSchema = s.getSetting(SettingKey.GENERAL_USE_SCHEMA, Boolean.class);
-		String validationSchemaUrl = s.getSetting(SettingKey.VALIDATION_SCHEMA_URL, String.class);
+		final SettingService s = SettingService.getSettingService();
+		final boolean generalUseSchema = s.getSetting(SettingKey.GENERAL_USE_SCHEMA, Boolean.class);
+		final String validationSchemaUrl = s.getSetting(SettingKey.VALIDATION_SCHEMA_URL, String.class);
 
 		if (generalUseSchema && validationSchemaUrl != null)
 		{
@@ -577,7 +581,7 @@ public class EditorUtils
 		return schemaloc;
 	}
 
-	private static EditorDocument makeEditorDocument(JDFDoc jdfDoc, String packageName)
+	private static EditorDocument makeEditorDocument(final JDFDoc jdfDoc, final String packageName)
 	{
 		EditorDocument editorDocument = null;
 
@@ -598,7 +602,7 @@ public class EditorUtils
 		return editorDocument;
 	}
 
-	private static JDFDoc parseInStream(InputStream inStream, File fileSchema) throws IOException
+	private static JDFDoc parseInStream(final InputStream inStream, final File fileSchema) throws IOException
 	{
 		final JDFParser p = new JDFParser();
 
@@ -611,20 +615,20 @@ public class EditorUtils
 	}
 
 	/**
-	 * 
+	 *
 	 * get the converter with the options set in this dialog
 	 * @return the converter
 	 */
 	public static XJDF20 getXJDFConverter()
 	{
-		XJDF20 xjdf20 = new XJDF20();
-		SettingService settingService = SettingService.getSettingService();
-		String procMethod = settingService.getString(SettingKey.XJDF_CONVERT_SINGLENODE);
-		boolean single = "SingleNode".equals(procMethod);
+		final XJDF20 xjdf20 = new XJDF20();
+		final SettingService settingService = SettingService.getSettingService();
+		final String procMethod = settingService.getString(SettingKey.XJDF_CONVERT_SINGLENODE);
+		final boolean single = "SingleNode".equals(procMethod);
 		xjdf20.setSingleNode(single);
 		if (!single && !"zip".equals(procMethod))
 		{
-			EnumProcessPartition proc = EnumProcessPartition.valueOf(procMethod);
+			final EnumProcessPartition proc = EnumProcessPartition.valueOf(procMethod);
 			xjdf20.setProcessPart(proc);
 		}
 		xjdf20.setMergeLayout(settingService.getBool(SettingKey.XJDF_CONVERT_STRIPPING));
@@ -638,14 +642,14 @@ public class EditorUtils
 	}
 
 	/**
-	 * 
-	 * 
+	 *
+	 *
 	 * @param fileJDF
 	 * @param fileSchema
 	 * @return
 	 * @throws IOException
 	 */
-	protected static JDFDoc parseInStream(File fileJDF, File fileSchema) throws IOException
+	protected static JDFDoc parseInStream(final File fileJDF, final File fileSchema) throws IOException
 	{
 		JDFDoc jdfDoc = null;
 
@@ -668,7 +672,7 @@ public class EditorUtils
 
 		final List<IStreamLoader> lstStreamLoaders = pluginLoader.getPlugins();
 
-		for (IStreamLoader loader : lstStreamLoaders)
+		for (final IStreamLoader loader : lstStreamLoaders)
 		{
 			jdfDoc = loader.read(fileJDF, fileSchema);
 
