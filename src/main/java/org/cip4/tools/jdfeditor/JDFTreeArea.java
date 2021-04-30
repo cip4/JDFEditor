@@ -477,7 +477,7 @@ public class JDFTreeArea extends JTextArea
 	{
 		if (path != null && !path.equals(JDFConstants.EMPTYSTRING))
 		{
-			final JDFTreeNode theRoot = (JDFTreeNode) MainView.getModel().getRootNode().getFirstChild();
+			final JDFTreeNode theRoot = MainView.getModel().getRootNode();
 
 			if (path.equals(theRoot.getXPath()))
 			{

@@ -349,7 +349,7 @@ public class SearchDialog extends JDialog implements ActionListener
 		final String currentSearch = (String) searchComboBox.getEditor().getItem();
 		if (StringUtil.getNonEmpty(currentSearch) != null)
 		{
-			final Enumeration<JDFTreeNode> tmpEnumeration = ((JDFTreeNode) MainView.getModel().getRootNode().getFirstChild()).preorderJdfEnumeration();
+			final Enumeration<JDFTreeNode> tmpEnumeration = MainView.getModel().getRootNode().preorderJdfEnumeration();
 			final String upSearch = currentSearch.toUpperCase();
 			while (tmpEnumeration.hasMoreElements())
 			{

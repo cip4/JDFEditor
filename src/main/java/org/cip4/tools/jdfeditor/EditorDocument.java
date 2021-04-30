@@ -347,7 +347,7 @@ public class EditorDocument
 		{
 			return null;
 		}
-		final JDFTreeNode theRoot = (JDFTreeNode) model.getRootNode().getFirstChild();
+		final JDFTreeNode theRoot = model.getRootNode();
 		TreePath path = null;
 		if (theRoot.equals(selNode))
 		{

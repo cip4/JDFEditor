@@ -3,8 +3,8 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2016 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * Copyright (c) 2001-2016 The International Cooperation for the Integration of
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +12,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -20,17 +20,17 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
+ *        The International Cooperation for the Integration of
  *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of
  *    Processes in  Prepress, Press and Postpress" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact info@cip4.org.
  *
  * 5. Products derived from this software may not be called "CIP4",
@@ -56,17 +56,17 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
+ * individuals on behalf of the The International Cooperation for the Integration
  * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
+ * originally based on software
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V.
+ *
+ * For more information on The International Cooperation for the
  * Integration of Processes in  Prepress, Press and Postpress , please see
  * <http://www.cip4.org/>.
- *  
- * 
+ *
+ *
  */
 package org.cip4.tools.jdfeditor;
 
@@ -83,6 +83,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import org.cip4.jdflib.core.JDFDoc;
@@ -109,7 +110,7 @@ import org.cip4.tools.jdfeditor.view.MainView;
 /**
  * Class to implement all the menu bar and menu related stuff moved here from JDFFrame
  * @author prosirai
- * 
+ *
  */
 public class PopUpRightClick extends JPopupMenu implements ActionListener
 {
@@ -165,7 +166,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		}
 
 		/**
-		 * 
+		 *
 		 */
 		public void sendJMF()
 		{
@@ -194,11 +195,11 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 				f = EnumFamily.Command;
 			}
 
-			JMFBuilder b = new JMFBuilder();
+			final JMFBuilder b = new JMFBuilder();
 			b.setSenderID("JDFEditor");
 
 			final JDFJMF jmf = b.newJMF(f, mService.getType());
-			JDFDoc doc = jmf.getOwnerDocument_JDFElement();
+			final JDFDoc doc = jmf.getOwnerDocument_JDFElement();
 			doc.setOriginalFileName("Auto" + mService.getType() + ".jmf");
 			final JDFMessage m = jmf.getMessageElement(f, EnumType.getEnum(mService.getType()), 0);
 			extendMessage(m);
@@ -457,7 +458,8 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		}
 
 		m_pastePopupItem.setEnabled(m_frame.m_copyNode != null && elem != null);
-		final Object parent = ((JDFTreeNode) node.getParent()).getUserObject();
+		final TreeNode parentNode = node.getParent();
+		final Object parent = parentNode == null ? null : ((JDFTreeNode) parentNode).getUserObject();
 		m_renamePopupItem.setEnabled(parent != null);
 
 	}
@@ -576,7 +578,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		}
 		else if (eSrc == m_saveXJDF)
 		{
-			SaveAsXJDFDialog d = new SaveAsXJDFDialog();
+			final SaveAsXJDFDialog d = new SaveAsXJDFDialog();
 			if (d.isOK())
 			{
 				MainView.getModel().saveAsXJDF(treeArea.getSelectionPath());
@@ -584,7 +586,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		}
 		else if (eSrc == m_saveJDF)
 		{
-			SaveAsJDFDialog d = new SaveAsJDFDialog();
+			final SaveAsJDFDialog d = new SaveAsJDFDialog();
 			if (d.isOK())
 			{
 				MainView.getModel().saveAsJDF(treeArea.getSelectionPath(), d.getConverter());
