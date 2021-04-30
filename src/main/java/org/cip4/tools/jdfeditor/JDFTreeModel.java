@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2018 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2021 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -263,7 +263,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		checkJDF.setWarning(!JDFElement.EnumValidationLevel.isNoWarn(checkJDF.level));
 		XMLDoc schemaValidationResult = null;
 
-		checkJDF.setIgnorePrivate(!settingService.getSetting(SettingKey.VALIDATION_HIGHTLIGHT_FN, Boolean.class));
+		checkJDF.setIgnorePrivate(settingService.getSetting(SettingKey.IGNORE_PRIVATE_VALIDATION, Boolean.class));
 		checkJDF.bWarnDanglingURL = settingService.getSetting(SettingKey.VALIDATION_CHECK_URL, Boolean.class);
 
 		final String fn = theDoc.getOriginalFileName();
