@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2019 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
+ * Copyright (c) 2001-2021 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  *
@@ -44,6 +44,7 @@ import javax.swing.tree.TreeNode;
 
 import org.cip4.jdflib.auto.JDFAutoRefAnchor.EnumAnchor;
 import org.cip4.jdflib.core.AttributeName;
+import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFAudit;
 import org.cip4.jdflib.core.JDFComment;
 import org.cip4.jdflib.core.JDFConstants;
@@ -487,7 +488,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		{
 			s = displayResourceLink(e, s);
 		}
-		else if ((e instanceof JDFDevCap) || (e instanceof JDFDevCaps) || (e instanceof JDFAbstractState) || (e instanceof JDFSeparationSpec) || (e instanceof JDFColor))
+		else if ((e instanceof JDFDevCap) || (e instanceof JDFDevCaps) || (e instanceof JDFAbstractState) || (e instanceof JDFSeparationSpec))
 		{
 			final String nam = e.getAttribute(AttributeName.NAME, null, null);
 			if (nam != null)
@@ -623,6 +624,15 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 			final JDFAttributeMap map = p.getPartMap();
 			s = addPartMap(s, map);
 		}
+		else if (e instanceof JDFColor)
+		{
+			final JDFColor p = (JDFColor) e;
+			final String acn = p.getActualColorName();
+			if (!StringUtil.isEmpty(acn))
+			{
+				s += JDFConstants.BLANK + acn;
+			}
+		}
 		else if (e instanceof JDFIdentical)
 		{
 			final JDFIdentical p = (JDFIdentical) e;
@@ -642,29 +652,29 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		else if (e instanceof JDFGeneralID)
 		{
 			final JDFGeneralID p = (JDFGeneralID) e;
-			s += " " + p.getIDUsage() + " = " + p.getIDValue();
+			s += JDFConstants.BLANK + p.getIDUsage() + " = " + p.getIDValue();
 		}
 		else if (e instanceof JDFPerson)
 		{
 			final JDFPerson p = (JDFPerson) e;
-			s += " " + p.getDescriptiveName();
+			s += JDFConstants.BLANK + p.getDescriptiveName();
 		}
 		else if (e instanceof JDFCompany)
 		{
 			final JDFCompany c = (JDFCompany) e;
-			s += " " + c.getOrganizationName();
+			s += JDFConstants.BLANK + c.getOrganizationName();
 		}
 		else if (e instanceof JDFBinderySignature)
 		{
 			final JDFBinderySignature bs = (JDFBinderySignature) e;
 			final String foldCatalog = bs.getFoldCatalog();
 			if (!"".equals(foldCatalog))
-				s += " " + foldCatalog;
+				s += JDFConstants.BLANK + foldCatalog;
 		}
 		else if (e instanceof JDFRuleLength)
 		{
 			final JDFRuleLength rl = (JDFRuleLength) e;
-			s += " " + rl.getDDESCutType();
+			s += JDFConstants.BLANK + rl.getDDESCutType();
 			final double l = rl.getLengthJDF();
 			if (l > 0)
 				s += " Len=" + l;
@@ -672,7 +682,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		else if (e instanceof JDFStation)
 		{
 			final JDFStation rl = (JDFStation) e;
-			s += " " + rl.getStationName();
+			s += JDFConstants.BLANK + rl.getStationName();
 			final int l = rl.getStationAmount();
 			if (l > 0)
 				s += " Amount=" + l;
@@ -680,12 +690,12 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		else if (e instanceof JDFComChannel)
 		{
 			final JDFComChannel p = (JDFComChannel) e;
-			s += " " + p.getLocator();
+			s += JDFConstants.BLANK + p.getLocator();
 		}
 		else if (e instanceof JDFCustomerInfo)
 		{
 			final JDFCustomerInfo p = (JDFCustomerInfo) e;
-			s += " " + p.getCustomerID();
+			s += JDFConstants.BLANK + p.getCustomerID();
 		}
 		else if (e instanceof JDFRefAnchor)
 		{
@@ -693,7 +703,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 			final EnumAnchor anchor = p.getAnchor();
 			if (anchor != null)
 			{
-				s += " " + anchor.getName();
+				s += JDFConstants.BLANK + anchor.getName();
 			}
 		}
 		else if (nodeName.endsWith("Set") || nodeName.equals("Intent"))
@@ -711,6 +721,10 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		else if (XJDFConstants.Product.equals(nodeName))
 		{
 			s = displayProduct(e, s);
+		}
+		else if (XJDFConstants.SurfaceColor.equals(nodeName))
+		{
+			s += JDFConstants.BLANK + e.getAttribute(XJDFConstants.Surface) + " / " + e.getAttribute(ElementName.COLORSUSED);
 		}
 		else if (ResourceHelper.isAsset(e))
 		{
@@ -921,7 +935,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		final String txt = e.getText();
 		if (txt != null)
 		{
-			s += " " + StringUtil.leftStr(txt, 42);
+			s += JDFConstants.BLANK + StringUtil.leftStr(txt, 42);
 			if (txt.length() > 42)
 			{
 				s += "...";
@@ -935,7 +949,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		String att = e.getAttribute(AttributeName.STATUS, null, null);
 		if (att != null)
 		{
-			s += " " + att;
+			s += JDFConstants.BLANK + att;
 		}
 		att = e.getAttribute(AttributeName.STATUSDETAILS, null, null);
 		if (att != null)
@@ -959,12 +973,12 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		String att = di.getDeviceID();
 		if (!KElement.isWildCard(att))
 		{
-			s += " " + att;
+			s += JDFConstants.BLANK + att;
 		}
 		att = e.getAttribute(AttributeName.DEVICESTATUS, null, null);
 		if (att != null)
 		{
-			s += " " + att;
+			s += JDFConstants.BLANK + att;
 		}
 		att = e.getAttribute(AttributeName.STATUSDETAILS, null, null);
 		if (att != null)
@@ -980,7 +994,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		final String att = no.getType();
 		if (!KElement.isWildCard(att))
 		{
-			s += " " + att;
+			s += JDFConstants.BLANK + att;
 		}
 		final String att2 = e.getAttribute(AttributeName.CLASS, null, null);
 		if (att2 != null)
@@ -1011,12 +1025,12 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		final String extID = e.getNonEmpty(AttributeName.DEVICEID);
 		if (extID != null)
 		{
-			s += " " + extID;
+			s += JDFConstants.BLANK + extID;
 		}
 		final String an = e.getNonEmpty(AttributeName.AGENTNAME);
 		if (an != null)
 		{
-			s += " " + an;
+			s += JDFConstants.BLANK + an;
 		}
 		return s;
 	}
@@ -1031,7 +1045,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		{
 			final EnumNodeStatus nodeStatus = ((JDFNodeInfo) e).getNodeStatus();
 			if (nodeStatus != null)
-				s += " " + nodeStatus.getName();
+				s += JDFConstants.BLANK + nodeStatus.getName();
 		}
 		final JDFResource r = (JDFResource) e;
 		final String partKey = r.getLocalPartitionKey();
@@ -1047,12 +1061,12 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		final String name = e.getAttribute(AttributeName.DESCRIPTIVENAME, null, null);
 		if (name != null)
 		{
-			s += " " + name;
+			s += JDFConstants.BLANK + name;
 		}
 		final String price = e.getAttribute(AttributeName.PRICE, null, null);
 		if (price != null)
 		{
-			s += " " + price;
+			s += JDFConstants.BLANK + price;
 		}
 		return s;
 	}
@@ -1067,17 +1081,17 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		final int a = e.getIntAttribute(AttributeName.AMOUNT, null, 0);
 		if (a > 1)
 		{
-			s += " " + a;
+			s += JDFConstants.BLANK + a;
 		}
 		final String name = e.getNonEmpty(AttributeName.PRODUCTTYPE);
 		if (name != null)
 		{
-			s += " " + name;
+			s += JDFConstants.BLANK + name;
 		}
 		final String det = e.getNonEmpty(AttributeName.PRODUCTTYPEDETAILS);
 		if (det != null)
 		{
-			s += " " + det;
+			s += JDFConstants.BLANK + det;
 		}
 		return s;
 	}
@@ -1085,14 +1099,9 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 	protected String displaySet(final KElement e, String s)
 	{
 		final String name = e.getNonEmpty("Name");
-		final String usage = e.getNonEmpty(AttributeName.USAGE);
 		final String procUsage = e.getNonEmpty(AttributeName.PROCESSUSAGE);
 		final String cpi = e.getNonEmpty(AttributeName.COMBINEDPROCESSINDEX);
-		String prefix = null;
-		if (usage != null)
-		{
-			prefix = usage;
-		}
+		String prefix = e.getAttribute(AttributeName.USAGE);
 		if (procUsage != null)
 		{
 			prefix += JDFConstants.SLASH + procUsage;
@@ -1103,11 +1112,11 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		}
 		if (prefix != null)
 		{
-			s = prefix + " " + s;
+			s = prefix + JDFConstants.BLANK + s;
 		}
 		if (name != null)
 		{
-			s += " " + name;
+			s += JDFConstants.BLANK + name;
 		}
 		return s;
 	}
@@ -1117,7 +1126,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		final String extID = e.getNonEmpty(XJDFConstants.ExternalID);
 		if (extID != null)
 		{
-			s += " " + extID;
+			s += JDFConstants.BLANK + extID;
 		}
 		final String desc = e.getNonEmpty(AttributeName.DESCRIPTIVENAME);
 		if (desc != null)
@@ -1140,7 +1149,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 			Collections.sort(keys);
 			for (int i = 0; i < keys.size(); i++)
 			{
-				s += " " + keys.elementAt(i) + "=" + map.get(keys.elementAt(i));
+				s += JDFConstants.BLANK + keys.elementAt(i) + "=" + map.get(keys.elementAt(i));
 			}
 		}
 		return s;
@@ -1189,7 +1198,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		{
 			if (prefix == null)
 			{
-				prefix = " " + attName + "=";
+				prefix = JDFConstants.BLANK + attName + "=";
 			}
 			strValue = prefix + getElement().getAttribute(attName);
 			if (postFix != null)
@@ -1251,19 +1260,23 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		return getElement().matchesPath(path, true);
 	}
 
-	public Enumeration<JDFTreeNode> depthFirstJdfEnumeration() {
+	public Enumeration<JDFTreeNode> depthFirstJdfEnumeration()
+	{
 		return new JDFTreeNodeEnumeration(super.depthFirstEnumeration());
 	}
 
-	public Enumeration<JDFTreeNode> breadthFirstJdfEnumeration() {
+	public Enumeration<JDFTreeNode> breadthFirstJdfEnumeration()
+	{
 		return new JDFTreeNodeEnumeration(super.breadthFirstEnumeration());
 	}
 
-	public Enumeration<JDFTreeNode> preorderJdfEnumeration() {
+	public Enumeration<JDFTreeNode> preorderJdfEnumeration()
+	{
 		return new JDFTreeNodeEnumeration(super.preorderEnumeration());
 	}
 
-	public Enumeration<JDFTreeNode> postorderJdfEnumeration() {
+	public Enumeration<JDFTreeNode> postorderJdfEnumeration()
+	{
 		return new JDFTreeNodeEnumeration(super.postorderEnumeration());
 	}
 }
