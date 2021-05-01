@@ -3,8 +3,8 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2016 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * Copyright (c) 2001-2016 The International Cooperation for the Integration of
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +12,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -20,17 +20,17 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
+ *        The International Cooperation for the Integration of
  *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of
  *    Processes in  Prepress, Press and Postpress" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact info@cip4.org.
  *
  * 5. Products derived from this software may not be called "CIP4",
@@ -56,17 +56,17 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
+ * individuals on behalf of the The International Cooperation for the Integration
  * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
+ * originally based on software
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V.
+ *
+ * For more information on The International Cooperation for the
  * Integration of Processes in  Prepress, Press and Postpress , please see
  * <http://www.cip4.org/>.
- *  
- * 
+ *
+ *
  */
 package org.cip4.tools.jdfeditor.menu;
 
@@ -93,10 +93,10 @@ import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.tools.jdfeditor.EditorDocument;
 import org.cip4.tools.jdfeditor.EditorMenuBar;
+import org.cip4.tools.jdfeditor.EditorMenuBar.Menu_MouseListener;
 import org.cip4.tools.jdfeditor.JDFFrame;
 import org.cip4.tools.jdfeditor.PreferenceDialog;
 import org.cip4.tools.jdfeditor.SendToDevice;
-import org.cip4.tools.jdfeditor.EditorMenuBar.Menu_MouseListener;
 import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.util.FontUtil;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
@@ -106,10 +106,8 @@ public class MenuTools implements ActionListener, MenuInterface
 {
 	private static final Log LOG = LogFactory.getLog(MenuTools.class);
 
-	private MainController mainController;
-	
 	private JMenu menu;
-	
+
 	private JMenuItem spawnItem;
 	private JMenuItem spawnInformItem;
 	private JMenuItem mergeItem;
@@ -120,23 +118,22 @@ public class MenuTools implements ActionListener, MenuInterface
 	private JMenuItem m_fixCleanupItem;
 	private JMenuItem m_removeExtenisionItem;
 	private JMenuItem extractItem;
-	
-	
+
 	public MenuTools(final MainController mainController)
 	{
-		this.mainController = mainController;
 	}
-	
+
+	@Override
 	public JMenu createMenu()
 	{
 		final JDFFrame frame = MainView.getFrame();
 		final Menu_MouseListener menuListener = new EditorMenuBar().new Menu_MouseListener();
 		final int menuKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
-		
+
 		menu = new JMenu(ResourceUtil.getMessage("main.menu.tools"));
 		menu.setBorderPainted(false);
 		menu.addMouseListener(menuListener);
-		
+
 		spawnItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.spawn"));
 		spawnItem.addActionListener(this);
 		spawnItem.setEnabled(false);
@@ -161,11 +158,11 @@ public class MenuTools implements ActionListener, MenuInterface
 		menu.add(unspawnItem);
 
 		menu.add(new JSeparator());
-		
+
 		preferenceItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.preferences"));
 		preferenceItem.addActionListener(this);
 		menu.add(preferenceItem);
-		
+
 		menu.add(new JSeparator());
 
 		sendToDeviceItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.send"));
@@ -173,7 +170,7 @@ public class MenuTools implements ActionListener, MenuInterface
 		menu.add(sendToDeviceItem);
 
 		menu.add(new JSeparator());
-		
+
 		m_fixVersionItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.fix"));
 		m_fixVersionItem.addActionListener(frame);
 		m_fixVersionItem.setEnabled(true);
@@ -193,22 +190,24 @@ public class MenuTools implements ActionListener, MenuInterface
 		extractItem.addActionListener(this);
 		extractItem.setEnabled(true);
 		menu.add(extractItem);
-		
+
 		return menu;
 	}
-	
+
+	@Override
 	public void setEnableClose()
 	{
 		sendToDeviceItem.setEnabled(false);
 		extractItem.setEnabled(false);
 	}
-	
+
+	@Override
 	public void setEnableOpen(final boolean mode)
 	{
 		sendToDeviceItem.setEnabled(true);
 		extractItem.setEnabled(true);
 	}
-	
+
 	/**
 	 * enable or disable spawn n merge in bulk
 	 * @param enable
@@ -220,7 +219,7 @@ public class MenuTools implements ActionListener, MenuInterface
 		mergeItem.setEnabled(enable);
 		unspawnItem.setEnabled(enable);
 	}
-	
+
 	@Override
 	public void actionPerformed(final ActionEvent e)
 	{
@@ -258,8 +257,8 @@ public class MenuTools implements ActionListener, MenuInterface
 			MainView.getFrame().removeExtensionsfromSelected();
 		}
 	}
-	
-	private void showPreferences()
+
+	void showPreferences()
 	{
 		final String[] options = { ResourceUtil.getMessage("OkKey"), ResourceUtil.getMessage("CancelKey") };
 		final PreferenceDialog pd = new PreferenceDialog();
@@ -285,22 +284,23 @@ public class MenuTools implements ActionListener, MenuInterface
 			}
 		}
 	}
-	
+
 	private void extractAll()
 	{
-		EditorDocument editorDocument = getEditorDoc();
+		final EditorDocument editorDocument = getEditorDoc();
 
-		String documentFileName = editorDocument == null ? null : StringUtil.getNonEmpty(editorDocument.getSaveFileName());
+		final String documentFileName = editorDocument == null ? null : StringUtil.getNonEmpty(editorDocument.getSaveFileName());
 		if (documentFileName != null)
 		{
-			String initialDirectoryToExtract = UrlUtil.newExtension(documentFileName, null); // convert file name to directory by removing extension
+			final String initialDirectoryToExtract = UrlUtil.newExtension(documentFileName, null); // convert file name to directory by removing extension
 
-			File targetDirectory = FileUtil.getFileInDirectory(new File(initialDirectoryToExtract), new File("extracted"));
+			final File targetDirectory = FileUtil.getFileInDirectory(new File(initialDirectoryToExtract), new File("extracted"));
 			String canonicalPath = "";
 			try
 			{
 				canonicalPath = targetDirectory.getCanonicalPath();
-			} catch (IOException e)
+			}
+			catch (final IOException e)
 			{
 				LOG.error("Error: " + e.getMessage(), e);
 				return;
@@ -308,10 +308,10 @@ public class MenuTools implements ActionListener, MenuInterface
 
 			if (!targetDirectory.exists())
 			{
-				boolean result = targetDirectory.mkdirs();
+				final boolean result = targetDirectory.mkdirs();
 				if (!result)
 				{
-					String errorMessage = String.format(ResourceUtil.getMessage("main.menu.tools.extract.cannot.create.output.dir"), canonicalPath);
+					final String errorMessage = String.format(ResourceUtil.getMessage("main.menu.tools.extract.cannot.create.output.dir"), canonicalPath);
 					LOG.error(errorMessage);
 					JOptionPane.showMessageDialog(MainView.getFrame(), errorMessage, ResourceUtil.getMessage("main.menu.tools.extract.error"), JOptionPane.ERROR_MESSAGE);
 					return;
@@ -320,39 +320,39 @@ public class MenuTools implements ActionListener, MenuInterface
 
 			if (!Files.isWritable(targetDirectory.toPath()))
 			{
-				String errorMessage = String.format(ResourceUtil.getMessage("main.menu.tools.extract.directory.read.only"), canonicalPath);
+				final String errorMessage = String.format(ResourceUtil.getMessage("main.menu.tools.extract.directory.read.only"), canonicalPath);
 				LOG.error(errorMessage);
 				JOptionPane.showMessageDialog(MainView.getFrame(), errorMessage, ResourceUtil.getMessage("main.menu.tools.extract.error"), JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
 			MainView.setCursor(1, null);
-			URLExtractor extractor = new URLExtractor(targetDirectory, null, null);
+			final URLExtractor extractor = new URLExtractor(targetDirectory, null, null);
 			extractor.setWantLog(true);
 			extractor.convert(getJDFDoc().getRoot());
 			MainView.setCursor(0, null);
 
-			StringBuilder sb = new StringBuilder();
+			final StringBuilder sb = new StringBuilder();
 			if (!extractor.getSaved().isEmpty())
 			{
 				sb.append(ResourceUtil.getMessage("main.menu.tools.extract.files.successfully.extracted"));
-				for (String fileName : extractor.getSaved())
+				for (final String fileName : extractor.getSaved())
 				{
 					sb.append(fileName + "\n");
 				}
 				sb.append("\n");
 			}
 
-//			if (!extractor.getNotSaved().isEmpty()) // FIXME: implement this method
-//			{
-//				sb.append(ResourceUtil.getMessage("main.menu.tools.extract.files.not.extracted"));
-//				for (String fileName : extractor.getNotSaved())
-//				{
-//					sb.append(fileName + "\n");
-//				}
-//			}
+			//			if (!extractor.getNotSaved().isEmpty()) // FIXME: implement this method
+			//			{
+			//				sb.append(ResourceUtil.getMessage("main.menu.tools.extract.files.not.extracted"));
+			//				for (String fileName : extractor.getNotSaved())
+			//				{
+			//					sb.append(fileName + "\n");
+			//				}
+			//			}
 
-			String finalExtractedMessage = sb.toString();
+			final String finalExtractedMessage = sb.toString();
 			JOptionPane.showMessageDialog(MainView.getFrame(), finalExtractedMessage, ResourceUtil.getMessage("main.menu.tools.extract.results"), JOptionPane.INFORMATION_MESSAGE);
 		}
 	}

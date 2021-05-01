@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2018 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2021 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -75,7 +75,6 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -95,11 +94,7 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
-import org.cip4.jdflib.core.JDFElement.EnumValidationLevel;
-import org.cip4.jdflib.core.JDFElement.EnumVersion;
 import org.cip4.jdflib.core.VString;
-import org.cip4.jdflib.util.EnumUtil;
-import org.cip4.jdflib.util.StringUtil;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
@@ -113,11 +108,6 @@ import org.cip4.tools.jdfeditor.view.MainView;
 public class PreferenceDialog extends JTabbedPane implements ActionListener
 {
 	private final SettingService settingService = SettingService.getSettingService();
-
-	// TODO subclass
-	private class ValidationTab
-	{
-	}
 
 	/**
 	 * Comment for <code>serialVersionUID</code>
@@ -149,9 +139,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private JCheckBox boxLongID;
 	private JCheckBox boxUpdateJobID;
 	private JCheckBox boxRemWhite;
-	private JCheckBox boxCheckURL;
-	private JCheckBox boxGenerateFull;
-	private JCheckBox boxIgnoreDefaults;
 	private JCheckBox cboxIndentSave;
 
 	private JCheckBox boxValOpen;
@@ -180,31 +167,14 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private boolean currRemoveWhite;
 	private boolean currIndentSave;
 	private boolean currValidate;
-	private boolean checkURL;
 	private boolean currReadOnly;
 	private boolean normalizeOpen;
 	private boolean longID;
 	private boolean updateJobID;
-	private boolean generateFull;
-	private boolean ignoreDefaults;
-	private boolean exportValidation;
-	private boolean ignorePrivateValidation;
-
-	private JTextField fieldGenericStrings;
-	private String genericStrings;
-
 	private JTextField fieldMISURL;
 	private String misURL;
 
 	private final UIManager.LookAndFeelInfo aLnF[] = UIManager.getInstalledLookAndFeels();
-
-	private JComboBox chooseValidLevel;
-	private JComboBox chooseVersion;
-	private JCheckBox boxExportValidation;
-	private JCheckBox boxIgnorePrivateValidation;
-
-	public EnumValidationLevel validationLevel = null;
-	public EnumVersion validationVersion = null;
 
 	private final ValidationTab validTab;
 
@@ -304,21 +274,9 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		this.currRemoveWhite = settingService.getSetting(SettingKey.GENERAL_REMOVE_WHITE, Boolean.class);
 		this.currIndentSave = settingService.getSetting(SettingKey.GENERAL_INDENT, Boolean.class);
 		this.currDispDefault = settingService.getSetting(SettingKey.GENERAL_DISPLAY_DEFAULT, Boolean.class);
-		this.checkURL = settingService.getSetting(SettingKey.VALIDATION_CHECK_URL, Boolean.class);
 
-		this.genericStrings = settingService.getSetting(SettingKey.VALIDATION_GENERIC_ATTR, String.class);
-		this.generateFull = settingService.getSetting(SettingKey.VALIDATION_GENERATE_FULL, Boolean.class);
 		this.normalizeOpen = settingService.getSetting(SettingKey.GENERAL_NORMALIZE, Boolean.class);
-		this.ignoreDefaults = settingService.getSetting(SettingKey.VALIDATION_IGNORE_DEFAULT, Boolean.class);
 
-		this.validationVersion = EnumVersion.getEnum(settingService.getSetting(SettingKey.VALIDATION_VERSION, String.class));
-		this.validationLevel = EnumValidationLevel.getEnum(settingService.getString(SettingKey.VALIDATION_LEVEL));
-		if (validationLevel == null)
-		{
-			validationLevel = EnumValidationLevel.Complete;
-		}
-		this.exportValidation = settingService.getSetting(SettingKey.VALIDATION_EXPORT, Boolean.class);
-		this.ignorePrivateValidation = settingService.getSetting(SettingKey.IGNORE_PRIVATE_VALIDATION, Boolean.class);
 		this.misURL = settingService.getSetting(SettingKey.GOLDENTICKET_MISURL, String.class);
 
 		/*
@@ -352,8 +310,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		final JPanel sendPanel = new CommunicationTab().createSendToDevicePref();
 		addTab(ResourceUtil.getMessage("SendToDeviceKey"), sendPanel);
 
-		final JPanel validPanel = createValidatePref();
-		addTab(ResourceUtil.getMessage("ValidateKey"), validPanel);
+		addTab(ResourceUtil.getMessage("ValidateKey"), validTab);
 
 		final JPanel goldenTicketPanel = createGoldenTicketPref();
 		addTab(ResourceUtil.getMessage("GoldenTicketKey"), goldenTicketPanel);
@@ -587,120 +544,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		main.add(dirPanel, BorderLayout.CENTER);
 
 		return main;
-	}
-
-	private JPanel createValidatePref()
-	{
-		final JPanel main = new JPanel(new BorderLayout());
-
-		main.add(Box.createVerticalStrut(5), BorderLayout.SOUTH);
-		main.add(Box.createHorizontalStrut(5), BorderLayout.EAST);
-		main.add(Box.createHorizontalStrut(5), BorderLayout.WEST);
-		main.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
-
-		final JPanel panel = new JPanel(null);
-		panel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("ValidateKey")));
-
-		int y = 30;
-		final JLabel label = new JLabel(ResourceUtil.getMessage("DevCapGenericAttrKey"));
-		Dimension d = label.getPreferredSize();
-		label.setBounds(10, y, d.width, d.height);
-		panel.add(label);
-		y += 15;
-
-		fieldGenericStrings = new JTextField(genericStrings);
-		fieldGenericStrings.setAutoscrolls(true);
-		fieldGenericStrings.setEditable(true);
-		// TODO multiline...
-
-		d = fieldGenericStrings.getPreferredSize();
-		fieldGenericStrings.setBounds(10, y, Math.max(200, d.width), d.height);
-		fieldGenericStrings.addActionListener(this);
-		panel.add(fieldGenericStrings);
-		y += 30;
-
-		boxGenerateFull = new JCheckBox(ResourceUtil.getMessage("GenerateFullKey"), generateFull);
-		d = boxGenerateFull.getPreferredSize();
-		boxGenerateFull.setBounds(10, y, d.width, d.height);
-		boxGenerateFull.addActionListener(this);
-		panel.add(boxGenerateFull);
-
-		y += d.height + 3;
-		boxCheckURL = new JCheckBox(ResourceUtil.getMessage("CheckURLKey"), checkURL);
-		d = boxCheckURL.getPreferredSize();
-		boxCheckURL.setBounds(10, y, d.width, d.height);
-		boxCheckURL.addActionListener(this);
-		panel.add(boxCheckURL);
-
-		y += d.height + 3;
-		boxIgnoreDefaults = new JCheckBox(ResourceUtil.getMessage("IgnoreDefaultsKey"), ignoreDefaults);
-		d = boxIgnoreDefaults.getPreferredSize();
-		boxIgnoreDefaults.setBounds(10, y, d.width, d.height);
-		boxIgnoreDefaults.addActionListener(this);
-		panel.add(boxIgnoreDefaults);
-
-		y += d.height + 3;
-		boxExportValidation = new JCheckBox(ResourceUtil.getMessage("ExportValidationKey"), exportValidation);
-		d = boxExportValidation.getPreferredSize();
-		boxExportValidation.setBounds(10, y, d.width, d.height);
-		boxExportValidation.addActionListener(this);
-		panel.add(boxExportValidation);
-
-		y += d.height + 3;
-		boxIgnorePrivateValidation = new JCheckBox(ResourceUtil.getMessage("IgnorePrivateValidation"), ignorePrivateValidation);
-		d = boxIgnorePrivateValidation.getPreferredSize();
-		boxIgnorePrivateValidation.setBounds(10, y, d.width, d.height);
-		boxIgnorePrivateValidation.addActionListener(this);
-		panel.add(boxIgnorePrivateValidation);
-
-		y += d.height + 3;
-		final VString allowedValues = getValidationLevels();
-		chooseValidLevel = new JComboBox(allowedValues);
-		chooseValidLevel.setSelectedItem(validationLevel.getName());
-		chooseValidLevel.addActionListener(this);
-		d = chooseValidLevel.getPreferredSize();
-
-		final JPanel validLevelPanel = new JPanel();
-		validLevelPanel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("ValidationLevelKey")));
-		validLevelPanel.add(chooseValidLevel);
-		d = validLevelPanel.getPreferredSize();
-		validLevelPanel.setBounds(10, y, d.width, d.height);
-		panel.add(validLevelPanel);
-		y += d.height + 3;
-
-		final Vector<String> allValues = new Vector<String>();
-		allValues.addElement(EnumVersion.Version_1_0.getName());
-		allValues.addElement(EnumVersion.Version_1_1.getName());
-		allValues.addElement(EnumVersion.Version_1_2.getName());
-		allValues.addElement(EnumVersion.Version_1_3.getName());
-		allValues.addElement(EnumVersion.Version_1_4.getName());
-		allValues.addElement(EnumVersion.Version_1_5.getName());
-		allValues.addElement(EnumVersion.Version_1_6.getName());
-		//		allValues.addElement("2.0");
-		final JPanel versionPanel = new JPanel();
-		versionPanel.setBorder(BorderFactory.createTitledBorder("JDFVersion"));
-
-		chooseVersion = new JComboBox(allValues);
-		chooseVersion.setSelectedItem(validationVersion == null ? EnumVersion.getEnum(null).getName() : validationVersion.getName());
-		chooseVersion.addActionListener(this);
-		versionPanel.add(Box.createHorizontalGlue());
-		versionPanel.add(chooseVersion);
-		versionPanel.add(Box.createHorizontalGlue());
-		// outLayout.setConstraints(versionPanel, outConstraints);
-		d = versionPanel.getPreferredSize();
-		versionPanel.setBounds(10, y, d.width, d.height);
-		panel.add(versionPanel);
-
-		main.add(panel, BorderLayout.CENTER);
-		return main;
-	}
-
-	private VString getValidationLevels()
-	{
-		final VString allowedValues = EnumUtil.getNamesVector(EnumValidationLevel.class);
-		allowedValues.remove(EnumValidationLevel.RecursiveComplete.getName());
-		allowedValues.remove(EnumValidationLevel.RecursiveIncomplete.getName());
-		return allowedValues;
 	}
 
 	private JPanel createGoldenTicketPref()
@@ -950,10 +793,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		{
 			currIndentSave = cboxIndentSave.isSelected();
 		}
-		else if (source == boxCheckURL)
-		{
-			checkURL = boxCheckURL.isSelected();
-		}
 		else if (source == boxDispDefault)
 		{
 			currDispDefault = boxDispDefault.isSelected();
@@ -974,18 +813,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		{
 			updateJobID = boxUpdateJobID.isSelected();
 		}
-		else if (source == boxIgnoreDefaults)
-		{
-			ignoreDefaults = boxIgnoreDefaults.isSelected();
-		}
-		else if (source == boxGenerateFull)
-		{
-			generateFull = boxGenerateFull.isSelected();
-		}
-		else if (source == boxIgnorePrivateValidation)
-		{
-			ignorePrivateValidation = boxIgnorePrivateValidation.isSelected();
-		}
 		else if (source == boxSchema)
 		{
 			useSchema = boxSchema.isSelected();
@@ -1005,25 +832,13 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 				JOptionPane.showMessageDialog(this, "File is not accepted", "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		}
-		else if (source == fieldGenericStrings)
-		{
-			genericStrings = fieldGenericStrings.getText();
-		}
-		if (source == chooseValidLevel)
-		{
-			validationLevel = EnumValidationLevel.getEnum((String) chooseValidLevel.getSelectedItem());
-		}
-		if (source == boxExportValidation)
-		{
-			exportValidation = boxExportValidation.isSelected();
-		}
-		else if (source == chooseVersion)
-		{
-			validationVersion = EnumVersion.getEnum((String) chooseVersion.getSelectedItem());
-		}
 		else if (source == fieldMISURL)
 		{
 			misURL = fieldMISURL.getText();
+		}
+		else
+		{
+			validTab.actionPerformed(e);
 		}
 	}
 
@@ -1044,7 +859,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
 	public void writeToIni()
 	{
-		//		validTab.writeToIni();
+		validTab.writeToIni();
 		settingService.setSetting(SettingKey.GENERAL_USE_SCHEMA, useSchema);
 
 		if (getSchemaURL() != null)
@@ -1065,26 +880,12 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		settingService.setSetting(SettingKey.GENERAL_DISPLAY_DEFAULT, currDispDefault);
 		settingService.setSetting(SettingKey.GENERAL_REMOVE_WHITE, currRemoveWhite);
 		settingService.setSetting(SettingKey.GENERAL_INDENT, currIndentSave);
-		settingService.setSetting(SettingKey.VALIDATION_CHECK_URL, checkURL);
 		settingService.setSetting(SettingKey.GENERAL_LONG_ID, longID);
 		settingService.setSetting(SettingKey.GENERAL_UPDATE_JOBID, updateJobID);
-		settingService.setSetting(SettingKey.VALIDATION_GENERATE_FULL, generateFull);
 		settingService.setSetting(SettingKey.GENERAL_NORMALIZE, normalizeOpen);
-		settingService.setSetting(SettingKey.VALIDATION_IGNORE_DEFAULT, ignoreDefaults);
-		settingService.setSetting(SettingKey.VALIDATION_LEVEL, validationLevel.getName());
-		settingService.setSetting(SettingKey.VALIDATION_VERSION, validationVersion.getName());
-		settingService.setSetting(SettingKey.VALIDATION_EXPORT, exportValidation);
-		settingService.setSetting(SettingKey.IGNORE_PRIVATE_VALIDATION, ignorePrivateValidation);
 		misURL = fieldMISURL.getText();
 
 		settingService.setSetting(SettingKey.GOLDENTICKET_MISURL, misURL);
-
-		genericStrings = fieldGenericStrings.getText();
-		final VString genericAttributes = new VString(genericStrings, null);
-		genericAttributes.unify();
-
-		final String s = StringUtil.setvString(genericAttributes, " ", null, null);
-		settingService.setSetting(SettingKey.VALIDATION_GENERIC_ATTR, s);
 
 		settingService.setSetting(SettingKey.FONT_SIZE_ENLARGED, enlargeTextField.getText());
 	}
@@ -1106,16 +907,4 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		return schemaFile;
 	}
 
-	/**
-	 * @return the ignoreDefaults
-	 */
-	public boolean getIgnoreDefaults()
-	{
-		return ignoreDefaults;
-	}
-
-	public void setIgnoreDefaults(final boolean _ignoreDefaults)
-	{
-		this.ignoreDefaults = _ignoreDefaults;
-	}
 }
