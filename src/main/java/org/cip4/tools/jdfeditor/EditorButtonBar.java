@@ -5,8 +5,8 @@ package org.cip4.tools.jdfeditor;
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * Copyright (c) 2001-2021 The International Cooperation for the Integration of
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -14,7 +14,7 @@ package org.cip4.tools.jdfeditor;
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -22,17 +22,17 @@ package org.cip4.tools.jdfeditor;
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
+ *        The International Cooperation for the Integration of
  *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of
  *    Processes in  Prepress, Press and Postpress" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact info@cip4.org.
  *
  * 5. Products derived from this software may not be called "CIP4",
@@ -58,17 +58,17 @@ package org.cip4.tools.jdfeditor;
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
+ * individuals on behalf of the The International Cooperation for the Integration
  * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
+ * originally based on software
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V.
+ *
+ * For more information on The International Cooperation for the
  * Integration of Processes in  Prepress, Press and Postpress , please see
  * <http://www.cip4.org/>.
- *  
- * 
+ *
+ *
  */
 
 import java.awt.Dimension;
@@ -86,6 +86,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import org.cip4.tools.jdfeditor.dialog.SaveAsJDFDialog;
+import org.cip4.tools.jdfeditor.dialog.SaveAsJSONDialog;
 import org.cip4.tools.jdfeditor.dialog.SaveAsXJDFDialog;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
@@ -93,8 +94,8 @@ import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
 /**
- * 
- *  
+ *
+ *
  * @author rainer prosi
  * @date Apr 11, 2013
  */
@@ -116,6 +117,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 	JButton m_pasteButton;
 	JButton m_convert2Jdf;
 	JButton m_convert2XJdf;
+	JButton m_convert2JSON;
 	JButton m_validateButton;
 	JButton m_upOneLevelButton;
 	JButton m_NextButton;
@@ -138,8 +140,8 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 	private static final long serialVersionUID = 2161156231007579898L;
 
 	/**
-	 * 
-	 *  
+	 *
+	 *
 	 * @param frame
 	 */
 	public EditorButtonBar(final JDFFrame frame)
@@ -154,7 +156,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 	 * Method drawButtonBar.
 	 * Editor.java contains ICONS_PATH. This package can be found under JDFEditor/src/Java/org.cip4.jdfeditor.icons
 	 * You can add icons to this packagae by putting your .gif files into the following folder. This folder comes from whereever you
-	 * downloaded yoru code from SubVersion. My place (BIskey) is the reference point. You can make it whatever you like. 
+	 * downloaded yoru code from SubVersion. My place (BIskey) is the reference point. You can make it whatever you like.
 	 *  C:\Subversion_Root\My_Root\JDFEditor\src\java\org\cip4\jdfeditor\icons
 	 *  After adding the icons to this folder, you need to come here and refresh the package w/in your Java editing software.
 	 */
@@ -175,6 +177,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 
 		final ImageIcon imgJDF = ResourceUtil.getImageIcon("toolbar/jdf.png");
 		final ImageIcon imgXJDF = ResourceUtil.getImageIcon("toolbar/xjdf.png");
+		final ImageIcon imgJSON = ResourceUtil.getImageIcon("toolbar/json.png");
 
 		final ImageIcon imgUndo = ResourceUtil.getImageIcon("toolbar/undo.png");
 		final ImageIcon imgRedo = ResourceUtil.getImageIcon("toolbar/redo.png");
@@ -219,6 +222,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		// convert block
 		m_convert2Jdf = createDefaultButton(imgJDF, ResourceUtil.getMessage("main.toolbar.convert.jdf"), false, '|');
 		m_convert2XJdf = createDefaultButton(imgXJDF, ResourceUtil.getMessage("main.toolbar.convert.xjdf"), false, '|');
+		m_convert2JSON = createDefaultButton(imgJSON, ResourceUtil.getMessage("main.toolbar.convert.json"), false, '|');
 		addSeparator(d);
 
 		// history block
@@ -251,7 +255,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 	 * @param enabled - If the button is enabled or disabled initially
 	 * @return The default JButton.
 	 */
-	private JButton createDefaultButton(ImageIcon icon, String tip, boolean enabled, char mnemonic)
+	private JButton createDefaultButton(final ImageIcon icon, final String tip, final boolean enabled, final char mnemonic)
 	{
 		final JButton button = new JButton(icon);
 
@@ -297,7 +301,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public void setEnableClose()
 	{
@@ -310,6 +314,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		m_upOneLevelButton.setEnabled(false);
 		m_convert2Jdf.setEnabled(false);
 		m_convert2XJdf.setEnabled(false);
+		m_convert2JSON.setEnabled(false);
 		m_LastButton.setEnabled(false);
 		m_NextButton.setEnabled(false);
 		m_zoomInButton.setEnabled(false);
@@ -319,7 +324,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		m_sendButton.setEnabled(false);
 	}
 
-	public void setEnableOpen(boolean mode)
+	public void setEnableOpen(final boolean mode)
 	{
 		m_newButton.setEnabled(mode);
 		m_closeButton.setEnabled(mode);
@@ -335,11 +340,12 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 
 		m_convert2Jdf.setEnabled(true);
 		m_convert2XJdf.setEnabled(true);
+		m_convert2JSON.setEnabled(true);
 
 		m_validateButton.setEnabled(true);
 		m_printButton.setEnabled(true);
 		m_sendButton.setEnabled(true);
-		EditorDocument eDoc = MainView.getEditorDoc();
+		final EditorDocument eDoc = MainView.getEditorDoc();
 		m_refreshButton.setEnabled(eDoc == null ? true : eDoc.getPackageName() == null);
 	}
 
@@ -349,7 +355,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 	 * @param e the event that gets checked
 	 */
 	@Override
-	public void actionPerformed(ActionEvent e)
+	public void actionPerformed(final ActionEvent e)
 	{
 
 		final Object eSrc = e.getSource();
@@ -380,7 +386,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		}
 		else if (eSrc == m_convert2Jdf) // convert 2 JDF
 		{
-			SaveAsJDFDialog d = new SaveAsJDFDialog();
+			final SaveAsJDFDialog d = new SaveAsJDFDialog();
 			if (d.isOK())
 			{
 				MainView.getModel().saveAsJDF(null, d.getConverter());
@@ -388,10 +394,18 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		}
 		else if (eSrc == m_convert2XJdf) // convert 2 XJDF
 		{
-			SaveAsXJDFDialog d = new SaveAsXJDFDialog();
+			final SaveAsXJDFDialog d = new SaveAsXJDFDialog();
 			if (d.isOK())
 			{
 				MainView.getModel().saveAsXJDF(null);
+			}
+		}
+		else if (eSrc == m_convert2JSON) // convert 2 XJDF
+		{
+			final SaveAsJSONDialog d = new SaveAsJSONDialog();
+			if (d.isOK())
+			{
+				MainView.getModel().saveAsJSON(null);
 			}
 		}
 		else if (eSrc == m_upOneLevelButton) // navigate up
@@ -468,12 +482,12 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 	class Button_MouseListener extends MouseAdapter
 	{
 		@Override
-		public void mouseEntered(MouseEvent e)
+		public void mouseEntered(final MouseEvent e)
 		{
 			final Object source = e.getSource();
 			if (m_allButtons.contains(source))
 			{
-				JButton b = (JButton) source;
+				final JButton b = (JButton) source;
 				if (b.isEnabled())
 					b.setBorderPainted(true);
 			}
@@ -481,12 +495,12 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 
 		///////////////////////////////////////////////////////////////
 		@Override
-		public void mouseExited(MouseEvent e)
+		public void mouseExited(final MouseEvent e)
 		{
 			final Object source = e.getSource();
 			if (m_allButtons.contains(source))
 			{
-				JButton b = (JButton) source;
+				final JButton b = (JButton) source;
 				if (b.isEnabled())
 					b.setBorderPainted(false);
 			}

@@ -643,6 +643,17 @@ public class EditorUtils
 
 	/**
 	 *
+	 * get the converter with the options set in this dialog
+	 * @return the converter
+	 */
+	public static Object getJSONConverter()
+	{
+		// TODO - see above
+		return null;
+	}
+
+	/**
+	 *
 	 *
 	 * @param fileJDF
 	 * @param fileSchema

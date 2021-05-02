@@ -5,8 +5,8 @@ package org.cip4.tools.jdfeditor.streamloader;
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2011 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * Copyright (c) 2001-2011 The International Cooperation for the Integration of
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -14,7 +14,7 @@ package org.cip4.tools.jdfeditor.streamloader;
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -22,17 +22,17 @@ package org.cip4.tools.jdfeditor.streamloader;
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
+ *        The International Cooperation for the Integration of
  *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of
  *    Processes in  Prepress, Press and Postpress" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact info@cip4.org.
  *
  * 5. Products derived from this software may not be called "CIP4",
@@ -58,17 +58,17 @@ package org.cip4.tools.jdfeditor.streamloader;
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
+ * individuals on behalf of the The International Cooperation for the Integration
  * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
+ * originally based on software
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V.
+ *
+ * For more information on The International Cooperation for the
  * Integration of Processes in  Prepress, Press and Postpress , please see
  * <http://www.cip4.org/>.
- *  
- * 
+ *
+ *
  */
 
 import java.io.File;
@@ -106,11 +106,11 @@ public class PluginLoader<I>
 
 	/**
 	 * Constructor PluginLoader
-	 * 
+	 *
 	 * @param interf
 	 * @param filePluginDir
 	 */
-	public PluginLoader(Class<I> interf, File filePluginDir)
+	public PluginLoader(final Class<I> interf, final File filePluginDir)
 	{
 		m_interf = interf;
 		m_filePluginDir = filePluginDir;
@@ -118,7 +118,7 @@ public class PluginLoader<I>
 
 	/**
 	 * Method getPlugins
-	 * 
+	 *
 	 * @return
 	 */
 
@@ -145,7 +145,7 @@ public class PluginLoader<I>
 						urls[i] = fileList[i].toURI().toURL();
 					}
 
-					catch (MalformedURLException ex)
+					catch (final MalformedURLException ex)
 					{
 						urls[i] = null;
 					}
@@ -157,14 +157,14 @@ public class PluginLoader<I>
 
 				final URLClassLoader classLoader = URLClassLoader.newInstance(urls, this.getClass().getClassLoader());
 
-				for (File file : fileList)
+				for (final File file : fileList)
 				{
 					try
 					{
 						addImplementingClasses(file, alPlugins, classLoader);
 					}
 
-					catch (IOException ex)
+					catch (final IOException ex)
 					{
 						LOGGER.error("failed loading plugin " + file.getAbsolutePath(), ex);
 					}
@@ -172,6 +172,7 @@ public class PluginLoader<I>
 			}
 
 			alPlugins.add((I) new ZipStreamLoader());
+			alPlugins.add((I) new JSONStreamLoader());
 			m_alPlugins = alPlugins;
 		}
 
@@ -186,7 +187,7 @@ public class PluginLoader<I>
 	private static class PlugInFilter implements FileFilter
 	{
 		@Override
-		public boolean accept(File file)
+		public boolean accept(final File file)
 		{
 			return (file.getName().toLowerCase().endsWith(PLUGIN_FILE_EXT));
 		}
@@ -194,15 +195,15 @@ public class PluginLoader<I>
 
 	/**
 	 * Method addImplementingClasses
-	 * 
+	 *
 	 * @param file
 	 * @param alPlugins
 	 * @param classLoader
-	 * 
+	 *
 	 * @throws IOException
 	 */
 
-	private void addImplementingClasses(File file, ArrayList<I> alPlugins, ClassLoader classLoader) throws IOException
+	private void addImplementingClasses(final File file, final ArrayList<I> alPlugins, final ClassLoader classLoader) throws IOException
 	{
 		final JarFile jarFile = new JarFile(file, true);
 
@@ -229,7 +230,7 @@ public class PluginLoader<I>
 						}
 					}
 
-					catch (Exception ex)
+					catch (final Exception ex)
 					{
 						LOGGER.error("failed reading plugin " + file.getAbsolutePath(), ex);
 					}
@@ -240,9 +241,9 @@ public class PluginLoader<I>
 
 	/**
 	 * Method getFullQualifiedClassName
-	 * 
+	 *
 	 * @param jarEntry
-	 * 
+	 *
 	 * @return
 	 */
 

@@ -101,6 +101,7 @@ import org.cip4.jdflib.pool.JDFResourceLinkPool;
 import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.jdflib.resource.devicecapability.JDFDeviceCap;
 import org.cip4.tools.jdfeditor.dialog.SaveAsJDFDialog;
+import org.cip4.tools.jdfeditor.dialog.SaveAsJSONDialog;
 import org.cip4.tools.jdfeditor.dialog.SaveAsXJDFDialog;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
@@ -143,6 +144,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 	private final JMenuItem m_pasteRawPopupItem;
 	private final JMenuItem m_deletePopupItem;
 	private final JMenuItem m_targetItem;
+	private JMenuItem m_saveJSON = null;
 	private JMenuItem m_saveXJDF = null;
 	private JMenuItem m_saveJDF = null;
 	private JMenuItem m_nodeFromCaps = null;
@@ -365,6 +367,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		{
 			m_saveXJDFCaps = addMenuItem("ExportToDevCapKey");
 			m_saveJDF = addMenuItem("SaveJDFKey");
+			m_saveJSON = addMenuItem("SaveJSONKey");
 		}
 
 		m_xpandPopupItem = addMenuItem("ExpandKey");
@@ -582,6 +585,14 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 			if (d.isOK())
 			{
 				MainView.getModel().saveAsXJDF(treeArea.getSelectionPath());
+			}
+		}
+		else if (eSrc == m_saveJSON)
+		{
+			final SaveAsJSONDialog d = new SaveAsJSONDialog();
+			if (d.isOK())
+			{
+				MainView.getModel().saveAsJSON(treeArea.getSelectionPath());
 			}
 		}
 		else if (eSrc == m_saveJDF)

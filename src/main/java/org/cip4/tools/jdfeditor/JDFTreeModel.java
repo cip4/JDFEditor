@@ -97,6 +97,7 @@ import org.cip4.jdflib.datatypes.JDFAttributeMap;
 import org.cip4.jdflib.datatypes.VJDFAttributeMap;
 import org.cip4.jdflib.elementwalker.XPathWalker;
 import org.cip4.jdflib.extensions.XJDF20;
+import org.cip4.jdflib.extensions.XJDFConstants;
 import org.cip4.jdflib.extensions.XJDFHelper;
 import org.cip4.jdflib.extensions.xjdfwalker.XJDFToJDFConverter;
 import org.cip4.jdflib.jmf.JDFJMF;
@@ -1215,7 +1216,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	public void saveAsXJDF(final TreePath selectionPath)
 	{
 		final JDFTreeNode node = selectionPath == null ? (JDFTreeNode) getRootNode() : (JDFTreeNode) selectionPath.getLastPathComponent();
-		if (node == null || XJDF20.rootName.equals(node.getElement().getLocalName()))
+		if (node == null || XJDFConstants.XJDF.equals(node.getElement().getLocalName()) || XJDFConstants.XJMF.equals(node.getElement().getLocalName()))
 		{
 			return;
 		}
@@ -1238,6 +1239,31 @@ public class JDFTreeModel extends DefaultTreeModel
 			final String fnNew = UrlUtil.newExtension(fn, XJDF20.getExtension());
 			d.write2File(fnNew, 2, false);
 			MainView.getFrame().readFile(new File(fnNew));
+		}
+	}
+
+	/**
+	 * @param selectionPath
+	 * @experimental
+	 */
+	public void saveAsJSON(final TreePath selectionPath)
+	{
+		final JDFTreeNode node = selectionPath == null ? (JDFTreeNode) getRootNode() : (JDFTreeNode) selectionPath.getLastPathComponent();
+		if (node == null || (!XJDFConstants.XJDF.equals(node.getElement().getLocalName()) && !XJDFConstants.XJMF.equals(node.getElement().getLocalName())))
+		{
+			return;
+		}
+		final KElement xjdf = node.getElement();
+		final EditorDocument eDoc = MainView.getEditorDoc();
+		final String fn = eDoc.getOriginalFileName();
+		// TODO convert
+		final Object jw = EditorUtils.getJSONConverter();
+
+		if (jw != null)
+		{
+			final XMLDoc d = xjdf.getOwnerDocument_KElement();
+			final String fnNew = UrlUtil.newExtension(fn, "json");
+			d.write2File(fnNew, 2, false);
 		}
 	}
 

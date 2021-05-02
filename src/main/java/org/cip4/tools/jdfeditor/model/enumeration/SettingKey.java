@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2018 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2021 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -94,6 +94,10 @@ public enum SettingKey
 	HTTP_STORE_PATH("http.store.path", DirectoryUtil.getReceivedMessagesDir()), HTTP_PRESELECTED_ADDRESS("http.preselected.address", "127.0.0.1"),
 
 	FONT_SIZE_ENLARGED("font.size.enlarged", "100"),
+
+	//	JSON_PREFIX("json.save.prefix", true),
+	//	JSON_CASE("json.save.case", true),
+	//	JSON_TYPESAFE("json.save.typeseafe", true),
 
 	LOGGING_LEVEL("logging.level", "INFO"), LOGGING_ENABLED("logging.enabled", true),
 
