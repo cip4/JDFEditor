@@ -95,9 +95,7 @@ public enum SettingKey
 
 	FONT_SIZE_ENLARGED("font.size.enlarged", "100"),
 
-	//	JSON_PREFIX("json.save.prefix", true),
-	//	JSON_CASE("json.save.case", true),
-	//	JSON_TYPESAFE("json.save.typeseafe", true),
+	JSON_PREFIX("json.save.prefix", "retain"), JSON_CASE("json.save.case", "retain"), JSON_TYPESAFE("json.save.typeseafe", true),
 
 	LOGGING_LEVEL("logging.level", "INFO"), LOGGING_ENABLED("logging.enabled", true),
 

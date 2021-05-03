@@ -107,10 +107,12 @@ import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.resource.devicecapability.JDFDeviceCap;
 import org.cip4.jdflib.util.ContainerUtil;
+import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.JDFSpawn;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.jdflib.validate.JDFValidator;
+import org.cip4.lib.jdf.jsonutil.JSONWriter;
 import org.cip4.tools.jdfeditor.extension.Caps;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
@@ -1256,14 +1258,14 @@ public class JDFTreeModel extends DefaultTreeModel
 		final KElement xjdf = node.getElement();
 		final EditorDocument eDoc = MainView.getEditorDoc();
 		final String fn = eDoc.getOriginalFileName();
-		// TODO convert
-		final Object jw = EditorUtils.getJSONConverter();
+		final JSONWriter jw = EditorUtils.getJSONConverter();
 
 		if (jw != null)
 		{
-			final XMLDoc d = xjdf.getOwnerDocument_KElement();
 			final String fnNew = UrlUtil.newExtension(fn, "json");
-			d.write2File(fnNew, 2, false);
+			jw.convert(xjdf);
+			FileUtil.writeFile(jw, new File(fnNew));
+			MainView.getFrame().readFile(new File(fnNew));
 		}
 	}
 

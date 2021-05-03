@@ -65,6 +65,7 @@ configurations {
 
 dependencies {
     compile 'org.cip4.lib.jdf:JDFLibJ:2.1.7.x-SNAPSHOT'
+    compile 'org.cip4.lib.jdf:JDFLibJ-JSON:+'
     compile 'org.apache.logging.log4j:log4j-api:2.0-rc1'
     compile 'org.apache.logging.log4j:log4j-core:2.0-rc1'
     compile 'commons-configuration:commons-configuration:1.10'
@@ -74,6 +75,7 @@ dependencies {
     compile 'org.eclipse.jetty:jetty-server:9.4.24.v20191120'
     compile 'org.eclipse.jetty:jetty-webapp:9.4.24.v20191120'
     compile 'com.fifesoft:rsyntaxtextarea:1.4.1'
+   
 
     testCompile 'junit:junit:4.13'
     testCompile 'org.mockito:mockito-all:2.0.2-beta'

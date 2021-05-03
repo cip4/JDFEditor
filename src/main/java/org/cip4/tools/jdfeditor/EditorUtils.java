@@ -104,6 +104,8 @@ import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
+import org.cip4.lib.jdf.jsonutil.JSONWriter;
+import org.cip4.lib.jdf.jsonutil.JSONWriter.eJSONCase;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.streamloader.IStreamLoader;
@@ -641,15 +643,24 @@ public class EditorUtils
 		return xjdf20;
 	}
 
+	private static final String RES_SCHEMA = "/org/cip4/tools/jdfeditor/schema/xjdf.xsd";
+
 	/**
 	 *
 	 * get the converter with the options set in this dialog
 	 * @return the converter
 	 */
-	public static Object getJSONConverter()
+	public static JSONWriter getJSONConverter()
 	{
-		// TODO - see above
-		return null;
+		final JSONWriter w = new JSONWriter();
+		final SettingService settingService = SettingService.getSettingService();
+		w.setTypeSafe(settingService.getBool(SettingKey.JSON_TYPESAFE));
+		w.setKeyCase(eJSONCase.valueOf(settingService.getString(SettingKey.JSON_CASE)));
+		final InputStream is = ResourceUtil.class.getResourceAsStream(RES_SCHEMA);
+		final KElement e = KElement.parseStream(is);
+		w.fillTypesFromSchema(e);
+
+		return w;
 	}
 
 	/**

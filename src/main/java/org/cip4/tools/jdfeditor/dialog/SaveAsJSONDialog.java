@@ -75,6 +75,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Vector;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -84,6 +85,8 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
+import org.cip4.lib.jdf.jsonutil.JSONWriter.eJSONCase;
+import org.cip4.lib.jdf.jsonutil.JSONWriter.eJSONPrefix;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
@@ -125,10 +128,10 @@ public class SaveAsJSONDialog extends JDialog implements ActionListener
 		final JPanel checkboxesPanel = new JPanel();
 		checkboxesPanel.setLayout(new BoxLayout(checkboxesPanel, BoxLayout.Y_AXIS));
 
-		cbCase = new JComboBox<>();
-		cbPrefix = new JComboBox<>();
+		cbCase = new JComboBox<>(new Vector<>(eJSONCase.getNames()));
+
+		cbPrefix = new JComboBox<>(new Vector<>(eJSONPrefix.getNames()));
 		cbTypesafe = new JCheckBox(ResourceUtil.getMessage("convert.json.typesafe"));
-		//	cbCase = new JComboBox<>(eJSONCase.getNames());
 
 		checkboxesPanel.add(cbCase);
 		checkboxesPanel.add(cbPrefix);
@@ -157,9 +160,9 @@ public class SaveAsJSONDialog extends JDialog implements ActionListener
 		setSize(screenWidth / 4, screenHeight / 4);
 		setLocation(screenWidth / 4, screenHeight / 4);
 
-		cbCase.setSelectedItem(settingService.getString(SettingKey.XJDF_CONVERT_SINGLENODE));
-		cbPrefix.setSelectedItem(settingService.getString(SettingKey.XJDF_CONVERT_STRIPPING));
-		cbTypesafe.setSelected(settingService.getBool(SettingKey.XJDF_CONVERT_SPAN));
+		cbCase.setSelectedItem(settingService.getString(SettingKey.JSON_CASE));
+		cbPrefix.setSelectedItem(settingService.getString(SettingKey.JSON_PREFIX));
+		cbTypesafe.setSelected(settingService.getBool(SettingKey.JSON_TYPESAFE));
 
 		setVisible(true);
 	}

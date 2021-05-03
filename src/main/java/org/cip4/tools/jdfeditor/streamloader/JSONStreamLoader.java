@@ -72,7 +72,10 @@ import java.io.File;
 import java.io.IOException;
 
 import org.cip4.jdflib.core.JDFDoc;
+import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.UrlUtil;
+import org.cip4.lib.jdf.jsonutil.JSONReader;
 
 /**
  * simple implementation for a zip stream loader
@@ -93,8 +96,10 @@ public class JSONStreamLoader implements IStreamLoader
 		if (fileJDF == null || !fileJDF.canRead() || !"json".equalsIgnoreCase(extension))
 			return null;
 
-		// TODO import json
-		return null;
+		final JSONReader jr = new JSONReader();
+		jr.setWantAttributes(true);
+		final KElement e = jr.getElement(FileUtil.getBufferedInputStream(fileJDF));
+		return e == null ? null : new JDFDoc(e.getOwnerDocument());
 	}
 
 }
