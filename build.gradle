@@ -75,6 +75,7 @@ dependencies {
     compile 'org.eclipse.jetty:jetty-server:9.4.24.v20191120'
     compile 'org.eclipse.jetty:jetty-webapp:9.4.24.v20191120'
     compile 'com.fifesoft:rsyntaxtextarea:1.4.1'
+    compile 'com.googlecode.json-simple:json-simple:1.1'
    
 
     testCompile 'junit:junit:4.13'
