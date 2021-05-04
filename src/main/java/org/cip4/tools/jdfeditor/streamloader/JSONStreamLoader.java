@@ -93,7 +93,7 @@ public class JSONStreamLoader implements IStreamLoader
 	{
 		final String extension = fileJDF == null ? null : UrlUtil.extension(fileJDF.getName());
 
-		if (fileJDF == null || !fileJDF.canRead() || !"json".equalsIgnoreCase(extension))
+		if (fileJDF == null || !fileJDF.canRead() || !"json".equalsIgnoreCase(extension) && !"jsn".equalsIgnoreCase(extension))
 			return null;
 
 		final JSONReader jr = new JSONReader();
