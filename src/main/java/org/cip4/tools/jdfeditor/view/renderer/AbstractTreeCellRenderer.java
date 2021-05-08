@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2018 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2021 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -168,8 +168,13 @@ public abstract class AbstractTreeCellRenderer extends DefaultTreeCellRenderer
 		setOpaque(true);
 		setBackground(isSelected ? COLOR_SELECTED : COLOR_DEFAULT);
 
-		final Font cellFont = new Font(null, Font.PLAIN, RuntimeProperties.enlargedTextFontSize);
+		final Font cellFont = getCellFont();
 		setFont(cellFont);
+	}
+
+	Font getCellFont()
+	{
+		return new Font(null, Font.PLAIN, RuntimeProperties.enlargedTextFontSize);
 	}
 
 	/**
@@ -202,6 +207,12 @@ public abstract class AbstractTreeCellRenderer extends DefaultTreeCellRenderer
 		setToolTipText(toolTip);
 	}
 
+	// define colors
+	final static Color colorFont = new Color(0, 0, 0);
+	final static Color colorFontNamespace = new Color(0, 120, 255);
+	final static Color colorFontError = new Color(255, 0, 0);
+	final static Color colorFontNew = new Color(255, 0, 255);
+
 	/**
 	 * Defines the text color for a tree element.
 	 *
@@ -210,12 +221,6 @@ public abstract class AbstractTreeCellRenderer extends DefaultTreeCellRenderer
 	 */
 	protected void setTextColor(final JDFTreeNode node, final JDFTreeModel model)
 	{
-
-		// define colors
-		final Color colorFont = new Color(0, 0, 0);
-		final Color colorFontNamespace = new Color(0, 120, 255);
-		final Color colorFontError = new Color(255, 0, 0);
-		final Color colorFontNew = new Color(255, 0, 255);
 
 		// set node text colors
 		if (!model.isValid(node))
@@ -235,8 +240,13 @@ public abstract class AbstractTreeCellRenderer extends DefaultTreeCellRenderer
 		}
 		else
 		{
-			setForeground(colorFont);
+			setForeground(getFontColor());
 		}
+	}
+
+	Color getFontColor()
+	{
+		return colorFont;
 	}
 
 	/**

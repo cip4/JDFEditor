@@ -3,8 +3,8 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2016 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * Copyright (c) 2001-2021 The International Cooperation for the Integration of
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +12,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -20,17 +20,17 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
+ *        The International Cooperation for the Integration of
  *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of
  *    Processes in  Prepress, Press and Postpress" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact info@cip4.org.
  *
  * 5. Products derived from this software may not be called "CIP4",
@@ -56,22 +56,28 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
+ * individuals on behalf of the The International Cooperation for the Integration
  * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
+ * originally based on software
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V.
+ *
+ * For more information on The International Cooperation for the
  * Integration of Processes in  Prepress, Press and Postpress , please see
  * <http://www.cip4.org/>.
- *  
- * 
+ *
+ *
  */
 package org.cip4.tools.jdfeditor.view.renderer;
 
+import java.awt.Color;
+import java.awt.Font;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cip4.tools.jdfeditor.EditorDocument;
+import org.cip4.tools.jdfeditor.JDFFrame;
+import org.cip4.tools.jdfeditor.view.MainView;
 
 /**
  * Render JDF Elements in tree view.
@@ -81,7 +87,7 @@ public class JDFTreeCellRenderer extends AbstractTreeCellRenderer
 	private static final Log LOGGER = LogFactory.getLog(JDFTreeCellRenderer.class);
 
 	private static final long serialVersionUID = 1526856515806803255L;
-	
+
 	public JDFTreeCellRenderer()
 	{
 	}
@@ -90,6 +96,40 @@ public class JDFTreeCellRenderer extends AbstractTreeCellRenderer
 	protected Log getLogger()
 	{
 		return LOGGER;
+	}
+
+	final static Color colorFontJson = new Color(0, 0, 123);
+
+	/**
+	 * @see org.cip4.tools.jdfeditor.view.renderer.AbstractTreeCellRenderer#getFontColor()
+	 */
+	@Override
+	Color getFontColor()
+	{
+		final boolean b = isJson();
+		return !b ? super.getFontColor() : colorFontJson;
+	}
+
+	private boolean isJson()
+	{
+		final JDFFrame f = MainView.getFrame();
+		final EditorDocument d = f.getEditorDoc();
+		final boolean b = d == null || !d.isJson();
+		return b;
+	}
+
+	/**
+	 * @see org.cip4.tools.jdfeditor.view.renderer.AbstractTreeCellRenderer#getCellFont()
+	 */
+	@Override
+	Font getCellFont()
+	{
+		final Font cellFont = super.getCellFont();
+		if (isJson())
+		{
+			return new Font(cellFont.getName(), Font.ITALIC, cellFont.getSize());
+		}
+		return cellFont;
 	}
 
 }

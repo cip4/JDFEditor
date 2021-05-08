@@ -1253,7 +1253,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	public void saveAsJSON(final TreePath selectionPath)
 	{
 		final JDFTreeNode node = selectionPath == null ? (JDFTreeNode) getRootNode() : (JDFTreeNode) selectionPath.getLastPathComponent();
-		if (node == null || (!XJDFConstants.XJDF.equals(node.getElement().getLocalName()) && !XJDFConstants.XJMF.equals(node.getElement().getLocalName())))
+		if (node == null || !EditorUtils.isJSONEnabled(node.getElement().getLocalName()))
 		{
 			return;
 		}

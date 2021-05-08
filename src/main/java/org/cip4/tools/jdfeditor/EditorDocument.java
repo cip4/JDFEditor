@@ -169,6 +169,8 @@ public class EditorDocument
 				extension = "ptk";
 			jdfDoc.setOriginalFileName(UrlUtil.newExtension(getOriginalFileName(), extension));
 			MainView.getFrame().refreshTitle();
+			MainView.getFrame().getJDFTreeArea().drawTreeView(this);
+
 			MainView.getFrame().setEnableOpen(true);
 		}
 	}
