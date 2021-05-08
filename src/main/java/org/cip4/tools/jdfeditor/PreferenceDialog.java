@@ -317,10 +317,10 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		addTab(ResourceUtil.getMessage("SaveAsXJDFKey"), xjdfPanel1);
 
 		final JPanel jdfPanel1 = createJDFPref();
-		addTab(ResourceUtil.getMessage("SaveAsJDFKey"), jdfPanel1);
+		addTab(ResourceUtil.getMessage("SaveJDFKey"), jdfPanel1);
 
 		final JPanel jsonPanel1 = createJSONPref();
-		addTab(ResourceUtil.getMessage("SaveAsXJDFKey"), jsonPanel1);
+		addTab(ResourceUtil.getMessage("SaveAsJSONKey"), jsonPanel1);
 
 		final JPanel goldenTicketPanel = createGoldenTicketPref();
 		addTab(ResourceUtil.getMessage("GoldenTicketKey"), goldenTicketPanel);
@@ -569,7 +569,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	{
 		final JPanel main = getMainPanel();
 
-		jdfPanel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("SaveAsJDFKey")));
+		jdfPanel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("SaveJDFKey")));
 
 		main.add(jdfPanel, BorderLayout.WEST);
 		return main;
