@@ -68,8 +68,10 @@
  */
 package org.cip4.tools.jdfeditor.streamloader;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.KElement;
@@ -96,12 +98,19 @@ public class JSONStreamLoader implements IStreamLoader
 		if (fileJDF == null || !fileJDF.canRead() || !"json".equalsIgnoreCase(extension) && !"jsn".equalsIgnoreCase(extension))
 			return null;
 
+		final BufferedInputStream stream = FileUtil.getBufferedInputStream(fileJDF);
+
+		return getDocFromStream(stream);
+	}
+
+	public JDFDoc getDocFromStream(final InputStream stream)
+	{
 		final JSONReader jr = new JSONReader();
 		jr.setWantAttributes(true);
-		final KElement e = jr.getElement(FileUtil.getBufferedInputStream(fileJDF));
+		final KElement e = jr.getElement(stream);
 		if (e == null)
 			return null;
-		JDFDoc jdfDoc = new JDFDoc(e.getOwnerDocument());
+		final JDFDoc jdfDoc = new JDFDoc(e.getOwnerDocument());
 		return jdfDoc;
 	}
 

@@ -735,4 +735,17 @@ public class EditorUtils
 
 		return jdfDoc;
 	}
+
+	public static String getExtension(final KElement root, final boolean json)
+	{
+		if (json)
+			return "json";
+		final String name = root == null ? null : root.getLocalName();
+		if ("PrintTalk".equalsIgnoreCase(name))
+			return "ptk";
+		if (isXJDF(name) || isJDF(name))
+			return name.toLowerCase();
+		return "xml";
+	}
+
 }

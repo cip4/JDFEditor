@@ -166,9 +166,7 @@ public class EditorDocument
 		if (jdfDoc != null && checkFile)
 		{
 
-			String extension = json ? "json" : jdfDoc.getRoot().getLocalName().toLowerCase();
-			if ("PrintTalk".equalsIgnoreCase(extension))
-				extension = "ptk";
+			final String extension = EditorUtils.getExtension(jdfDoc.getRoot(), json);
 			final String newExtension = UrlUtil.newExtension(getOriginalFileName(), extension);
 			if (!checkSave(UrlUtil.urlToFile(newExtension)))
 				return;

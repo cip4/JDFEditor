@@ -3,8 +3,8 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * Copyright (c) 2001-2021 The International Cooperation for the Integration of
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +12,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -20,17 +20,17 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
+ *        The International Cooperation for the Integration of
  *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of
  *    Processes in  Prepress, Press and Postpress" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact info@cip4.org.
  *
  * 5. Products derived from this software may not be called "CIP4",
@@ -56,17 +56,17 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
+ * individuals on behalf of the The International Cooperation for the Integration
  * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
+ * originally based on software
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V.
+ *
+ * For more information on The International Cooperation for the
  * Integration of Processes in  Prepress, Press and Postpress , please see
  * <http://www.cip4.org/>.
- *  
- * 
+ *
+ *
  */
 package org.cip4.tools.jdfeditor;
 
@@ -74,7 +74,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
@@ -104,10 +103,12 @@ import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFMessage.EnumType;
 import org.cip4.jdflib.jmf.JDFQueueSubmissionParams;
 import org.cip4.jdflib.jmf.JDFReturnQueueEntryParams;
+import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.UrlPart;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.jdflib.util.mime.MimeWriter;
+import org.cip4.lib.jdf.jsonutil.JSONWriter;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
@@ -138,7 +139,7 @@ public class SendToDevice extends JPanel implements ActionListener
 	// private JButton browse;
 
 	/**
-	 * 
+	 *
 	 */
 	public SendToDevice()
 	{
@@ -202,10 +203,10 @@ public class SendToDevice extends JPanel implements ActionListener
 			SendMethodBox.add(rbPackageAll);
 			add(SendMethodBox);
 			add(cbReturn);
-			String s = settingService.getSetting(SettingKey.SEND_URL_RETURN, String.class);
+			final String s = settingService.getSetting(SettingKey.SEND_URL_RETURN, String.class);
 			urlReturn = initURL(ResourceUtil.getMessage("returnToURL"), s);
 		}
-		String s = settingService.getSetting(SettingKey.SEND_URL_SEND, String.class);
+		final String s = settingService.getSetting(SettingKey.SEND_URL_SEND, String.class);
 		urlPath = initURL(ResourceUtil.getMessage("pathToURL"), s);
 	}
 
@@ -223,13 +224,13 @@ public class SendToDevice extends JPanel implements ActionListener
 		tf.setEditable(true);
 
 		int items = 0;
-		StringTokenizer st = new StringTokenizer(preset, ";");
+		final StringTokenizer st = new StringTokenizer(preset, ";");
 		while (st.hasMoreTokens())
 		{
 			items++;
 			if (items > 5)
 				break; // support only 5 items, don't show others even if they are in conf file
-			String s = st.nextToken();
+			final String s = st.nextToken();
 			tf.addItem(s);
 			LOG.debug("added item: " + s);
 		}
@@ -241,7 +242,7 @@ public class SendToDevice extends JPanel implements ActionListener
 	}
 
 	/**
-	 * 
+	 *
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	@Override
@@ -266,12 +267,12 @@ public class SendToDevice extends JPanel implements ActionListener
 
 	/**
 	 * sendJMFJDFmime sends the actual open JDF as a MIME multipart/related message to the given URL
-	 * 
+	 *
 	 * @return true if success
 	 */
 	private boolean sendJDF()
 	{
-		URL url = getURL(false);
+		final URL url = getURL(false);
 		if (url == null)
 		{
 			EditorUtils.errorBox("ErrorSendDevice", "URL =null");
@@ -312,7 +313,7 @@ public class SendToDevice extends JPanel implements ActionListener
 			qsp.setReturnJMF(returnURL);
 		}
 		int rc = -2;
-		String message = "Snafu";
+		final String message = "Snafu";
 		final EditorDocument editorDoc = MainView.getEditorDoc();
 		if (editorDoc == null)
 		{
@@ -333,7 +334,7 @@ public class SendToDevice extends JPanel implements ActionListener
 			{
 				qsp.setURL("dummy");
 				final Multipart mp = MimeUtil.buildMimePackage(jmfDoc, theDoc, packageAll);
-				MimeWriter mw = new MimeWriter(mp);
+				final MimeWriter mw = new MimeWriter(mp);
 				up = mw.writeToURL(url.toExternalForm());
 			}
 			else
@@ -347,7 +348,7 @@ public class SendToDevice extends JPanel implements ActionListener
 			bSendTrue = rc == 200;
 			if (bSendTrue && !UrlUtil.isFile(url.toExternalForm()))
 			{
-				createResponse(up);
+				createResponse(up, "jmf");
 			}
 		}
 		catch (final Exception x)
@@ -363,6 +364,21 @@ public class SendToDevice extends JPanel implements ActionListener
 		return bSendTrue;
 	}
 
+	private void createResponse(final UrlPart up, final String ext)
+	{
+		String newFileName = MainView.getEditorDoc().getOriginalFileName();
+		newFileName = UrlUtil.newExtension(newFileName, ".resp." + ext);
+		final File f = FileUtil.streamToFile(up.getResponseStream(), newFileName);
+		if (f != null)
+		{
+			MainView.getFrame().readFile(f);
+		}
+		else
+		{
+			JOptionPane.showMessageDialog(MainView.getFrame(), "No Message Response received");
+		}
+	}
+
 	/**
 	 * @param url
 	 * @param bMime
@@ -375,7 +391,7 @@ public class SendToDevice extends JPanel implements ActionListener
 		final JDFCommand command = jmfDoc.getJMFRoot().appendCommand(EnumType.ReturnQueueEntry);
 		final JDFReturnQueueEntryParams rqp = command.appendReturnQueueEntryParams();
 		int rc = -2;
-		String message = "Snafu";
+		final String message = "Snafu";
 		final EditorDocument editorDoc = MainView.getEditorDoc();
 		if (editorDoc == null)
 		{
@@ -400,7 +416,7 @@ public class SendToDevice extends JPanel implements ActionListener
 				rc = up.getResponseCode();
 				if (rc == 200 && !UrlUtil.isFile(url.toExternalForm()))
 				{
-					createResponse(up);
+					createResponse(up, "jmf");
 				}
 
 			}
@@ -441,62 +457,52 @@ public class SendToDevice extends JPanel implements ActionListener
 	 */
 	private boolean sendRaw(final URL url)
 	{
-		boolean bSendTrue = true;
 		final EditorDocument editorDoc = MainView.getEditorDoc();
 		final JDFDoc theDoc = editorDoc == null ? null : editorDoc.getJDFDoc();
 		if (theDoc == null)
 		{
 			return false;
 		}
-		KElement root = theDoc.getRoot();
+		final KElement root = theDoc.getRoot();
 		updateJobID(root);
-
-		final UrlPart up = theDoc.write2HttpURL(url, null);
-
-		try
+		final String extension = EditorUtils.getExtension(root, editorDoc.isJson());
+		final UrlPart up;
+		if (editorDoc.isJson())
 		{
-			bSendTrue = up != null && up.getResponseCode() == 200;
-			if (bSendTrue && !UrlUtil.isFile(url.toExternalForm()))
-			{
-				createResponse(up);
-			}
+			final JSONWriter jw = Editor.getEditor().getJSonWriter();
+			jw.convert(theDoc.getRoot());
+			up = UrlUtil.writerToURL(url.toExternalForm(), jw, UrlUtil.POST, UrlUtil.APPLICATION_JSON, null);
+
 		}
-		catch (final IOException x)
+		else
 		{
-			bSendTrue = false;
+			up = theDoc.write2HttpURL(url, null);
 		}
-		return bSendTrue;
-	}
-
-	/**
-	 * @param up
-	 * @throws IOException
-	 */
-	private void createResponse(final UrlPart up) throws IOException
-	{
-		if (up != null)
+		final boolean bSendTrue = up != null && up.getResponseCode() == 200;
+		if (bSendTrue && !UrlUtil.isFile(url.toExternalForm()))
 		{
-			final JDFDoc d2 = JDFDoc.parseStream(up.getResponseStream());
-			if (d2 != null)
+			String newFileName = MainView.getEditorDoc().getOriginalFileName();
+			newFileName = UrlUtil.newExtension(newFileName, extension);
+			final File f = FileUtil.streamToFile(up.getResponseStream(), newFileName);
+			if (f != null)
 			{
-				String newFileName = MainView.getEditorDoc().getOriginalFileName();
-				newFileName = UrlUtil.newExtension(newFileName, ".resp.jmf");
-				d2.write2File(newFileName, 2, true);
-				MainView.getFrame().readFile(new File(newFileName));
+				MainView.getFrame().readFile(f);
 			}
 			else
 			{
 				JOptionPane.showMessageDialog(MainView.getFrame(), "No Message Response received");
 			}
 		}
+
+		return bSendTrue;
 	}
 
 	/**
 	 * getURL
-	 * 
+	 *
 	 * returns the URL of the device given by the user
 	 * @param bReturn if true, the url is the returnurl, else it is the device url
-	 * 
+	 *
 	 * @return URL the url
 	 */
 	public URL getURL(final boolean bReturn)
@@ -504,7 +510,7 @@ public class SendToDevice extends JPanel implements ActionListener
 		// returns the URL given by the user
 		URL url = null;
 		final JComboBox<String> tf = bReturn ? urlReturn : urlPath;
-		String currentStr = (String) tf.getEditor().getItem();
+		final String currentStr = (String) tf.getEditor().getItem();
 		final String urlText = currentStr == null ? null : currentStr;
 
 		if (bReturn && KElement.isWildCard(urlText))
@@ -517,12 +523,12 @@ public class SendToDevice extends JPanel implements ActionListener
 			url = new URL(urlText);
 			if (bReturn)
 			{
-				String s = convertJComboBoxToString(tf);
+				final String s = convertJComboBoxToString(tf);
 				settingService.setSetting(SettingKey.SEND_URL_RETURN, s);
 			}
 			else
 			{
-				String s = convertJComboBoxToString(tf);
+				final String s = convertJComboBoxToString(tf);
 				settingService.setSetting(SettingKey.SEND_URL_SEND, s);
 			}
 		}
@@ -534,11 +540,11 @@ public class SendToDevice extends JPanel implements ActionListener
 		return url;
 	}
 
-	private String convertJComboBoxToString(JComboBox<String> c)
+	private String convertJComboBoxToString(final JComboBox<String> c)
 	{
-		String currentStr = (String) c.getEditor().getItem();
+		final String currentStr = (String) c.getEditor().getItem();
 
-		Set<String> set = new LinkedHashSet<String>();
+		final Set<String> set = new LinkedHashSet<String>();
 		set.add(currentStr);
 		for (int i = 0; i < c.getItemCount(); i++)
 		{
@@ -546,7 +552,7 @@ public class SendToDevice extends JPanel implements ActionListener
 		}
 
 		String s = "";
-		Iterator<String> it = set.iterator();
+		final Iterator<String> it = set.iterator();
 		while (it.hasNext())
 		{
 			s += it.next() + ";";
@@ -556,7 +562,7 @@ public class SendToDevice extends JPanel implements ActionListener
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public void trySend()
 	{
@@ -578,7 +584,7 @@ public class SendToDevice extends JPanel implements ActionListener
 
 		// show success in a popup window
 		String sLabel = (bSendTrue) ? ResourceUtil.getMessage("JDFSent") : ResourceUtil.getMessage("JDFNotSent");
-		URL url = getURL(false);
+		final URL url = getURL(false);
 		sLabel += "\n\nURL= " + url.toExternalForm();
 		if (bSendTrue)
 		{
@@ -608,7 +614,7 @@ public class SendToDevice extends JPanel implements ActionListener
 	 */
 	private boolean isMime()
 	{
-		boolean simpleMime = rbMIME == null ? false : rbMIME.isSelected();
+		final boolean simpleMime = rbMIME == null ? false : rbMIME.isSelected();
 		return simpleMime || isPackageAll();
 	}
 
