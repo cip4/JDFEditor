@@ -84,8 +84,10 @@ import javax.swing.tree.TreePath;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.UrlUtil;
+import org.cip4.lib.jdf.jsonutil.JSONWriter;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.view.MainView;
@@ -119,6 +121,40 @@ public class EditorDocument
 
 	private boolean dirtyFlag;
 
+	private boolean json;
+
+	/**
+	 * @return the json
+	 */
+	public boolean isJson()
+	{
+		return json;
+	}
+
+	/**
+	 * @return the json
+	 */
+	public boolean isXJDF()
+	{
+		return jdfDoc != null && EditorUtils.isXJDF(jdfDoc.getRoot().getLocalName());
+	}
+
+	/**
+	 * @param json the json to set
+	 */
+	public void setJson(final boolean json)
+	{
+		this.json = json;
+		if (jdfDoc != null)
+		{
+
+			final String extension = json ? "json" : jdfDoc.getRoot().getLocalName().toLowerCase();
+			jdfDoc.setOriginalFileName(UrlUtil.newExtension(getOriginalFileName(), extension));
+			MainView.getFrame().refreshTitle();
+			MainView.getFrame().setEnableOpen(true);
+		}
+	}
+
 	/**
 	 * Custom constructor. Accepting several attributes for initializing.
 	 * @param jdfDoc The JDFDoc object.
@@ -131,6 +167,7 @@ public class EditorDocument
 		this.jdfTreeNodesHistory = new Vector<JDFTreeNode>();
 		this.packageName = mimeContent;
 		this.zoom = EditorButtonBar.DEFAULT_ZOOM;
+		json = false;
 	}
 
 	public boolean isDirtyFlag()
@@ -183,7 +220,7 @@ public class EditorDocument
 		{
 			return "EditorDocument: #null";
 		}
-		return "EditorDocument: " + getSaveFileName() + " " + jdfDoc;
+		return "EditorDocument: " + getSaveFileName() + " " + jdfDoc + " json=" + json;
 	}
 
 	/**
@@ -513,10 +550,6 @@ public class EditorDocument
 		}
 	}
 
-	// //////////////////////////////////////////////////////////////////////////////
-	// //////////////////////////////////////////////////////////////////////////////
-	// //////////////////////////////////////////////////////////////////////////////
-
 	/**
 	 * @param file
 	 */
@@ -586,7 +619,16 @@ public class EditorDocument
 	private void writeToFile(final File file)
 	{
 		final int indent = settingService.getSetting(SettingKey.GENERAL_INDENT, Boolean.class) ? 2 : 0;
-		jdfDoc.write2File(file.getAbsolutePath(), indent, !settingService.getSetting(SettingKey.GENERAL_INDENT, Boolean.class));
+		if (json)
+		{
+			final JSONWriter jw = Editor.getEditor().getJSonWriter();
+			jw.convert(jdfDoc.getRoot());
+			FileUtil.writeFile(jw, file);
+		}
+		else
+		{
+			jdfDoc.write2File(file.getAbsolutePath(), indent, !settingService.getSetting(SettingKey.GENERAL_INDENT, Boolean.class));
+		}
 	}
 
 	/**

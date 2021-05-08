@@ -96,6 +96,8 @@ import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.extensions.XJDF20;
+import org.cip4.jdflib.extensions.XJDFConstants;
+import org.cip4.jdflib.extensions.xjdfwalker.XJDFToJDFConverter;
 import org.cip4.jdflib.extensions.xjdfwalker.jdftoxjdf.JDFToXJDF.EnumProcessPartition;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourcePool;
@@ -104,8 +106,6 @@ import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
-import org.cip4.lib.jdf.jsonutil.JSONWriter;
-import org.cip4.lib.jdf.jsonutil.JSONWriter.eJSONCase;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.streamloader.IStreamLoader;
@@ -599,6 +599,10 @@ public class EditorUtils
 			final JDFFrame frame = MainView.getFrame();
 			frame.setJDFDoc(jdfDoc, packageName);
 			editorDocument = frame.getEditorDoc();
+			if ("json".equals(jdfDoc.getCreateXMLDocUserData().getUserData()))
+			{
+				editorDocument.setJson(true);
+			}
 		}
 
 		return editorDocument;
@@ -614,6 +618,11 @@ public class EditorUtils
 		}
 
 		return p.parseStream(inStream);
+	}
+
+	public static boolean isXJDF(final String name)
+	{
+		return XJDFConstants.XJDF.equalsIgnoreCase(name) || XJDFConstants.XJMF.equalsIgnoreCase(name);
 	}
 
 	/**
@@ -643,24 +652,18 @@ public class EditorUtils
 		return xjdf20;
 	}
 
-	private static final String RES_SCHEMA = "/org/cip4/tools/jdfeditor/schema/xjdf.xsd";
-
 	/**
 	 *
-	 * get the converter with the options set in this dialog
-	 * @return the converter
+	 * @return
 	 */
-	public static JSONWriter getJSONConverter()
+	public static XJDFToJDFConverter getJDFConverter()
 	{
-		final JSONWriter w = new JSONWriter();
+		final XJDFToJDFConverter c = new XJDFToJDFConverter(null);
 		final SettingService settingService = SettingService.getSettingService();
-		w.setTypeSafe(settingService.getBool(SettingKey.JSON_TYPESAFE));
-		w.setKeyCase(eJSONCase.valueOf(settingService.getString(SettingKey.JSON_CASE)));
-		final InputStream is = ResourceUtil.class.getResourceAsStream(RES_SCHEMA);
-		final KElement e = KElement.parseStream(is);
-		w.fillTypesFromSchema(e);
-
-		return w;
+		c.setConvertTilde(settingService.getSetting(SettingKey.XJDF_CONVERT_TILDE, Boolean.class));
+		c.setCreateProduct(settingService.getSetting(SettingKey.XJDF_FROM_RETAIN_PRODUCT, Boolean.class));
+		c.setHeuristicLink(settingService.getSetting(SettingKey.XJDF_FROM_HEURISTIC_LINK, Boolean.class));
+		return c;
 	}
 
 	/**
@@ -700,6 +703,7 @@ public class EditorUtils
 
 			if (jdfDoc != null)
 			{
+				jdfDoc.getCreateXMLDocUserData().setUserData("json");
 				break;
 			}
 		}

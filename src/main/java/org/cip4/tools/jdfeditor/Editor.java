@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2018 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2021 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -71,6 +71,7 @@
 package org.cip4.tools.jdfeditor;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.Arrays;
 
 import org.apache.commons.logging.Log;
@@ -85,11 +86,14 @@ import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.util.MyArgs;
 import org.cip4.jdflib.util.file.UserDir;
 import org.cip4.jdflib.util.logging.LogConfigurator;
+import org.cip4.lib.jdf.jsonutil.JSONWriter;
+import org.cip4.lib.jdf.jsonutil.JSONWriter.eJSONCase;
 import org.cip4.tools.jdfeditor.commandline.EditorCommandLine;
 import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.BuildPropsUtil;
+import org.cip4.tools.jdfeditor.util.ResourceUtil;
 
 /**
  * @author AnderssA ThunellE
@@ -100,6 +104,7 @@ public class Editor
 	private static Editor my_Editor;
 
 	private static Log log = null;
+	private JSONWriter jsonWriter;
 
 	/*
 	 * This package is found under JDFEditor in the src/java section. It contains all of the icons associated with the JDFEditor. For your icons to appear,
@@ -208,6 +213,33 @@ public class Editor
 	JMFBuilder getJMFBuilder()
 	{
 		return JMFBuilderFactory.getJMFBuilder(getClass());
+	}
+
+	private static final String RES_SCHEMA = "/org/cip4/tools/jdfeditor/schema/xjdf.xsd";
+
+	public void resetJSON()
+	{
+		jsonWriter = null;
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+	public JSONWriter getJSonWriter()
+	{
+		final SettingService settingService = SettingService.getSettingService();
+		if (jsonWriter == null)
+		{
+			final JSONWriter w = new JSONWriter();
+			w.setTypeSafe(settingService.getBool(SettingKey.JSON_TYPESAFE));
+			w.setKeyCase(eJSONCase.valueOf(settingService.getString(SettingKey.JSON_CASE)));
+			final InputStream is = ResourceUtil.class.getResourceAsStream(RES_SCHEMA);
+			final KElement e = KElement.parseStream(is);
+			w.fillTypesFromSchema(e);
+			jsonWriter = w;
+		}
+		return jsonWriter;
 	}
 
 }

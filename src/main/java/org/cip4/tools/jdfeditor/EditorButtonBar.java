@@ -85,9 +85,6 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
-import org.cip4.tools.jdfeditor.dialog.SaveAsJDFDialog;
-import org.cip4.tools.jdfeditor.dialog.SaveAsJSONDialog;
-import org.cip4.tools.jdfeditor.dialog.SaveAsXJDFDialog;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
@@ -338,15 +335,18 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		m_LastButton.setEnabled(true);
 		m_NextButton.setEnabled(true);
 
-		m_convert2Jdf.setEnabled(true);
-		m_convert2XJdf.setEnabled(true);
-		m_convert2JSON.setEnabled(true);
-
-		m_validateButton.setEnabled(true);
-		m_printButton.setEnabled(true);
-		m_sendButton.setEnabled(true);
 		final EditorDocument eDoc = MainView.getEditorDoc();
-		m_refreshButton.setEnabled(eDoc == null ? true : eDoc.getPackageName() == null);
+		if (eDoc != null)
+		{
+			m_convert2Jdf.setEnabled(eDoc.isXJDF());
+			m_convert2XJdf.setEnabled(eDoc.isJson() || !eDoc.isXJDF());
+			m_convert2JSON.setEnabled(eDoc.isXJDF() && !eDoc.isJson());
+
+			m_validateButton.setEnabled(true);
+			m_printButton.setEnabled(true);
+			m_sendButton.setEnabled(true);
+			m_refreshButton.setEnabled(eDoc.getPackageName() == null);
+		}
 	}
 
 	///////////////////////////////////////////////////////////////
@@ -386,27 +386,16 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		}
 		else if (eSrc == m_convert2Jdf) // convert 2 JDF
 		{
-			final SaveAsJDFDialog d = new SaveAsJDFDialog();
-			if (d.isOK())
-			{
-				MainView.getModel().saveAsJDF(null, d.getConverter());
-			}
+			MainView.getModel().saveAsJDF(null, EditorUtils.getJDFConverter());
+
 		}
 		else if (eSrc == m_convert2XJdf) // convert 2 XJDF
 		{
-			final SaveAsXJDFDialog d = new SaveAsXJDFDialog();
-			if (d.isOK())
-			{
-				MainView.getModel().saveAsXJDF(null);
-			}
+			MainView.getModel().saveAsXJDF(null);
 		}
 		else if (eSrc == m_convert2JSON) // convert 2 XJDF
 		{
-			final SaveAsJSONDialog d = new SaveAsJSONDialog();
-			if (d.isOK())
-			{
-				MainView.getModel().saveAsJSON(null);
-			}
+			MainView.getModel().saveAsJSON(null);
 		}
 		else if (eSrc == m_upOneLevelButton) // navigate up
 		{
