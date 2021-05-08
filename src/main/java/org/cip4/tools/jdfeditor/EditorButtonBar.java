@@ -339,8 +339,8 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		if (eDoc != null)
 		{
 			m_convert2Jdf.setEnabled(eDoc.isXJDF());
-			m_convert2XJdf.setEnabled(eDoc.isJson() || !eDoc.isXJDF());
-			m_convert2JSON.setEnabled(eDoc.isXJDF() && !eDoc.isJson());
+			m_convert2XJdf.setEnabled(eDoc.isJson() || eDoc.isJDF());
+			m_convert2JSON.setEnabled(eDoc.isJSONEnabled() && !eDoc.isJson());
 
 			m_validateButton.setEnabled(true);
 			m_printButton.setEnabled(true);

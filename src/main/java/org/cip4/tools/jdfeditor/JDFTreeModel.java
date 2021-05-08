@@ -1213,7 +1213,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		}
 		final EditorDocument eDoc = MainView.getEditorDoc();
 
-		final boolean xjdf = XJDFConstants.XJDF.equals(node.getElement().getLocalName()) || XJDFConstants.XJMF.equals(node.getElement().getLocalName());
+		final boolean xjdf = eDoc.isJSONEnabled();
 		final KElement e = node.getElement();
 		final String fn = eDoc.getOriginalFileName();
 		if (xjdf)
@@ -1221,25 +1221,28 @@ public class JDFTreeModel extends DefaultTreeModel
 			eDoc.setJson(false);
 			eDoc.saveFile(null);
 		}
-		KElement xJDF = null;
-		final XJDF20 xjdf20 = EditorUtils.getXJDFConverter();
-		String ext = null;
-		if (e instanceof JDFNode)
+		else
 		{
-			xJDF = convertJDF(e, fn, xJDF, xjdf20);
-			ext = XJDFConstants.XJDF.toLowerCase();
-		}
-		else if (e instanceof JDFJMF)
-		{
-			xJDF = xjdf20.makeNewJMF((JDFJMF) e);
-			ext = XJDFConstants.XJMF.toLowerCase();
-		}
-		if (xJDF != null)
-		{
-			final XMLDoc d = xJDF.getOwnerDocument_KElement();
-			final String fnNew = UrlUtil.newExtension(fn, ext);
-			d.write2File(fnNew, 2, false);
-			MainView.getFrame().readFile(new File(fnNew));
+			KElement xJDF = null;
+			final XJDF20 xjdf20 = EditorUtils.getXJDFConverter();
+			String ext = null;
+			if (e instanceof JDFNode)
+			{
+				xJDF = convertJDF(e, fn, xJDF, xjdf20);
+				ext = XJDFConstants.XJDF.toLowerCase();
+			}
+			else if (e instanceof JDFJMF)
+			{
+				xJDF = xjdf20.makeNewJMF((JDFJMF) e);
+				ext = XJDFConstants.XJMF.toLowerCase();
+			}
+			if (xJDF != null)
+			{
+				final XMLDoc d = xJDF.getOwnerDocument_KElement();
+				final String fnNew = UrlUtil.newExtension(fn, ext);
+				d.write2File(fnNew, 2, false);
+				MainView.getFrame().readFile(new File(fnNew));
+			}
 		}
 	}
 

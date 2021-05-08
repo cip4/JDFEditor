@@ -86,6 +86,7 @@ import javax.swing.tree.TreePath;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.AttributeName;
+import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFConstants;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
@@ -623,6 +624,16 @@ public class EditorUtils
 	public static boolean isXJDF(final String name)
 	{
 		return XJDFConstants.XJDF.equalsIgnoreCase(name) || XJDFConstants.XJMF.equalsIgnoreCase(name);
+	}
+
+	public static boolean isJDF(final String name)
+	{
+		return ElementName.JDF.equalsIgnoreCase(name) || ElementName.JMF.equalsIgnoreCase(name);
+	}
+
+	public static boolean isJSONEnabled(final String name)
+	{
+		return "PrintTalk".equalsIgnoreCase(name) || isXJDF(name);
 	}
 
 	/**

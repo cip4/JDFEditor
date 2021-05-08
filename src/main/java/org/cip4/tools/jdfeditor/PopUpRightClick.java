@@ -359,11 +359,14 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 			m_saveXJDF = addMenuItem("SaveXJDFKey");
 			add(separator);
 		}
-		else if (elem != null && EditorUtils.isXJDF(elem.getLocalName()))
+		else if (elem != null && EditorUtils.isJSONEnabled(elem.getLocalName()))
 		{
-			m_saveXJDFCaps = addMenuItem("ExportToDevCapKey");
-			m_saveJDF = addMenuItem("SaveJDFKey");
 			final EditorDocument eDoc = MainView.getEditorDoc();
+			if (eDoc.isXJDF())
+			{
+				m_saveXJDFCaps = addMenuItem("ExportToDevCapKey");
+				m_saveJDF = addMenuItem("SaveJDFKey");
+			}
 			if (eDoc.isJson())
 			{
 				m_saveXJDF = addMenuItem("SaveXJDFKey");

@@ -140,6 +140,22 @@ public class EditorDocument
 	}
 
 	/**
+	 * @return the json
+	 */
+	public boolean isJDF()
+	{
+		return jdfDoc != null && EditorUtils.isJDF(jdfDoc.getRoot().getLocalName());
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean isJSONEnabled()
+	{
+		return jdfDoc != null && EditorUtils.isJSONEnabled(jdfDoc.getRoot().getLocalName());
+	}
+
+	/**
 	 * @param json the json to set
 	 */
 	public void setJson(final boolean json)
@@ -148,7 +164,9 @@ public class EditorDocument
 		if (jdfDoc != null)
 		{
 
-			final String extension = json ? "json" : jdfDoc.getRoot().getLocalName().toLowerCase();
+			String extension = json ? "json" : jdfDoc.getRoot().getLocalName().toLowerCase();
+			if ("PrintTalk".equalsIgnoreCase(extension))
+				extension = "ptk";
 			jdfDoc.setOriginalFileName(UrlUtil.newExtension(getOriginalFileName(), extension));
 			MainView.getFrame().refreshTitle();
 			MainView.getFrame().setEnableOpen(true);
