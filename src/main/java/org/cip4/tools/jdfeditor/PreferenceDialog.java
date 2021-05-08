@@ -95,6 +95,9 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
 import org.cip4.jdflib.core.VString;
+import org.cip4.tools.jdfeditor.dialog.SaveAsJDFDialog;
+import org.cip4.tools.jdfeditor.dialog.SaveAsJSONDialog;
+import org.cip4.tools.jdfeditor.dialog.SaveAsXJDFDialog;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
@@ -177,6 +180,9 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private final UIManager.LookAndFeelInfo aLnF[] = UIManager.getInstalledLookAndFeels();
 
 	private final ValidationTab validTab;
+	private final SaveAsXJDFDialog xjdfPanel;
+	private final SaveAsJDFDialog jdfPanel;
+	private final SaveAsJSONDialog jsonPanel;
 
 	/**
 	 *
@@ -184,6 +190,10 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	public PreferenceDialog()
 	{
 		validTab = new ValidationTab();
+		xjdfPanel = new SaveAsXJDFDialog();
+		jdfPanel = new SaveAsJDFDialog();
+		jsonPanel = new SaveAsJSONDialog();
+
 		init();
 	}
 
@@ -298,34 +308,38 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		final JPanel generalPanel = createGeneralPref();
 		addTab(ResourceUtil.getMessage("GeneralKey"), generalPanel);
 
-		final JPanel langPanel = createLanguagePref();
-		addTab(ResourceUtil.getMessage("LanguageKey"), langPanel);
-
-		final JPanel lnfPanel = createLnFPref();
-		addTab(ResourceUtil.getMessage("LookAndFeelKey"), lnfPanel);
-
-		final JPanel dirPanel = createDirPref();
-		addTab(ResourceUtil.getMessage("DirectoriesKey"), dirPanel);
-
 		final JPanel sendPanel = new CommunicationTab().createSendToDevicePref();
 		addTab(ResourceUtil.getMessage("SendToDeviceKey"), sendPanel);
 
 		addTab(ResourceUtil.getMessage("ValidateKey"), validTab);
 
+		final JPanel xjdfPanel1 = createXJDFPref();
+		addTab(ResourceUtil.getMessage("SaveAsXJDFKey"), xjdfPanel1);
+
+		final JPanel jdfPanel1 = createJDFPref();
+		addTab(ResourceUtil.getMessage("SaveAsJDFKey"), jdfPanel1);
+
+		final JPanel jsonPanel1 = createJSONPref();
+		addTab(ResourceUtil.getMessage("SaveAsXJDFKey"), jsonPanel1);
+
 		final JPanel goldenTicketPanel = createGoldenTicketPref();
 		addTab(ResourceUtil.getMessage("GoldenTicketKey"), goldenTicketPanel);
+
+		final JPanel lnfPanel = createLnFPref();
+		addTab(ResourceUtil.getMessage("LookAndFeelKey"), lnfPanel);
+
+		final JPanel langPanel = createLanguagePref();
+		addTab(ResourceUtil.getMessage("LanguageKey"), langPanel);
+
+		final JPanel dirPanel = createDirPref();
+		addTab(ResourceUtil.getMessage("DirectoriesKey"), dirPanel);
 
 		MainView.setCursor(0, this);
 	}
 
 	private JPanel createGeneralPref()
 	{
-		final JPanel main = new JPanel(new BorderLayout());
-
-		main.add(Box.createVerticalStrut(5), BorderLayout.SOUTH);
-		main.add(Box.createHorizontalStrut(5), BorderLayout.EAST);
-		main.add(Box.createHorizontalStrut(5), BorderLayout.WEST);
-		main.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
+		final JPanel main = getMainPanel();
 
 		final JPanel genPanel = new JPanel(null);
 		genPanel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("GeneralOptionsKey")));
@@ -531,12 +545,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
 	private JPanel createDirPref()
 	{
-		final JPanel main = new JPanel(new BorderLayout());
-
-		main.add(Box.createVerticalStrut(5), BorderLayout.SOUTH);
-		main.add(Box.createHorizontalStrut(5), BorderLayout.EAST);
-		main.add(Box.createHorizontalStrut(5), BorderLayout.WEST);
-		main.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
+		final JPanel main = getMainPanel();
 
 		final JPanel dirPanel = new JPanel(null);
 		dirPanel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("DefaultDirsKey")));
@@ -546,7 +555,37 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		return main;
 	}
 
-	private JPanel createGoldenTicketPref()
+	private JPanel createXJDFPref()
+	{
+		final JPanel main = getMainPanel();
+
+		xjdfPanel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("SaveAsXJDFKey")));
+
+		main.add(xjdfPanel, BorderLayout.WEST);
+		return main;
+	}
+
+	private JPanel createJDFPref()
+	{
+		final JPanel main = getMainPanel();
+
+		jdfPanel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("SaveAsJDFKey")));
+
+		main.add(jdfPanel, BorderLayout.WEST);
+		return main;
+	}
+
+	private JPanel createJSONPref()
+	{
+		final JPanel main = getMainPanel();
+
+		jsonPanel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("SaveAsJSONKey")));
+
+		main.add(jsonPanel, BorderLayout.WEST);
+		return main;
+	}
+
+	private JPanel getMainPanel()
 	{
 		final JPanel main = new JPanel(new BorderLayout());
 
@@ -554,6 +593,12 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		main.add(Box.createHorizontalStrut(5), BorderLayout.EAST);
 		main.add(Box.createHorizontalStrut(5), BorderLayout.WEST);
 		main.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
+		return main;
+	}
+
+	private JPanel createGoldenTicketPref()
+	{
+		final JPanel main = getMainPanel();
 
 		final JPanel panel = new JPanel(null);
 		panel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("GoldenTicketKey")));
@@ -888,6 +933,10 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		settingService.setSetting(SettingKey.GOLDENTICKET_MISURL, misURL);
 
 		settingService.setSetting(SettingKey.FONT_SIZE_ENLARGED, enlargeTextField.getText());
+
+		xjdfPanel.write2Ini();
+		jsonPanel.write2Ini();
+		jdfPanel.write2Ini();
 	}
 
 	/**

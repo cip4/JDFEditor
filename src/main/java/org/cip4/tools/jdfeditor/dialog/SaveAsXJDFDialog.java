@@ -73,16 +73,12 @@ package org.cip4.tools.jdfeditor.dialog;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Vector;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JPanel;
 
 import org.cip4.jdflib.extensions.xjdfwalker.jdftoxjdf.JDFToXJDF.EnumProcessPartition;
@@ -94,7 +90,7 @@ import org.cip4.tools.jdfeditor.util.ResourceUtil;
  * Class that implements a "Save as XJDF..." dialog.
  *
  */
-public class SaveAsXJDFDialog extends JDialog implements ActionListener
+public class SaveAsXJDFDialog extends JPanel
 {
 
 	final SettingService settingService;
@@ -102,11 +98,6 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	static final int BUTTON_CANCEL = 0;
-	static final int BUTTON_OK = 1;
-
-	private final JButton bOK;
-	private final JButton bCancel;
 
 	private final JComboBox<String> cbProcessPart;
 	private final JCheckBox cbConvertStripping;
@@ -116,15 +107,12 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 	private final JCheckBox cbTilde;
 	private final JCheckBox cbTypesafeJMF;
 	private final JCheckBox cbParameter;
-	private int choosedButton = BUTTON_CANCEL;
 
 	/**
 	 *
 	 */
 	public SaveAsXJDFDialog()
 	{
-		setTitle(ResourceUtil.getMessage("SaveAsXJDFKey"));
-		setModal(true);
 		setLayout(new BorderLayout());
 
 		settingService = SettingService.getSettingService();
@@ -155,16 +143,8 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
 		buttonsPanel.add(Box.createHorizontalGlue());
 
-		bOK = new JButton("OK");
-		bOK.addActionListener(this);
-		bCancel = new JButton(ResourceUtil.getMessage("CancelKey"));
-		bCancel.addActionListener(this);
-
-		buttonsPanel.add(bOK);
-		buttonsPanel.add(bCancel);
-
-		getContentPane().add(checkboxesPanel, BorderLayout.CENTER);
-		getContentPane().add(buttonsPanel, BorderLayout.SOUTH);
+		add(checkboxesPanel, BorderLayout.CENTER);
+		add(buttonsPanel, BorderLayout.SOUTH);
 
 		final Toolkit tk = Toolkit.getDefaultToolkit();
 		final Dimension screenSize = tk.getScreenSize();
@@ -199,51 +179,17 @@ public class SaveAsXJDFDialog extends JDialog implements ActionListener
 		//cbProcessPartResourceUtil.getMessage("SingleNodeKey")
 	}
 
-	/**
-	 *
-	 *
-	 * @return
-	 */
-	public int getChoosedButton()
+	public void write2Ini()
 	{
-		return choosedButton;
-	}
+		settingService.set(SettingKey.XJDF_CONVERT_SINGLENODE, (String) cbProcessPart.getSelectedItem());
+		settingService.set(SettingKey.XJDF_CONVERT_STRIPPING, cbConvertStripping.isSelected());
+		settingService.set(SettingKey.XJDF_CONVERT_SPAN, cbSpanAttribute.isSelected());
+		settingService.set(SettingKey.XJDF_CONVERT_RUNLIST, cbMergeRunList.isSelected());
+		settingService.set(SettingKey.XJDF_CONVERT_LAYOUTPREP, cbLoPrep.isSelected());
+		settingService.set(SettingKey.XJDF_CONVERT_TILDE, cbTilde.isSelected());
+		settingService.set(SettingKey.XJDF_TYPESAFE_JMF, cbTypesafeJMF.isSelected());
+		settingService.set(SettingKey.XJDF_SPLIT_PARAMETER, cbParameter.isSelected());
 
-	/**
-	 *
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	@Override
-	public void actionPerformed(final ActionEvent e)
-	{
-		if (e.getSource() == bOK)
-		{
-			settingService.set(SettingKey.XJDF_CONVERT_SINGLENODE, (String) cbProcessPart.getSelectedItem());
-			settingService.set(SettingKey.XJDF_CONVERT_STRIPPING, cbConvertStripping.isSelected());
-			settingService.set(SettingKey.XJDF_CONVERT_SPAN, cbSpanAttribute.isSelected());
-			settingService.set(SettingKey.XJDF_CONVERT_RUNLIST, cbMergeRunList.isSelected());
-			settingService.set(SettingKey.XJDF_CONVERT_LAYOUTPREP, cbLoPrep.isSelected());
-			settingService.set(SettingKey.XJDF_CONVERT_TILDE, cbTilde.isSelected());
-			settingService.set(SettingKey.XJDF_TYPESAFE_JMF, cbTypesafeJMF.isSelected());
-			settingService.set(SettingKey.XJDF_SPLIT_PARAMETER, cbParameter.isSelected());
-
-			choosedButton = BUTTON_OK;
-			dispose();
-		}
-		else if (e.getSource() == bCancel)
-		{
-			choosedButton = BUTTON_CANCEL;
-			dispose();
-		}
-	}
-
-	/**
-	 *
-	 * @return
-	 */
-	public boolean isOK()
-	{
-		return getChoosedButton() == SaveAsXJDFDialog.BUTTON_OK;
 	}
 
 }

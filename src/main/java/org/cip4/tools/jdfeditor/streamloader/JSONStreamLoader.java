@@ -99,7 +99,10 @@ public class JSONStreamLoader implements IStreamLoader
 		final JSONReader jr = new JSONReader();
 		jr.setWantAttributes(true);
 		final KElement e = jr.getElement(FileUtil.getBufferedInputStream(fileJDF));
-		return e == null ? null : new JDFDoc(e.getOwnerDocument());
+		if (e == null)
+			return null;
+		JDFDoc jdfDoc = new JDFDoc(e.getOwnerDocument());
+		return jdfDoc;
 	}
 
 }

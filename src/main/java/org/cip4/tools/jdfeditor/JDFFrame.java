@@ -3,8 +3,8 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2016 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * Copyright (c) 2001-2016 The International Cooperation for the Integration of
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +12,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -20,17 +20,17 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
+ *        The International Cooperation for the Integration of
  *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of
  *    Processes in  Prepress, Press and Postpress" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact info@cip4.org.
  *
  * 5. Products derived from this software may not be called "CIP4",
@@ -56,17 +56,17 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
+ * individuals on behalf of the The International Cooperation for the Integration
  * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
+ * originally based on software
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V.
+ *
+ * For more information on The International Cooperation for the
  * Integration of Processes in  Prepress, Press and Postpress , please see
  * <http://www.cip4.org/>.
- *  
- * 
+ *
+ *
  */
 package org.cip4.tools.jdfeditor;
 
@@ -149,9 +149,9 @@ import org.cip4.tools.jdfeditor.view.MainView;
 
 /**
  * @author AnderssA ThunellE SvenoniusI Elena Skobchenko
- * 
+ *
  * This is the junk dump all in class with gazillions of private members
- * 
+ *
  * TODO clean up and move routines to the model
  */
 
@@ -165,7 +165,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	private MainController mainController;
 
-	private DocumentService documentService = new DocumentService();
+	private final DocumentService documentService = new DocumentService();
 
 	private JDFTreeArea m_treeArea;
 
@@ -175,7 +175,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	JTree m_searchTree;
 
-//	handles all copying and pasting
+	//	handles all copying and pasting
 	public JDFTreeCopyNode m_copyNode;
 
 	// quick & dirty hack for multi doc support
@@ -195,7 +195,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	/**
 	 * constructor of the frame
-	 * 
+	 *
 	 */
 	public JDFFrame()
 	{
@@ -228,16 +228,16 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	{
 		try
 		{
-			Class util = Class.forName("com.apple.eawt.FullScreenUtilities");
-			Class params[] = new Class[] { Window.class, Boolean.TYPE };
-			Method method = util.getMethod("setWindowCanFullScreen", params);
+			final Class util = Class.forName("com.apple.eawt.FullScreenUtilities");
+			final Class params[] = new Class[] { Window.class, Boolean.TYPE };
+			final Method method = util.getMethod("setWindowCanFullScreen", params);
 			method.invoke(util, window, true);
 		}
-		catch (ClassNotFoundException e)
+		catch (final ClassNotFoundException e)
 		{
 			LOGGER.debug("Exception: ", e);
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			LOGGER.debug("Exception: ", e);
 		}
@@ -422,7 +422,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				final VString vs = StringUtil.tokenize(exportDialog.generAttrString, " ", false);
 				vs.unify();
 
-				String s = StringUtil.setvString(vs, " ", null, null);
+				final String s = StringUtil.setvString(vs, " ", null, null);
 				mainController.setSetting(SettingKey.VALIDATION_GENERIC_ATTR, s);
 				clearViews();
 				readFile(fileToOpen);
@@ -488,10 +488,10 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				else
 				{
 					m_menuBar.updateRecentFilesMenu(fileToRead.getAbsolutePath());
-					for (int i = 0; i < eDoc.length; i++)
+					for (final EditorDocument element : eDoc)
 					{
-						refreshView(eDoc[i], null);
-						final JDFDoc doc = eDoc[i].getJDFDoc();
+						refreshView(element, null);
+						final JDFDoc doc = element.getJDFDoc();
 						if (doc != null)
 						{
 							doc.clearDirtyIDs();
@@ -548,7 +548,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		}
 	}
 
-	public void refreshTitle() {
+	public void refreshTitle()
+	{
 		setTitle(buildWindowTitleString());
 	}
 
@@ -563,7 +564,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			return DEFAULT_TITLE;
 		}
 		String title = DEFAULT_TITLE + ": ";
-		if (editorDoc.isDirtyFlag()) {
+		if (editorDoc.isDirtyFlag())
+		{
 			title += "* ";
 		}
 		title += editorDoc.getSaveFileName();
@@ -679,17 +681,17 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		final EditorDocument doc = getEditorDoc();
 		if (doc != null)
 		{
-//			if (!mainController.getSetting(SettingKey.GENERAL_READ_ONLY, Boolean.class) || !isDirty())
-//			{
-				String originalFileName = doc.getOriginalFileName();
-				if (originalFileName == null)
-				{
-					originalFileName = UNTITLED;
-				}
+			//			if (!mainController.getSetting(SettingKey.GENERAL_READ_ONLY, Boolean.class) || !isDirty())
+			//			{
+			String originalFileName = doc.getOriginalFileName();
+			if (originalFileName == null)
+			{
+				originalFileName = UNTITLED;
+			}
 
-				final String question = ResourceUtil.getMessage("SaveQuestionKey") + "\n" + '"' + originalFileName + '"';
-				save = JOptionPane.showConfirmDialog(this, question, "", JOptionPane.YES_NO_CANCEL_OPTION);
-//			}
+			final String question = ResourceUtil.getMessage("SaveQuestionKey") + "\n" + '"' + originalFileName + '"';
+			save = JOptionPane.showConfirmDialog(this, question, "", JOptionPane.YES_NO_CANCEL_OPTION);
+			//			}
 		}
 		return save;
 	}
@@ -700,40 +702,40 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	private void newJDF()
 	{
 		clearViews();
-//		try
-//		{
-			final JDFDoc jdfDoc = new JDFDoc("JDF");
-			final JDFNode jdfRoot = jdfDoc.getJDFRoot();
-			jdfRoot.setType("Product", true);
-			int position = setJDFDoc(jdfDoc, null);
-			LOGGER.info("New doc created with position: " + position);
+		//		try
+		//		{
+		final JDFDoc jdfDoc = new JDFDoc("JDF");
+		final JDFNode jdfRoot = jdfDoc.getJDFRoot();
+		jdfRoot.setType("Product", true);
+		final int position = setJDFDoc(jdfDoc, null);
+		LOGGER.info("New doc created with position: " + position);
 
-			final EditorDocument document = getEditorDoc();
-			document.setDirtyFlag();
+		final EditorDocument document = getEditorDoc();
+		document.setDirtyFlag();
 
-			m_treeArea.drawTreeView(document);
-			jdfDoc.setOriginalFileName(UNTITLED + ".jdf");
-			setTitle(buildWindowTitleString());
-//		}
-//		catch (final Exception s)
-//		{
-//			s.printStackTrace();
-//			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("FileNotOpenKey"), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
-//		}
+		m_treeArea.drawTreeView(document);
+		jdfDoc.setOriginalFileName(UNTITLED + ".jdf");
+		setTitle(buildWindowTitleString());
+		//		}
+		//		catch (final Exception s)
+		//		{
+		//			s.printStackTrace();
+		//			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("FileNotOpenKey"), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+		//		}
 
 	}
 
 	/**
 	 * Method newJMF. creates a new JMF file
-	 * @param f 
-	 * @param type 
+	 * @param f
+	 * @param type
 	 */
 	private void newJMF(final EnumFamily f, String type)
 	{
 		clearViews();
 		try
 		{
-			JDFJMF jmf = Editor.getEditor().getJMFBuilder().newJMF(f, type);
+			final JDFJMF jmf = Editor.getEditor().getJMFBuilder().newJMF(f, type);
 			final VString requiredAttributes = jmf.getMissingAttributes(9999999);
 
 			for (int i = 0; i < requiredAttributes.size(); i++)
@@ -749,7 +751,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				type = UNTITLED;
 			}
 
-			JDFDoc jmfDoc = jmf.getOwnerDocument_JDFElement();
+			final JDFDoc jmfDoc = jmf.getOwnerDocument_JDFElement();
 			setJDFDoc(jmfDoc, null);
 
 			final EditorDocument document = getEditorDoc();
@@ -771,18 +773,18 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 */
 	private void newGoldenTicket()
 	{
-		String gtselect = "";
+		final String gtselect = "";
 
 		try
 		{
 			final GoldenTicketDialog gtDialog = new GoldenTicketDialog();
 
-			BaseGoldenTicket theGT = gtDialog.getGoldenTicket();
+			final BaseGoldenTicket theGT = gtDialog.getGoldenTicket();
 
 			if (theGT != null)
 			{
-				EnumVersion jdfVersion = gtDialog.getGtVersionSelected();
-				boolean xjdf = !EnumUtil.aLessThanB(jdfVersion, EnumVersion.Version_2_0);
+				final EnumVersion jdfVersion = gtDialog.getGtVersionSelected();
+				final boolean xjdf = !EnumUtil.aLessThanB(jdfVersion, EnumVersion.Version_2_0);
 				try
 				{
 					// assigns the newly created JDF node to jdfcproot
@@ -790,8 +792,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 					JDFDoc doc = root.getOwnerDocument_JDFElement();
 					if (xjdf)
 					{
-						JDFToXJDF conv = EditorUtils.getXJDFConverter();
-						KElement newRoot = conv.convert(doc.getRoot());
+						final JDFToXJDF conv = EditorUtils.getXJDFConverter();
+						final KElement newRoot = conv.convert(doc.getRoot());
 						doc = new JDFDoc(newRoot.getOwnerDocument_KElement());
 					}
 					setJDFDoc(doc, null);
@@ -853,8 +855,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 				if (save == JOptionPane.YES_OPTION)
 				{
-					if (doc.isDirtyFlag() && !mainController.getSetting(SettingKey.GENERAL_READ_ONLY, Boolean.class) &&
-							!(new File(originalFileName).exists()))
+					if (doc.isDirtyFlag() && !mainController.getSetting(SettingKey.GENERAL_READ_ONLY, Boolean.class) && !(new File(originalFileName).exists()))
 					{
 						saveAs();
 					}
@@ -901,7 +902,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	/**
 	 * Asks if the user wants to create a new JDF or JMF file. BMI: Also where can select Golden Ticket
-	 * 
+	 *
 	 * Coming from EditorMenuBar, second stop in the chain. called from frame.NewFile()
 	 */
 	public void newFile()
@@ -933,7 +934,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	/**
 	 * fixes the version of a JDF by calling fixVersion for the selected JDF node ore the closest JDF parent.
-	 * 
+	 *
 	 */
 	public void fixVersion()
 	{
@@ -950,7 +951,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	/**
 	 * fixes the version of a JDF by calling fixVersion for the selected JDF node ore the closest JDF parent.
-	 * 
+	 *
 	 */
 	public void cleanupSelected()
 	{
@@ -970,7 +971,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			{
 				final JDFNode n1 = (JDFNode) element.getDeepParent(ElementName.JDF, 0);
 
-				RemoveEmpty rem = new RemoveEmpty();
+				final RemoveEmpty rem = new RemoveEmpty();
 				rem.setZappElements(true);
 				if (n1 != null)
 				{
@@ -997,7 +998,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	/**
 	 * fixes the version of a JDF by calling fixVersion for the selected JDF node ore the closest JDF parent.
-	 * 
+	 *
 	 */
 	public void removeExtensionsfromSelected()
 	{
@@ -1199,8 +1200,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 * 
-	 *  
+	 *
+	 *
 	 * @param pos
 	 * @return
 	 */
@@ -1457,6 +1458,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	 * @deprecated
 	 * @return
 	 */
+	@Deprecated
 	boolean isDirty()
 	{
 		final JDFDoc doc = getJDFDoc();
@@ -1533,7 +1535,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		m_buttonBar.setEnableClose();
 	}
 
-	private void setEnableOpen(final boolean mode)
+	public void setEnableOpen(final boolean mode)
 	{
 		m_menuBar.setEnableOpen(mode);
 		m_buttonBar.setEnableOpen(mode);
@@ -1637,7 +1639,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 * 
+	 *
 	 * @see java.awt.dnd.DragGestureListener#dragGestureRecognized(java.awt.dnd.DragGestureEvent)
 	 */
 	@Override
@@ -1646,7 +1648,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 * 
+	 *
 	 * @see java.awt.dnd.DragSourceListener#dragDropEnd(java.awt.dnd.DragSourceDropEvent)
 	 */
 	@Override
@@ -1655,7 +1657,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 * 
+	 *
 	 * @see java.awt.dnd.DragSourceListener#dragEnter(java.awt.dnd.DragSourceDragEvent)
 	 */
 	@Override
@@ -1664,7 +1666,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 * 
+	 *
 	 * @see java.awt.dnd.DragSourceListener#dragExit(java.awt.dnd.DragSourceEvent)
 	 */
 	@Override
@@ -1673,7 +1675,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 * 
+	 *
 	 * @see java.awt.dnd.DragSourceListener#dragOver(java.awt.dnd.DragSourceDragEvent)
 	 */
 	@Override
@@ -1682,7 +1684,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 * 
+	 *
 	 * @see java.awt.dnd.DragSourceListener#dropActionChanged(java.awt.dnd.DragSourceDragEvent)
 	 */
 	@Override
@@ -1691,7 +1693,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 * 
+	 *
 	 * @see java.awt.dnd.DropTargetListener#dragEnter(java.awt.dnd.DropTargetDragEvent)
 	 */
 	@Override
@@ -1701,7 +1703,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 * 
+	 *
 	 * @see java.awt.dnd.DropTargetListener#dragExit(java.awt.dnd.DropTargetEvent)
 	 */
 	@Override
@@ -1710,7 +1712,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 * 
+	 *
 	 * @see java.awt.dnd.DropTargetListener#dragOver(java.awt.dnd.DropTargetDragEvent)
 	 */
 	@Override
@@ -1719,7 +1721,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 * 
+	 *
 	 * @see java.awt.dnd.DropTargetListener#drop(java.awt.dnd.DropTargetDropEvent)
 	 */
 	@Override
@@ -1760,7 +1762,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 * 
+	 *
 	 * @see java.awt.dnd.DropTargetListener#dropActionChanged(java.awt.dnd.DropTargetDragEvent)
 	 */
 	@Override
@@ -1769,7 +1771,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 * 
+	 *
 	 * @see java.awt.datatransfer.ClipboardOwner#lostOwnership(java.awt.datatransfer.Clipboard, java.awt.datatransfer.Transferable)
 	 */
 	@Override
@@ -1778,8 +1780,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 * 
-	 *  
+	 *
+	 *
 	 * @return
 	 */
 	public TreeSelectionListener getTreeSelectionListener()
@@ -1788,7 +1790,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 *  
+	 *
 	 * @return
 	 */
 	public JDFTreeNode getRootNode()
@@ -1800,7 +1802,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	/**
 	 * set the currently displayed doc to doc
 	 * @param doc
-	 * @param mimePackage 
+	 * @param mimePackage
 	 * @return the index in the list of docs that doc is stored in
 	 */
 	public int setJDFDoc(final JDFDoc doc, final String mimePackage)
@@ -1842,6 +1844,40 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
+	 * set the currently displayed doc to doc
+	 * @param doc
+	 * @param mimePackage
+	 * @return the index in the list of docs that doc is stored in
+	 */
+	public int setEditorDoc(final EditorDocument doc)
+	{
+		int i = m_DocPos;
+		if (doc != null)
+		{
+			i = m_VjdfDocument.indexOf(doc);
+
+			if (i >= 0)
+			{
+				m_DocPos = i;
+			}
+			else
+			{
+				m_VjdfDocument.add(doc);
+				m_DocPos = m_VjdfDocument.size() - 1;
+				// make sure that we have a global dirty policy in force
+				doc.getJDFDoc().getCreateXMLDocUserData().setDirtyPolicy(EnumDirtyPolicy.Doc);
+			}
+		}
+		if (m_DocPos >= 0)
+		{
+			setTitle(doc.getOriginalFileName());
+		}
+		m_menuBar.updateWindowsMenu();
+
+		return m_DocPos;
+	}
+
+	/**
 	 * get the JDFDoc of the currently displayed JDF
 	 * @return the JDFDoc that is currently being displayed
 	 */
@@ -1865,8 +1901,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 * 
-	 *  
+	 *
+	 *
 	 * @return
 	 */
 	public JDFTreeModel getModel()

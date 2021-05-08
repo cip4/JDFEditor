@@ -3,8 +3,8 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * Copyright (c) 2001-2013 The International Cooperation for the Integration of
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +12,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -20,17 +20,17 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
+ *        The International Cooperation for the Integration of
  *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of
  *    Processes in  Prepress, Press and Postpress" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact info@cip4.org.
  *
  * 5. Products derived from this software may not be called "CIP4",
@@ -56,34 +56,28 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
+ * individuals on behalf of the The International Cooperation for the Integration
  * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
+ * originally based on software
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V.
+ *
+ * For more information on The International Cooperation for the
  * Integration of Processes in  Prepress, Press and Postpress , please see
  * <http://www.cip4.org/>.
- *  
- * 
+ *
+ *
  */
 package org.cip4.tools.jdfeditor.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JDialog;
 import javax.swing.JPanel;
 
-import org.cip4.jdflib.extensions.xjdfwalker.XJDFToJDFConverter;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
@@ -92,32 +86,24 @@ import org.cip4.tools.jdfeditor.util.ResourceUtil;
  * Class that implements a "Save as XJDF..." dialog.
  *
  */
-public class SaveAsJDFDialog extends JDialog implements ActionListener
+public class SaveAsJDFDialog extends JPanel
 {
 	SettingService settingService = SettingService.getSettingService();
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	static final int BUTTON_CANCEL = 0;
-	static final int BUTTON_OK = 1;
-
-	private final JButton bOK;
-	private final JButton bCancel;
 
 	private final JCheckBox cbTilde;
 	private final JCheckBox cbExtRetainProduct;
 	private final JCheckBox cbHeuristcLink;
-	private int choosedButton = BUTTON_CANCEL;
 
 	public SaveAsJDFDialog()
 	{
-		setTitle(ResourceUtil.getMessage("SaveJDFKey"));
-		setModal(true);
 		setLayout(new BorderLayout());
 
-		JPanel checkboxesPanel = new JPanel();
+		final JPanel checkboxesPanel = new JPanel();
 		checkboxesPanel.setLayout(new BoxLayout(checkboxesPanel, BoxLayout.Y_AXIS));
 
 		cbExtRetainProduct = new JCheckBox(ResourceUtil.getMessage("RetainProductKey"));
@@ -128,25 +114,12 @@ public class SaveAsJDFDialog extends JDialog implements ActionListener
 		checkboxesPanel.add(cbTilde);
 		checkboxesPanel.add(cbHeuristcLink);
 
-		JPanel buttonsPanel = new JPanel();
-		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
-		buttonsPanel.add(Box.createHorizontalGlue());
+		add(checkboxesPanel, BorderLayout.CENTER);
 
-		bOK = new JButton("OK");
-		bOK.addActionListener(this);
-		bCancel = new JButton(ResourceUtil.getMessage("CancelKey"));
-		bCancel.addActionListener(this);
-
-		buttonsPanel.add(bOK);
-		buttonsPanel.add(bCancel);
-
-		getContentPane().add(checkboxesPanel, BorderLayout.CENTER);
-		getContentPane().add(buttonsPanel, BorderLayout.SOUTH);
-
-		Toolkit tk = Toolkit.getDefaultToolkit();
-		Dimension screenSize = tk.getScreenSize();
-		int screenHeight = screenSize.height;
-		int screenWidth = screenSize.width;
+		final Toolkit tk = Toolkit.getDefaultToolkit();
+		final Dimension screenSize = tk.getScreenSize();
+		final int screenHeight = screenSize.height;
+		final int screenWidth = screenSize.width;
 
 		setSize(screenWidth / 4, screenHeight / 4);
 		setLocation(screenWidth / 4, screenHeight / 4);
@@ -158,57 +131,11 @@ public class SaveAsJDFDialog extends JDialog implements ActionListener
 		setVisible(true);
 	}
 
-	/**
-	 * 
-	 *  
-	 * @return
-	 */
-	public int getChoosedButton()
+	public void write2Ini()
 	{
-		return choosedButton;
-	}
-
-	/**
-	 * 
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	@Override
-	public void actionPerformed(ActionEvent e)
-	{
-		if (e.getSource() == bOK)
-		{
-			settingService.setSetting(SettingKey.XJDF_FROM_RETAIN_PRODUCT, cbExtRetainProduct.isSelected());
-			settingService.setSetting(SettingKey.XJDF_FROM_HEURISTIC_LINK, cbHeuristcLink.isSelected());
-			choosedButton = BUTTON_OK;
-			settingService.setSetting(SettingKey.XJDF_CONVERT_TILDE, cbTilde.isSelected());
-		}
-		else if (e.getSource() == bCancel)
-		{
-			choosedButton = BUTTON_CANCEL;
-		}
-		dispose();
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public boolean isOK()
-	{
-		return getChoosedButton() == SaveAsXJDFDialog.BUTTON_OK;
-	}
-
-	/**
-	 *  
-	 * @return
-	 */
-	public XJDFToJDFConverter getConverter()
-	{
-		final XJDFToJDFConverter c = new XJDFToJDFConverter(null);
-		c.setConvertTilde(settingService.getSetting(SettingKey.XJDF_CONVERT_TILDE, Boolean.class));
-		c.setCreateProduct(settingService.getSetting(SettingKey.XJDF_FROM_RETAIN_PRODUCT, Boolean.class));
-		c.setHeuristicLink(settingService.getSetting(SettingKey.XJDF_FROM_HEURISTIC_LINK, Boolean.class));
-		return c;
+		settingService.setSetting(SettingKey.XJDF_FROM_RETAIN_PRODUCT, cbExtRetainProduct.isSelected());
+		settingService.setSetting(SettingKey.XJDF_FROM_HEURISTIC_LINK, cbHeuristcLink.isSelected());
+		settingService.setSetting(SettingKey.XJDF_CONVERT_TILDE, cbTilde.isSelected());
 	}
 
 }

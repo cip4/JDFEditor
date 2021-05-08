@@ -89,7 +89,6 @@ import javax.swing.tree.TreePath;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.core.KElement;
-import org.cip4.jdflib.extensions.XJDF20;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFMessage;
 import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
@@ -100,9 +99,6 @@ import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourceLinkPool;
 import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.jdflib.resource.devicecapability.JDFDeviceCap;
-import org.cip4.tools.jdfeditor.dialog.SaveAsJDFDialog;
-import org.cip4.tools.jdfeditor.dialog.SaveAsJSONDialog;
-import org.cip4.tools.jdfeditor.dialog.SaveAsXJDFDialog;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
@@ -363,11 +359,19 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 			m_saveXJDF = addMenuItem("SaveXJDFKey");
 			add(separator);
 		}
-		else if (elem != null && XJDF20.rootName.equals(elem.getLocalName()))
+		else if (elem != null && EditorUtils.isXJDF(elem.getLocalName()))
 		{
 			m_saveXJDFCaps = addMenuItem("ExportToDevCapKey");
 			m_saveJDF = addMenuItem("SaveJDFKey");
-			m_saveJSON = addMenuItem("SaveJSONKey");
+			final EditorDocument eDoc = MainView.getEditorDoc();
+			if (eDoc.isJson())
+			{
+				m_saveXJDF = addMenuItem("SaveXJDFKey");
+			}
+			else
+			{
+				m_saveJSON = addMenuItem("SaveJSONKey");
+			}
 		}
 
 		m_xpandPopupItem = addMenuItem("ExpandKey");
@@ -581,27 +585,15 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		}
 		else if (eSrc == m_saveXJDF)
 		{
-			final SaveAsXJDFDialog d = new SaveAsXJDFDialog();
-			if (d.isOK())
-			{
-				MainView.getModel().saveAsXJDF(treeArea.getSelectionPath());
-			}
+			MainView.getModel().saveAsXJDF(treeArea.getSelectionPath());
 		}
 		else if (eSrc == m_saveJSON)
 		{
-			final SaveAsJSONDialog d = new SaveAsJSONDialog();
-			if (d.isOK())
-			{
-				MainView.getModel().saveAsJSON(treeArea.getSelectionPath());
-			}
+			MainView.getModel().saveAsJSON(treeArea.getSelectionPath());
 		}
 		else if (eSrc == m_saveJDF)
 		{
-			final SaveAsJDFDialog d = new SaveAsJDFDialog();
-			if (d.isOK())
-			{
-				MainView.getModel().saveAsJDF(treeArea.getSelectionPath(), d.getConverter());
-			}
+			MainView.getModel().saveAsJDF(treeArea.getSelectionPath(), EditorUtils.getJDFConverter());
 		}
 		else if (eSrc == m_saveXJDFCaps)
 		{

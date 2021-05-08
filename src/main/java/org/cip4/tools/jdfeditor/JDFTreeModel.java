@@ -107,12 +107,10 @@ import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.resource.devicecapability.JDFDeviceCap;
 import org.cip4.jdflib.util.ContainerUtil;
-import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.JDFSpawn;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.jdflib.validate.JDFValidator;
-import org.cip4.lib.jdf.jsonutil.JSONWriter;
 import org.cip4.tools.jdfeditor.extension.Caps;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
@@ -303,15 +301,6 @@ public class JDFTreeModel extends DefaultTreeModel
 					{
 						tmpDoc = EditorUtils.parseInStream(tmpFile, null);
 					}
-					//
-					//					FileInputStream inStream = new FileInputStream(tmpFile);
-					//					JDFDoc tmpDoc = EditorUtils.parseInStream(inStream, true);
-					//					if (tmpDoc == null)
-					//					{
-					//						inStream.close();
-					//						inStream = new FileInputStream(tmpFile);
-					//						tmpDoc = EditorUtils.parseInStream(inStream, false);
-					//					}
 
 					tmpFile.delete();
 					if (tmpDoc != null)
@@ -1218,27 +1207,37 @@ public class JDFTreeModel extends DefaultTreeModel
 	public void saveAsXJDF(final TreePath selectionPath)
 	{
 		final JDFTreeNode node = selectionPath == null ? (JDFTreeNode) getRootNode() : (JDFTreeNode) selectionPath.getLastPathComponent();
-		if (node == null || XJDFConstants.XJDF.equals(node.getElement().getLocalName()) || XJDFConstants.XJMF.equals(node.getElement().getLocalName()))
+		if (node == null)
 		{
 			return;
 		}
-		final KElement e = node.getElement();
 		final EditorDocument eDoc = MainView.getEditorDoc();
+
+		final boolean xjdf = XJDFConstants.XJDF.equals(node.getElement().getLocalName()) || XJDFConstants.XJMF.equals(node.getElement().getLocalName());
+		final KElement e = node.getElement();
 		final String fn = eDoc.getOriginalFileName();
+		if (xjdf)
+		{
+			eDoc.setJson(false);
+			eDoc.saveFile(null);
+		}
 		KElement xJDF = null;
 		final XJDF20 xjdf20 = EditorUtils.getXJDFConverter();
+		String ext = null;
 		if (e instanceof JDFNode)
 		{
 			xJDF = convertJDF(e, fn, xJDF, xjdf20);
+			ext = XJDFConstants.XJDF.toLowerCase();
 		}
 		else if (e instanceof JDFJMF)
 		{
 			xJDF = xjdf20.makeNewJMF((JDFJMF) e);
+			ext = XJDFConstants.XJMF.toLowerCase();
 		}
 		if (xJDF != null)
 		{
 			final XMLDoc d = xJDF.getOwnerDocument_KElement();
-			final String fnNew = UrlUtil.newExtension(fn, XJDF20.getExtension());
+			final String fnNew = UrlUtil.newExtension(fn, ext);
 			d.write2File(fnNew, 2, false);
 			MainView.getFrame().readFile(new File(fnNew));
 		}
@@ -1255,18 +1254,9 @@ public class JDFTreeModel extends DefaultTreeModel
 		{
 			return;
 		}
-		final KElement xjdf = node.getElement();
 		final EditorDocument eDoc = MainView.getEditorDoc();
-		final String fn = eDoc.getOriginalFileName();
-		final JSONWriter jw = EditorUtils.getJSONConverter();
-
-		if (jw != null)
-		{
-			final String fnNew = UrlUtil.newExtension(fn, "json");
-			jw.convert(xjdf);
-			FileUtil.writeFile(jw, new File(fnNew));
-			MainView.getFrame().readFile(new File(fnNew));
-		}
+		eDoc.setJson(true);
+		eDoc.saveFile(null);
 	}
 
 	private KElement convertJDF(final KElement e, final String fn, KElement xJDF, final XJDF20 xjdf20)

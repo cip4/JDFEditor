@@ -73,16 +73,12 @@ package org.cip4.tools.jdfeditor.dialog;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Vector;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JPanel;
 
 import org.cip4.lib.jdf.jsonutil.JSONWriter.eJSONCase;
@@ -95,7 +91,7 @@ import org.cip4.tools.jdfeditor.util.ResourceUtil;
  * Class that implements a "Save as XJDF..." dialog.
  *
  */
-public class SaveAsJSONDialog extends JDialog implements ActionListener
+public class SaveAsJSONDialog extends JPanel
 {
 
 	final SettingService settingService;
@@ -106,21 +102,15 @@ public class SaveAsJSONDialog extends JDialog implements ActionListener
 	static final int BUTTON_CANCEL = 0;
 	static final int BUTTON_OK = 1;
 
-	private final JButton bOK;
-	private final JButton bCancel;
-
 	private final JComboBox<String> cbCase;
 	private final JComboBox<String> cbPrefix;
 	private final JCheckBox cbTypesafe;
-	private int choosedButton = BUTTON_CANCEL;
 
 	/**
 	 *
 	 */
 	public SaveAsJSONDialog()
 	{
-		setTitle(ResourceUtil.getMessage("SaveAsJSONKey"));
-		setModal(true);
 		setLayout(new BorderLayout());
 
 		settingService = SettingService.getSettingService();
@@ -141,16 +131,7 @@ public class SaveAsJSONDialog extends JDialog implements ActionListener
 		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
 		buttonsPanel.add(Box.createHorizontalGlue());
 
-		bOK = new JButton("OK");
-		bOK.addActionListener(this);
-		bCancel = new JButton(ResourceUtil.getMessage("CancelKey"));
-		bCancel.addActionListener(this);
-
-		buttonsPanel.add(bOK);
-		buttonsPanel.add(bCancel);
-
-		getContentPane().add(checkboxesPanel, BorderLayout.CENTER);
-		getContentPane().add(buttonsPanel, BorderLayout.SOUTH);
+		add(checkboxesPanel, BorderLayout.CENTER);
 
 		final Toolkit tk = Toolkit.getDefaultToolkit();
 		final Dimension screenSize = tk.getScreenSize();
@@ -167,43 +148,11 @@ public class SaveAsJSONDialog extends JDialog implements ActionListener
 		setVisible(true);
 	}
 
-	/**
-	 *
-	 *
-	 * @return
-	 */
-	public int getChoosedButton()
+	public void write2Ini()
 	{
-		return choosedButton;
-	}
-
-	/**
-	 *
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	@Override
-	public void actionPerformed(final ActionEvent e)
-	{
-		if (e.getSource() == bOK)
-		{
-			// TODO link to settingservice
-			choosedButton = BUTTON_OK;
-			dispose();
-		}
-		else if (e.getSource() == bCancel)
-		{
-			choosedButton = BUTTON_CANCEL;
-			dispose();
-		}
-	}
-
-	/**
-	 *
-	 * @return
-	 */
-	public boolean isOK()
-	{
-		return getChoosedButton() == SaveAsJSONDialog.BUTTON_OK;
+		settingService.set(SettingKey.JSON_CASE, (String) cbCase.getSelectedItem());
+		settingService.set(SettingKey.JSON_PREFIX, (String) cbPrefix.getSelectedItem());
+		settingService.set(SettingKey.JSON_TYPESAFE, cbTypesafe.isSelected());
 	}
 
 }
