@@ -114,7 +114,7 @@ public class JDFTreeCellRenderer extends AbstractTreeCellRenderer
 	{
 		final JDFFrame f = MainView.getFrame();
 		final EditorDocument d = f.getEditorDoc();
-		final boolean b = d == null || !d.isJson();
+		final boolean b = d != null && d.isJson();
 		return b;
 	}
 

@@ -3,8 +3,8 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * Copyright (c) 2001-2021 The International Cooperation for the Integration of
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +12,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -20,17 +20,17 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
+ *        The International Cooperation for the Integration of
  *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of
  *    Processes in  Prepress, Press and Postpress" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact info@cip4.org.
  *
  * 5. Products derived from this software may not be called "CIP4",
@@ -56,26 +56,34 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
+ * individuals on behalf of the The International Cooperation for the Integration
  * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
+ * originally based on software
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V.
+ *
+ * For more information on The International Cooperation for the
  * Integration of Processes in  Prepress, Press and Postpress , please see
  * <http://www.cip4.org/>.
- *  
- * 
+ *
+ *
  */
 package org.cip4.tools.jdfeditor;
 
-import org.cip4.tools.jdfeditor.util.ResourceUtil;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
+
+import javax.swing.ButtonGroup;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+
+import org.cip4.jdflib.core.JDFElement;
+import org.cip4.jdflib.core.JDFElement.EnumVersion;
+import org.cip4.tools.jdfeditor.util.ResourceUtil;
 
 /**
  * @author ThunellE AnderssonA
@@ -121,6 +129,8 @@ public class NewFileChooser extends JPanel implements ActionListener
 		*/
 		final JLabel label = new JLabel(ResourceUtil.getMessage("ChooseNewFileKey"));
 		add(label);
+		final JPanel p1 = new JPanel();
+		fileType = "JDF";
 
 		fileTypeGroup = new ButtonGroup();
 
@@ -128,27 +138,38 @@ public class NewFileChooser extends JPanel implements ActionListener
 		radioJDFButton.setActionCommand(ResourceUtil.getMessage("NewJDFKey"));
 		radioJDFButton.addActionListener(this);
 		radioJDFButton.setSelected(true);
-		add(radioJDFButton);
+		p1.add(radioJDFButton);
 		fileTypeGroup.add(radioJDFButton);
 
 		radioJMFButton = new JRadioButton(ResourceUtil.getMessage("NewJMFKey"));
 		radioJMFButton.setActionCommand(ResourceUtil.getMessage("NewJMFKey"));
 		radioJMFButton.addActionListener(this);
-		add(radioJMFButton);
+		p1.add(radioJMFButton);
 		fileTypeGroup.add(radioJMFButton);
 
 		radioGTButton = new JRadioButton(ResourceUtil.getMessage("NewGoldenTicket"));
 		radioGTButton.setActionCommand(ResourceUtil.getMessage("NewGoldenTicket"));
 		radioGTButton.addActionListener(this);
-		add(radioGTButton);
+		p1.add(radioGTButton);
 		fileTypeGroup.add(radioGTButton);
+		add(p1);
+
+		final List enumList = EnumVersion.getEnumList();
+		final String[] vs = new String[enumList.size()];
+		for (int i = 0; i < enumList.size(); i++)
+			vs[i] = ((EnumVersion) enumList.get(i)).getName();
+		gtVersion = new JComboBox<String>(vs);
+		gtVersion.addActionListener(this);
+		gtVersion.setSelectedIndex(8);
+
+		add(gtVersion);
 	}
 
 	/**
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	@Override
-	public void actionPerformed(ActionEvent e)
+	public void actionPerformed(final ActionEvent e)
 	{
 		final Object src = e.getSource();
 		if (src == radioJDFButton)
@@ -159,9 +180,14 @@ public class NewFileChooser extends JPanel implements ActionListener
 		{
 			this.fileType = "JMF";
 		}
-		else
+		else if (src == radioGTButton)
 		{
 			this.fileType = "GoldenTicket";
+		}
+		else if (src == gtVersion)
+		{
+			final String item = (String) gtVersion.getSelectedItem();
+			gtVersionSelected = EnumVersion.getEnum(item);
 		}
 	}
 
@@ -174,5 +200,17 @@ public class NewFileChooser extends JPanel implements ActionListener
 	{
 		return fileType;
 	}
+
+	/**
+	 *
+	 * @return
+	 */
+	public EnumVersion getVersionSelected()
+	{
+		return gtVersionSelected;
+	}
+
+	private JComboBox<String> gtVersion;
+	private EnumVersion gtVersionSelected = JDFElement.getDefaultJDFVersion();
 
 }

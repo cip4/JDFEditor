@@ -3,8 +3,8 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * Copyright (c) 2001-2014 The International Cooperation for the Integration of
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +12,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -20,17 +20,17 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
+ *        The International Cooperation for the Integration of
  *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of
  *    Processes in  Prepress, Press and Postpress" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact info@cip4.org.
  *
  * 5. Products derived from this software may not be called "CIP4",
@@ -56,17 +56,17 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
+ * individuals on behalf of the The International Cooperation for the Integration
  * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
+ * originally based on software
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V.
+ *
+ * For more information on The International Cooperation for the
  * Integration of Processes in  Prepress, Press and Postpress , please see
  * <http://www.cip4.org/>.
- *  
- * 
+ *
+ *
  */
 package org.cip4.tools.jdfeditor;
 
@@ -87,7 +87,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFElement.EnumVersion;
 import org.cip4.jdflib.goldenticket.BaseGoldenTicket;
 import org.cip4.jdflib.goldenticket.IDPGoldenTicket;
@@ -123,13 +122,11 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 	private JComboBox<String> jmfICSLevel1;
 	private JComboBox<String> gtICSLevel;
 	private JComboBox<String> gtType;
-	private JComboBox<String> gtVersion;
 
 	private String gtSelected = "MISCP";
 	private String misSelected = "1";
 	private String jmfSelected = "1";
 	private String gtLevelSelected = "1";
-	private EnumVersion gtVersionSelected = JDFElement.getDefaultJDFVersion();
 	private int gtTypeSelected = 0;
 
 	public int getGtTypeSelected()
@@ -146,12 +143,12 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 	String[] l2 = { "1", "2", "3" };
 
 	/**
-	 * 
+	 *
 	 */
 	public GoldenTicketDialog()
 	{
 		super();
-		JDFFrame parent = MainView.getFrame();
+		final JDFFrame parent = MainView.getFrame();
 
 		init();
 		final String[] options = { ResourceUtil.getMessage("OkKey"), ResourceUtil.getMessage("CancelKey") };
@@ -172,23 +169,22 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 	}
 
 	/**
-	 * 
+	 *
 	 * @param gtselect
 	 * @param jdfVersion
 	 * @return
 	 */
-	public BaseGoldenTicket getGoldenTicket()
+	public BaseGoldenTicket getGoldenTicket(final EnumVersion jdfVersion)
 	{
-		String gtselect = getGoldenTicketName();
+		final String gtselect = getGoldenTicketName();
 		if (gtselect == null)
 		{
 			return null; // cancel...
 		}
-		EnumVersion jdfVersion = getGtVersionSelected();
 
-		int mis = getMISLevel();
-		int jmf = getJMFLevel();
-		int gt1 = getGTLevel();
+		final int mis = getMISLevel();
+		final int jmf = getJMFLevel();
+		final int gt1 = getGTLevel();
 		BaseGoldenTicket theGT = null;
 		if ("MISCP".equals(gtselect))
 		{
@@ -250,12 +246,12 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		return theGT;
 	}
 
-	protected void assignGT(BaseGoldenTicket theGT)
+	protected void assignGT(final BaseGoldenTicket theGT)
 	{
 		if (theGT != null)
 		{
 			theGT.assign(null);
-			int iType = getGtTypeSelected();
+			final int iType = getGtTypeSelected();
 			if (iType >= 1)
 				theGT.makeReadyAll();
 			if (iType >= 2)
@@ -278,7 +274,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		panel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("GTInputKey")));
 
 		//Golden Ticket Chooser
-		JPanel gtChooser = new JPanel();
+		final JPanel gtChooser = new JPanel();
 		gtChooser.setLayout(inLayout);
 		gtChooser.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("GTFileKey")));
 		outLayout.setConstraints(gtChooser, outConstraints);
@@ -287,7 +283,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		initGTType(panel);
 
 		//MIS Level
-		JPanel MISLevel = new JPanel();
+		final JPanel MISLevel = new JPanel();
 		MISLevel.setLayout(inLayout);
 		MISLevel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("MISLevelKey")));
 		outLayout.setConstraints(MISLevel, outConstraints);
@@ -299,7 +295,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		panel.add(MISLevel);
 
 		//JMF Level
-		JPanel JMFLevel = new JPanel();
+		final JPanel JMFLevel = new JPanel();
 		JMFLevel.setLayout(inLayout);
 		JMFLevel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("JMFLevelKey")));
 		outLayout.setConstraints(JMFLevel, outConstraints);
@@ -311,7 +307,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		panel.add(JMFLevel);
 
 		//GT Level
-		JPanel GTLevel = new JPanel();
+		final JPanel GTLevel = new JPanel();
 		GTLevel.setLayout(inLayout);
 		GTLevel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("GTLevelKey")));
 		outLayout.setConstraints(GTLevel, outConstraints);
@@ -322,35 +318,17 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		GTLevel.add(gtICSLevel);
 		panel.add(GTLevel);
 
-		//GT Level
-		JPanel GTVersion = new JPanel();
-		GTVersion.setLayout(inLayout);
-		GTVersion.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("GTVersionKey")));
-		outLayout.setConstraints(GTVersion, outConstraints);
-
-		String[] vs = new String[4];
-		vs[0] = EnumVersion.Version_1_3.getName();
-		vs[1] = EnumVersion.Version_1_4.getName();
-		vs[2] = EnumVersion.Version_1_5.getName();
-		vs[3] = EnumVersion.Version_2_0.getName();
-		gtVersion = new JComboBox<String>(vs);
-		gtVersion.addActionListener(this);
-		gtVersion.setSelectedIndex(2);
-
-		GTVersion.add(gtVersion);
-		panel.add(GTVersion);
-
 		add(panel);
 		setVisible(true);
 	}
 
-	private void initGTType(JPanel panel)
+	private void initGTType(final JPanel panel)
 	{
-		JPanel p = new JPanel();
+		final JPanel p = new JPanel();
 		p.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("GTTypeKey")));
 		gtType = new JComboBox<String>();
 
-		String[] vs = new String[3];
+		final String[] vs = new String[3];
 		vs[0] = ResourceUtil.getMessage("GTTypeMIS");
 		vs[1] = ResourceUtil.getMessage("GTTypeWorkflow");
 		vs[2] = ResourceUtil.getMessage("GTTypeDevice");
@@ -361,14 +339,14 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		panel.add(p);
 	}
 
-	private void initGTLabels(final JPanel panel, JPanel gtChooser)
+	private void initGTLabels(final JPanel panel, final JPanel gtChooser)
 	{
 		//Add Golden Tickets as they become available.
 		final String[] gt = { "MISCP", MISPreGoldenTicket.MISPRE_CONTENTCREATION, MISPreGoldenTicket.MISPRE_IMPOSITIONPREPARATION, MISPreGoldenTicket.MISPRE_IMPOSITIONRIPING,
 				MISPreGoldenTicket.MISPRE_PLATEMAKING, MISPreGoldenTicket.MISPRE_PLATESETTING, MISPreGoldenTicket.MISPRE_PREPRESSPREPARATION, "IDP", "ODP", "DPW",
 				MISFinGoldenTicket.MISFIN_SHEETFIN, MISFinGoldenTicket.MISFIN_STITCHFIN, MISFinGoldenTicket.MISFIN_BOXMAKING, MISFinGoldenTicket.MISFIN_SOFTCOVERFIN,
 				MISFinGoldenTicket.MISFIN_HARDCOVERFIN };
-		String[] gtDisplay = new String[gt.length];
+		final String[] gtDisplay = new String[gt.length];
 		labelMap = new HashMap<String, String>();
 		for (int i = 0; i < gt.length; i++)
 		{
@@ -383,14 +361,14 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 	}
 
 	/**
-	 * 
+	 *
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	@Override
-	public void actionPerformed(ActionEvent e)
+	public void actionPerformed(final ActionEvent e)
 	{
 		final Object source = e.getSource();
-		JDFFrame parent = MainView.getFrame();
+		final JDFFrame parent = MainView.getFrame();
 		if (source == browse)
 		{
 			final EditorFileChooser files = new EditorFileChooser(idFile, "xml jdf");
@@ -417,10 +395,6 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		{
 			jmfSelected = (String) jmfICSLevel1.getSelectedItem();
 		}
-		else if (source == gtVersion)
-		{
-			gtVersionSelected = EnumVersion.getEnum((String) gtVersion.getSelectedItem());
-		}
 		else if (source == gtICSLevel)
 		{
 			getGTLevelSelected();
@@ -433,7 +407,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 
 	private String getGTLabel()
 	{
-		String s = (String) goldenTicketLabel.getSelectedItem();
+		final String s = (String) goldenTicketLabel.getSelectedItem();
 		return labelMap.get(s);
 	}
 
@@ -449,7 +423,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 
 	/**
 	 * Methods to return the Levels and which golden ticket to create.
-	 * @return 
+	 * @return
 	 */
 	private String getGoldenTicketName()
 	{
@@ -457,8 +431,8 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 	}
 
 	/**
-	 * 
-	 *  
+	 *
+	 *
 	 * @return
 	 */
 	public int getMISLevel()
@@ -467,8 +441,8 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 	}
 
 	/**
-	 * 
-	 *  
+	 *
+	 *
 	 * @return
 	 */
 	public int getJMFLevel()
@@ -477,22 +451,13 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 	}
 
 	/**
-	 * 
-	 *  
+	 *
+	 *
 	 * @return
 	 */
 	public int getGTLevel()
 	{
 		return gtSelectLevel;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public EnumVersion getGtVersionSelected()
-	{
-		return gtVersionSelected;
 	}
 
 }

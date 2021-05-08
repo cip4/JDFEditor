@@ -151,19 +151,33 @@ public class JDFTreeArea extends JTextArea
 		m_treeScroll.getVerticalScrollBar().setUnitIncrement(20);
 		m_treeScroll.getHorizontalScrollBar().setUnitIncrement(20);
 
-		final JLabel treeLabel = new JLabel(" " + ResourceUtil.getMessage("TreeViewKey"));
-		treeLabel.setPreferredSize(new Dimension(treeLabel.getPreferredSize().width, 23));
-		treeLabel.setVerticalTextPosition(SwingConstants.BOTTOM);
-		treeLabel.setToolTipText(ResourceUtil.getMessage("TreeViewKey"));
-		treeLabel.setBorder(BorderFactory.createLineBorder(Color.black));
-
 		m_treeView = new JViewport();
 
 		m_treeView.setView(this);
 		m_treeScroll.setViewport(m_treeView);
-		m_treeScroll.setColumnHeaderView(treeLabel);
+
+		setHeaderLabel(null);
 
 		treeCellRenderer = new JDFTreeCellRenderer();
+	}
+
+	void setHeaderLabel(final Boolean isJson)
+	{
+		String prefix = "    ";
+		if (isJson != null)
+		{
+			prefix += isJson ? "JSON" : "XML";
+		}
+		final JLabel treeLabel = new JLabel(prefix + " " + ResourceUtil.getMessage("TreeViewKey"));
+		treeLabel.setPreferredSize(new Dimension(treeLabel.getPreferredSize().width, 23));
+		treeLabel.setVerticalTextPosition(SwingConstants.BOTTOM);
+		treeLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+		treeLabel.setToolTipText(ResourceUtil.getMessage("TreeViewKey"));
+		treeLabel.setBorder(BorderFactory.createLineBorder(Color.black));
+		treeLabel.setOpaque(true);
+		if (isJson != null)
+			treeLabel.setBackground(isJson ? new Color(255, 142, 142) : new Color(142, 142, 255));
+		m_treeScroll.setColumnHeaderView(treeLabel);
 	}
 
 	public void updateCellRenderer()

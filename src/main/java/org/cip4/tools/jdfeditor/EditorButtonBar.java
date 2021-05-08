@@ -391,9 +391,9 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		}
 		else if (eSrc == m_convert2XJdf) // convert 2 XJDF
 		{
-			MainView.getModel().saveAsXJDF(null);
+			MainView.getModel().saveAsXJDF(null, true);
 		}
-		else if (eSrc == m_convert2JSON) // convert 2 XJDF
+		else if (eSrc == m_convert2JSON) // convert 2 json
 		{
 			MainView.getModel().saveAsJSON(null);
 		}

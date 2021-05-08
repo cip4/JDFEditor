@@ -1204,7 +1204,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	 * @param selectionPath
 	 * @experimental
 	 */
-	public void saveAsXJDF(final TreePath selectionPath)
+	public void saveAsXJDF(final TreePath selectionPath, final boolean reallysave)
 	{
 		final JDFTreeNode node = selectionPath == null ? (JDFTreeNode) getRootNode() : (JDFTreeNode) selectionPath.getLastPathComponent();
 		if (node == null)
@@ -1218,8 +1218,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		final String fn = eDoc.getOriginalFileName();
 		if (xjdf)
 		{
-			eDoc.setJson(false);
-			eDoc.saveFile(null);
+			eDoc.setJson(false, true);
 		}
 		else
 		{
@@ -1228,20 +1227,40 @@ public class JDFTreeModel extends DefaultTreeModel
 			String ext = null;
 			if (e instanceof JDFNode)
 			{
-				xJDF = convertJDF(e, fn, xJDF, xjdf20);
 				ext = XJDFConstants.XJDF.toLowerCase();
 			}
 			else if (e instanceof JDFJMF)
 			{
-				xJDF = xjdf20.makeNewJMF((JDFJMF) e);
 				ext = XJDFConstants.XJMF.toLowerCase();
 			}
-			if (xJDF != null)
+			final String fnNew = UrlUtil.newExtension(fn, ext);
+			final File fileToRead = new File(fnNew);
+			if (!reallysave || eDoc.checkSave(fileToRead))
 			{
-				final XMLDoc d = xJDF.getOwnerDocument_KElement();
-				final String fnNew = UrlUtil.newExtension(fn, ext);
-				d.write2File(fnNew, 2, false);
-				MainView.getFrame().readFile(new File(fnNew));
+				if (e instanceof JDFNode)
+				{
+					xJDF = convertJDF(e, fn, xJDF, xjdf20);
+				}
+				else if (e instanceof JDFJMF)
+				{
+					xJDF = xjdf20.makeNewJMF((JDFJMF) e);
+				}
+				if (xJDF != null)
+				{
+					final XMLDoc d = xJDF.getOwnerDocument_KElement();
+					if (reallysave)
+					{
+						d.write2File(fnNew, 2, false);
+						MainView.getFrame().readFile(fileToRead);
+					}
+					else
+					{
+						final JDFDoc doc = new JDFDoc(d);
+						doc.setOriginalFileName(fnNew);
+						MainView.getFrame().setJDFDoc(doc, null);
+
+					}
+				}
 			}
 		}
 	}
@@ -1258,8 +1277,7 @@ public class JDFTreeModel extends DefaultTreeModel
 			return;
 		}
 		final EditorDocument eDoc = MainView.getEditorDoc();
-		eDoc.setJson(true);
-		eDoc.saveFile(null);
+		eDoc.setJson(true, true);
 	}
 
 	private KElement convertJDF(final KElement e, final String fn, KElement xJDF, final XJDF20 xjdf20)
@@ -1337,17 +1355,20 @@ public class JDFTreeModel extends DefaultTreeModel
 		final KElement e = node.getElement();
 		final EditorDocument eDoc = MainView.getEditorDoc();
 		final String fn = eDoc.getOriginalFileName();
-		final JDFDoc d = c.convert(e);
-		if (d != null)
+		final String ext = ElementName.JMF.equalsIgnoreCase(e.getLocalName()) ? "jmf" : "jdf";
+		final String fnNew = UrlUtil.newExtension(fn, ext);
+		if (eDoc.checkSave(UrlUtil.urlToFile(fnNew)))
 		{
-			final String fnNew = UrlUtil.newExtension(fn, ".xjdf.jdf");
-			d.write2File(fnNew, 2, false);
-			MainView.getFrame().readFile(new File(fnNew));
-		}
-		else
-		{
-			EditorUtils.errorBox("FixVersionErrorKey", "could not convert xjdf to jdf");
-
+			final JDFDoc d = c.convert(e);
+			if (d != null)
+			{
+				d.write2File(fnNew, 2, false);
+				MainView.getFrame().readFile(new File(fnNew));
+			}
+			else
+			{
+				EditorUtils.errorBox("FixVersionErrorKey", "could not convert xjdf to jdf");
+			}
 		}
 	}
 

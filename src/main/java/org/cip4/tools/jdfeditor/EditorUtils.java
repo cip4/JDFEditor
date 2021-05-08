@@ -602,7 +602,7 @@ public class EditorUtils
 			editorDocument = frame.getEditorDoc();
 			if ("json".equals(jdfDoc.getCreateXMLDocUserData().getUserData()))
 			{
-				editorDocument.setJson(true);
+				editorDocument.setJson(true, false);
 			}
 		}
 

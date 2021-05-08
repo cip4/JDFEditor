@@ -132,8 +132,8 @@ import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.core.XMLDocUserData.EnumDirtyPolicy;
+import org.cip4.jdflib.elementwalker.FixVersion;
 import org.cip4.jdflib.elementwalker.RemoveEmpty;
-import org.cip4.jdflib.extensions.xjdfwalker.jdftoxjdf.JDFToXJDF;
 import org.cip4.jdflib.goldenticket.BaseGoldenTicket;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
@@ -526,7 +526,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			m_treeArea.drawTreeView(eDoc);
 			m_topTabs.refreshView(eDoc);
 			setTitle(buildWindowTitleString());
-
+			m_treeArea.setHeaderLabel(eDoc.isJson());
 			getBottomTabs().refreshView(path);
 			getBottomTabs().refreshXmlEditor(eDoc.getJDFDoc().toXML());
 			if (path != null)
@@ -620,15 +620,9 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		if (answer == JFileChooser.APPROVE_OPTION)
 		{
 			final File file = saveChooser.getSelectedFile();
-			int overwriteExistingFileAnswer = JOptionPane.YES_OPTION;
-
-			if (file.exists() && !file.equals(fileToSave))
-			{
-				final String[] options = { ResourceUtil.getMessage("YesKey"), ResourceUtil.getMessage("NoKey"), ResourceUtil.getMessage("CancelKey") };
-				overwriteExistingFileAnswer = JOptionPane.showOptionDialog(this, ResourceUtil.getMessage("FileExistsKey"), null, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-
-			}
-			if (overwriteExistingFileAnswer == JOptionPane.YES_OPTION)
+			boolean canSave = !file.exists() || file.equals(fileToSave);
+			canSave = canSave && editorDoc.checkSave(file);
+			if (canSave)
 			{
 				editorDoc.saveFile(file);
 				editorDoc.resetDirtyFlag();
@@ -699,11 +693,9 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	/**
 	 * Creates a new JDF document.
 	 */
-	private void newJDF()
+	void newJDF()
 	{
 		clearViews();
-		//		try
-		//		{
 		final JDFDoc jdfDoc = new JDFDoc("JDF");
 		final JDFNode jdfRoot = jdfDoc.getJDFRoot();
 		jdfRoot.setType("Product", true);
@@ -713,16 +705,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		final EditorDocument document = getEditorDoc();
 		document.setDirtyFlag();
 
-		m_treeArea.drawTreeView(document);
 		jdfDoc.setOriginalFileName(UNTITLED + ".jdf");
-		setTitle(buildWindowTitleString());
-		//		}
-		//		catch (final Exception s)
-		//		{
-		//			s.printStackTrace();
-		//			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("FileNotOpenKey"), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
-		//		}
-
 	}
 
 	/**
@@ -753,13 +736,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 			final JDFDoc jmfDoc = jmf.getOwnerDocument_JDFElement();
 			setJDFDoc(jmfDoc, null);
-
-			final EditorDocument document = getEditorDoc();
-			document.setDirtyFlag();
-
-			m_treeArea.drawTreeView(document);
 			jmfDoc.setOriginalFileName(type + ".jmf");
-			setTitle(buildWindowTitleString());
 		}
 		catch (final Exception e)
 		{
@@ -771,7 +748,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	/**
 	 * Method newGoldenTicket. creates a new JDF file from an existing Golden Ticket.java file.
 	 */
-	private void newGoldenTicket()
+	private void newGoldenTicket(final EnumVersion jdfVersion)
 	{
 		final String gtselect = "";
 
@@ -779,36 +756,14 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		{
 			final GoldenTicketDialog gtDialog = new GoldenTicketDialog();
 
-			final BaseGoldenTicket theGT = gtDialog.getGoldenTicket();
+			final BaseGoldenTicket theGT = gtDialog.getGoldenTicket(jdfVersion);
 
 			if (theGT != null)
 			{
-				final EnumVersion jdfVersion = gtDialog.getGtVersionSelected();
-				final boolean xjdf = !EnumUtil.aLessThanB(jdfVersion, EnumVersion.Version_2_0);
-				try
-				{
-					// assigns the newly created JDF node to jdfcproot
-					final JDFNode root = theGT.getNode();
-					JDFDoc doc = root.getOwnerDocument_JDFElement();
-					if (xjdf)
-					{
-						final JDFToXJDF conv = EditorUtils.getXJDFConverter();
-						final KElement newRoot = conv.convert(doc.getRoot());
-						doc = new JDFDoc(newRoot.getOwnerDocument_KElement());
-					}
-					setJDFDoc(doc, null);
-
-					// display the result.
-					m_treeArea.drawTreeView(getEditorDoc());
-					doc.setOriginalFileName(gtselect + "_GoldenTicket." + ((xjdf) ? "xjdf" : "jdf"));
-					setTitle(buildWindowTitleString());
-				}
-				catch (final Exception s)
-				{
-					LOGGER.error("snafu creating golden ticket", s);
-					JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("FileNotOpenKey"), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
-				}
-
+				final JDFNode root = theGT.getNode();
+				final JDFDoc doc = root.getOwnerDocument_JDFElement();
+				setJDFDoc(doc, null);
+				doc.setOriginalFileName(gtselect + "_GoldenTicket.jdf");
 			}
 		}
 		catch (final Exception e)
@@ -915,19 +870,30 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 		if (option == JOptionPane.OK_OPTION)
 		{
-			if ((newFileChooser.getSelection()).equals("JDF"))
+			final String selection = newFileChooser.getSelection();
+			final EnumVersion v = newFileChooser.getVersionSelected();
+			if (selection.equals("JDF"))
 			{
 				newJDF();
 			}
-			else if ((newFileChooser.getSelection()).equals("JMF"))
+			else if (selection.equals("JMF"))
 			{
 				newJMF(EnumFamily.Query, "KnownMessages");
 			}
 			else
 			{
-				newGoldenTicket();
+				newGoldenTicket(v);
 			}
-
+			if (EnumUtil.aLessEqualsThanB(EnumVersion.Version_2_0, v))
+			{
+				MainView.getEditorDoc().createModel();
+				MainView.getModel().saveAsXJDF(null, false);
+			}
+			else
+			{
+				new FixVersion(v).convert(getEditorDoc().getJDFDoc().getRoot());
+			}
+			MainView.getFrame().refreshView(MainView.getFrame().getEditorDoc(), null);
 			setEnableOpen(!mainController.getSetting(SettingKey.GENERAL_READ_ONLY, Boolean.class));
 		}
 	}

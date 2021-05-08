@@ -74,6 +74,7 @@ import java.util.Vector;
 
 import javax.mail.BodyPart;
 import javax.mail.Multipart;
+import javax.swing.JOptionPane;
 import javax.swing.JTree;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
@@ -86,10 +87,12 @@ import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.MimeUtil;
+import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.lib.jdf.jsonutil.JSONWriter;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
+import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
 /**
@@ -158,21 +161,48 @@ public class EditorDocument
 	/**
 	 * @param json the json to set
 	 */
-	public void setJson(final boolean json)
+	public void setJson(final boolean json, final boolean checkFile)
 	{
-		this.json = json;
-		if (jdfDoc != null)
+		if (jdfDoc != null && checkFile)
 		{
 
 			String extension = json ? "json" : jdfDoc.getRoot().getLocalName().toLowerCase();
 			if ("PrintTalk".equalsIgnoreCase(extension))
 				extension = "ptk";
-			jdfDoc.setOriginalFileName(UrlUtil.newExtension(getOriginalFileName(), extension));
+			final String newExtension = UrlUtil.newExtension(getOriginalFileName(), extension);
+			if (!checkSave(UrlUtil.urlToFile(newExtension)))
+				return;
+			this.json = json;
+
+			jdfDoc.setOriginalFileName(newExtension);
 			MainView.getFrame().refreshTitle();
+			MainView.getFrame().getJDFTreeArea().setHeaderLabel(json);
 			MainView.getFrame().getJDFTreeArea().drawTreeView(this);
 
 			MainView.getFrame().setEnableOpen(true);
+			saveFile(null);
 		}
+		else
+		{
+			this.json = json;
+		}
+	}
+
+	boolean checkSave(final File newFile)
+	{
+
+		if (newFile != null && newFile.exists())
+		{
+			final String[] options = { ResourceUtil.getMessage("YesKey"), ResourceUtil.getMessage("NoKey") };
+			String message = ResourceUtil.getMessage("FileExistsKey");
+			message = StringUtil.replaceString(message, "$$$", newFile.getName());
+			final int overwriteExistingFileAnswer = JOptionPane.showOptionDialog(MainView.getFrame(), message, null, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+			if (overwriteExistingFileAnswer != JOptionPane.OK_OPTION)
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
