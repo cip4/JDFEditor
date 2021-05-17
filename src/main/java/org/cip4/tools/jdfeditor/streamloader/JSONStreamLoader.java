@@ -100,10 +100,14 @@ public class JSONStreamLoader implements IStreamLoader
 
 		final BufferedInputStream stream = FileUtil.getBufferedInputStream(fileJDF);
 
-		return getDocFromStream(stream);
+		return readStream(stream, null);
 	}
 
-	public JDFDoc getDocFromStream(final InputStream stream)
+	/**
+	 * @see org.cip4.tools.jdfeditor.streamloader.IStreamLoader#read(java.io.File, java.io.File)
+	 */
+	@Override
+	public JDFDoc readStream(final InputStream stream, final InputStream schema) throws IOException
 	{
 		final JSONReader jr = new JSONReader();
 		jr.setWantAttributes(true);

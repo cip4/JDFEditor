@@ -68,8 +68,8 @@
  */
 package org.cip4.tools.jdfeditor;
 
+import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -77,9 +77,7 @@ import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.mail.BodyPart;
 import javax.mail.MessagingException;
-import javax.mail.Multipart;
 import javax.swing.JOptionPane;
 import javax.swing.tree.TreePath;
 
@@ -103,13 +101,17 @@ import org.cip4.jdflib.extensions.xjdfwalker.jdftoxjdf.JDFToXJDF.EnumProcessPart
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.jdflib.resource.JDFResource;
+import org.cip4.jdflib.util.ByteArrayIOStream;
 import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
+import org.cip4.jdflib.util.mime.BodyPartHelper;
+import org.cip4.jdflib.util.mime.MimeReader;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.streamloader.IStreamLoader;
+import org.cip4.tools.jdfeditor.streamloader.JSONStreamLoader;
 import org.cip4.tools.jdfeditor.streamloader.PluginLoader;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
@@ -410,10 +412,11 @@ public class EditorUtils
 				{
 					ediDocs = new EditorDocument[1];
 
-					JDFDoc jdfDoc = parseInStream(inputFile, getSchemaLoc());
+					final ByteArrayIOStream bios = new ByteArrayIOStream(FileUtil.getBufferedInputStream(inputFile));
+					JDFDoc jdfDoc = parseInStream(bios, getSchemaLoc());
 					if (jdfDoc == null)
 					{
-						jdfDoc = parseInStream(inputFile, null);
+						jdfDoc = parseInStream(bios, null);
 					}
 
 					EditorDocument edidoc = null;
@@ -465,7 +468,8 @@ public class EditorUtils
 	{
 		final String inputFilePath = inputFile.getCanonicalPath();
 		EditorDocument[] editorDocsArray;
-		InputStream fileStream = FileUtil.getBufferedInputStream(inputFile);
+		final BufferedInputStream fileStream = FileUtil.getBufferedInputStream(inputFile);
+		fileStream.mark(1234);
 
 		// in case of spurious email header lines, skipem
 		final byte b[] = new byte[1000];
@@ -476,24 +480,20 @@ public class EditorUtils
 		{
 			posMime = s.toLowerCase().indexOf("mime-version:");
 		}
-		fileStream.close();
-		fileStream = new FileInputStream(inputFile);
+		fileStream.reset();
 		if (posMime > 0)
 		{
 			fileStream.skip(posMime);
 		}
-		final Multipart mp = MimeUtil.getMultiPart(fileStream);
-		if (mp == null)
-		{
-			return null;
-		}
-		final int count = mp.getCount();
-		int n = 0;
+		final MimeReader mimeReader = new MimeReader(fileStream);
 		// count jdfs and jmfs
-		for (int i = 0; i < count; i++)
+		int n = 0;
+		for (int i = 0; i < mimeReader.getCount(); i++)
 		{
-			final BodyPart bp = mp.getBodyPart(i);
-			if (MimeUtil.isJDFMimeType(bp.getContentType()))
+			final BodyPartHelper bp = mimeReader.getBodyPartHelper(i);
+			if (bp == null)
+				break;
+			if (canParse(bp))
 			{
 				n++;
 			}
@@ -503,21 +503,21 @@ public class EditorUtils
 			return null;
 		}
 		editorDocsArray = new EditorDocument[n];
-		n = 0;
 
-		for (int i = 0; i < count; i++)
+		int nn = 0;
+		for (int i = 0; i < mimeReader.getCount(); i++)
 		{
-			final BodyPart bp = mp.getBodyPart(i);
-			if (MimeUtil.isJDFMimeType(bp.getContentType()))
+			final BodyPartHelper bp = mimeReader.getBodyPartHelper(i);
+			if (canParse(bp))
 			{
-				InputStream is = bp.getInputStream();
+				final InputStream is = bp.getInputStream();
 
-				final JDFDoc jdfDoc = parseInStream(is, getSchemaLoc());
+				final ByteArrayIOStream streamJDF = new ByteArrayIOStream(is);
+				final JDFDoc jdfDoc = parseInStream(streamJDF, getSchemaLoc());
 				if (jdfDoc == null)
 				{
 					is.close();
-					is = bp.getInputStream();
-					parseInStream(is, null);
+					parseInStream(streamJDF, null);
 				}
 				EditorDocument editorDocument = null;
 
@@ -539,13 +539,25 @@ public class EditorUtils
 					partFileNamePassed = StringUtil.unEscape(partFileNamePassed, "%", 16, 2);
 					partFileNamePassed = StringUtil.getUTF8String(partFileNamePassed.getBytes());
 					jdfDoc.setOriginalFileName(partFileNamePassed);
-					jdfDoc.setBodyPart(bp);
-					editorDocument.setCID(MimeUtil.getContentID(bp));
-					editorDocsArray[n++] = editorDocument;
+					jdfDoc.setBodyPart(bp.getBodyPart());
+					editorDocument.setCID(bp.getContentID());
+					editorDocsArray[nn++] = editorDocument;
 				}
 			}
 		}
 		return editorDocsArray;
+	}
+
+	static boolean canParse(final BodyPartHelper bp) throws MessagingException
+	{
+		String contentType = bp.getBodyPart().getContentType();
+		contentType = StringUtil.token(contentType, 0, ";");
+		return MimeUtil.isJDFMimeType(contentType) || isJSONType(contentType);
+	}
+
+	private static boolean isJSONType(final String contentType)
+	{
+		return JDFConstants.MIME_XJDF_JSON.equalsIgnoreCase(contentType) || JDFConstants.MIME_XJMF_JSON.equalsIgnoreCase(contentType) || UrlUtil.isJSONType(contentType);
 	}
 
 	private static boolean isJDFMimeType(String mimeType)
@@ -609,7 +621,7 @@ public class EditorUtils
 		return editorDocument;
 	}
 
-	private static JDFDoc parseInStream(final InputStream inStream, final File fileSchema) throws IOException
+	static JDFDoc parseInStream(final InputStream inStream, final File fileSchema) throws IOException
 	{
 		final JDFParser p = new JDFParser();
 
@@ -680,13 +692,14 @@ public class EditorUtils
 	/**
 	 *
 	 *
-	 * @param fileJDF
+	 * @param streamJDF
 	 * @param fileSchema
 	 * @return
 	 * @throws IOException
 	 */
-	protected static JDFDoc parseInStream(final File fileJDF, final File fileSchema) throws IOException
+	protected static JDFDoc parseInStream(final ByteArrayIOStream streamJDF, final File fileSchema) throws IOException
 	{
+
 		JDFDoc jdfDoc = null;
 
 		if (pluginLoader == null)
@@ -710,9 +723,10 @@ public class EditorUtils
 
 		for (final IStreamLoader loader : lstStreamLoaders)
 		{
-			jdfDoc = loader.read(fileJDF, fileSchema);
+			final BufferedInputStream schemaStream = fileSchema == null ? null : FileUtil.getBufferedInputStream(fileSchema);
+			jdfDoc = loader.readStream(streamJDF.getInputStream(), schemaStream);
 
-			if (jdfDoc != null)
+			if (jdfDoc != null && loader instanceof JSONStreamLoader)
 			{
 				jdfDoc.getCreateXMLDocUserData().setUserData("json");
 				break;
@@ -728,9 +742,7 @@ public class EditorUtils
 				p.setJDFSchemaLocation(fileSchema);
 			}
 
-			final FileInputStream inStream = new FileInputStream(fileJDF);
-			jdfDoc = p.parseStream(inStream);
-			inStream.close();
+			jdfDoc = p.parseStream(streamJDF.getInputStream());
 		}
 
 		return jdfDoc;

@@ -95,9 +95,11 @@ import javax.swing.SwingConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.AttributeName;
+import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.elementwalker.AttributeReplacer;
+import org.cip4.jdflib.extensions.xjdfwalker.jdftoxjdf.JDFToXJDF;
 import org.cip4.jdflib.jmf.JDFCommand;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFMessage.EnumType;
@@ -107,12 +109,16 @@ import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.UrlPart;
 import org.cip4.jdflib.util.UrlUtil;
+import org.cip4.jdflib.util.mime.BodyPartHelper;
 import org.cip4.jdflib.util.mime.MimeWriter;
+import org.cip4.jdflib.util.mime.MimeWriter.eMimeSubType;
+import org.cip4.lib.jdf.jsonutil.JSONObjHelper;
 import org.cip4.lib.jdf.jsonutil.JSONWriter;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
+import org.json.simple.JSONObject;
 
 /**
  * @author MRE (Institute for Print and Media Technology) History: 20040903 MRE send MIME multipart/related
@@ -305,8 +311,9 @@ public class SendToDevice extends JPanel implements ActionListener
 	private boolean submitJDFToDevice(final URL url, final boolean bMime, final URL returnURL, final boolean packageAll)
 	{
 		boolean bSendTrue;
-		final JDFDoc jmfDoc = new JDFDoc("JMF");
-		final JDFCommand command = jmfDoc.getJMFRoot().appendCommand(EnumType.SubmitQueueEntry);
+		JDFDoc jmfDoc = new JDFDoc(ElementName.JMF);
+		final JDFJMF jmfRoot = jmfDoc.getJMFRoot();
+		final JDFCommand command = jmfRoot.appendCommand(EnumType.SubmitQueueEntry);
 		final JDFQueueSubmissionParams qsp = command.appendQueueSubmissionParams();
 		if (returnURL != null)
 		{
@@ -332,9 +339,38 @@ public class SendToDevice extends JPanel implements ActionListener
 			updateJobID(root);
 			if (bMime)
 			{
-				qsp.setURL("dummy");
-				final Multipart mp = MimeUtil.buildMimePackage(jmfDoc, theDoc, packageAll);
-				final MimeWriter mw = new MimeWriter(mp);
+				final String fileName = UrlUtil.urlToFileName(editorDoc.getOriginalFileName());
+				qsp.setURL(theDoc.getOriginalFileName());
+
+				final MimeWriter mw = new MimeWriter(editorDoc.isJson() ? eMimeSubType.formdata : eMimeSubType.related);
+
+				if (editorDoc.isXJDF())
+				{
+					qsp.setURL(fileName);
+					final JDFToXJDF conv = EditorUtils.getXJDFConverter();
+					final KElement xjmf = conv.convert(jmfRoot);
+					jmfDoc = new JDFDoc(xjmf.getOwnerDocument());
+					if (editorDoc.isJson())
+					{
+						final BodyPartHelper bph = new BodyPartHelper();
+						final JSONWriter jw = Editor.getEditor().getJSonWriter();
+						final JSONObject o = jw.convert(jmfDoc.getRoot());
+						bph.setContent(new JSONObjHelper(o).getInputStream(), MimeUtil.VND_XJMF_J);
+						bph.setFileName("submit.xjmf");
+						mw.addBodyPart(bph);
+
+						final BodyPartHelper bph2 = new BodyPartHelper();
+						final JSONObject o2 = jw.convert(theDoc.getRoot());
+						bph2.setContent(new JSONObjHelper(o2).getInputStream(), MimeUtil.VND_XJDF_J);
+						bph2.setFileName(fileName);
+						mw.addBodyPart(bph2);
+					}
+
+				}
+				else
+				{
+					mw.buildMimePackage(jmfDoc, theDoc, packageAll);
+				}
 				up = mw.writeToURL(url.toExternalForm());
 			}
 			else
@@ -482,7 +518,7 @@ public class SendToDevice extends JPanel implements ActionListener
 		if (bSendTrue && !UrlUtil.isFile(url.toExternalForm()))
 		{
 			String newFileName = MainView.getEditorDoc().getOriginalFileName();
-			newFileName = UrlUtil.newExtension(newFileName, extension);
+			newFileName = UrlUtil.newExtension(newFileName, "resp." + extension);
 			final File f = FileUtil.streamToFile(up.getResponseStream(), newFileName);
 			if (f != null)
 			{

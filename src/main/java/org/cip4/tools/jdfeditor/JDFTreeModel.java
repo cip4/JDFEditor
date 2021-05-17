@@ -106,6 +106,7 @@ import org.cip4.jdflib.pool.JDFResourceLinkPool;
 import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.resource.devicecapability.JDFDeviceCap;
+import org.cip4.jdflib.util.ByteArrayIOStream;
 import org.cip4.jdflib.util.ContainerUtil;
 import org.cip4.jdflib.util.JDFSpawn;
 import org.cip4.jdflib.util.StringUtil;
@@ -294,12 +295,13 @@ public class JDFTreeModel extends DefaultTreeModel
 				try
 				{
 					final File tmpFile = File.createTempFile("tmp", ".jdf");
-					theDoc.write2File(tmpFile.getAbsolutePath(), 0, false);
+					final ByteArrayIOStream outStream = new ByteArrayIOStream();
+					theDoc.write2Stream(outStream, 0, false);
 					theDoc.setOriginalFileName(fn);
-					JDFDoc tmpDoc = EditorUtils.parseInStream(tmpFile, EditorUtils.getSchemaLoc());
+					JDFDoc tmpDoc = EditorUtils.parseInStream(outStream.getInputStream(), EditorUtils.getSchemaLoc());
 					if (tmpDoc == null)
 					{
-						tmpDoc = EditorUtils.parseInStream(tmpFile, null);
+						tmpDoc = EditorUtils.parseInStream(outStream.getInputStream(), null);
 					}
 
 					tmpFile.delete();
