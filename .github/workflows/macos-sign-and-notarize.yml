@@ -51,7 +51,13 @@ jobs:
         run: ./gradlew packageApp
 
       - name: Sign app
-        run: codesign --timestamp --options runtime --entitlements entitlements.plist --sign 'Developer ID Application: CIP4 Organization (4DL5XX9SG8)' ./build/JDFEditor/JDFEditor.app
+        run: >
+          codesign
+            --timestamp
+            --options runtime
+            --entitlements entitlements.plist
+            --sign "Developer ID Application: CIP4 Organization (4DL5XX9SG8)"
+            ./build/JDFEditor/JDFEditor.app
 
       - name: Package DMG
         run: create-dmg ./build/JDFEditor/JDFEditor.dmg ./build/JDFEditor/JDFEditor.app
