@@ -93,6 +93,5 @@ task packageApp(type: io.github.fvarrui.javapackager.gradle.PackageTask, depends
         icnsFile = file("${projectDir}/src/main/dist/macosx/jdfeditor.icns")
         generateDmg = false
         generatePkg = false
-        codesignApp = false
     }
 }
