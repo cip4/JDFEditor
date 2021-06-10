@@ -1,11 +1,20 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'io.github.fvarrui:javapackager:1.5.1'
+    }
+}
+
 plugins {
     id 'java'
     id 'application'
-    id "edu.sc.seis.launch4j" version "2.4.9"
-    id "edu.sc.seis.macAppBundle" version "2.3.0"
 }
+
+apply plugin: 'io.github.fvarrui.javapackager.plugin'
 
 sourceCompatibility = 11
 targetCompatibility = 11
@@ -46,19 +55,6 @@ application {
     mainClass = 'org.cip4.tools.jdfeditor.Editor'
 }
 
-createExe {
-    mainClassName = 'org.cip4.tools.jdfeditor.Editor'
-    icon = "${projectDir}/src/main/dist/windows/jdfeditor_128.ico"
-    outfile = project.name + '-' + project.version + '.exe'
-    downloadUrl = "https://adoptopenjdk.net/installation.html#windows-msi"
-}
-
-macAppBundle {
-    mainClassName = 'org.cip4.tools.jdfeditor.Editor'
-    icon = "${projectDir}/src/main/dist/macosx/jdfeditor.icns"
-    javaProperties.put("apple.laf.useScreenMenuBar", "true")
-}
-
 configurations {
    all*.exclude group: 'xml-apis', module: 'xml-apis'
  }
@@ -76,8 +72,27 @@ dependencies {
     compile 'org.eclipse.jetty:jetty-webapp:9.4.24.v20191120'
     compile 'com.fifesoft:rsyntaxtextarea:1.4.1'
     compile 'com.googlecode.json-simple:json-simple:1.1'
-   
 
     testCompile 'junit:junit:4.13'
     testCompile 'org.mockito:mockito-all:2.0.2-beta'
+}
+
+task packageApp(type: io.github.fvarrui.javapackager.gradle.PackageTask, dependsOn: build) {
+    appName = "${project.name}-${project.version}"
+    mainClass = 'org.cip4.tools.jdfeditor.Editor'
+    bundleJre = true
+    generateInstaller = false
+    administratorRequired = false
+    winConfig {
+        icoFile = file("${projectDir}/src/main/dist/windows/jdfeditor_128.ico")
+        generateSetup = false
+        generateMsi = false
+        generateMsm = false
+    }
+    macConfig {
+        icnsFile = "${projectDir}/src/main/dist/macosx/jdfeditor.icns"
+        generateDmg = false
+        generatePkg = false
+        codesignApp = false
+    }
 }
