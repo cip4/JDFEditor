@@ -50,6 +50,9 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew packageApp
 
+      - name: Debug
+        run: ls -la build/JDFEditor
+
       - name: ✏️Sign & Notarize
         env:
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD}}

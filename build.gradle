@@ -78,7 +78,6 @@ dependencies {
 }
 
 task packageApp(type: io.github.fvarrui.javapackager.gradle.PackageTask, dependsOn: build) {
-    appName = "${project.name}"
     mainClass = 'org.cip4.tools.jdfeditor.Editor'
     bundleJre = true
     customizedJre = false // TODO: Fix the problem with the customized Jre and re-enable it.
