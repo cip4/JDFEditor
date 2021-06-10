@@ -1,0 +1,15 @@
+{
+  "source" : ["./build/macApp/JDFEditor.app"],
+  "bundle_id" : "org.cip4.jdfeditor",
+  "apple_id": {
+    "username" : "infrastructure@cip4.org",
+    "password":  "@env:APPLE_PASSWORD"
+  },
+  "sign" :{
+    "application_identity" : "Developer ID Application: CIP4 Organization (4DL5XX9SG8)"
+  },
+  "dmg" :{
+    "output_path":  "JDFEditor.dmg",
+    "volume_name":  "JDFEditor"
+  }
+}
