@@ -6,7 +6,8 @@
     "password":  "@env:APPLE_PASSWORD"
   },
   "sign" :{
-    "application_identity" : "Developer ID Application: CIP4 Organization (4DL5XX9SG8)"
+    "application_identity" : "Developer ID Application: CIP4 Organization (4DL5XX9SG8)",
+    "entitlements_file": "entitlements.plist"
   },
   "dmg" :{
     "output_path":  "JDFEditor.dmg",
