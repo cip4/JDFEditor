@@ -56,6 +56,8 @@ jobs:
         run: ./gradlew createApp
 
       - name: Sign & Notarize
+        env:
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD}}
         run: gon .github/workflows/macos/gon-config.json
 
       - name: Upload Binaries
