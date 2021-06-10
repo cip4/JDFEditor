@@ -53,7 +53,7 @@ jobs:
       - name: ✏️Sign & Notarize
         env:
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD}}
-        run: gon .github/workflows/macos/gon-config.json
+        run: gon .github/workflows/macos/gon-notarize.json
 
       - name: Upload Binaries
         uses: actions/upload-artifact@v2

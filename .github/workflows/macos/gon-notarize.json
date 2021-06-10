@@ -1,0 +1,13 @@
+{
+  "notarize": [
+    {
+      "path": "build/JDFEditor-development/JDFEditor-development.dmg",
+      "bundle_id": "org.cip4.jdfeditor",
+      "staple": true
+    }
+  ],
+  "apple_id": {
+    "username": "infrastructure@cip4.org",
+    "password": "@env:APPLE_PASSWORD"
+  }
+}
