@@ -78,12 +78,13 @@ dependencies {
 }
 
 task packageApp(type: io.github.fvarrui.javapackager.gradle.PackageTask, dependsOn: build) {
-    appName = "${project.name}-${project.version}"
+    appName = "${project.name}"
     mainClass = 'org.cip4.tools.jdfeditor.Editor'
     bundleJre = true
     customizedJre = false // TODO: Fix the problem with the customized Jre and re-enable it.
     generateInstaller = false
     administratorRequired = false
+    platform = "mac"
     winConfig {
         icoFile = file("${projectDir}/src/main/dist/windows/jdfeditor_128.ico")
         generateSetup = false

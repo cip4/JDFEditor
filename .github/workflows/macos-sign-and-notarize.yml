@@ -68,4 +68,5 @@ jobs:
           name: binaries
           path: |
             build/macApp/JDFEditor.app
+            build/JDFEditor
             JDFEditor.dmg

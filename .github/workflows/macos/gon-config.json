@@ -1,5 +1,5 @@
 {
-  "source" : ["./build/macApp/JDFEditor.app"],
+  "source" : ["./build/JDFEditor/JDFEditor.app"],
   "bundle_id" : "org.cip4.jdfeditor",
   "apple_id": {
     "username" : "infrastructure@cip4.org",
