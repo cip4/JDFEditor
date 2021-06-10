@@ -20,7 +20,7 @@ jobs:
       - name: Setup Tooling
         run: |
           brew tap mitchellh/gon
-          brew install mitchellh/gon/gon
+          brew install mitchellh/gon/gon create-dmg
 
       - name: Install the Apple certificate
         env:
@@ -50,13 +50,19 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew packageApp
 
+      - name: Sign app
+        run: codesign --timestamp --options runtime --entitlements entitlements.plist --sign 'Developer ID Application: CIP4 Organization (4DL5XX9SG8)' ./build/JDFEditor/JDFEditor.app
+
+      - name: Package DMG
+        run: create-dmg ./build/JDFEditor/JDFEditor.dmg ./build/JDFEditor/JDFEditor.app
+
       - name: Debug
         run: ls -la build/JDFEditor
 
       - name: ✏️Sign & Notarize
         env:
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD}}
-        run: gon .github/workflows/macos/gon-config.json
+        run: gon .github/workflows/macos/gon-notarize.json
 
       - name: Upload Binaries
         uses: actions/upload-artifact@v2
