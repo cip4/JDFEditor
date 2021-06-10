@@ -93,7 +93,7 @@ task packageApp(type: io.github.fvarrui.javapackager.gradle.PackageTask, depends
     }
     macConfig {
         icnsFile = file("${projectDir}/src/main/dist/macosx/jdfeditor.icns")
-        generateDmg = false
+        generateDmg = true
         generatePkg = false
         developerId = "Developer ID Application: CIP4 Organization (4DL5XX9SG8)"
     }
