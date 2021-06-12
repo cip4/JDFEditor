@@ -3,8 +3,8 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2016 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * Copyright (c) 2001-2016 The International Cooperation for the Integration of
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +12,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -20,17 +20,17 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
+ *        The International Cooperation for the Integration of
  *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of
  *    Processes in  Prepress, Press and Postpress" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact info@cip4.org.
  *
  * 5. Products derived from this software may not be called "CIP4",
@@ -56,17 +56,17 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
+ * individuals on behalf of the The International Cooperation for the Integration
  * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
+ * originally based on software
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V.
+ *
+ * For more information on The International Cooperation for the
  * Integration of Processes in  Prepress, Press and Postpress , please see
  * <http://www.cip4.org/>.
- *  
- * 
+ *
+ *
  */
 package org.cip4.tools.jdfeditor.transport;
 
@@ -78,7 +78,6 @@ import java.io.InputStream;
 
 import javax.mail.BodyPart;
 import javax.mail.MessagingException;
-import javax.mail.util.SharedByteArrayInputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -95,18 +94,19 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.JDFDoc;
-import org.cip4.jdflib.core.VElement;
-import org.cip4.jdflib.core.XMLDoc;
+import org.cip4.jdflib.extensions.MessageHelper;
+import org.cip4.jdflib.extensions.XJMFHelper;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFMessage;
 import org.cip4.jdflib.util.ByteArrayIOStream;
-import org.cip4.jdflib.util.ByteArrayIOStream.ByteArrayIOInputStream;
 import org.cip4.jdflib.util.ContainerUtil;
 import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.JDFDate;
 import org.cip4.jdflib.util.MimeUtil;
+import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.jdflib.util.file.RollingBackupDirectory;
 import org.cip4.jdflib.util.mime.MimeReader;
+import org.cip4.tools.jdfeditor.EditorUtils;
 import org.cip4.tools.jdfeditor.JDFFrame;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.pane.MessageBean;
@@ -118,7 +118,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * 
+ *
  * @author rainer prosi
  *
  */
@@ -126,10 +126,7 @@ public class JMFServlet extends HttpServlet
 {
 	private static final Log LOGGER = LogFactory.getLog(JMFServlet.class);
 	private static final String UTF_8 = "UTF-8";
-	private static final int INDENT = 2;
 	private static final long serialVersionUID = 1L;
-	private static final String TIMESTAMP_PATTERN = "yyyy-MM-dd_hh-mm-ss-SSS";
-
 	private static final String HEADER_CONTENT_ID = "Content-ID";
 	private static final String CONTENT_JMF = "application/vnd.cip4-jmf+xml";
 	private static final String CONTENT_JDF = "application/vnd.cip4-jdf+xml";
@@ -137,7 +134,7 @@ public class JMFServlet extends HttpServlet
 
 	private String lastDump;
 	private RollingBackupDirectory dumpDir;
-	private JDFFrame jdfFrame = MainView.getFrame();
+	private final JDFFrame jdfFrame = MainView.getFrame();
 
 	public JMFServlet()
 	{
@@ -146,54 +143,54 @@ public class JMFServlet extends HttpServlet
 	private RollingBackupDirectory getDump()
 	{
 		final SettingService settingService = SettingService.getSettingService();
-		String dump = settingService.getSetting(SettingKey.HTTP_STORE_PATH, String.class);
+		final String dump = settingService.getSetting(SettingKey.HTTP_STORE_PATH, String.class);
 		if (!ContainerUtil.equals(dump, lastDump))
 		{
-			dumpDir = new RollingBackupDirectory(new File(dump), 200, "http_received.jmf");
+			dumpDir = new RollingBackupDirectory(new File(dump), 200, "http_received");
 			lastDump = dump;
 		}
 		return dumpDir;
 	}
 
 	@Override
-	public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException
+	public void doPost(final HttpServletRequest req, final HttpServletResponse res) throws IOException
 	{
 		LOGGER.debug("received doPost: " + this);
 		try
 		{
 			processMessage(req, res);
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String err = "The request body could not be processed. Maybe it did not contain JMF or JDF?";
+			final String err = "The request body could not be processed. Maybe it did not contain JMF or JDF?";
 			LOGGER.error(err, e);
 			res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, err + e);
 		}
 	}
 
 	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException
+	public void doGet(final HttpServletRequest req, final HttpServletResponse res) throws IOException
 	{
-		String msg = "Received HTTP GET request from " + req.getHeader("User-Agent") + " @ " + req.getRemoteHost() + " (" + req.getRemoteAddr() + "). Request ignored.";
+		final String msg = "Received HTTP GET request from " + req.getHeader("User-Agent") + " @ " + req.getRemoteHost() + " (" + req.getRemoteAddr() + "). Request ignored.";
 		LOGGER.warn(msg);
 		res.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, "HTTP GET not implemented.");
 	}
 
 	private void processMessage(final HttpServletRequest req, final HttpServletResponse res) throws IOException
 	{
-		String logMessage = "Receiving message from " + req.getHeader("User-Agent") + " @ " + req.getRemoteHost() + " (" + req.getRemoteAddr() + ")...";
+		final String logMessage = "Receiving message from " + req.getHeader("User-Agent") + " @ " + req.getRemoteHost() + " (" + req.getRemoteAddr() + ")...";
 		LOGGER.info(logMessage);
-//		Build incoming Message
-		String headerContentType = req.getHeader("Content-type");
+		//		Build incoming Message
+		final String headerContentType = req.getHeader("Content-type");
 		LOGGER.info("header Content-type: " + headerContentType);
-		
+
 		final boolean isMultipart = MimeUtil.isMimeMultiPart(headerContentType);
 		LOGGER.info("isMultipart: " + isMultipart);
-		
-		InputStream inputStreamTemp = req.getInputStream();
-		String requestString = IOUtils.toString(inputStreamTemp, UTF_8);
+
+		final InputStream inputStreamTemp = req.getInputStream();
+		final String requestString = IOUtils.toString(inputStreamTemp, UTF_8);
 		LOGGER.info("requestString: " + requestString);
-		InputStream inputStream = IOUtils.toInputStream(requestString, UTF_8);
+		final InputStream inputStream = IOUtils.toInputStream(requestString, UTF_8);
 
 		if (getDump() == null)
 		{
@@ -201,40 +198,70 @@ public class JMFServlet extends HttpServlet
 			return;
 		}
 
-		if (isMultipart) {
-			processMultipartPostMessage2(inputStream);
-		} else {
-			processPlainPostMessage(inputStream);
+		if (isMultipart)
+		{
+			processMultipartPostMessage2(inputStream, headerContentType);
+		}
+		else
+		{
+			processPlainPostMessage(inputStream, headerContentType);
 		}
 	}
 
-	private void processPlainPostMessage(final InputStream inputStream) throws IOException
+	private void processPlainPostMessage(final InputStream inputStream, final String headerContentType) throws IOException
 	{
-		ByteArrayIOInputStream inputStream2 = ByteArrayIOStream.getBufferedInputStream(inputStream);
 
-		JDFDoc doc = JDFDoc.parseStream(inputStream2);
-		if (doc == null)
+		final ByteArrayIOStream byteArrayIOStream = new ByteArrayIOStream(inputStream);
+		final JDFDoc doc = EditorUtils.parseInStream(byteArrayIOStream, null);
+
+		String extension = UrlUtil.getExtensionFromMimeType(headerContentType);
+		if (extension == null)
+			extension = "log";
+		String type = "unknown";
+		String device = "unknown";
+		if (doc != null)
 		{
-			LOGGER.error("error parsing jmf");
-			return;
+			final JDFJMF jmf = doc.getJMFRoot();
+			if (jmf == null)
+			{
+				final XJMFHelper h = XJMFHelper.getHelper(doc);
+				if (h != null)
+				{
+					final MessageHelper message = h.getMessageHelper(0);
+					type = message == null ? "xjmf" : message.getType();
+					if (message != null)
+					{
+						device = message.getDeviceID();
+					}
+
+				}
+			}
+			else
+			{
+				final JDFMessage message = jmf.getMessageElement(null, null, 0);
+				type = message == null ? "xjmf" : message.getType();
+				if (message != null)
+				{
+					device = message.getSenderID();
+				}
+
+			}
 		}
-		JDFJMF jmf = doc.getJMFRoot();
-		if (jmf == null)
-		{
-			LOGGER.error("no root jmf");
-			return;
-		}
-		processJmfMessage(jmf, inputStream2);
+		final File dumpFile = dumpDir.getNewFileWithExt(type + "." + extension);
+		FileUtil.streamToFile(byteArrayIOStream.getInputStream(), dumpFile);
+		final MessageBean msg = new MessageBean(device, new JDFDate(), type, dumpFile);
+		jdfFrame.getBottomTabs().getHttpPanel().addMessage(msg);
+
 	}
 
-	private void processMultipartPostMessage2(final InputStream inputStream) throws IOException
+	private void processMultipartPostMessage2(final InputStream inputStream, final String headerContentType) throws IOException
 	{
-		String type = "MJM";
-		File dumpFile = dumpDir.getNewFileWithExt(type);
+		final String type = "MJM";
+		final File dumpFile = dumpDir.getNewFileWithExt(type);
 		LOGGER.debug("dumpFile path: " + dumpFile.getAbsolutePath());
 		FileUtil.streamToFile(ByteArrayIOStream.getBufferedInputStream(inputStream), dumpFile);
 
-		FileInputStream fileInputStream = FileUtils.openInputStream(dumpFile);
+		final FileInputStream fileInputStream = FileUtils.openInputStream(dumpFile);
 
 		final MimeReader mr = new MimeReader(fileInputStream);
 		final BodyPart[] bodyPartArray = mr.getBodyParts();
@@ -245,25 +272,30 @@ public class JMFServlet extends HttpServlet
 		boolean hasPdfInside = false;
 		for (int bodyPartNumber = 0; bodyPartNumber < bodyPartArray.length; bodyPartNumber++)
 		{
-			BodyPart part = bodyPartArray[bodyPartNumber];
-			try {
+			final BodyPart part = bodyPartArray[bodyPartNumber];
+			try
+			{
 				if (part.isMimeType(CONTENT_JMF))
 				{
 					hasJmfInside = true;
-					InputStream is = (InputStream) part.getContent();
-					String jmfRequestString = IOUtils.toString(is, UTF_8);
+					final InputStream is = (InputStream) part.getContent();
+					final String jmfRequestString = IOUtils.toString(is, UTF_8);
 					validateUrlResources(jmfRequestString, bodyPartNumber, bodyPartArray);
-				} else if (part.isMimeType(CONTENT_JDF))
+				}
+				else if (part.isMimeType(CONTENT_JDF))
 				{
 					hasJdfInside = true;
-					InputStream is = (InputStream) part.getContent();
-					String jdfRequestString = IOUtils.toString(is, UTF_8);
+					final InputStream is = (InputStream) part.getContent();
+					final String jdfRequestString = IOUtils.toString(is, UTF_8);
 					validateUrlResources(jdfRequestString, bodyPartNumber, bodyPartArray);
-				} else if (part.isMimeType(CONTENT_PDF))
+				}
+				else if (part.isMimeType(CONTENT_PDF))
 				{
 					hasPdfInside = true;
 				}
-			} catch (MessagingException e) {
+			}
+			catch (final MessagingException e)
+			{
 				LOGGER.error("Error: " + e.getMessage() + ", while processing bodyPartNumber: " + bodyPartNumber, e);
 			}
 		}
@@ -271,9 +303,9 @@ public class JMFServlet extends HttpServlet
 		String messageTypeFull = type;
 		if (hasJmfInside || hasJdfInside || hasPdfInside)
 		{
-			String partJmf = (hasJmfInside ? "JMF," : "");
-			String partJdf = (hasJdfInside ? "JDF," : "");
-			String partPdf = (hasPdfInside ? "PDF," : "");
+			final String partJmf = (hasJmfInside ? "JMF," : "");
+			final String partJdf = (hasJdfInside ? "JDF," : "");
+			final String partPdf = (hasPdfInside ? "PDF," : "");
 
 			messageTypeFull = type + " (" + partJmf + partJdf + partPdf;
 			messageTypeFull = messageTypeFull.substring(0, messageTypeFull.length() - 1);
@@ -285,49 +317,66 @@ public class JMFServlet extends HttpServlet
 		jdfFrame.getBottomTabs().getHttpPanel().addMessage(msg);
 	}
 
-	private void validateUrlResources(final String jmfRequestString, final int bodyPartNumber, final BodyPart[] bodyPartArray) {
-		DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-		try {
-			DocumentBuilder builder = builderFactory.newDocumentBuilder();
-			Document document = builder.parse(new ByteArrayInputStream(jmfRequestString.getBytes()));
-			XPath xPath =  XPathFactory.newInstance().newXPath();
-			String prefix = "cid:";
-			String expressionUrl = "//@URL";
-			NodeList urlNodeList = (NodeList) xPath.compile(expressionUrl).evaluate(document, XPathConstants.NODESET);
-			for (int i = 0; i < urlNodeList.getLength(); i++) {
-				Node node = urlNodeList.item(i);
-				if (node.getNodeType() == Node.ATTRIBUTE_NODE) {
-					String url = node.getNodeValue();
+	private void validateUrlResources(final String jmfRequestString, final int bodyPartNumber, final BodyPart[] bodyPartArray)
+	{
+		final DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+		try
+		{
+			final DocumentBuilder builder = builderFactory.newDocumentBuilder();
+			final Document document = builder.parse(new ByteArrayInputStream(jmfRequestString.getBytes()));
+			final XPath xPath = XPathFactory.newInstance().newXPath();
+			final String prefix = "cid:";
+			final String expressionUrl = "//@URL";
+			final NodeList urlNodeList = (NodeList) xPath.compile(expressionUrl).evaluate(document, XPathConstants.NODESET);
+			for (int i = 0; i < urlNodeList.getLength(); i++)
+			{
+				final Node node = urlNodeList.item(i);
+				if (node.getNodeType() == Node.ATTRIBUTE_NODE)
+				{
+					final String url = node.getNodeValue();
 					LOGGER.debug("URL found: " + url + " at part number: " + bodyPartNumber);
 
-					if (url.startsWith(prefix)) {
+					if (url.startsWith(prefix))
+					{
 						final String exactCid = "<" + url.substring(prefix.length(), url.length()) + ">";
-						if (!isContentIdExistInParts(exactCid, bodyPartArray)) {
+						if (!isContentIdExistInParts(exactCid, bodyPartArray))
+						{
 							LOGGER.fatal("Validation error: Expected Content-ID does not exist");
 						}
 					}
 				}
 			}
-		} catch (ParserConfigurationException | SAXException | IOException | XPathExpressionException e) {
+		}
+		catch (ParserConfigurationException | SAXException | IOException | XPathExpressionException e)
+		{
 			LOGGER.error("Exception occured: " + e.getMessage(), e);
 			return;
 		}
 	}
 
-	private boolean isContentIdExistInParts(final String resource, final BodyPart[] partsArray) {
-		for (int partNumber = 0; partNumber < partsArray.length; partNumber++) {
-			BodyPart part = partsArray[partNumber];
-			try {
-				if (part.getHeader(HEADER_CONTENT_ID) != null) {
-					String contentId = part.getHeader(HEADER_CONTENT_ID)[0];
-					if (contentId.equalsIgnoreCase(resource)) {
+	private boolean isContentIdExistInParts(final String resource, final BodyPart[] partsArray)
+	{
+		for (int partNumber = 0; partNumber < partsArray.length; partNumber++)
+		{
+			final BodyPart part = partsArray[partNumber];
+			try
+			{
+				if (part.getHeader(HEADER_CONTENT_ID) != null)
+				{
+					final String contentId = part.getHeader(HEADER_CONTENT_ID)[0];
+					if (contentId.equalsIgnoreCase(resource))
+					{
 						LOGGER.debug("Confirmed resource at bodyPartNumber: " + partNumber);
 						return true;
 					}
-				} else {
+				}
+				else
+				{
 					LOGGER.fatal("Potential validation error: No Content-ID exist in part of MIME, partNumber: " + partNumber);
 				}
-			} catch (MessagingException e) {
+			}
+			catch (final MessagingException e)
+			{
 				LOGGER.error("Error: " + e.getMessage(), e);
 			}
 		}
@@ -338,9 +387,9 @@ public class JMFServlet extends HttpServlet
 	{
 		final MimeReader mr = new MimeReader(inputStream);
 		final BodyPart[] bp = mr.getBodyParts();
-
+	
 		LOGGER.info("Received total parts: " + bp.length);
-
+	
 		for (int bodyPartNumber = 0; bodyPartNumber < bp.length; bodyPartNumber++)
 		{
 			BodyPart part = bp[bodyPartNumber];
@@ -351,24 +400,24 @@ public class JMFServlet extends HttpServlet
 					LOGGER.info("Processing bodyPartNumber: " + bodyPartNumber);
 					SharedByteArrayInputStream is = (SharedByteArrayInputStream) part.getContent();
 					String jmfRequestString = IOUtils.toString(is, UTF_8);
-//					LOGGER.info("jmfRequestString: " + jmfRequestString);
-
-//					next 4 lines are quite tricky, idea is - to get JDFJMF initialized from String
+	//					LOGGER.info("jmfRequestString: " + jmfRequestString);
+	
+	//					next 4 lines are quite tricky, idea is - to get JDFJMF initialized from String
 					JDFDoc jdfDocTemp = new JDFDoc();
 					XMLDoc xmlDoc = jdfDocTemp.parseString(jmfRequestString);
 					JDFDoc jdfDoc = new JDFDoc(xmlDoc);
 					JDFJMF jmf = jdfDoc.getJMFRoot();
-
+	
 					if ((jmf == null) || (jmf.isJDFNode()))
 					{
 						LOGGER.info("Skip bodyPartNumber: " + bodyPartNumber + ", jmf: " + jmf);
 						continue;
 					}
-
+	
 					String originalJmf = jmf.toDisplayXML(INDENT);
 					LOGGER.info("bodyPartNumber: " + bodyPartNumber + ", originalJmf: \n" + originalJmf);
 					InputStream inputStreamJmf = IOUtils.toInputStream(originalJmf, UTF_8);
-
+	
 					processJmfMessage(jmf, inputStreamJmf);
 				} else
 				{
@@ -381,20 +430,4 @@ public class JMFServlet extends HttpServlet
 			}
 		}
 	}*/
-
-	private void processJmfMessage(final JDFJMF jmf, final InputStream inputStream)
-	{
-		final VElement jmfMessagesVector = jmf.getMessageVector(null, null);
-
-		for (int i = 0; i < jmfMessagesVector.size(); i++)
-		{
-			JDFMessage jmfMessage = (JDFMessage) jmfMessagesVector.get(i); // jmf.getMessageElement(null, null, i);
-			String type = jmfMessage.getType();
-			LOGGER.debug("jmfMessage id: " + jmfMessage.getID() + ", type: " + type);
-			File dumpFile = dumpDir.getNewFileWithExt(type);
-			FileUtil.streamToFile(ByteArrayIOStream.getBufferedInputStream(inputStream), dumpFile);
-			final MessageBean msg = new MessageBean(jmfMessage, dumpFile);
-			jdfFrame.getBottomTabs().getHttpPanel().addMessage(msg);
-		}
-	}
 }

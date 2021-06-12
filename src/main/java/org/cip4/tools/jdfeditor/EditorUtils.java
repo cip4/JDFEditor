@@ -697,7 +697,7 @@ public class EditorUtils
 	 * @return
 	 * @throws IOException
 	 */
-	protected static JDFDoc parseInStream(final ByteArrayIOStream streamJDF, final File fileSchema) throws IOException
+	public static JDFDoc parseInStream(final ByteArrayIOStream streamJDF, final File fileSchema) throws IOException
 	{
 
 		JDFDoc jdfDoc = null;
