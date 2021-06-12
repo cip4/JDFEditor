@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2016 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2021 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -93,6 +93,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.extensions.MessageHelper;
 import org.cip4.jdflib.extensions.XJMFHelper;
@@ -118,6 +119,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
+ * simple dumping servlet
  *
  * @author rainer prosi
  *
@@ -136,6 +138,9 @@ public class JMFServlet extends HttpServlet
 	private RollingBackupDirectory dumpDir;
 	private final JDFFrame jdfFrame = MainView.getFrame();
 
+	/**
+	 *
+	 */
 	public JMFServlet()
 	{
 	}
@@ -146,7 +151,7 @@ public class JMFServlet extends HttpServlet
 		final String dump = settingService.getSetting(SettingKey.HTTP_STORE_PATH, String.class);
 		if (!ContainerUtil.equals(dump, lastDump))
 		{
-			dumpDir = new RollingBackupDirectory(new File(dump), 200, "http_received");
+			dumpDir = new RollingBackupDirectory(new File(dump), 420, "http_received");
 			lastDump = dump;
 		}
 		return dumpDir;
@@ -187,10 +192,7 @@ public class JMFServlet extends HttpServlet
 		final boolean isMultipart = MimeUtil.isMimeMultiPart(headerContentType);
 		LOGGER.info("isMultipart: " + isMultipart);
 
-		final InputStream inputStreamTemp = req.getInputStream();
-		final String requestString = IOUtils.toString(inputStreamTemp, UTF_8);
-		LOGGER.info("requestString: " + requestString);
-		final InputStream inputStream = IOUtils.toInputStream(requestString, UTF_8);
+		final InputStream inputStream = req.getInputStream();
 
 		if (getDump() == null)
 		{
@@ -219,6 +221,7 @@ public class JMFServlet extends HttpServlet
 			extension = "log";
 		String type = "unknown";
 		String device = "unknown";
+		JDFDate timestamp = null;
 		if (doc != null)
 		{
 			final JDFJMF jmf = doc.getJMFRoot();
@@ -232,24 +235,26 @@ public class JMFServlet extends HttpServlet
 					if (message != null)
 					{
 						device = message.getDeviceID();
+						timestamp = JDFDate.createDate(message.getHeader().getAttribute(AttributeName.TIME));
 					}
-
 				}
 			}
 			else
 			{
 				final JDFMessage message = jmf.getMessageElement(null, null, 0);
-				type = message == null ? "xjmf" : message.getType();
+				type = message == null ? "jmf" : message.getType();
 				if (message != null)
 				{
+					timestamp = message.getTime();
 					device = message.getSenderID();
 				}
-
 			}
 		}
 		final File dumpFile = dumpDir.getNewFileWithExt(type + "." + extension);
 		FileUtil.streamToFile(byteArrayIOStream.getInputStream(), dumpFile);
-		final MessageBean msg = new MessageBean(device, new JDFDate(), type, dumpFile);
+		if (timestamp == null)
+			timestamp = new JDFDate();
+		final MessageBean msg = new MessageBean(device, timestamp, type, dumpFile);
 		jdfFrame.getBottomTabs().getHttpPanel().addMessage(msg);
 
 	}
