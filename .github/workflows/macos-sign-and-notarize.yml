@@ -61,6 +61,5 @@ jobs:
       - name: Upload Binaries
         uses: actions/upload-artifact@v2
         with:
-          name: binaries
-          path: |
-            build/jpackage/JDFEditor-1.0.0.dmg
+          name: JDFEditor.dmg
+          path: build/jpackage/JDFEditor-1.0.0.dmg
