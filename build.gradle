@@ -4,8 +4,10 @@ plugins {
     id 'java'
     id 'application'
     id 'org.beryx.runtime' version '1.12.5'
-    id 'com.github.johnrengelman.shadow' version '7.0.0'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
+
+mainClassName = 'org.cip4.tools.jdfeditor.Editor'
 
 sourceCompatibility = 11
 targetCompatibility = 11
