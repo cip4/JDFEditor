@@ -33,9 +33,9 @@ jar {
 
 processResources {
     filesMatching('**/*.properties') {
-        filter(ReplaceTokens, tokens:  [
-                'name': project.properties['name'],
-                'version': project.properties['version'],
+        filter(ReplaceTokens, tokens: [
+                'name'     : project.properties['name'],
+                'version'  : project.properties['version'],
                 'timestamp': new Date().format('yyyy-MM-dd HH:mm:ss')
         ])
     }
@@ -46,8 +46,8 @@ application {
 }
 
 configurations {
-   all*.exclude group: 'xml-apis', module: 'xml-apis'
- }
+    all*.exclude group: 'xml-apis', module: 'xml-apis'
+}
 
 dependencies {
     compile 'org.cip4.lib.jdf:JDFLibJ:2.1.7.+'
@@ -76,5 +76,12 @@ runtime {
         }
         imageOptions = ["--icon", icon]
         appVersion = "1.0.0"
+        if (currentOs.macOsX) {
+            imageOptions += [
+                    "--mac-sign",
+                    "--mac-signing-key-user-name", "Developer ID Application: CIP4 Organization (4DL5XX9SG8)",
+                    "--mac-package-identifier", "org.cip4.jdfeditor"
+            ]
+        }
     }
 }
