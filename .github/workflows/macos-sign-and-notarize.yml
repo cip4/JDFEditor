@@ -48,28 +48,15 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build with Gradle
-        run: ./gradlew jpackageImage
+        run: ./gradlew jpackage
 
       - name: Debug
         run: find build/jpackage
 
-      - name: Sign app
-        run: >
-          codesign \
-            --sign "Developer ID Application: CIP4 Organization (4DL5XX9SG8)" \
-            --entitlements entitlements.plist \
-            --timestamp \
-            --options runtime \
-            -vvv \
-            ./build/jpackage/JDFEditor.app
-
-      - name: Package DMG
-        run: create-dmg ./build/JDFEditor/JDFEditor.dmg ./build/JDFEditor/JDFEditor.app
-
       - name: Debug
         run: ls -la build/JDFEditor
 
-      - name: ✏️Sign & Notarize
+      - name: ✏️Notarize
         env:
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD}}
         run: gon .github/workflows/macos/gon-notarize.json
