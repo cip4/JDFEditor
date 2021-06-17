@@ -79,7 +79,7 @@ runtime {
         if (currentOs.macOsX) {
             imageOptions += [
                     "--mac-sign",
-                    "--mac-signing-key-user-name", "Developer ID Application: CIP4 Organization (4DL5XX9SG8)",
+                    "--mac-signing-key-user-name", "CIP4 Organization (4DL5XX9SG8)",
                     "--mac-package-identifier", "org.cip4.jdfeditor"
             ]
         }
