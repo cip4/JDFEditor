@@ -84,8 +84,8 @@ jobs:
 
       - name: Rename binaries
         run: |
-          ren build/jpackage/JDFEditor*.exe build/jpackage/JDFEditor.exe
-          ren build/jpackage/JDFEditor*.msi build/jpackage/JDFEditor.msi
+          mv build/jpackage/JDFEditor*.exe build/jpackage/JDFEditor.exe
+          mv build/jpackage/JDFEditor*.msi build/jpackage/JDFEditor.msi
 
       - name: Debug
         run: |
