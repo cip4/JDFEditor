@@ -1,39 +1,12 @@
-
-name: Snapshot
+name: Release
 
 on:
-  schedule:
-    - cron:  '0 3 * * *'
   push:
-    branches: [ main ]
+    branches:
+      - macos-build
+  workflow_dispatch:
 
 jobs:
-  linux-build:
-    runs-on: ubuntu-latest
-    steps:
-      -   name: Setup JDK 15
-          uses: actions/setup-java@v1
-          with:
-            java-version: 15
-
-      -   name: Check out sources...
-          uses: actions/checkout@v2
-
-      -   name: Build with Gradle
-          run: ./gradlew distZip distTar
-
-      - name: Rename .ZIP
-        run: mv build/distributions/JDFEditor-development.zip build/distributions/JDFEditor-SNAPSHOT-${{ github.run_number }}.zip
-
-      - name: Rename .TAR
-        run: mv build/distributions/JDFEditor-development.tar build/distributions/JDFEditor-SNAPSHOT-${{ github.run_number }}.tar
-
-      - name: Upload binaries
-        uses: actions/upload-artifact@v2
-        with:
-          name: binaries
-          path: build/distributions/JDFEditor-SNAPSHOT-*.*
-
   macos-build:
     runs-on: macos-latest
     steps:
@@ -84,14 +57,11 @@ jobs:
           mv ./build/jpackage/JDFEditor-*.dmg ./build/jpackage/JDFEditor.dmg
           gon .github/workflows/macos/gon-notarize.json
 
-      - name: Rename .DMG
-        run: mv build/jpackage/JDFEditor.dmg build/jpackage/JDFEditor-SNAPSHOT-${{ github.run_number }}.dmg
-
       - name: Upload Binaries
         uses: actions/upload-artifact@v2
         with:
-          name: binaries
-          path: build/jpackage/JDFEditor-SNAPSHOT-*.*
+          name: JDFEditor (MacOS)
+          path: build/jpackage/JDFEditor.dmg
 
   windows-build:
     runs-on: windows-latest
@@ -110,35 +80,12 @@ jobs:
         run: ./gradlew jpackage
 
       - name: Rename binaries
-        run: mv build/jpackage/JDFEditor*.msi build/jpackage/JDFEditor-SNAPSHOT-${{ github.run_number }}.exe
+        run: |
+          mv build/jpackage/JDFEditor*.exe build/jpackage/JDFEditor.exe
+          mv build/jpackage/JDFEditor*.msi build/jpackage/JDFEditor.msi
 
       - name: Upload Binaries
         uses: actions/upload-artifact@v2
         with:
-          name: binaries
-          path: build/jpackage/JDFEditor-SNAPSHOT-*.exe
-
-  publish-snapshot:
-    needs:
-      - linux-build
-      - macos-build
-      - windows-build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download all workflow run artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: binaries
-          path: binaries
-      - name: Display structure of downloaded files
-        run: ls -R
-        working-directory: binaries
-      - name: Confluence Upload
-        uses: cip4/action-confluence-upload@master
-        with:
-          url: 'https://confluence.cip4.org'
-          username: ${{ secrets.CONFLUENCE_USER }}
-          password: ${{ secrets.CONFLUENCE_PASSWORD }}
-          contentId: 5309046
-          label: 'jdfeditor-snapshot,snapshot'
-          filePattern: 'binaries/**/JDFEditor-SNAPSHOT-*.*'
+          name: JDFEditor (Windows)
+          path: build/jpackage/JDFEditor.*
