@@ -82,8 +82,8 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew jpackage
 
-      -name: Rename binaries
-       run: |
+      - name: Rename binaries
+        run: |
           ren build/jpackage/JDFEditor*.exe build/jpackage/JDFEditor.exe
           ren build/jpackage/JDFEditor*.msi build/jpackage/JDFEditor.msi
 
