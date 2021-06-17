@@ -53,10 +53,10 @@ jobs:
       - name: Sign app
         run: >
           codesign
+            -s "Developer ID Application: CIP4 Organization (4DL5XX9SG8)"
+            --entitlements entitlements.plist
             --timestamp
             --options runtime
-            --entitlements entitlements.plist
-            --sign "Developer ID Application: CIP4 Organization (4DL5XX9SG8)"
             ./build/JDFEditor/JDFEditor.app
 
       - name: Package DMG
