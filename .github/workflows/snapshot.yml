@@ -11,10 +11,10 @@ jobs:
   linux-build:
     runs-on: ubuntu-latest
     steps:
-      -   name: Setup JDK 11
+      -   name: Setup JDK 15
           uses: actions/setup-java@v1
           with:
-            java-version: 11
+            java-version: 15
 
       -   name: Check out sources...
           uses: actions/checkout@v2
@@ -37,51 +37,86 @@ jobs:
   macos-build:
     runs-on: macos-latest
     steps:
-      - name: Setup JDK 11
-        uses: actions/setup-java@v1
+      - name: Setup JDK 15
+        uses: actions/setup-java@v2
         with:
-          java-version: 11
+          distribution: 'adopt'
+          java-version: 15
+          check-latest: true
+
+      - name: Setup Tooling
+        run: |
+          brew tap mitchellh/gon
+          brew install mitchellh/gon/gon create-dmg
+
+      - name: Install the Apple certificate
+        env:
+          BUILD_CERTIFICATE_BASE64: ${{ secrets.APPLE_CERTIFICATE}}
+          P12_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.APPLE_KEYCHAIN_PASSWORD }}
+        run: |
+          # create variables
+          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+
+          # import certificate and provisioning profile from secrets
+          echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode --output $CERTIFICATE_PATH
+
+          # create temporary keychain
+          security create-keychain -p $KEYCHAIN_PASSWORD $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p $KEYCHAIN_PASSWORD $KEYCHAIN_PATH
+
+          # import certificate to keychain
+          security import $CERTIFICATE_PATH -P $P12_PASSWORD -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security list-keychain -d user -s $KEYCHAIN_PATH
 
       - name: Check out sources...
         uses: actions/checkout@v2
 
       - name: Build with Gradle
-        run: ./gradlew createDmg
+        run: ./gradlew jpackage
+
+      - name: ✏️Notarize
+        env:
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD}}
+        run: |
+          mv ./build/jpackage/JDFEditor-*.dmg ./build/jpackage/JDFEditor.dmg
+          gon .github/workflows/macos/gon-notarize.json
 
       - name: Rename .DMG
-        run: mv build/distributions/JDFEditor-development.dmg build/distributions/JDFEditor-SNAPSHOT-${{ github.run_number }}.dmg
+        run: mv build/jpackage/JDFEditor.dmg build/jpackage/JDFEditor-SNAPSHOT-${{ github.run_number }}.dmg
 
       - name: Upload Binaries
         uses: actions/upload-artifact@v2
         with:
           name: binaries
-          path: build/distributions/JDFEditor-SNAPSHOT-*.*
+          path: build/jpackage/JDFEditor-SNAPSHOT-*.*
 
   windows-build:
     runs-on: windows-latest
     steps:
-      - name: Setup JDK 11
-        uses: actions/setup-java@v1
+      - name: Setup JDK 15
+        uses: actions/setup-java@v2
         with:
-          java-version: 11
+          distribution: 'adopt'
+          java-version: 15
+          check-latest: true
 
       - name: Check out sources...
         uses: actions/checkout@v2
 
       - name: Build with Gradle
-        run: ./gradlew createExe
+        run: ./gradlew jpackage
 
       - name: Rename binaries
-        run: mv build/launch4j/JDFEditor-development.exe build/launch4j/JDFEditor-SNAPSHOT-${{ github.run_number }}.exe
+        run: mv build/jpackage/JDFEditor*.msi build/jpackage/JDFEditor-SNAPSHOT-${{ github.run_number }}.exe
 
-      - name: Debug
-        run: ls -l build/launch4j
-
-      - name: Upload EXE
+      - name: Upload Binaries
         uses: actions/upload-artifact@v2
         with:
           name: binaries
-          path: build/launch4j/JDFEditor-SNAPSHOT-*.exe
+          path: build/jpackage/JDFEditor-SNAPSHOT-*.exe
 
   publish-snapshot:
     needs:
