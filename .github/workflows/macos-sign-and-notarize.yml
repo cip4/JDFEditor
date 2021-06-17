@@ -82,6 +82,11 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew jpackage
 
+      -name: Rename binaries
+       run: |
+          ren build/jpackage/JDFEditor*.exe build/jpackage/JDFEditor.exe
+          ren build/jpackage/JDFEditor*.msi build/jpackage/JDFEditor.msi
+
       - name: Debug
         run: |
           dir build/jpackage
@@ -91,4 +96,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: JDFEditor (Windows)
-          path: build/jpackage/JDFEditor.msi
+          path: build/jpackage/JDFEditor.*
