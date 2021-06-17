@@ -61,7 +61,7 @@ jobs:
             --timestamp \
             --options runtime \
             -vvv \
-            ./build/JDFEditor/JDFEditor.app
+            ./build/jpackage/JDFEditor.app
 
       - name: Package DMG
         run: create-dmg ./build/JDFEditor/JDFEditor.dmg ./build/JDFEditor/JDFEditor.app
