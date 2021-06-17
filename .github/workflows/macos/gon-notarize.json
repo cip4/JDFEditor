@@ -1,7 +1,7 @@
 {
   "notarize": [
     {
-      "path": "./build/jpackage/JDFEditor-1.0.0.dmg",
+      "path": "./build/jpackage/JDFEditor.dmg",
       "bundle_id": "org.cip4.jdfeditor",
       "staple": true
     }

@@ -56,10 +56,11 @@ jobs:
       - name: ✏️Notarize
         env:
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD}}
-        run: gon .github/workflows/macos/gon-notarize.json
+        run: |
+          mv ./build/jpackage/JDFEditor-*.dmg ./build/jpackage/JDFEditor.dmg
+          gon .github/workflows/macos/gon-notarize.json
 
       - name: Upload Binaries
         uses: actions/upload-artifact@v2
         with:
-          name: JDFEditor.dmg
-          path: build/jpackage/JDFEditor-1.0.0.dmg
+          path: build/jpackage/JDFEditor.dmg
