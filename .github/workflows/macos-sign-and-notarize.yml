@@ -50,6 +50,9 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew jpackageImage
 
+      - name: Debug
+        run: find build/JDFEditor
+
       - name: Sign app
         run: >
           codesign \
