@@ -53,9 +53,6 @@ jobs:
       - name: Debug
         run: find build/jpackage
 
-      - name: Debug
-        run: ls -la build/JDFEditor
-
       - name: ✏️Notarize
         env:
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD}}
