@@ -50,9 +50,6 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew jpackage
 
-      - name: Debug
-        run: find build/jpackage
-
       - name: ✏️Notarize
         env:
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD}}
@@ -86,11 +83,6 @@ jobs:
         run: |
           mv build/jpackage/JDFEditor*.exe build/jpackage/JDFEditor.exe
           mv build/jpackage/JDFEditor*.msi build/jpackage/JDFEditor.msi
-
-      - name: Debug
-        run: |
-          dir build/jpackage
-          dir build/jpackage/JDFEditor
 
       - name: Upload Binaries
         uses: actions/upload-artifact@v2
