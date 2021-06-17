@@ -1,20 +1,10 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'io.github.fvarrui:javapackager:1.5.1'
-    }
-}
-
 plugins {
     id 'java'
     id 'application'
+    id 'org.beryx.runtime' version '1.12.5'
 }
-
-apply plugin: 'io.github.fvarrui.javapackager.plugin'
 
 sourceCompatibility = 11
 targetCompatibility = 11
@@ -77,22 +67,14 @@ dependencies {
     testCompile 'org.mockito:mockito-all:2.0.2-beta'
 }
 
-task packageApp(type: io.github.fvarrui.javapackager.gradle.PackageTask, dependsOn: build) {
-    mainClass = 'org.cip4.tools.jdfeditor.Editor'
-    bundleJre = true
-    customizedJre = false // TODO: Fix the problem with the customized Jre and re-enable it.
-    generateInstaller = true
-    administratorRequired = false
-    platform = "mac"
-    winConfig {
-        icoFile = file("${projectDir}/src/main/dist/windows/jdfeditor_128.ico")
-        generateSetup = false
-        generateMsi = false
-        generateMsm = false
-    }
-    macConfig {
-        icnsFile = file("${projectDir}/src/main/dist/macosx/jdfeditor.icns")
-        generateDmg = false
-        generatePkg = false
+runtime {
+    jpackage {
+        def currentOs = org.gradle.internal.os.OperatingSystem.current()
+        def icon = "src/main/dist/windows/jdfeditor_128.ico"
+        if (currentOs.macOsX) {
+            icon = "src/main/dist/macosx/jdfeditor.icns"
+        }
+        imageOptions = ["--icon", icon]
+        appVersion = "1.0.0"
     }
 }

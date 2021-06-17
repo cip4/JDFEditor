@@ -10,11 +10,11 @@ jobs:
   macos-build:
     runs-on: macos-latest
     steps:
-      - name: Setup JDK 11
+      - name: Setup JDK 15
         uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
-          java-version: 11
+          java-version: 15
           check-latest: true
 
       - name: Setup Tooling
@@ -48,7 +48,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build with Gradle
-        run: ./gradlew packageApp
+        run: ./gradlew jpackageImage
 
       - name: Sign app
         run: >
