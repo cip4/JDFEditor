@@ -73,8 +73,8 @@ dependencies {
 runtime {
     jpackage {
         imageOptions = [
-                "--copyright", "CIP4 Organisation",
-                "--vendor", "CIP4 Organisation"
+                "--copyright", "CIP4 Organization",
+                "--vendor", "CIP4 Organization"
         ]
         def currentOs = org.gradle.internal.os.OperatingSystem.current()
         def icon = "src/main/dist/windows/jdfeditor_128.ico"
