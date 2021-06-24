@@ -110,13 +110,13 @@ jobs:
         run: ./gradlew jpackage
 
       - name: Rename binaries
-        run: mv build/jpackage/JDFEditor*.msi build/jpackage/JDFEditor-SNAPSHOT-${{ github.run_number }}.exe
+        run: mv build/jpackage/JDFEditor*.msi build/jpackage/JDFEditor-SNAPSHOT-${{ github.run_number }}.msi
 
       - name: Upload Binaries
         uses: actions/upload-artifact@v2
         with:
           name: binaries
-          path: build/jpackage/JDFEditor-SNAPSHOT-*.exe
+          path: build/jpackage/JDFEditor-SNAPSHOT-*.msi
 
   publish-snapshot:
     needs:
