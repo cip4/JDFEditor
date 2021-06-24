@@ -47,7 +47,7 @@ jobs:
       - name: Setup Tooling
         run: |
           brew tap mitchellh/gon
-          brew install mitchellh/gon/gon create-dmg
+          brew install mitchellh/gon/gon
 
       - name: Install the Apple certificate
         env:
@@ -83,9 +83,7 @@ jobs:
         run: |
           mv ./build/jpackage/JDFEditor-*.dmg ./build/jpackage/JDFEditor.dmg
           gon .github/workflows/macos/gon-notarize.json
-
-      - name: Rename .DMG
-        run: mv build/jpackage/JDFEditor.dmg build/jpackage/JDFEditor-SNAPSHOT-${{ github.run_number }}.dmg
+          mv build/jpackage/JDFEditor.dmg build/jpackage/JDFEditor-SNAPSHOT-${{ github.run_number }}.dmg
 
       - name: Upload Binaries
         uses: actions/upload-artifact@v2
