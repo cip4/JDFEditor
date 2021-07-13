@@ -136,7 +136,7 @@ public class JMFServlet extends HttpServlet
 
 	private String lastDump;
 	private RollingBackupDirectory dumpDir;
-	private final JDFFrame jdfFrame = MainView.getFrame();
+	private JDFFrame jdfFrame = MainView.getFrame();
 
 	/**
 	 *
