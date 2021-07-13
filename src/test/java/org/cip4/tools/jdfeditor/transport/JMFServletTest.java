@@ -70,8 +70,8 @@ package org.cip4.tools.jdfeditor.transport;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -86,7 +86,6 @@ import org.cip4.tools.jdfeditor.EditorTabbedPaneB;
 import org.cip4.tools.jdfeditor.JDFFrame;
 import org.cip4.tools.jdfeditor.pane.HttpServerPane;
 import org.cip4.tools.jdfeditor.pane.MessageBean;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -121,11 +120,6 @@ public class JMFServletTest
 
 	@InjectMocks
 	private final JMFServlet jmfServlet = new JMFServlet();
-
-	@Before
-	public void setUp() throws Exception
-	{
-	}
 
 	@Test
 	public void shouldReturnErrorForHttpGetRequest() throws IOException
