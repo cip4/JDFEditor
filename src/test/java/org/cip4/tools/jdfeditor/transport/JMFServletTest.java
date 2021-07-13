@@ -70,7 +70,6 @@ package org.cip4.tools.jdfeditor.transport;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
@@ -93,8 +92,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JMFServletTest
@@ -122,7 +120,6 @@ public class JMFServletTest
 	private StubServletInputStream stubServletInputStream;
 
 	@InjectMocks
-	@Spy
 	private final JMFServlet jmfServlet = new JMFServlet();
 
 	@Before
@@ -218,7 +215,7 @@ public class JMFServletTest
 
 		jmfServlet.doPost(httpServletRequest, httpServletResponse);
 
-		verify(httpServerPane, times(2)).addMessage(any(MessageBean.class));
+		verify(httpServerPane, times(1)).addMessage(any(MessageBean.class));
 	}
 
 }
