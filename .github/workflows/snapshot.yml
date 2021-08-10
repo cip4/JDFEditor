@@ -134,9 +134,9 @@ jobs:
       - name: Confluence Upload
         uses: cip4/action-confluence-upload@master
         with:
-          url: 'https://confluence.cip4.org'
-          username: ${{ secrets.CONFLUENCE_USER }}
-          password: ${{ secrets.CONFLUENCE_PASSWORD }}
-          contentId: 5309046
+          url: 'https://cip4.atlassian.net/wiki'
+          username: ${{ secrets.ATLASSIAN_USER }}
+          password: ${{ secrets.ATLASSIAN_TOKEN }}
+          contentId: 1457553961
           label: 'jdfeditor-snapshot,snapshot'
           filePattern: 'binaries/**/JDFEditor-SNAPSHOT-*.*'
