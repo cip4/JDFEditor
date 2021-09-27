@@ -262,4 +262,10 @@ public class PluginLoader<I>
 
 		return (strFullQualifiedClassName);
 	}
+
+	@Override
+	public String toString()
+	{
+		return "PluginLoader [m_filePluginDir=" + m_filePluginDir + "]";
+	}
 }

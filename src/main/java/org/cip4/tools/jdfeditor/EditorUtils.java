@@ -73,6 +73,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.List;
@@ -262,7 +263,8 @@ public class EditorUtils
 	public static String chooseElementName(final KElement parentElement)
 	{
 		final String validValues[] = EditorUtils.getElementOptions(parentElement);
-		String selectedElementName = (String) JOptionPane.showInputDialog(MainView.getFrame(), "Choose an element to insert", "Insert new element", JOptionPane.PLAIN_MESSAGE, null, validValues, validValues[0]);
+		String selectedElementName = (String) JOptionPane.showInputDialog(MainView.getFrame(), "Choose an element to insert", "Insert new element",
+				JOptionPane.PLAIN_MESSAGE, null, validValues, validValues[0]);
 
 		if (selectedElementName != null && selectedElementName.equals("Other.."))
 		{
@@ -387,7 +389,8 @@ public class EditorUtils
 			addedString = " " + addedString;
 		}
 
-		JOptionPane.showMessageDialog(frame, ResourceUtil.getMessage(errorKey) + addedString, ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(frame, ResourceUtil.getMessage(errorKey) + addedString, ResourceUtil.getMessage("ErrorMessKey"),
+				JOptionPane.ERROR_MESSAGE);
 	}
 
 	public static EditorDocument[] getEditorDocuments(final File inputFile)
@@ -417,6 +420,20 @@ public class EditorUtils
 					if (jdfDoc == null)
 					{
 						jdfDoc = parseInStream(bios, null);
+						if (jdfDoc == null)
+						{
+							final List<IStreamLoader> lstStreamLoaders = pluginLoader.getPlugins();
+
+							for (final IStreamLoader loader : lstStreamLoaders)
+							{
+								jdfDoc = loader.read(inputFile, null);
+
+								if (jdfDoc != null)
+								{
+									break;
+								}
+							}
+						}
 					}
 
 					EditorDocument edidoc = null;
@@ -557,7 +574,8 @@ public class EditorUtils
 
 	private static boolean isJSONType(final String contentType)
 	{
-		return JDFConstants.MIME_XJDF_JSON.equalsIgnoreCase(contentType) || JDFConstants.MIME_XJMF_JSON.equalsIgnoreCase(contentType) || UrlUtil.isJSONType(contentType);
+		return JDFConstants.MIME_XJDF_JSON.equalsIgnoreCase(contentType) || JDFConstants.MIME_XJMF_JSON.equalsIgnoreCase(contentType)
+				|| UrlUtil.isJSONType(contentType);
 	}
 
 	private static boolean isJDFMimeType(String mimeType)
@@ -702,23 +720,7 @@ public class EditorUtils
 
 		JDFDoc jdfDoc = null;
 
-		if (pluginLoader == null)
-		{
-			File fileAppDir = new File(".");
-			String strAppPath = EditorUtils.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-			strAppPath = URLDecoder.decode(strAppPath, StringUtil.UTF8);
-			LOGGER.info("application path: " + strAppPath);
-			final File fileApp = new File(strAppPath);
-			if (fileApp.exists() && fileApp.isFile())
-			{
-				fileAppDir = fileApp.getParentFile();
-			}
-
-			final File filePluginDir = new File(fileAppDir, "plugins");
-			LOGGER.info("found plugin directory: " + filePluginDir.getAbsolutePath());
-			pluginLoader = new PluginLoader<IStreamLoader>(IStreamLoader.class, filePluginDir);
-		}
-
+		ensurePluginsLoade();
 		final List<IStreamLoader> lstStreamLoaders = pluginLoader.getPlugins();
 
 		for (final IStreamLoader loader : lstStreamLoaders)
@@ -726,9 +728,10 @@ public class EditorUtils
 			final BufferedInputStream schemaStream = fileSchema == null ? null : FileUtil.getBufferedInputStream(fileSchema);
 			jdfDoc = loader.readStream(streamJDF.getInputStream(), schemaStream);
 
-			if (jdfDoc != null && loader instanceof JSONStreamLoader)
+			if (jdfDoc != null)
 			{
-				jdfDoc.getCreateXMLDocUserData().setUserData("json");
+				if (loader instanceof JSONStreamLoader)
+					jdfDoc.getCreateXMLDocUserData().setUserData("json");
 				break;
 			}
 		}
@@ -746,6 +749,26 @@ public class EditorUtils
 		}
 
 		return jdfDoc;
+	}
+
+	public static void ensurePluginsLoade() throws UnsupportedEncodingException
+	{
+		if (pluginLoader == null)
+		{
+			File fileAppDir = new File(".");
+			String strAppPath = EditorUtils.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+			strAppPath = URLDecoder.decode(strAppPath, StringUtil.UTF8);
+			LOGGER.info("application path: " + strAppPath);
+			final File fileApp = new File(strAppPath);
+			if (fileApp.exists() && fileApp.isFile())
+			{
+				fileAppDir = fileApp.getParentFile();
+			}
+
+			final File filePluginDir = new File(fileAppDir, "plugins");
+			LOGGER.info("found plugin directory: " + filePluginDir.getAbsolutePath());
+			pluginLoader = new PluginLoader<IStreamLoader>(IStreamLoader.class, filePluginDir);
+		}
 	}
 
 	public static String getExtension(final KElement root, final boolean json)
