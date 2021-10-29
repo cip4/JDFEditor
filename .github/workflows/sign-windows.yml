@@ -35,12 +35,16 @@ jobs:
         run: mv build/jpackage/JDFEditor*.msi build/jpackage/JDFEditor-SNAPSHOT-${{ github.run_number }}.msi
 
       - name: Sign MSI
+        env:
+          BUILD_CERTIFICATE: ${{ secrets.CODE_SIGN_CERTIFICATE }}
+          BUILD_CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGN_PASSWORD }}
+          CERTIFICATE_SHA1: ${{ secrets.CODE_SIGN_SHA1 }}
         run: |
           New-Item -ItemType directory -Path certificate
-          Set-Content -Path certificate\certificate.pfx.b64 -Value '${{ secrets.CODE_SIGN_CERTIFICATE }}'
+          $env:BUILD_CERTIFICATE | Out-File certificate\certificate.pfx.b64
           certutil -decode certificate\certificate.pfx.b64 certificate\certificate.pfx
 
-          & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe' --% sign /f certificate\certificate.pfx /sha1 "${{ secrets.CODE_SIGN_SHA1 }}" /d "Installer for JDFEitor" /p ${{ secrets.CODE_SIGN_PASSWORD }} /v /fd SHA256 /tr "http://timestamp.digicert.com/" /td SHA256 build/jpackage/JDFEditor-SNAPSHOT-${{ github.run_number }}.msi
+          & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe' --% sign /f certificate\certificate.pfx /sha1 "${env:CERTIFICATE_SHA1}" /d "Installer for JDFEitor" /p ${{ secrets.CODE_SIGN_PASSWORD }} /v /fd SHA256 /tr "http://timestamp.digicert.com/" /td SHA256 build/jpackage/JDFEditor-SNAPSHOT-${{ github.run_number }}.msi
 
       - name: Upload Binaries
         uses: actions/upload-artifact@v2
