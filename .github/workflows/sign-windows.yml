@@ -34,17 +34,19 @@ jobs:
       - name: Rename binaries
         run: mv build/jpackage/JDFEditor*.msi build/jpackage/JDFEditor-SNAPSHOT-${{ github.run_number }}.msi
 
+      - name: Store certificate
+        id: certificate
+        uses: timheuer/base64-to-file@v1
+        with:
+          fileName: 'build_certificate.pfx'
+          encodedString: ${{ secrets.CODE_SIGN_CERTIFICATE }}
+
       - name: Sign MSI
         env:
-          BUILD_CERTIFICATE_BASE64: ${{ secrets.CODE_SIGN_CERTIFICATE}}
           BUILD_CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGN_PASSWORD }}
           CERTIFICATE_SHA1: ${{ secrets.CODE_SIGN_SHA1 }}
         run: |
-          # Decode base64 encoded certificate
-          $CERTIFICATE_PATH = "$env:RUNNER_TEMP/build_certificate.pfx"
-          [Text.Encoding]::UTF8.GetString([convert]::FromBase64String('$env:BUILD_CERTIFICATE_BASE64')) | Out-File -FilePath $CERTIFICATE_PATH
-
-          signtool.exe --% sign /f $CERTIFICATE_PATH /sha1 $env:CERTIFICATE_SHA1 /d "Installer for JDFEitor" /p $env:BUILD_CERTIFICATE_PASSWORD /v /fd SHA256 /tr "http://timestamp.digicert.com/" /td SHA256 build/jpackage/JDFEditor-SNAPSHOT-${{ github.run_number }}.msi
+          signtool.exe --% sign /f ${{ steps.certificate.outputs.filePath }} /sha1 $env:CERTIFICATE_SHA1 /d "Installer for JDFEitor" /p $env:BUILD_CERTIFICATE_PASSWORD /v /fd SHA256 /tr "http://timestamp.digicert.com/" /td SHA256 build/jpackage/JDFEditor-SNAPSHOT-${{ github.run_number }}.msi
 
       - name: Upload Binaries
         uses: actions/upload-artifact@v2
