@@ -1,0 +1,44 @@
+name: Test Signing on Windows
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ sign-windows ]
+
+jobs:
+  windows-build:
+    runs-on: windows-latest
+    steps:
+      - name: Setup JDK 15
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: 15
+          check-latest: true
+
+      - name: Check out sources...
+        uses: actions/checkout@v2
+
+      - name: Build with Gradle
+        run: ./gradlew jpackage
+
+      - name: Rename binaries
+        run: mv build/jpackage/JDFEditor*.msi build/jpackage/JDFEditor-SNAPSHOT-${{ github.run_number }}.msi
+
+      - name: Sign MSI
+        env:
+          BUILD_CERTIFICATE_BASE64: ${{ secrets.CODE_SIGN_CERTIFICATE}}
+          BUILD_CERTIFICATE_PASSWORD: ${{ secrets.CODE_SIGN_PASSWORD }}
+          CERTIFICATE_SHA1: ${{ secrets.CODE_SIGN_SHA1 }}
+        run: |
+          # Decode base64 encoded certificate
+          $CERTIFICATE_PATH = $RUNNER_TEMP/build_certificate.pfx
+          [Text.Encoding]::UTF8.GetString([convert]::FromBase64String('$env:BUILD_CERTIFICATE_BASE64')) | Out-File -FilePath $CERTIFICATE_PATH
+
+          signtool.exe --% sign /f $CERTIFICATE_PATH /sha1 $env:CERTIFICATE_SHA1 /d "Installer for JDFEitor" /p $env:BUILD_CERTIFICATE_PASSWORD /v /fd SHA256 /tr "http://timestamp.digicert.com/" /td SHA256 build/jpackage/JDFEditor-SNAPSHOT-${{ github.run_number }}.msi
+
+      - name: Upload Binaries
+        uses: actions/upload-artifact@v2
+        with:
+          name: binaries
+          path: build/jpackage/JDFEditor-SNAPSHOT-*.msi
