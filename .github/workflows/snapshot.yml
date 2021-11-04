@@ -20,7 +20,7 @@ jobs:
           uses: actions/checkout@v2
 
       -   name: Build with Gradle
-          run: ./gradlew distZip distTar
+          run: ./gradlew test distZip distTar
 
       - name: Rename .ZIP
         run: mv build/distributions/JDFEditor-development.zip build/distributions/JDFEditor-SNAPSHOT-${{ github.run_number }}.zip
@@ -75,7 +75,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build with Gradle
-        run: ./gradlew jpackage
+        run: ./gradlew test jpackage
 
       - name: ✏️Notarize
         env:
@@ -105,7 +105,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build with Gradle
-        run: ./gradlew jpackage
+        run: ./gradlew test jpackage
 
       - name: Rename binaries
         run: mv build/jpackage/JDFEditor*.msi build/jpackage/JDFEditor-SNAPSHOT-${{ github.run_number }}.msi
