@@ -30,7 +30,7 @@ jar {
         attributes 'Main-Class': 'org.cip4.tools.jdfeditor.Editor'
     }
     from {
-        configurations.implementation.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
 
