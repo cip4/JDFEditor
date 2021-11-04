@@ -86,6 +86,14 @@ runtime {
             ]
             icon = "src/main/dist/macosx/jdfeditor.icns"
         }
+        if (currentOs.windows) {
+            installerOptions += [
+                    "--win-dir-chooser",
+                    "--win-menu",
+                    "--win-upgrade-uuid", "800cfb27-5ece-4275-9ed3-1a305b5b1636",
+                    "--vendor", "CIP4 Organization"
+            ]
+        }
         imageOptions += ["--icon", icon]
         appVersion = project.version == "development" ? "1.0.0" : project.version
     }
