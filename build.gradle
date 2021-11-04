@@ -30,7 +30,7 @@ jar {
         attributes 'Main-Class': 'org.cip4.tools.jdfeditor.Editor'
     }
     from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.implementation.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
 
@@ -53,18 +53,18 @@ configurations {
 }
 
 dependencies {
-    compile 'org.cip4.lib.jdf:JDFLibJ:2.1.7.+'
-    compile 'org.cip4.lib.jdf:JDFLibJ-JSON:+'
-    compile 'org.apache.logging.log4j:log4j-api:2.0-rc1'
-    compile 'org.apache.logging.log4j:log4j-core:2.0-rc1'
-    compile 'commons-configuration:commons-configuration:1.10'
-    compile 'commons-collections:commons-collections:3.2.1'
-    compile 'com.sun.woodstock.dependlibs:jhall:2.0'
-    compile 'org.eclipse.jetty:jetty-servlet:9.4.24.v20191120'
-    compile 'org.eclipse.jetty:jetty-server:9.4.24.v20191120'
-    compile 'org.eclipse.jetty:jetty-webapp:9.4.24.v20191120'
-    compile 'com.fifesoft:rsyntaxtextarea:1.4.1'
-    compile 'com.googlecode.json-simple:json-simple:1.1'
+    implementation 'org.cip4.lib.jdf:JDFLibJ:2.1.7.+'
+    implementation 'org.cip4.lib.jdf:JDFLibJ-JSON:+'
+    implementation 'org.apache.logging.log4j:log4j-api:2.0-rc1'
+    implementation 'org.apache.logging.log4j:log4j-core:2.0-rc1'
+    implementation 'commons-configuration:commons-configuration:1.10'
+    implementation 'commons-collections:commons-collections:3.2.1'
+    implementation 'com.sun.woodstock.dependlibs:jhall:2.0'
+    implementation 'org.eclipse.jetty:jetty-servlet:9.4.24.v20191120'
+    implementation 'org.eclipse.jetty:jetty-server:9.4.24.v20191120'
+    implementation 'org.eclipse.jetty:jetty-webapp:9.4.24.v20191120'
+    implementation 'com.fifesoft:rsyntaxtextarea:1.4.1'
+    implementation 'com.googlecode.json-simple:json-simple:1.1'
 
     testImplementation 'junit:junit:4.13'
     testImplementation 'org.mockito:mockito-core:3.+'
