@@ -60,7 +60,7 @@ dependencies {
     implementation 'commons-configuration:commons-configuration:1.10'
     implementation 'commons-collections:commons-collections:3.2.1'
     implementation 'com.sun.woodstock.dependlibs:jhall:2.0'
-    implementation 'org.eclipse.jetty:jetty-servlet:9.4.24.v20191120'
+    implementation 'org.eclipse.jetty:jetty-servlet:11.0.7'
     implementation 'org.eclipse.jetty:jetty-server:9.4.24.v20191120'
     implementation 'org.eclipse.jetty:jetty-webapp:9.4.24.v20191120'
     implementation 'com.fifesoft:rsyntaxtextarea:3.1.3'
