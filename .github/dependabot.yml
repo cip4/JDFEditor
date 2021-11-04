@@ -11,3 +11,5 @@ updates:
         versions: [ "4.x" ]
       - dependency-name: jetty-*
         versions: [ "11.x" ]
+      - dependency-name: com.github.johnrengelman.shadow
+        versions: [ "7.x" ]
