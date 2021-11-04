@@ -2,7 +2,12 @@ version: 2
 updates:
   - directory: /
     schedule:
-      interval: weekly
+      interval: daily
     package-ecosystem: gradle
     assignees:
       - MichelHartmann
+    ignore:
+      - dependency-name: org.mockito:mockito-core
+        versions: [ "4.x" ]
+      - dependency-name: jetty-*
+        versions: [ "11.x" ]
