@@ -25,15 +25,6 @@ repositories {
     }
 }
 
-jar {
-    manifest {
-        attributes 'Main-Class': 'org.cip4.tools.jdfeditor.Editor'
-    }
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-}
-
 processResources {
     filesMatching('**/*.properties') {
         filter(ReplaceTokens, tokens: [

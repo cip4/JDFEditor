@@ -95,3 +95,32 @@ jobs:
           overwrite: true
           file_glob: true
 
+  linux-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup JDK 15
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: 15
+
+      - name: Check out sources...
+        uses: actions/checkout@v2
+
+      - name: Build with Gradle
+        run: ./gradlew shadowDistZip shadowDistTar -PprojectVersion="${GITHUB_REF/refs\/tags\//}"
+
+      - name: Rename .ZIP
+        run: mv build/distributions/JDFEditor-*.zip build/distributions/JDFEditor-${GITHUB_REF/refs\/tags\//}.zip
+
+      - name: Rename .TAR
+        run: mv build/distributions/JDFEditor-*.tar build/distributions/JDFEditor-${GITHUB_REF/refs\/tags\//}.tar
+
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v1-release
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/distributions/JDFEditor-*.*
+          tag: ${{ github.ref }}
+          overwrite: true
+          file_glob: true
