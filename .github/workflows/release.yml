@@ -8,7 +8,8 @@ on:
 defaults:
   run:
     shell: bash
-
+env:
+  tool: JDFEditor
 jobs:
   macos-build:
     runs-on: macos-latest
@@ -57,9 +58,9 @@ jobs:
         env:
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD}}
         run: |
-          mv ./build/jpackage/JDFEditor-*.dmg ./build/jpackage/JDFEditor.dmg
+          mv ./build/jpackage/${{ env.tool }}-*.dmg ./build/jpackage/${{ env.tool }}.dmg
           gon .github/workflows/macos/gon-notarize.json
-          mv build/jpackage/JDFEditor.dmg build/jpackage/JDFEditor-${GITHUB_REF/refs\/tags\//}.dmg
+          mv build/jpackage/${{ env.tool }}.dmg build/jpackage/${{ env.tool }}-${GITHUB_REF/refs\/tags\//}.dmg
 
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v1-release
@@ -111,16 +112,16 @@ jobs:
         run: ./gradlew shadowDistZip shadowDistTar -PprojectVersion="${GITHUB_REF/refs\/tags\//}"
 
       - name: Rename .ZIP
-        run: mv build/distributions/JDFEditor-*.zip build/distributions/JDFEditor-${GITHUB_REF/refs\/tags\//}.zip
+        run: mv build/distributions/${{ env.tool }}-*.zip build/distributions/${{ env.tool }}-${GITHUB_REF/refs\/tags\//}.zip
 
       - name: Rename .TAR
-        run: mv build/distributions/JDFEditor-*.tar build/distributions/JDFEditor-${GITHUB_REF/refs\/tags\//}.tar
+        run: mv build/distributions/${{ env.tool }}-*.tar build/distributions/${{ env.tool }}-${GITHUB_REF/refs\/tags\//}.tar
 
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v1-release
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/distributions/JDFEditor-*.*
+          file: build/distributions/${{ env.tool }}-*.*
           tag: ${{ github.ref }}
           overwrite: true
           file_glob: true
