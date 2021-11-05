@@ -20,13 +20,13 @@ jobs:
           uses: actions/checkout@v2
 
       -   name: Build with Gradle
-          run: ./gradlew test distZip distTar
+          run: ./gradlew test shadowDistZip shadowDistTar
 
       - name: Rename .ZIP
-        run: mv build/distributions/JDFEditor-development.zip build/distributions/JDFEditor-SNAPSHOT-${{ github.run_number }}.zip
+        run: mv build/distributions/JDFEditor-shadow-development.zip build/distributions/JDFEditor-SNAPSHOT-${{ github.run_number }}.zip
 
       - name: Rename .TAR
-        run: mv build/distributions/JDFEditor-development.tar build/distributions/JDFEditor-SNAPSHOT-${{ github.run_number }}.tar
+        run: mv build/distributions/JDFEditor-shadow-development.tar build/distributions/JDFEditor-SNAPSHOT-${{ github.run_number }}.tar
 
       - name: Upload binaries
         uses: actions/upload-artifact@v2
