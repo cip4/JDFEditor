@@ -136,7 +136,7 @@ public class JMFServlet extends HttpServlet
 
 	private String lastDump;
 	private RollingBackupDirectory dumpDir;
-	private JDFFrame jdfFrame = MainView.getFrame();
+	private final JDFFrame jdfFrame = MainView.getFrame();
 
 	/**
 	 *
@@ -254,7 +254,7 @@ public class JMFServlet extends HttpServlet
 		FileUtil.streamToFile(byteArrayIOStream.getInputStream(), dumpFile);
 		if (timestamp == null)
 			timestamp = new JDFDate();
-		final MessageBean msg = new MessageBean(device, timestamp, type, dumpFile);
+		final MessageBean msg = new MessageBean(device, timestamp, type + "." + extension, dumpFile);
 		jdfFrame.getBottomTabs().getHttpPanel().addMessage(msg);
 
 	}
@@ -392,9 +392,9 @@ public class JMFServlet extends HttpServlet
 	{
 		final MimeReader mr = new MimeReader(inputStream);
 		final BodyPart[] bp = mr.getBodyParts();
-	
+
 		LOGGER.info("Received total parts: " + bp.length);
-	
+
 		for (int bodyPartNumber = 0; bodyPartNumber < bp.length; bodyPartNumber++)
 		{
 			BodyPart part = bp[bodyPartNumber];
@@ -406,23 +406,23 @@ public class JMFServlet extends HttpServlet
 					SharedByteArrayInputStream is = (SharedByteArrayInputStream) part.getContent();
 					String jmfRequestString = IOUtils.toString(is, UTF_8);
 	//					LOGGER.info("jmfRequestString: " + jmfRequestString);
-	
+
 	//					next 4 lines are quite tricky, idea is - to get JDFJMF initialized from String
 					JDFDoc jdfDocTemp = new JDFDoc();
 					XMLDoc xmlDoc = jdfDocTemp.parseString(jmfRequestString);
 					JDFDoc jdfDoc = new JDFDoc(xmlDoc);
 					JDFJMF jmf = jdfDoc.getJMFRoot();
-	
+
 					if ((jmf == null) || (jmf.isJDFNode()))
 					{
 						LOGGER.info("Skip bodyPartNumber: " + bodyPartNumber + ", jmf: " + jmf);
 						continue;
 					}
-	
+
 					String originalJmf = jmf.toDisplayXML(INDENT);
 					LOGGER.info("bodyPartNumber: " + bodyPartNumber + ", originalJmf: \n" + originalJmf);
 					InputStream inputStreamJmf = IOUtils.toInputStream(originalJmf, UTF_8);
-	
+
 					processJmfMessage(jmf, inputStreamJmf);
 				} else
 				{

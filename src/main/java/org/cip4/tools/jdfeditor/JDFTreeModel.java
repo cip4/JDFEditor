@@ -294,7 +294,6 @@ public class JDFTreeModel extends DefaultTreeModel
 
 				try
 				{
-					final File tmpFile = File.createTempFile("tmp", ".jdf");
 					final ByteArrayIOStream outStream = new ByteArrayIOStream();
 					theDoc.write2Stream(outStream, 0, false);
 					theDoc.setOriginalFileName(fn);
@@ -304,7 +303,6 @@ public class JDFTreeModel extends DefaultTreeModel
 						tmpDoc = EditorUtils.parseInStream(outStream.getInputStream(), null);
 					}
 
-					tmpFile.delete();
 					if (tmpDoc != null)
 					{
 						schemaValidationResult = tmpDoc.getValidationResult();

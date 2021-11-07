@@ -109,6 +109,12 @@ public class JSONStreamLoader implements IStreamLoader
 	@Override
 	public JDFDoc readStream(final InputStream stream, final InputStream schema) throws IOException
 	{
+		if (stream == null)
+			return null;
+		stream.mark(42);
+		if ('<' == stream.read())
+			return null;
+		stream.reset();
 		final JSONReader jr = new JSONReader();
 		jr.setWantAttributes(true);
 		final KElement e = jr.getElement(stream);
