@@ -3,8 +3,8 @@ import org.apache.tools.ant.filters.ReplaceTokens
 plugins {
     id 'java'
     id 'application'
-    id 'org.beryx.runtime' version '1.12.5'
-    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'org.beryx.runtime' version '1.12.7'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
 mainClassName = 'org.cip4.tools.jdfeditor.Editor'
@@ -22,15 +22,6 @@ repositories {
     mavenCentral()
     maven {
         url "https://oss.sonatype.org/content/repositories/snapshots"
-    }
-}
-
-jar {
-    manifest {
-        attributes 'Main-Class': 'org.cip4.tools.jdfeditor.Editor'
-    }
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
 
@@ -53,21 +44,21 @@ configurations {
 }
 
 dependencies {
-    compile 'org.cip4.lib.jdf:JDFLibJ:2.1.7.+'
-    compile 'org.cip4.lib.jdf:JDFLibJ-JSON:+'
-    compile 'org.apache.logging.log4j:log4j-api:2.0-rc1'
-    compile 'org.apache.logging.log4j:log4j-core:2.0-rc1'
-    compile 'commons-configuration:commons-configuration:1.10'
-    compile 'commons-collections:commons-collections:3.2.1'
-    compile 'com.sun.woodstock.dependlibs:jhall:2.0'
-    compile 'org.eclipse.jetty:jetty-servlet:9.4.24.v20191120'
-    compile 'org.eclipse.jetty:jetty-server:9.4.24.v20191120'
-    compile 'org.eclipse.jetty:jetty-webapp:9.4.24.v20191120'
-    compile 'com.fifesoft:rsyntaxtextarea:1.4.1'
-    compile 'com.googlecode.json-simple:json-simple:1.1'
+    implementation 'org.cip4.lib.jdf:JDFLibJ:2.1.7.+'
+    implementation 'org.cip4.lib.jdf:JDFLibJ-JSON:+'
+    implementation 'org.apache.logging.log4j:log4j-api:2.14.1'
+    implementation 'org.apache.logging.log4j:log4j-core:2.14.1'
+    implementation 'commons-configuration:commons-configuration:1.10'
+    implementation 'commons-collections:commons-collections:3.2.2'
+    implementation 'com.sun.woodstock.dependlibs:jhall:2.0'
+    implementation 'org.eclipse.jetty:jetty-servlet:9.4.44.v20210927'
+    implementation 'org.eclipse.jetty:jetty-server:9.4.44.v20210927'
+    implementation 'org.eclipse.jetty:jetty-webapp:9.4.44.v20210927'
+    implementation 'com.fifesoft:rsyntaxtextarea:3.1.3'
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
-    testCompile 'junit:junit:4.13'
-    testCompile 'org.mockito:mockito-all:2.0.2-beta'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.mockito:mockito-core:3.+'
 }
 
 runtime {
@@ -85,6 +76,14 @@ runtime {
                     "--mac-package-identifier", "org.cip4.jdfeditor"
             ]
             icon = "src/main/dist/macosx/jdfeditor.icns"
+        }
+        if (currentOs.windows) {
+            installerOptions += [
+                    "--win-dir-chooser",
+                    "--win-menu",
+                    "--win-upgrade-uuid", "800cfb27-5ece-4275-9ed3-1a305b5b1636",
+                    "--vendor", "CIP4 Organization"
+            ]
         }
         imageOptions += ["--icon", icon]
         appVersion = project.version == "development" ? "1.0.0" : project.version
