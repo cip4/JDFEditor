@@ -9,7 +9,6 @@ jobs:
     name: 🏭
     uses: cip4/.github/.github/workflows/tool-snapshot.yml@v1
     with:
-      tool: JDFEditor
       confluence-label: jdfeditor
       confluence-content-id: 1457553961
       apple-bundle-id: org.cip4.jdfeditor

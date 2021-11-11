@@ -9,7 +9,6 @@ jobs:
     name: 🏭
     uses: cip4/.github/.github/workflows/tool-release.yml@v1
     with:
-      tool: JDFEditor
       confluence-label: jdfeditor
       confluence-content-id: 1181122560
       apple-bundle-id: org.cip4.jdfeditor
