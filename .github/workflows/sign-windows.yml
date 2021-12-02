@@ -41,8 +41,8 @@ jobs:
           CERTIFICATE_SHA1: ${{ secrets.CODE_SIGN_SHA1 }}
         run: |
           New-Item -ItemType directory -Path certificate
-          $env:BUILD_CERTIFICATE | Out-File certificate\certificate.pfx.b64
-          certutil -decode certificate\certificate.pfx.b64 certificate\certificate.pfx
+          $env:BUILD_CERTIFICATE | Out-File certificate\certificate.pem
+          certutil -decode certificate\certificate.pem certificate\certificate.pfx
 
           & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe' --% sign /f certificate\certificate.pfx /sha1 %CERTIFICATE_SHA1% /d "Installer for JDFEitor" /p %BUILD_CERTIFICATE_PASSWORD% /v /fd SHA256 /tr "http://timestamp.digicert.com/" /td SHA256 build/jpackage/JDFEditor-SNAPSHOT-${{ github.run_number }}.msi
 
