@@ -7,7 +7,8 @@ on:
 jobs:
   call-tool-release:
     name: 🏭
-    uses: cip4/.github/.github/workflows/tool-release.yml@v2
+    uses: cip4/.github/.github/workflows/tool-release.yml@master
+      java-version: 15
     with:
       confluence-label: jdfeditor
       confluence-content-id: 1181122560
