@@ -8,8 +8,9 @@ jobs:
   call-tool-release:
     name: 🏭
     uses: cip4/.github/.github/workflows/tool-release.yml@master
-      java-version: 15
     with:
+      java-version: 15
+      java-distribution: 'adopt'
       confluence-label: jdfeditor
       confluence-content-id: 1181122560
       apple-bundle-id: org.cip4.jdfeditor
