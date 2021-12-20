@@ -46,7 +46,7 @@ configurations {
 dependencies {
     implementation 'org.cip4.lib.jdf:JDFLibJ:2.1.7.+'
     implementation 'org.cip4.lib.jdf:JDFLibJ-JSON:+'
-    implementation 'org.apache.logging.log4j:log4j-api:2.16.0'
+    implementation 'org.apache.logging.log4j:log4j-api:2.17.0'
     implementation 'org.apache.logging.log4j:log4j-core:2.16.0'
     implementation 'commons-configuration:commons-configuration:1.10'
     implementation 'commons-collections:commons-collections:3.2.2'
