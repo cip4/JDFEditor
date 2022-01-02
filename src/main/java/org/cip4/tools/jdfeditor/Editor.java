@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2021 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2022 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -80,12 +80,16 @@ import org.cip4.jdflib.core.JDFAudit;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.core.StringArray;
+import org.cip4.jdflib.core.VString;
+import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
 import org.cip4.jdflib.jmf.JMFBuilder;
 import org.cip4.jdflib.jmf.JMFBuilderFactory;
 import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.util.MyArgs;
 import org.cip4.jdflib.util.file.UserDir;
 import org.cip4.jdflib.util.logging.LogConfigurator;
+import org.cip4.lib.jdf.jsonutil.JSONPrepWalker;
 import org.cip4.lib.jdf.jsonutil.JSONWriter;
 import org.cip4.lib.jdf.jsonutil.JSONWriter.eJSONCase;
 import org.cip4.tools.jdfeditor.commandline.EditorCommandLine;
@@ -232,14 +236,35 @@ public class Editor
 		if (jsonWriter == null)
 		{
 			final JSONWriter w = new JSONWriter();
+			w.setXJDF();
 			w.setTypeSafe(settingService.getBool(SettingKey.JSON_TYPESAFE));
 			w.setKeyCase(eJSONCase.valueOf(settingService.getString(SettingKey.JSON_CASE)));
+			w.setWantArray(false);
 			final InputStream is = ResourceUtil.class.getResourceAsStream(RES_SCHEMA);
-			final KElement e = KElement.parseStream(is);
-			w.fillTypesFromSchema(e);
+			final KElement schema = KElement.parseStream(is);
+			w.fillTypesFromSchema(schema);
+			removeMessages(w);
+			w.setPrepWalker(new JSONPrepWalker());
 			jsonWriter = w;
 		}
 		return jsonWriter;
+	}
+
+	void removeMessages(final JSONWriter w)
+	{
+		final StringArray a = new StringArray(w.getArrayNames());
+		final VString fams = EnumFamily.getFamilies();
+		for (int i = 0; i < fams.size(); i++)
+			fams.set(i, fams.get(i).toLowerCase());
+		for (final String msg : a)
+		{
+			for (final String fam : fams)
+			{
+				if (msg.startsWith(fam))
+					w.removeArray(msg);
+			}
+		}
+
 	}
 
 }
