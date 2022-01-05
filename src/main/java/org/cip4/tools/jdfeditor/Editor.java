@@ -88,7 +88,6 @@ import org.cip4.jdflib.jmf.JMFBuilderFactory;
 import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.util.MyArgs;
 import org.cip4.jdflib.util.file.UserDir;
-import org.cip4.jdflib.util.logging.LogConfigurator;
 import org.cip4.lib.jdf.jsonutil.JSONPrepWalker;
 import org.cip4.lib.jdf.jsonutil.JSONWriter;
 import org.cip4.lib.jdf.jsonutil.JSONWriter.eJSONCase;
@@ -101,7 +100,6 @@ import org.cip4.tools.jdfeditor.util.ResourceUtil;
 
 /**
  * @author AnderssA ThunellE
- *
  */
 public class Editor
 {
@@ -111,10 +109,10 @@ public class Editor
 	private JSONWriter jsonWriter;
 
 	/*
-	 * This package is found under JDFEditor in the src/java section. It contains all of the icons associated with the JDFEditor. For your icons to appear,
-	 * remember to refresh the package. To change the icons in the Menu bar, go to EditorButton.java. To change the icons in the tree mode, error icons, go to
-	 * INIReader.java. If you would like to change the appearance of how the menu items appear, go to JDFEditor_(Language want, i.e. en)_.properties located
-	 * under org.cip4.jdfeditor.messages package.
+	 * This package is found under JDFEditor in the src/java section. It contains all of the icons associated with the JDFEditor. For your icons
+	 * to appear, remember to refresh the package. To change the icons in the Menu bar, go to EditorButton.java. To change the icons in the tree
+	 * mode, error icons, go to INIReader.java. If you would like to change the appearance of how the menu items appear, go to JDFEditor_(Language
+	 * want, i.e. en)_.properties located under org.cip4.jdfeditor.messages package.
 	 */
 
 	/**
@@ -167,7 +165,7 @@ public class Editor
 		// dummy call to initialize logging early
 		// log file location
 		final String pathDir = new UserDir("JDFEditor").getLogPath();
-		LogConfigurator.configureLog(pathDir, "JDFEditor.log");
+		// LogConfigurator.configureLog(pathDir, "JDFEditor.log");
 		// nothing to do here (yet)
 		SettingService.getSettingService();
 		JDFResource.setAutoSubElementClass(false);
@@ -183,6 +181,7 @@ public class Editor
 
 	/**
 	 * Method instantiate the editor window
+	 * 
 	 * @param file the file to open initially
 	 */
 	public void init(final File file)
@@ -203,6 +202,7 @@ public class Editor
 
 	/**
 	 * Method getEditor.
+	 * 
 	 * @return Editor
 	 */
 	public static Editor getEditor()
@@ -211,7 +211,6 @@ public class Editor
 	}
 
 	/**
-	 *
 	 * @return
 	 */
 	JMFBuilder getJMFBuilder()
@@ -227,7 +226,6 @@ public class Editor
 	}
 
 	/**
-	 *
 	 * @return
 	 */
 	public JSONWriter getJSonWriter()
