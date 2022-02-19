@@ -3,8 +3,8 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2016 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * Copyright (c) 2001-2016 The International Cooperation for the Integration of
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +12,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -20,17 +20,17 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
+ *        The International Cooperation for the Integration of
  *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of
  *    Processes in  Prepress, Press and Postpress" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact info@cip4.org.
  *
  * 5. Products derived from this software may not be called "CIP4",
@@ -56,17 +56,17 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
+ * individuals on behalf of the The International Cooperation for the Integration
  * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
+ * originally based on software
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V.
+ *
+ * For more information on The International Cooperation for the
  * Integration of Processes in  Prepress, Press and Postpress , please see
  * <http://www.cip4.org/>.
- *  
- * 
+ *
+ *
  */
 package org.cip4.tools.jdfeditor;
 
@@ -91,10 +91,9 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
-
 /**
- * 
- *  
+ *
+ *
  * @author rainer prosi
  * @date Apr 11, 2013
  */
@@ -131,7 +130,7 @@ public class EditorTabbedPaneB extends JTabbedPane implements Runnable
 		setComponentAt(m_DC_ERRORS_INDEX, m_devCapErrScroll);
 
 		//        XML Editor tab
-		xmlEditorTextArea = createXMLPane();
+		xmlEditorTextArea = createXMLPane(SyntaxConstants.SYNTAX_STYLE_XML, "XmlEditor");
 
 		//		HTTP server tab
 		httpPanel = new HttpServerPane();
@@ -139,41 +138,40 @@ public class EditorTabbedPaneB extends JTabbedPane implements Runnable
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
-	private RSyntaxTextArea createXMLPane()
+	RSyntaxTextArea createXMLPane(final String style, final String label)
 	{
-		//TODO link xml editor with jdf editor dom model and synchronize updates
-		JPanel xmlEditorPanel = new JPanel(new BorderLayout());
-		RSyntaxTextArea xmlArea = new RSyntaxTextArea();
-		xmlArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_XML);
+		final JPanel xmlEditorPanel = new JPanel(new BorderLayout());
+		final RSyntaxTextArea xmlArea = new RSyntaxTextArea();
+		xmlArea.setSyntaxEditingStyle(style);
 		xmlArea.setAutoIndentEnabled(true);
 
 		if (RuntimeProperties.enlargedTextFontName.isEmpty())
 		{
-			Font originalFont = xmlArea.getFont();
+			final Font originalFont = xmlArea.getFont();
 			RuntimeProperties.originalTextFontSize = originalFont.getSize();
 			RuntimeProperties.enlargedTextFontName = originalFont.getFontName();
 			FontUtil.calcFontSize();
 		}
 
-		Font xmlAreaFont = new Font(RuntimeProperties.enlargedTextFontName, Font.PLAIN, RuntimeProperties.enlargedTextFontSize);
+		final Font xmlAreaFont = new Font(RuntimeProperties.enlargedTextFontName, Font.PLAIN, RuntimeProperties.enlargedTextFontSize);
 		xmlArea.setFont(xmlAreaFont);
 
 		xmlArea.setEditable(false);
-		RTextScrollPane sp = new RTextScrollPane(xmlArea);
+		final RTextScrollPane sp = new RTextScrollPane(xmlArea);
 		xmlEditorPanel.add(sp);
-		addTab(ResourceUtil.getMessage("XmlEditor"), null, xmlEditorPanel, ResourceUtil.getMessage("XmlEditor"));
+		addTab(ResourceUtil.getMessage(label), null, xmlEditorPanel, ResourceUtil.getMessage(label));
 		return xmlArea;
 	}
 
 	/**
-	 * 
-	 *  
+	 *
+	 *
 	 * @param path
 	 */
-	public void refreshView(TreePath path)
+	public void refreshView(final TreePath path)
 	{
 		if (path == null)
 		{
@@ -185,15 +183,24 @@ public class EditorTabbedPaneB extends JTabbedPane implements Runnable
 		}
 	}
 
-	public void refreshXmlEditor(String s)
+	public void refreshXmlEditor(final String s, final boolean json)
 	{
+		if (json)
+		{
+			xmlEditorTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JSON);
+		}
+		else
+		{
+			xmlEditorTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_XML);
+
+		}
 		xmlEditorTextArea.setText(s);
 		xmlEditorTextArea.setCaretPosition(0);
 	}
 
 	public void updateXmlEditorFontSize()
 	{
-		Font xmlAreaFont = new Font(RuntimeProperties.enlargedTextFontName, Font.PLAIN, RuntimeProperties.enlargedTextFontSize);
+		final Font xmlAreaFont = new Font(RuntimeProperties.enlargedTextFontName, Font.PLAIN, RuntimeProperties.enlargedTextFontSize);
 		xmlEditorTextArea.setFont(xmlAreaFont);
 	}
 
@@ -207,10 +214,10 @@ public class EditorTabbedPaneB extends JTabbedPane implements Runnable
 		m_SchemaErrScroll.updateCellRenderer();
 	}
 
-	public void selectNodeWithXPath(TreePath path)
+	public void selectNodeWithXPath(final TreePath path)
 	{
-		JDFTreeNode node = (JDFTreeNode) path.getLastPathComponent();
-		JDFTreeNode errNode = findNodeWithXPath(node.getXPath());
+		final JDFTreeNode node = (JDFTreeNode) path.getLastPathComponent();
+		final JDFTreeNode errNode = findNodeWithXPath(node.getXPath());
 
 		JTree errTree = null;
 		TreeSelectionListener selLi = null;
@@ -235,7 +242,7 @@ public class EditorTabbedPaneB extends JTabbedPane implements Runnable
 			TreePath p = null;
 			if (errNode == null)
 			{
-				JDFTreeNode theRoot = (JDFTreeNode) errTree.getModel().getRoot();
+				final JDFTreeNode theRoot = (JDFTreeNode) errTree.getModel().getRoot();
 				p = new TreePath(theRoot.getPath());
 				errTree.collapsePath(p);
 			}
@@ -253,11 +260,11 @@ public class EditorTabbedPaneB extends JTabbedPane implements Runnable
 	}
 
 	/**
-	 * 
+	 *
 	 * @param xpath
 	 * @return
 	 */
-	private JDFTreeNode findNodeWithXPath(String xpath)
+	private JDFTreeNode findNodeWithXPath(final String xpath)
 	{
 		JTree errTree = null;
 		if (this.getSelectedIndex() == m_VAL_ERRORS_INDEX)
@@ -272,7 +279,7 @@ public class EditorTabbedPaneB extends JTabbedPane implements Runnable
 		if (errTree == null)
 			return null;
 
-		JDFTreeNode theRoot = (JDFTreeNode) errTree.getModel().getRoot();
+		final JDFTreeNode theRoot = (JDFTreeNode) errTree.getModel().getRoot();
 		if (xpath == null)
 			return theRoot;
 
@@ -282,10 +289,10 @@ public class EditorTabbedPaneB extends JTabbedPane implements Runnable
 		final Enumeration<JDFTreeNode> e = theRoot.depthFirstJdfEnumeration();
 		while (e.hasMoreElements())
 		{
-			JDFTreeNode tn = e.nextElement();
+			final JDFTreeNode tn = e.nextElement();
 			if (tn.isElement())
 			{
-				KElement el = tn.getElement();
+				final KElement el = tn.getElement();
 				if (xpath.equals(el.getAttribute("XPath")))
 					return tn;
 			}
@@ -308,7 +315,7 @@ public class EditorTabbedPaneB extends JTabbedPane implements Runnable
 		return httpPanel;
 	}
 
-	/** 
+	/**
 	 * take this guy offline
 	 */
 	@Override

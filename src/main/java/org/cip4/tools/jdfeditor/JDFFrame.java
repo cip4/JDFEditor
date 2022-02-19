@@ -528,7 +528,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			setTitle(buildWindowTitleString());
 			m_treeArea.setHeaderLabel(eDoc.isJson());
 			getBottomTabs().refreshView(path);
-			getBottomTabs().refreshXmlEditor(eDoc.getJDFDoc().toXML());
+			getBottomTabs().refreshXmlEditor(eDoc.getString(), eDoc.isJson());
 			if (path != null)
 			{
 				m_treeArea.goToPath(path);

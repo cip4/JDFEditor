@@ -1,7 +1,7 @@
 /**
  * The CIP4 Software License, Version 1.0
  *
- * Copyright (c) 2001-2021 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2022 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -69,6 +69,7 @@
 package org.cip4.tools.jdfeditor;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -85,11 +86,14 @@ import javax.swing.tree.TreePath;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.util.ByteArrayIOStream;
 import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.lib.jdf.jsonutil.JSONWriter;
+import org.cip4.lib.jdf.jsonutil.rtf.JSONIndentWalker;
+import org.cip4.lib.jdf.jsonutil.rtf.JSONRtfWalker;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
@@ -173,6 +177,8 @@ public class EditorDocument
 			this.json = json;
 
 			jdfDoc.setOriginalFileName(newExtension);
+			MainView.getFrame().refreshView(this, null);
+
 			MainView.getFrame().refreshTitle();
 			MainView.getFrame().getJDFTreeArea().setHeaderLabel(json);
 			MainView.getFrame().getJDFTreeArea().drawTreeView(this);
@@ -324,6 +330,8 @@ public class EditorDocument
 		{
 			jTree.setSelectionPath(path);
 			jTree.scrollPathToVisible(path);
+			MainView.getFrame().getBottomTabs().refreshXmlEditor(getString(), isJson());
+
 		}
 
 		if (trackHistory == false)
@@ -664,7 +672,62 @@ public class EditorDocument
 	 *
 	 * @param file
 	 */
-	private void writeToFile(final File file)
+	void writeToRTF(final File file)
+	{
+		final int indent = settingService.getSetting(SettingKey.GENERAL_INDENT, Boolean.class) ? 2 : 0;
+		if (json)
+		{
+			final JSONWriter jw = Editor.getEditor().getJSonWriter();
+			jw.convert(jdfDoc.getRoot());
+			final JSONRtfWalker rw = new JSONRtfWalker(jw);
+			FileUtil.writeFile(rw, file);
+		}
+		else
+		{
+			//jdfDoc.write2File(file.getAbsolutePath(), indent, !settingService.getSetting(SettingKey.GENERAL_INDENT, Boolean.class));
+		}
+	}
+
+	String getString()
+	{
+		final TreePath path = getSelectionPath();
+		KElement root = jdfDoc.getRoot();
+		if (path != null)
+		{
+			final JDFTreeNode node = (JDFTreeNode) path.getLastPathComponent();
+			root = node.getElement();
+		}
+		if (json)
+		{
+			final JSONWriter jw = Editor.getEditor().getJSonWriter();
+			jw.convert(root);
+			final JSONIndentWalker iw = new JSONIndentWalker(jw);
+			iw.setSingleIndent(2);
+			iw.setSorted(true);
+			final ByteArrayIOStream ios = new ByteArrayIOStream();
+			try
+			{
+				iw.writeStream(ios);
+			}
+			catch (final IOException e)
+			{
+				//nop
+			}
+			final String s = new String(ios.toByteArray());
+			return s;
+		}
+		else
+		{
+			return root.toXML(2);
+		}
+	}
+
+	/**
+	 *
+	 *
+	 * @param file
+	 */
+	void writeToFile(final File file)
 	{
 		final int indent = settingService.getSetting(SettingKey.GENERAL_INDENT, Boolean.class) ? 2 : 0;
 		if (json)

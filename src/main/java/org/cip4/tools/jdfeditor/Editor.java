@@ -119,7 +119,6 @@ public class Editor
 	/**
 	 * @param args
 	 */
-	// ////////////////////////////////////////////////////////////////
 	public static void main(final String[] args)
 	{
 		preInit();
@@ -152,10 +151,15 @@ public class Editor
 		else
 		{
 			// apple menu compatibility
-			System.setProperty("apple.laf.useScreenMenuBar", "true");
-			my_Editor = new Editor();
+			initEditor(file);
 			my_Editor.init(file);
 		}
+	}
+
+	static void initEditor(final File file)
+	{
+		System.setProperty("apple.laf.useScreenMenuBar", "true");
+		my_Editor = new Editor();
 	}
 
 	/**
