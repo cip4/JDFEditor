@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2016 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2022 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -1803,6 +1803,10 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		if (m_DocPos >= 0)
 		{
 			setTitle(getEditorDoc().getOriginalFileName());
+		}
+		else
+		{
+			getBottomTabs().refreshXmlEditor("", false);
 		}
 		m_menuBar.updateWindowsMenu();
 
