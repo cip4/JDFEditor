@@ -4,7 +4,6 @@ plugins {
     id 'java'
     id 'application'
     id 'org.beryx.runtime' version '1.12.7'
-    id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
 mainClassName = 'org.cip4.tools.jdfeditor.Editor'
@@ -51,12 +50,15 @@ dependencies {
     implementation 'commons-collections:commons-collections:3.2.2'
     implementation 'com.sun.woodstock.dependlibs:jhall:2.0'
     implementation 'com.fifesoft:rsyntaxtextarea:3.1.6'
- 
+
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:3.+'
 }
 
 runtime {
+    modules = [
+            'jdk.xml.dom']
+    additive = true
     jpackage {
         imageOptions = [
                 "--copyright", "CIP4 Organization",
