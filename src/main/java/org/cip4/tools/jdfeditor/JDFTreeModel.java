@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2021 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2022 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -81,6 +81,8 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFConstants;
@@ -128,6 +130,7 @@ public class JDFTreeModel extends DefaultTreeModel
 {
 
 	private final SettingService settingService = SettingService.getSettingService();
+	private final static Log log = LogFactory.getLog(JDFTreeModel.class);
 
 	/**
 	 * Spawn informative TODO correctly dump into multiple file
@@ -1209,6 +1212,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		final JDFTreeNode node = selectionPath == null ? (JDFTreeNode) getRootNode() : (JDFTreeNode) selectionPath.getLastPathComponent();
 		if (node == null)
 		{
+			log.info("not converting to XJDF ");
 			return;
 		}
 		final EditorDocument eDoc = MainView.getEditorDoc();
@@ -1218,6 +1222,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		final String fn = eDoc.getOriginalFileName();
 		if (xjdf)
 		{
+			log.info("converting JSON to XJDF");
 			eDoc.setJson(false, true);
 		}
 		else
@@ -1233,6 +1238,7 @@ public class JDFTreeModel extends DefaultTreeModel
 			{
 				ext = XJDFConstants.XJMF.toLowerCase();
 			}
+			log.info("converting JDF to " + ext);
 			final String fnNew = UrlUtil.newExtension(fn, ext);
 			final File fileToRead = new File(fnNew);
 			if (!reallysave || eDoc.checkSave(fileToRead))
@@ -1261,6 +1267,10 @@ public class JDFTreeModel extends DefaultTreeModel
 
 					}
 				}
+				else
+				{
+					log.warn("problems converting JDF to " + ext);
+				}
 			}
 		}
 	}
@@ -1278,6 +1288,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		}
 		final EditorDocument eDoc = MainView.getEditorDoc();
 		eDoc.setJson(true, true);
+		log.info("converting XJDF to JSON ");
 	}
 
 	private KElement convertJDF(final KElement e, final String fn, KElement xJDF, final XJDF20 xjdf20)
@@ -1350,6 +1361,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		final JDFTreeNode node = selectionPath == null ? (JDFTreeNode) getRootNode() : (JDFTreeNode) selectionPath.getLastPathComponent();
 		if (node == null || node.getElement() instanceof JDFNode)
 		{
+			log.warn("not converting to JDF ");
 			return;
 		}
 		final KElement e = node.getElement();
@@ -1359,11 +1371,13 @@ public class JDFTreeModel extends DefaultTreeModel
 		final String fnNew = UrlUtil.newExtension(fn, ext);
 		if (eDoc.checkSave(UrlUtil.urlToFile(fnNew)))
 		{
+			log.info("converting to JDF " + fnNew);
 			final JDFDoc d = c.convert(e);
 			if (d != null)
 			{
 				d.write2File(fnNew, 2, false);
 				MainView.getFrame().readFile(new File(fnNew));
+				log.info("converted to JDF " + fnNew);
 			}
 			else
 			{
