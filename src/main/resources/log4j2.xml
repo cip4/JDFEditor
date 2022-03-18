@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
     <Properties>
-        <Property name="filename">JDFEditor.log</Property>
+        <Property name="filename">${sys:user.home}\CIP4Tools\JDFEditor\logs\JDFEditor.log</Property>
     </Properties>
     <Appenders>
         <Console name="STDOUT" target="SYSTEM_OUT">
