@@ -120,6 +120,7 @@ import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEditSupport;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.ElementName;
@@ -140,6 +141,7 @@ import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.util.EnumUtil;
 import org.cip4.jdflib.util.StringUtil;
+import org.cip4.jdflib.util.file.UserDir;
 import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.DocumentService;
@@ -159,7 +161,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 {
 	private static final long serialVersionUID = 1L;
 	private static final String DEFAULT_TITLE = "CIP4 JDFEditor";
-	private static final String UNTITLED = "Untitled";
+	private static final String UNTITLED = FilenameUtils.concat(new UserDir("JDFEditor").getToolPath(),"Untitled");
 
 	private static final Log LOGGER = LogFactory.getLog(JDFFrame.class);
 
