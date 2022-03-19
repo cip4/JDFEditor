@@ -59,7 +59,9 @@ dependencies {
 
 runtime {
     modules = [
-            'jdk.xml.dom']
+            'jdk.xml.dom',
+            'jdk.unsupported'
+    ]
     additive = true
     jpackage {
         imageOptions = [
@@ -87,4 +89,9 @@ runtime {
         imageOptions += ["--icon", icon]
         appVersion = project.version == "development" ? "1.0.0" : project.version
     }
+}
+
+test {
+    dependsOn(jre)
+    executable = jre.getJreDir().dir("bin").file("java").getAsFile().getAbsolutePath()
 }
