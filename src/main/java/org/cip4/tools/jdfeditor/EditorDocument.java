@@ -83,6 +83,8 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.KElement;
@@ -129,6 +131,7 @@ public class EditorDocument
 	private boolean dirtyFlag;
 
 	private boolean json;
+	private static Log log = LogFactory.getLog(EditorDocument.class);
 
 	/**
 	 * @return the json
@@ -194,6 +197,7 @@ public class EditorDocument
 
 	boolean checkSave(final File newFile)
 	{
+		log.info("checking save " + newFile);
 
 		if (newFile != null && newFile.exists())
 		{
@@ -203,6 +207,7 @@ public class EditorDocument
 			final int overwriteExistingFileAnswer = JOptionPane.showOptionDialog(MainView.getFrame(), message, null, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 			if (overwriteExistingFileAnswer != JOptionPane.OK_OPTION)
 			{
+				log.info("denied save " + newFile);
 				return false;
 			}
 		}

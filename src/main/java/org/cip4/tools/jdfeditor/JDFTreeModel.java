@@ -1238,17 +1238,19 @@ public class JDFTreeModel extends DefaultTreeModel
 			{
 				ext = XJDFConstants.XJMF.toLowerCase();
 			}
-			log.info("converting JDF to " + ext);
+			log.info("converting JDF/JMF to " + ext);
 			final String fnNew = UrlUtil.newExtension(fn, ext);
 			final File fileToRead = new File(fnNew);
 			if (!reallysave || eDoc.checkSave(fileToRead))
 			{
 				if (e instanceof JDFNode)
 				{
+					log.info("converting JDF node to " + ext);
 					xJDF = convertJDF(e, fn, xJDF, xjdf20);
 				}
 				else if (e instanceof JDFJMF)
 				{
+					log.info("converting JMF to " + ext);
 					xJDF = xjdf20.makeNewJMF((JDFJMF) e);
 				}
 				if (xJDF != null)
@@ -1271,6 +1273,10 @@ public class JDFTreeModel extends DefaultTreeModel
 				{
 					log.warn("problems converting JDF to " + ext);
 				}
+			}
+			else
+			{
+				log.info("skipping conversion of " + fileToRead + " to " + ext + " reallysave=" + reallysave);
 			}
 		}
 	}
@@ -1367,11 +1373,11 @@ public class JDFTreeModel extends DefaultTreeModel
 		final KElement e = node.getElement();
 		final EditorDocument eDoc = MainView.getEditorDoc();
 		final String fn = eDoc.getOriginalFileName();
-		final String ext = ElementName.JMF.equalsIgnoreCase(e.getLocalName()) ? "jmf" : "jdf";
+		final String ext = XJDFConstants.XJMF.equalsIgnoreCase(e.getLocalName()) ? "jmf" : "jdf";
 		final String fnNew = UrlUtil.newExtension(fn, ext);
 		if (eDoc.checkSave(UrlUtil.urlToFile(fnNew)))
 		{
-			log.info("converting to JDF " + fnNew);
+			log.info("converting to JDF/JMF " + fnNew);
 			final JDFDoc d = c.convert(e);
 			if (d != null)
 			{
