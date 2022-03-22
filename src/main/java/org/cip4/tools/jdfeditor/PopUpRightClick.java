@@ -198,7 +198,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 
 			final JDFJMF jmf = b.newJMF(f, mService.getType());
 			final JDFDoc doc = jmf.getOwnerDocument_JDFElement();
-			doc.setOriginalFileName("Auto" + mService.getType() + ".jmf");
+			doc.setOriginalFileName(EditorUtils.getNewPath("Auto" + mService.getType() + ".jmf"));
 			final JDFMessage m = jmf.getMessageElement(f, EnumType.getEnum(mService.getType()), 0);
 			extendMessage(m);
 			MainView.getFrame().setJDFDoc(doc, null);

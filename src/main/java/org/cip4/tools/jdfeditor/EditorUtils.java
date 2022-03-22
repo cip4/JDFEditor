@@ -107,6 +107,7 @@ import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
+import org.cip4.jdflib.util.file.UserDir;
 import org.cip4.jdflib.util.mime.BodyPartHelper;
 import org.cip4.jdflib.util.mime.MimeReader;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
@@ -442,7 +443,7 @@ public class EditorUtils
 					}
 					if (edidoc != null)
 					{
-						edidoc.getJDFDoc().setOriginalFileName(inputFile.getPath());
+						edidoc.getJDFDoc().setOriginalFileName(inputFile.getAbsolutePath());
 						ediDocs[0] = edidoc;
 					}
 					else
@@ -553,7 +554,7 @@ public class EditorUtils
 					}
 					partFileNamePassed = StringUtil.unEscape(partFileNamePassed, "%", 16, 2);
 					partFileNamePassed = StringUtil.getUTF8String(partFileNamePassed.getBytes());
-					jdfDoc.setOriginalFileName(partFileNamePassed);
+					jdfDoc.setOriginalFileName(EditorUtils.getNewPath(partFileNamePassed));
 					jdfDoc.setBodyPart(bp.getBodyPart());
 					editorDocument.setCID(bp.getContentID());
 					editorDocsArray[nn++] = editorDocument;
@@ -634,6 +635,21 @@ public class EditorUtils
 		}
 
 		return editorDocument;
+	}
+
+	public static UserDir getUserDir()
+	{
+		return new UserDir("JDFEditor");
+	}
+
+	public static File getNewFile(final String fileName)
+	{
+		return new File(new File(getUserDir().getToolPath(), "data"), fileName);
+	}
+
+	public static String getNewPath(final String fileName)
+	{
+		return getNewFile(fileName).getAbsolutePath();
 	}
 
 	static JDFDoc parseInStream(final InputStream inStream, final File fileSchema) throws IOException

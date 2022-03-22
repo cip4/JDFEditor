@@ -705,7 +705,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		final EditorDocument document = getEditorDoc();
 		document.setDirtyFlag();
 
-		jdfDoc.setOriginalFileName(UNTITLED + ".jdf");
+		jdfDoc.setOriginalFileName(EditorUtils.getNewPath(UNTITLED + ".jdf"));
 	}
 
 	/**
@@ -736,7 +736,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 			final JDFDoc jmfDoc = jmf.getOwnerDocument_JDFElement();
 			setJDFDoc(jmfDoc, null);
-			jmfDoc.setOriginalFileName(type + ".jmf");
+			jmfDoc.setOriginalFileName(EditorUtils.getNewPath(type + ".jmf"));
 		}
 		catch (final Exception e)
 		{
@@ -763,7 +763,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				final JDFNode root = theGT.getNode();
 				final JDFDoc doc = root.getOwnerDocument_JDFElement();
 				setJDFDoc(doc, null);
-				doc.setOriginalFileName(gtselect + "_GoldenTicket.jdf");
+				doc.setOriginalFileName(EditorUtils.getNewPath(gtselect + "_GoldenTicket.jdf"));
 			}
 		}
 		catch (final Exception e)

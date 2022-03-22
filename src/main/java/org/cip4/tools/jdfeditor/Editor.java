@@ -87,7 +87,6 @@ import org.cip4.jdflib.jmf.JMFBuilder;
 import org.cip4.jdflib.jmf.JMFBuilderFactory;
 import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.util.MyArgs;
-import org.cip4.jdflib.util.file.UserDir;
 import org.cip4.jdfutility.logging.LogConfigurator;
 import org.cip4.lib.jdf.jsonutil.JSONPrepWalker;
 import org.cip4.lib.jdf.jsonutil.JSONWriter;
@@ -169,7 +168,7 @@ public class Editor
 	{
 		// dummy call to initialize logging early
 		// log file location
-		final String pathDir = new UserDir("JDFEditor").getLogPath();
+		final String pathDir = EditorUtils.getUserDir().getLogPath();
 		LogConfigurator.configureLog(pathDir, "JDFEditor.log");
 		// nothing to do here (yet)
 		SettingService.getSettingService();

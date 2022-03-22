@@ -79,7 +79,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.util.StringUtil;
-import org.cip4.jdflib.util.file.UserDir;
+import org.cip4.tools.jdfeditor.EditorUtils;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 
 /**
@@ -124,7 +124,7 @@ public class SettingService
 	{
 
 		// path config file
-		final String pathDir = new UserDir("JDFEditor").getToolPath();
+		final String pathDir = EditorUtils.getUserDir().getToolPath();
 
 		configFile = new File(FilenameUtils.concat(pathDir, confFileName));
 		LOG.info("Initialize settings from " + configFile.getAbsolutePath());

@@ -1254,7 +1254,7 @@ public class JDFTreeModel extends DefaultTreeModel
 					else
 					{
 						final JDFDoc doc = new JDFDoc(d);
-						doc.setOriginalFileName(fnNew);
+						doc.setOriginalFileName(EditorUtils.getNewPath(fnNew));
 						MainView.getFrame().setJDFDoc(doc, null);
 
 					}
