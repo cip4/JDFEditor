@@ -1227,8 +1227,6 @@ public class JDFTreeModel extends DefaultTreeModel
 		}
 		else
 		{
-			KElement xJDF = null;
-			final XJDF20 xjdf20 = EditorUtils.getXJDFConverter();
 			String ext = null;
 			if (e instanceof JDFNode)
 			{
@@ -1243,22 +1241,14 @@ public class JDFTreeModel extends DefaultTreeModel
 			final File fileToRead = new File(fnNew);
 			if (!reallysave || eDoc.checkSave(fileToRead))
 			{
-				if (e instanceof JDFNode)
-				{
-					log.info("converting JDF node to " + ext);
-					xJDF = convertJDF(e, fn, xJDF, xjdf20);
-				}
-				else if (e instanceof JDFJMF)
-				{
-					log.info("converting JMF to " + ext);
-					xJDF = xjdf20.makeNewJMF((JDFJMF) e);
-				}
+				final KElement xJDF = extractXJDF(e, fn, ext);
 				if (xJDF != null)
 				{
 					final XMLDoc d = xJDF.getOwnerDocument_KElement();
 					if (reallysave)
 					{
-						d.write2File(fnNew, 2, false);
+						log.info("writing XJDF " + fileToRead.getAbsolutePath());
+						d.write2File(fileToRead, 2, false);
 						MainView.getFrame().readFile(fileToRead);
 					}
 					else
@@ -1281,6 +1271,23 @@ public class JDFTreeModel extends DefaultTreeModel
 		}
 	}
 
+	protected KElement extractXJDF(final KElement e, final String fn, final String ext)
+	{
+		KElement xJDF = null;
+		final XJDF20 xjdf20 = EditorUtils.getXJDFConverter();
+		if (e instanceof JDFNode)
+		{
+			log.info("converting JDF node to " + ext);
+			xJDF = convertJDF(e, fn, xjdf20);
+		}
+		else if (e instanceof JDFJMF)
+		{
+			log.info("converting JMF to " + ext);
+			xJDF = xjdf20.makeNewJMF((JDFJMF) e);
+		}
+		return xJDF;
+	}
+
 	/**
 	 * @param selectionPath
 	 * @experimental
@@ -1297,10 +1304,13 @@ public class JDFTreeModel extends DefaultTreeModel
 		log.info("converting XJDF to JSON ");
 	}
 
-	private KElement convertJDF(final KElement e, final String fn, KElement xJDF, final XJDF20 xjdf20)
+	KElement convertJDF(final KElement e, final String fn, final XJDF20 xjdf20)
 	{
+		KElement xJDF = null;
 		final String procMethod = settingService.getString(SettingKey.XJDF_CONVERT_SINGLENODE);
 		final JDFNode currentNode = (JDFNode) e;
+		log.info("converting to XJDF - " + procMethod);
+
 		if ("zip".equals(procMethod))
 		{
 			final String fnNew = UrlUtil.newExtension(fn, "xjdf.zip");

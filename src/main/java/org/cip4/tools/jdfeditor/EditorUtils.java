@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2021 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2022 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -263,8 +263,7 @@ public class EditorUtils
 	public static String chooseElementName(final KElement parentElement)
 	{
 		final String validValues[] = EditorUtils.getElementOptions(parentElement);
-		String selectedElementName = (String) JOptionPane.showInputDialog(MainView.getFrame(), "Choose an element to insert", "Insert new element",
-				JOptionPane.PLAIN_MESSAGE, null, validValues, validValues[0]);
+		String selectedElementName = (String) JOptionPane.showInputDialog(MainView.getFrame(), "Choose an element to insert", "Insert new element", JOptionPane.PLAIN_MESSAGE, null, validValues, validValues[0]);
 
 		if (selectedElementName != null && selectedElementName.equals("Other.."))
 		{
@@ -389,8 +388,7 @@ public class EditorUtils
 			addedString = " " + addedString;
 		}
 
-		JOptionPane.showMessageDialog(frame, ResourceUtil.getMessage(errorKey) + addedString, ResourceUtil.getMessage("ErrorMessKey"),
-				JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(frame, ResourceUtil.getMessage(errorKey) + addedString, ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 	}
 
 	public static EditorDocument[] getEditorDocuments(final File inputFile)
@@ -574,8 +572,7 @@ public class EditorUtils
 
 	private static boolean isJSONType(final String contentType)
 	{
-		return JDFConstants.MIME_XJDF_JSON.equalsIgnoreCase(contentType) || JDFConstants.MIME_XJMF_JSON.equalsIgnoreCase(contentType)
-				|| UrlUtil.isJSONType(contentType);
+		return JDFConstants.MIME_XJDF_JSON.equalsIgnoreCase(contentType) || JDFConstants.MIME_XJMF_JSON.equalsIgnoreCase(contentType) || UrlUtil.isJSONType(contentType);
 	}
 
 	private static boolean isJDFMimeType(String mimeType)
@@ -690,6 +687,8 @@ public class EditorUtils
 		xjdf20.setConvertTilde(settingService.getBool(SettingKey.XJDF_CONVERT_TILDE));
 		xjdf20.setParameterSet(settingService.getBool(SettingKey.XJDF_SPLIT_PARAMETER));
 		xjdf20.setTypeSafeMessage(settingService.getBool(SettingKey.XJDF_TYPESAFE_JMF));
+		LOGGER.info("converter: " + xjdf20.toString());
+
 		return xjdf20;
 	}
 
@@ -704,6 +703,7 @@ public class EditorUtils
 		c.setConvertTilde(settingService.getSetting(SettingKey.XJDF_CONVERT_TILDE, Boolean.class));
 		c.setCreateProduct(settingService.getSetting(SettingKey.XJDF_FROM_RETAIN_PRODUCT, Boolean.class));
 		c.setHeuristicLink(settingService.getSetting(SettingKey.XJDF_FROM_HEURISTIC_LINK, Boolean.class));
+		LOGGER.info("converter: " + c.toString());
 		return c;
 	}
 
