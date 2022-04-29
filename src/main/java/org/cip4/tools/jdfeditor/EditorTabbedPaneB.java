@@ -134,7 +134,7 @@ public class EditorTabbedPaneB extends JTabbedPane implements Runnable
 
 		//		HTTP server tab
 		httpPanel = new HttpServerPane();
-		new Thread(this).start();
+		run();
 	}
 
 	/**

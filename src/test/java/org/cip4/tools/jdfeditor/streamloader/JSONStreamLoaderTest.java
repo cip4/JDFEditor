@@ -68,68 +68,23 @@
  */
 package org.cip4.tools.jdfeditor.streamloader;
 
-import java.io.BufferedInputStream;
-import java.io.File;
+import static org.junit.Assert.assertEquals;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
-import org.apache.commons.lang.CharUtils;
 import org.cip4.jdflib.core.JDFDoc;
-import org.cip4.jdflib.core.KElement;
-import org.cip4.jdflib.util.FileUtil;
-import org.cip4.jdflib.util.UrlUtil;
-import org.cip4.lib.jdf.jsonutil.JSONReader;
+import org.junit.Test;
 
-/**
- * simple implementation for a zip stream loader
- * @author rainer prosi
- * @date Sep 5, 2013
- */
-public class JSONStreamLoader implements IStreamLoader
+public class JSONStreamLoaderTest
 {
 
-	/**
-	 * @see org.cip4.tools.jdfeditor.streamloader.IStreamLoader#read(java.io.File, java.io.File)
-	 */
-	@Override
-	public JDFDoc read(final File fileJDF, final File fileSchema) throws IOException
+	@Test
+	public void testReadStream() throws IOException
 	{
-		final String extension = fileJDF == null ? null : UrlUtil.extension(fileJDF.getName());
-
-		if (fileJDF == null || !fileJDF.canRead() || !"json".equalsIgnoreCase(extension) && !"jsn".equalsIgnoreCase(extension))
-			return null;
-
-		final BufferedInputStream stream = FileUtil.getBufferedInputStream(fileJDF);
-
-		return readStream(stream, null);
-	}
-
-	/**
-	 * @see org.cip4.tools.jdfeditor.streamloader.IStreamLoader#read(java.io.File, java.io.File)
-	 */
-	@Override
-	public JDFDoc readStream(final InputStream stream, final InputStream schema) throws IOException
-	{
-		if (stream == null)
-			return null;
-		stream.mark(422);
-		int i=0;
-		int read = stream.read();
-		while(Character.isWhitespace(read)) {
-			i++;
-			if(i>420)break;
-			read = stream.read();
-		}
-		if ('{' != read && '['!=read)
-			return null;
-		stream.reset();
-		final JSONReader jr = new JSONReader();
-		jr.setXJDF();
-		final KElement e = jr.getElement(stream);
-		if (e == null)
-			return null;
-		final JDFDoc jdfDoc = new JDFDoc(e.getOwnerDocument());
-		return jdfDoc;
+		String s = "{\"XJDF\":{\"Types\":[\"Product\"]}}";
+		JDFDoc d = new JSONStreamLoader().readStream(new ByteArrayInputStream(s.getBytes()), null);
+		assertEquals("XJDF", d.getRoot().getLocalName());
 	}
 
 }

@@ -157,7 +157,7 @@ public class HttpServerPane implements ActionListener
 		settingsLayout.putConstraint(SpringLayout.NORTH, ipLabel, 10, SpringLayout.NORTH, settingsPanel);
 
 		ipComboBox = new JComboBox<String>();
-		fillWithIPAddresses();
+		new Thread(new FillWithIPAddresses()).start();
 		settingsLayout.putConstraint(SpringLayout.WEST, ipComboBox, 5, SpringLayout.EAST, ipLabel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, ipComboBox, 10, SpringLayout.NORTH, settingsPanel);
 
@@ -281,8 +281,9 @@ public class HttpServerPane implements ActionListener
 		gatewayValueLabel.setEditable(false);
 	}
 
-	private void fillWithIPAddresses()
+	private class FillWithIPAddresses implements Runnable
 	{
+		public void run() {
 		ipComboBox.removeAllItems();
 		ipComboBox.setEditable(false);
 		final VString ipReal = new VString();
@@ -327,7 +328,7 @@ public class HttpServerPane implements ActionListener
 		final String preselectAddress = settingService.getSetting(SettingKey.HTTP_PRESELECTED_ADDRESS, String.class);
 		ipComboBox.setSelectedItem(preselectAddress);
 	}
-
+	}
 	private void sortIPFillComboBox(final VString list)
 	{
 		list.sort();
@@ -397,6 +398,12 @@ public class HttpServerPane implements ActionListener
 				labelStorePath.setText(chooser.getSelectedFile().getAbsolutePath());
 			}
 		}
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -230,7 +230,7 @@ public class PluginLoader<I>
 						}
 					}
 
-					catch (final Exception ex)
+					catch (final Throwable ex)
 					{
 						LOGGER.error("failed reading plugin " + file.getAbsolutePath(), ex);
 					}
