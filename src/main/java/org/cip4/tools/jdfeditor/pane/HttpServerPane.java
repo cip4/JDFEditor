@@ -283,52 +283,55 @@ public class HttpServerPane implements ActionListener
 
 	private class FillWithIPAddresses implements Runnable
 	{
-		public void run() {
-		ipComboBox.removeAllItems();
-		ipComboBox.setEditable(false);
-		final VString ipReal = new VString();
-		final VString ipLoopback = new VString();
-		try
+		@Override
+		public void run()
 		{
-			final Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-			while (interfaces.hasMoreElements())
+			ipComboBox.removeAllItems();
+			ipComboBox.setEditable(false);
+			final VString ipReal = new VString();
+			final VString ipLoopback = new VString();
+			try
 			{
-				final NetworkInterface ni = interfaces.nextElement();
-				LOGGER.debug("network interface: " + ni + ", isLoopback: " + ni.isLoopback() + ", isVirtual: " + ni.isVirtual());
-
-				final Enumeration<InetAddress> inetAddress = ni.getInetAddresses();
-				while (inetAddress.hasMoreElements())
+				final Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+				while (interfaces.hasMoreElements())
 				{
-					final InetAddress address = inetAddress.nextElement();
-					if (address instanceof Inet6Address)
-						continue; // skip IPv6 addresses
-					LOGGER.debug("host name: " + address.getHostName() + ", host address: " + address.getHostAddress());
+					final NetworkInterface ni = interfaces.nextElement();
+					LOGGER.debug("network interface: " + ni + ", isLoopback: " + ni.isLoopback() + ", isVirtual: " + ni.isVirtual());
 
-					if (address.isLoopbackAddress())
+					final Enumeration<InetAddress> inetAddress = ni.getInetAddresses();
+					while (inetAddress.hasMoreElements())
 					{
-						ipLoopback.appendUnique(address.getHostAddress());
+						final InetAddress address = inetAddress.nextElement();
+						if (address instanceof Inet6Address)
+							continue; // skip IPv6 addresses
+						LOGGER.debug("host name: " + address.getHostName() + ", host address: " + address.getHostAddress());
+
+						if (address.isLoopbackAddress())
+						{
+							ipLoopback.appendUnique(address.getHostAddress());
+						}
+						else
+						{
+							ipReal.appendUnique(address.getHostAddress());
+							ipReal.appendUnique(address.getHostName());
+						}
 					}
-					else
-					{
-						ipReal.appendUnique(address.getHostAddress());
-						ipReal.appendUnique(address.getHostName());
-					}
+					LOGGER.debug("------- next interface");
 				}
-				LOGGER.debug("------- next interface");
 			}
-		}
-		catch (final SocketException e)
-		{
-			LOGGER.error("Snafu filling addresses", e);
-		}
+			catch (final SocketException e)
+			{
+				LOGGER.error("Snafu filling addresses", e);
+			}
 
-		sortIPFillComboBox(ipReal);
-		sortIPFillComboBox(ipLoopback);
+			sortIPFillComboBox(ipReal);
+			sortIPFillComboBox(ipLoopback);
 
-		final String preselectAddress = settingService.getSetting(SettingKey.HTTP_PRESELECTED_ADDRESS, String.class);
-		ipComboBox.setSelectedItem(preselectAddress);
+			final String preselectAddress = settingService.getSetting(SettingKey.HTTP_PRESELECTED_ADDRESS, String.class);
+			ipComboBox.setSelectedItem(preselectAddress);
+		}
 	}
-	}
+
 	private void sortIPFillComboBox(final VString list)
 	{
 		list.sort();
@@ -363,7 +366,8 @@ public class HttpServerPane implements ActionListener
 				server.setPort(StringUtil.parseInt(portValueLabel.getText(), 8080));
 				server.start();
 				statusValueLabel.setText(ResourceUtil.getMessage("Started"));
-				gatewayValueLabel.setText(HttpReceiver.DEF_PROTOCOL + "://" + (String) ipComboBox.getSelectedItem() + ":" + portValueLabel.getText() + HttpReceiver.DEF_PATH);
+				gatewayValueLabel.setText(
+						HttpReceiver.DEF_PROTOCOL + "://" + (String) ipComboBox.getSelectedItem() + ":" + portValueLabel.getText() + HttpReceiver.DEF_PATH);
 				updateControls(false);
 
 				settingService.setSetting(SettingKey.HTTP_PRESELECTED_ADDRESS, interfaceAddress);
@@ -398,12 +402,6 @@ public class HttpServerPane implements ActionListener
 				labelStorePath.setText(chooser.getSelectedFile().getAbsolutePath());
 			}
 		}
-	}
-
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		
 	}
 
 }
