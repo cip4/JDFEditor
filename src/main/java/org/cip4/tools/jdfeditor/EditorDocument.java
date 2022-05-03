@@ -798,6 +798,10 @@ public class EditorDocument
 	{
 		return jdfDoc == null ? false : jdfDoc.isDirty(null);
 	}
-	// ////////////////////////////////////////////////////////
+
+	public String getSaveExtensions()
+	{
+		return isJson() ? EditorFileChooser.allFilesJSON : EditorFileChooser.allFilesSave;
+	}
 
 }

@@ -74,7 +74,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.List;
 
@@ -771,18 +770,9 @@ public class EditorUtils
 	{
 		if (pluginLoader == null)
 		{
-			File fileAppDir = new File(".");
-			String strAppPath = EditorUtils.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-			strAppPath = URLDecoder.decode(strAppPath, StringUtil.UTF8);
-			LOGGER.info("application path: " + strAppPath);
-			final File fileApp = new File(strAppPath);
-			if (fileApp.exists() && fileApp.isFile())
-			{
-				fileAppDir = fileApp.getParentFile();
-			}
-
+			final File fileAppDir = new File(getUserDir().getToolPath());
 			final File filePluginDir = new File(fileAppDir, "plugins");
-			LOGGER.info("found plugin directory: " + filePluginDir.getAbsolutePath());
+			LOGGER.info("using plugin directory: " + filePluginDir.getAbsolutePath());
 			pluginLoader = new PluginLoader<IStreamLoader>(IStreamLoader.class, filePluginDir);
 		}
 	}

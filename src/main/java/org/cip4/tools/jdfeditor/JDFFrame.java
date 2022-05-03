@@ -140,6 +140,7 @@ import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.util.EnumUtil;
+import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.file.UserDir;
 import org.cip4.tools.jdfeditor.controller.MainController;
@@ -161,7 +162,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 {
 	private static final long serialVersionUID = 1L;
 	private static final String DEFAULT_TITLE = "CIP4 JDFEditor";
-	private static final String UNTITLED = FilenameUtils.concat(new UserDir("JDFEditor").getToolPath(),"Untitled");
+	private static final String UNTITLED = FilenameUtils.concat(new UserDir("JDFEditor").getToolPath(), "Untitled");
 
 	private static final Log LOGGER = LogFactory.getLog(JDFFrame.class);
 
@@ -327,7 +328,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			}
 		}
 
-		final EditorFileChooser chooser = new EditorFileChooser(fileToSave, EditorFileChooser.allFiles);
+		final EditorFileChooser chooser = new EditorFileChooser(fileToSave, EditorFileChooser.allFilesOpen);
 		final int answer = chooser.showOpenDialog(this);
 
 		if (answer == JFileChooser.APPROVE_OPTION)
@@ -616,20 +617,27 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		final String fileName = editorDoc.getSaveFileName();
 
 		final File fileToSave = new File(fileName);
-		final EditorFileChooser saveChooser = new EditorFileChooser(fileToSave, EditorFileChooser.allFiles);
+		final EditorFileChooser saveChooser = new EditorFileChooser(fileToSave, editorDoc.getSaveExtensions());
 		final int answer = saveChooser.showSaveDialog(null);
 
 		if (answer == JFileChooser.APPROVE_OPTION)
 		{
 			final File file = saveChooser.getSelectedFile();
 			boolean canSave = !file.exists() || file.equals(fileToSave);
-			canSave = canSave && editorDoc.checkSave(file);
+			canSave = canSave || editorDoc.checkSave(file);
 			if (canSave)
 			{
-				editorDoc.saveFile(file);
-				editorDoc.resetDirtyFlag();
-				setTitle(buildWindowTitleString());
-				m_menuBar.updateRecentFilesMenu(fileToSave.toString());
+				if ("rtf".equalsIgnoreCase(FileUtil.getExtension(file)))
+				{
+					editorDoc.writeToRTF(file);
+				}
+				else
+				{
+					editorDoc.saveFile(file);
+					editorDoc.resetDirtyFlag();
+					setTitle(buildWindowTitleString());
+					m_menuBar.updateRecentFilesMenu(fileToSave.toString());
+				}
 			}
 		}
 	}

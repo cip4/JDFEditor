@@ -227,9 +227,9 @@ public class PluginLoader<I>
 						if (lstInterfaces.contains(m_interf))
 						{
 							alPlugins.add((I) clazz.newInstance());
+							LOGGER.info("read plugin " + file.getAbsolutePath());
 						}
 					}
-
 					catch (final Throwable ex)
 					{
 						LOGGER.error("failed reading plugin " + file.getAbsolutePath(), ex);

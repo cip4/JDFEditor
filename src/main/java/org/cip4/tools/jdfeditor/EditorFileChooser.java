@@ -86,7 +86,9 @@ import org.cip4.tools.jdfeditor.util.ResourceUtil;
 public class EditorFileChooser extends JFileChooser
 {
 	private static final long serialVersionUID = 1835778964946902960L;
-	final static String allFiles = "xml jdf jmf mim mjm mjd xjdf ptk jsn json zip";
+	final static String allFilesOpen = "xml jdf jmf mim mjm mjd xjdf ptk jsn json zip";
+	final static String allFilesSave = "xml jdf jmf mim mjm mjd xjdf ptk zip";
+	final static String allFilesJSON = "jsn json rtf";
 
 	/**
 	 *
