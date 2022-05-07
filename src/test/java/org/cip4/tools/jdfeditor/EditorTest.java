@@ -85,4 +85,16 @@ public class EditorTest extends EditorTestBase
 		assertNotNull(e);
 	}
 
+	@Test
+	public void testCommandLine()
+	{
+		Editor.main(new String[] { "-C", "file.jdf" });
+	}
+
+	@Test
+	public void testCommandLine2()
+	{
+		Editor.main(new String[] { "-?" });
+	}
+
 }
