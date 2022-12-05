@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2021 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2022 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -95,7 +95,7 @@ public enum SettingKey
 
 	FONT_SIZE_ENLARGED("font.size.enlarged", "100"),
 
-	JSON_PREFIX("json.save.prefix", "retain"), JSON_CASE("json.save.case", "retain"), JSON_TYPESAFE("json.save.typeseafe", true),
+	JSON_PREFIX("json.save.prefix", "retain"), JSON_CASE("json.save.case", "retain"), JSON_TYPESAFE("json.save.typesafe", true), JSON_XJMF_SPLIT("json.xjmf.split", true),
 
 	LOGGING_LEVEL("logging.level", "INFO"), LOGGING_ENABLED("logging.enabled", true),
 
@@ -126,7 +126,7 @@ public enum SettingKey
 	/**
 	 * Custom constructor. Accepting a key an a default value for initializing.
 	 *
-	 * @param key          The Setting key as String.
+	 * @param key The Setting key as String.
 	 * @param defaultValue The default value as String.
 	 */
 	SettingKey(final String key, final String defaultValue)
@@ -139,7 +139,7 @@ public enum SettingKey
 	/**
 	 * Custom constructor. Accepting a key an a default value for initializing.
 	 *
-	 * @param key          The Setting key as String.
+	 * @param key The Setting key as String.
 	 * @param defaultValue The default value as Boolean.
 	 */
 	SettingKey(final String key, final boolean defaultValue)
@@ -152,7 +152,7 @@ public enum SettingKey
 	/**
 	 * Custom constructor. Accepting a key an a default value for initializing.
 	 *
-	 * @param key          The Setting key as String.
+	 * @param key The Setting key as String.
 	 * @param defaultValue The default value as Integer.
 	 */
 	SettingKey(final String key, final int defaultValue)

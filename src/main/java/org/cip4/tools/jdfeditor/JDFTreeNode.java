@@ -620,9 +620,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		}
 		else if (e instanceof JDFPart)
 		{
-			final JDFPart p = (JDFPart) e;
-			final JDFAttributeMap map = p.getPartMap();
-			s = addPartMap(s, map);
+			s = displayPart(e, s);
 		}
 		else if (e instanceof JDFColor)
 		{
@@ -738,6 +736,14 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		{
 			s = displayPrice(e, s);
 		}
+		return s;
+	}
+
+	protected String displayPart(final KElement e, String s)
+	{
+		final JDFPart p = (JDFPart) e;
+		final JDFAttributeMap map = p.getPartMap();
+		s = addPartMap(s, map);
 		return s;
 	}
 

@@ -70,7 +70,9 @@ package org.cip4.tools.jdfeditor;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Vector;
 
 import javax.mail.BodyPart;
@@ -88,11 +90,15 @@ import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.extensions.XJMFHelper;
 import org.cip4.jdflib.util.ByteArrayIOStream;
+import org.cip4.jdflib.util.ContainerUtil;
 import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
+import org.cip4.lib.jdf.jsonutil.JSONObjHelper;
+import org.cip4.lib.jdf.jsonutil.JSONPrepWalker;
 import org.cip4.lib.jdf.jsonutil.JSONWriter;
 import org.cip4.lib.jdf.jsonutil.rtf.JSONIndentWalker;
 import org.cip4.lib.jdf.jsonutil.rtf.JSONRtfWalker;
@@ -100,6 +106,7 @@ import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
+import org.json.simple.JSONObject;
 
 /**
  * The Document model.
@@ -204,7 +211,8 @@ public class EditorDocument
 			final String[] options = { ResourceUtil.getMessage("YesKey"), ResourceUtil.getMessage("NoKey") };
 			String message = ResourceUtil.getMessage("FileExistsKey");
 			message = StringUtil.replaceString(message, "$$$", newFile.getName());
-			final int overwriteExistingFileAnswer = JOptionPane.showOptionDialog(MainView.getFrame(), message, null, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+			final int overwriteExistingFileAnswer = JOptionPane.showOptionDialog(MainView.getFrame(), message, null, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+					options, options[0]);
 			if (overwriteExistingFileAnswer != JOptionPane.OK_OPTION)
 			{
 				log.info("denied save " + newFile);
@@ -216,6 +224,7 @@ public class EditorDocument
 
 	/**
 	 * Custom constructor. Accepting several attributes for initializing.
+	 * 
 	 * @param jdfDoc The JDFDoc object.
 	 * @param mimeContent The package name as String
 	 */
@@ -256,6 +265,7 @@ public class EditorDocument
 
 	/**
 	 * Getter for the jdfDoc attribute value.
+	 * 
 	 * @return The JDFDoc attribute value.
 	 */
 	public JDFDoc getJDFDoc()
@@ -265,6 +275,7 @@ public class EditorDocument
 
 	/**
 	 * Getter for the PackageName attribute value.
+	 * 
 	 * @return The PackageName value as String.
 	 */
 	public String getPackageName()
@@ -284,6 +295,7 @@ public class EditorDocument
 
 	/**
 	 * Returns the original file name of a JDF Document.
+	 * 
 	 * @return The original file name of a JDF Document as String.
 	 */
 	public String getOriginalFileName()
@@ -315,7 +327,8 @@ public class EditorDocument
 	}
 
 	/**
-	 *  sets the selection path for this document
+	 * sets the selection path for this document
+	 * 
 	 * @param path
 	 * @param trackHistory
 	 */
@@ -528,6 +541,7 @@ public class EditorDocument
 
 	/**
 	 * Method createModel. create the treeModel
+	 * 
 	 * @param root
 	 * @return TreeModel
 	 */
@@ -689,7 +703,7 @@ public class EditorDocument
 		}
 		else
 		{
-			//jdfDoc.write2File(file.getAbsolutePath(), indent, !settingService.getSetting(SettingKey.GENERAL_INDENT, Boolean.class));
+			// jdfDoc.write2File(file.getAbsolutePath(), indent, !settingService.getSetting(SettingKey.GENERAL_INDENT, Boolean.class));
 		}
 	}
 
@@ -705,26 +719,31 @@ public class EditorDocument
 		if (json)
 		{
 			final JSONWriter jw = Editor.getEditor().getJSonWriter();
-			jw.convert(root);
-			final JSONIndentWalker iw = new JSONIndentWalker(jw);
-			iw.setSingleIndent(2);
-			iw.setSorted(true);
-			final ByteArrayIOStream ios = new ByteArrayIOStream();
-			try
+			List<JSONObject> l = jw.splitConvert(root);
+			for (JSONObject o : l)
 			{
-				iw.writeStream(ios);
+				final JSONIndentWalker iw = new JSONIndentWalker(new JSONObjHelper(o));
+				iw.setSingleIndent(2);
+				iw.setSorted(true);
+				final ByteArrayIOStream ios = new ByteArrayIOStream();
+				try
+				{
+					iw.writeStream(ios);
+				}
+				catch (final IOException e)
+				{
+					continue;
+				}
+				final String s = new String(ios.toByteArray());
+				return s;
 			}
-			catch (final IOException e)
-			{
-				//nop
-			}
-			final String s = new String(ios.toByteArray());
-			return s;
+			return null;
 		}
 		else
 		{
 			return root.toXML(2);
 		}
+
 	}
 
 	/**
@@ -738,8 +757,14 @@ public class EditorDocument
 		if (json)
 		{
 			final JSONWriter jw = Editor.getEditor().getJSonWriter();
-			jw.convert(jdfDoc.getRoot());
-			FileUtil.writeFile(jw, file);
+			List<JSONObject> split = jw.splitConvert(jdfDoc.getRoot());
+			int n = 0;
+			for (JSONObject json : split)
+			{
+				File file2 = (split.size() > 1) ? FileUtil.newExtension(file, n + "." + FileUtil.getExtension(file)) : file;
+				FileUtil.writeFile(new JSONObjHelper(json), file2);
+
+			}
 		}
 		else
 		{
@@ -749,6 +774,7 @@ public class EditorDocument
 
 	/**
 	 * * get the name of the file that this document was originally loaded from. the mime package name, if ti was a mime package, otherwise the jdf file name
+	 * 
 	 * @return
 	 */
 	public String getSaveFileName()
@@ -802,6 +828,39 @@ public class EditorDocument
 	public String getSaveExtensions()
 	{
 		return isJson() ? EditorFileChooser.allFilesJSON : EditorFileChooser.allFilesSave;
+	}
+
+	public List<EditorDocument> splitJSON()
+	{
+		if (jdfDoc != null && SettingService.getSettingService().getBool(SettingKey.JSON_XJMF_SPLIT))
+		{
+			XJMFHelper xjdf = XJMFHelper.getHelper(jdfDoc);
+			if (xjdf != null)
+			{
+				final JSONPrepWalker jsonPrepWalker = new JSONPrepWalker();
+				jsonPrepWalker.setExplicitAudit(false);
+				jsonPrepWalker.setSplitXJMF(true);
+				List<KElement> xjmfs = jsonPrepWalker.split(xjdf.getRoot());
+				if (ContainerUtil.size(xjmfs) > 1)
+				{
+					List<EditorDocument> ret = new ArrayList<>();
+					int n = 0;
+					for (KElement xjmf : xjmfs)
+					{
+						JDFDoc newDoc = new JDFDoc(xjmf.getOwnerDocument_KElement());
+						String fileName = jdfDoc.getOriginalFileName();
+						fileName = UrlUtil.newExtension(fileName, (++n) + "." + UrlUtil.extension(fileName));
+						newDoc.setOriginalFileName(fileName);
+						EditorDocument ed = new EditorDocument(newDoc, null);
+
+						ret.add(ed);
+					}
+					return ret;
+				}
+			}
+
+		}
+		return null;
 	}
 
 }

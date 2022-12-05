@@ -105,6 +105,7 @@ public class SaveAsJSONDialog extends JPanel
 	private final JComboBox<String> cbCase;
 	private final JComboBox<String> cbPrefix;
 	private final JCheckBox cbTypesafe;
+	private final JCheckBox cbSplitXJMF;
 
 	/**
 	 *
@@ -122,10 +123,12 @@ public class SaveAsJSONDialog extends JPanel
 
 		cbPrefix = new JComboBox<>(new Vector<>(eJSONPrefix.getNames()));
 		cbTypesafe = new JCheckBox(ResourceUtil.getMessage("convert.json.typesafe"));
+		cbSplitXJMF = new JCheckBox(ResourceUtil.getMessage("convert.json.splitxjmf"));
 
 		checkboxesPanel.add(cbCase);
 		checkboxesPanel.add(cbPrefix);
 		checkboxesPanel.add(cbTypesafe);
+		checkboxesPanel.add(cbSplitXJMF);
 
 		final JPanel buttonsPanel = new JPanel();
 		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
@@ -144,6 +147,7 @@ public class SaveAsJSONDialog extends JPanel
 		cbCase.setSelectedItem(settingService.getString(SettingKey.JSON_CASE));
 		cbPrefix.setSelectedItem(settingService.getString(SettingKey.JSON_PREFIX));
 		cbTypesafe.setSelected(settingService.getBool(SettingKey.JSON_TYPESAFE));
+		cbSplitXJMF.setSelected(settingService.getBool(SettingKey.JSON_XJMF_SPLIT));
 
 		setVisible(true);
 	}
@@ -153,6 +157,7 @@ public class SaveAsJSONDialog extends JPanel
 		settingService.set(SettingKey.JSON_CASE, (String) cbCase.getSelectedItem());
 		settingService.set(SettingKey.JSON_PREFIX, (String) cbPrefix.getSelectedItem());
 		settingService.set(SettingKey.JSON_TYPESAFE, cbTypesafe.isSelected());
+		settingService.set(SettingKey.JSON_XJMF_SPLIT, cbSplitXJMF.isSelected());
 	}
 
 }

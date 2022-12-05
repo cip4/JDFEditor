@@ -92,17 +92,11 @@ import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.jdflib.validate.JDFValidator;
 
 /**
- * Refactored JDFValidator to be non-static in order to make it thread
- * compatible. Previously, only one thread at a time could call JDFValidator
- * from within the same JVM. Now an instance of JDFValidator and the the method
- * validate should be called. JDFValidator can still be called from the command
- * line in the same way as before.
+ * Refactored JDFValidator to be non-static in order to make it thread compatible. Previously, only one thread at a time could call JDFValidator from within the same JVM. Now an
+ * instance of JDFValidator and the the method validate should be called. JDFValidator can still be called from the command line in the same way as before.
  * 
- * TODO Break out validation error handling logging so that new error handlers
- * can easily be registered. For example, there should be an error handler for
- * logging to the XML log file and an error handler for logging to the
- * <code>sysOut</code>. Perhaps <code>org.xml.sax.ErrorHandler</code> could be
- * used?
+ * TODO Break out validation error handling logging so that new error handlers can easily be registered. For example, there should be an error handler for logging to the XML log
+ * file and an error handler for logging to the <code>sysOut</code>. Perhaps <code>org.xml.sax.ErrorHandler</code> could be used?
  * 
  * @author Claes Buckwalter (clabu@itn.liu.se)
  * @version 2008-01-02
@@ -116,7 +110,7 @@ public class EditorCommandLine extends JDFValidator
 
 			+ "-? usage info\n" + "-C enables the legacy checkJDF mode\n" + "-q is quiet for valid files\n" + "-Q is completely quiet for all files\n"
 			+ "-n will report all elements from foreign name spaces\n" + "-c requires all required elements and attributes to exist, else incomplete JDF is OK\n"
-			+ "-d location of a device capabilities file to test against\n" + "-f force version to a given jdf version (1.0, 1.1, 1.2, 1.3, 1.4, 1.5)\n"
+			+ "-d location of a device capabilities file to test against\n" + "-f force version to a given jdf version (1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.7, 1.7)\n"
 			+ "-m print multiple IDs\n" + "-P device capabilities parameter. Use present value lists, otherwise allowed value lists\n"
 			+ "-u URL to send the JMF to. In this case, checkJDF will validate the response from the URL\n" + "-U check for dangling URL attributes\n" + "-h proxy host name\n"
 			+ "-p proxy port name\n"
@@ -136,8 +130,7 @@ public class EditorCommandLine extends JDFValidator
 	}
 
 	/**
-	 * main Schema validation + internal checkJDF Test + Test against
-	 * DeviceCapability File (if specified)
+	 * main Schema validation + internal checkJDF Test + Test against DeviceCapability File (if specified)
 	 * 
 	 * @param argv
 	 */
@@ -148,12 +141,9 @@ public class EditorCommandLine extends JDFValidator
 	}
 
 	/**
-	 * Validates the JDF instance or JMF message specified by the command line
-	 * arguments. See the source code below for a description of what arguments
-	 * are valid.
+	 * Validates the JDF instance or JMF message specified by the command line arguments. See the source code below for a description of what arguments are valid.
 	 * 
-	 * @param commandLineArgs
-	 *            command line arguments
+	 * @param commandLineArgs command line arguments
 	 */
 	public XMLDoc validate(String commandLineArgs[], InputStream inStream)
 	{

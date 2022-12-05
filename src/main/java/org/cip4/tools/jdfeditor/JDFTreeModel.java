@@ -73,6 +73,7 @@ package org.cip4.tools.jdfeditor;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
@@ -80,6 +81,7 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -122,9 +124,8 @@ import org.cip4.tools.jdfeditor.view.MainView;
 import org.w3c.dom.Attr;
 
 /**
- * @author rainer prosi
- * This is a new dump for some of the JDFFrame classes anything related to the abstract datamodel in the jdf tree belongs here
- * TODO move some of the routines from JDFTreeArea to here, where they belong and reduce the dependencies with JDFFrame
+ * @author rainer prosi This is a new dump for some of the JDFFrame classes anything related to the abstract datamodel in the jdf tree belongs here TODO move some of the routines
+ *         from JDFTreeArea to here, where they belong and reduce the dependencies with JDFFrame
  */
 public class JDFTreeModel extends DefaultTreeModel
 {
@@ -134,6 +135,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * Spawn informative TODO correctly dump into multiple file
+	 * 
 	 * @param bSpawnInformative
 	 */
 	public void spawn(final boolean bSpawnInformative)
@@ -164,8 +166,8 @@ public class JDFTreeModel extends DefaultTreeModel
 		}
 		catch (final Exception e)
 		{
-			JOptionPane.showMessageDialog(frame, ResourceUtil.getMessage("SpawnErrorKey") + e.getClass() + " \n"
-					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(frame, ResourceUtil.getMessage("SpawnErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""),
+					ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -199,8 +201,8 @@ public class JDFTreeModel extends DefaultTreeModel
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(frame, ResourceUtil.getMessage("SpawnErrorKey") + e.getClass() + " \n"
-					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(frame, ResourceUtil.getMessage("SpawnErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""),
+					ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -223,8 +225,8 @@ public class JDFTreeModel extends DefaultTreeModel
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(frame, ResourceUtil.getMessage("MergeErrorKey") + e.getClass() + " \n"
-					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(frame, ResourceUtil.getMessage("MergeErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""),
+					ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -337,6 +339,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * inserts element before selected node
+	 * 
 	 * @param parentNode
 	 * @param beforeNode
 	 */
@@ -375,6 +378,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * Method getSiblingElement. gets the sibling KElement for this treepath
+	 * 
 	 * @param path
 	 * @return KElement
 	 */
@@ -386,6 +390,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * Method getParentElement. gets the parent element for this treepath. If this treepath is a path of a root element, returns root.
+	 * 
 	 * @param path
 	 * @return KElement
 	 */
@@ -402,6 +407,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * Method buildModel. Creates the JDFTreeNodes
+	 * 
 	 * @param my_Root
 	 */
 	public void buildModel(final JDFTreeNode my_Root)
@@ -421,6 +427,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	// /////////////////////////////////////////////////////////////////
 	/**
 	 * get the models root node as a JDFTreeNode
+	 * 
 	 * @return the root Node
 	 */
 	JDFTreeNode getRootNode()
@@ -431,6 +438,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	// /////////////////////////////////////////////////////////////
 	/**
 	 * Method insertAttribute. inserts a new AttributeNode into the m_jdfTree
+	 * 
 	 * @param parentNode
 	 * @param attName
 	 * @param attValue
@@ -534,6 +542,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * sets an attribute value if it differs
+	 * 
 	 * @param attValue
 	 * @param oldattr
 	 */
@@ -548,6 +557,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * Method addRequiredAttributes. adds the required attributes to an element
+	 * 
 	 * @param newNode
 	 * @return
 	 */
@@ -579,6 +589,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * append a new node into an existing parent
+	 * 
 	 * @param newNodeName
 	 * @param parentNode
 	 * @return
@@ -617,6 +628,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * Method addRequiredElements. adds the required elements to an element
+	 * 
 	 * @param node
 	 * @return
 	 */
@@ -647,6 +659,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * Method createNewNode. creates a new JDFTreeNode for the KElement without putting it into the tree
+	 * 
 	 * @param elem the KElement to create a treenode from
 	 * @return JDFTreeNode the newly created tree node
 	 */
@@ -659,6 +672,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * Adds the attributes to the JDFTreeNode and checks if they are invalid and inherited or not.
+	 * 
 	 * @param node - The JDFTreeNode you want to add the attributes to * @param m_invalidNode - The InvalidNode
 	 */
 	public void addNodeAttributes(final JDFTreeNode node)
@@ -757,6 +771,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * Find the inherited node in the Tree View when selected in the In & Output View.
+	 * 
 	 * @param nNode - The current JDFTreeNode in the enumeration
 	 * @param sNode - The Node you want to find
 	 * @return The inherited attribute for the JDFTreeNode.
@@ -789,11 +804,12 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * Inserts new Resource JDFTreeNode into the m_jdfTree. If node had no ResourcePool - creates it.
+	 * 
 	 * @param parentNode - JDFNode to add resource to
 	 * @param node - JDFTreeNode representation of parentNode
 	 * @param selectedResource - name of resource to insert
-	 * @param hasResourcePool - Has parentNode had a resourcePool before action started? Importent for representation of m_jdfTree. ResourcePool is
-	 * automatically added to parentNode but we need to insert it into m_model.
+	 * @param hasResourcePool - Has parentNode had a resourcePool before action started? Importent for representation of m_jdfTree. ResourcePool is automatically added to
+	 *        parentNode but we need to insert it into m_model.
 	 * @param usage - resource link usage. true - input, false - output
 	 * @return JDFTreeNode created newResourceNode. null if operation was not completed successful
 	 */
@@ -848,9 +864,9 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * Inserts new ResourceLink JDFTreeNode into the m_jdfTree. If node had no ResourceLinkPool - creates it.
+	 * 
 	 * @param parentNode - JDFNode to add resource link to
-	 * @param node - JDFTreeNode representation of parentNode
-	 * automatically added to parentNode but we need to insert it into m_model.
+	 * @param node - JDFTreeNode representation of parentNode automatically added to parentNode but we need to insert it into m_model.
 	 * @param resLink - ResourceLink to insert
 	 * @returns created newLinkNode. null if operation was not completed successful
 	 */
@@ -903,6 +919,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * Method renameElementsAndAttributes. renames the selected node in the m_jdfTree and updates the jdfDoc
+	 * 
 	 * @param path
 	 */
 	public String renameElementsAndAttributes(final TreePath path)
@@ -940,11 +957,13 @@ public class JDFTreeModel extends DefaultTreeModel
 			final KElement parent = node.getElement();
 			final String[] possibleValues = EditorUtils.getAttributeOptions(parent);
 
-			selectedName = (String) JOptionPane.showInputDialog(m_frame, ResourceUtil.getMessage("ChooseNewAttTypeKey"), ResourceUtil.getMessage("RenameKey"), JOptionPane.PLAIN_MESSAGE, null, possibleValues, possibleValues[0]);
+			selectedName = (String) JOptionPane.showInputDialog(m_frame, ResourceUtil.getMessage("ChooseNewAttTypeKey"), ResourceUtil.getMessage("RenameKey"),
+					JOptionPane.PLAIN_MESSAGE, null, possibleValues, possibleValues[0]);
 
 			if (selectedName != null && selectedName.equals("Other.."))
 			{
-				selectedName = JOptionPane.showInputDialog(m_frame, ResourceUtil.getMessage("InsertNewAttTypeKey"), ResourceUtil.getMessage("InsertNewAttTypeKey"), JOptionPane.PLAIN_MESSAGE);
+				selectedName = JOptionPane.showInputDialog(m_frame, ResourceUtil.getMessage("InsertNewAttTypeKey"), ResourceUtil.getMessage("InsertNewAttTypeKey"),
+						JOptionPane.PLAIN_MESSAGE);
 			}
 		}
 
@@ -953,6 +972,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * rename the attribute described by node to selectedValue
+	 * 
 	 * @param node the JDFTreeNode that represents the attribute
 	 * @param selectedValue the new attribute name
 	 * @return JDFTreeNode the treeNode that represents the renamed attribute
@@ -992,6 +1012,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * Method deleteItem. deletes attributes or elements deletes the selected node in the m_jdfTree an removes it from the jdfDoc as well
+	 * 
 	 * @param treePath
 	 */
 	public boolean deleteItem(final TreePath treePath)
@@ -1005,8 +1026,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	}
 
 	/**
-	 * Method deleteNode. deletes the selected node in the m_jdfTree an removes it from the jdfDoc as well, note that it must reside in a valid tree to
-	 * correctly work
+	 * Method deleteNode. deletes the selected node in the m_jdfTree an removes it from the jdfDoc as well, note that it must reside in a valid tree to correctly work
 	 */
 	public boolean deleteNode(final JDFTreeNode node, TreePath path)
 	{
@@ -1081,6 +1101,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * return the errortype associated with a given tree node
+	 * 
 	 * @param treeNode
 	 * @return
 	 */
@@ -1133,6 +1154,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * Method insertAttributeIntoDoc. creates a new attribute and adds it to the jdfDoc
+	 * 
 	 * @param node
 	 * @return
 	 */
@@ -1182,6 +1204,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * get the ns uri for a given element or attribute name
+	 * 
 	 * @param selectedValue
 	 * @return
 	 */
@@ -1216,10 +1239,7 @@ public class JDFTreeModel extends DefaultTreeModel
 			return;
 		}
 		final EditorDocument eDoc = MainView.getEditorDoc();
-
 		final boolean xjdf = eDoc.isJSONEnabled();
-		final KElement e = node.getElement();
-		final String fn = eDoc.getOriginalFileName();
 		if (xjdf)
 		{
 			log.info("converting JSON to XJDF");
@@ -1227,47 +1247,57 @@ public class JDFTreeModel extends DefaultTreeModel
 		}
 		else
 		{
-			String ext = null;
-			if (e instanceof JDFNode)
-			{
-				ext = XJDFConstants.XJDF.toLowerCase();
-			}
-			else if (e instanceof JDFJMF)
-			{
-				ext = XJDFConstants.XJMF.toLowerCase();
-			}
-			log.info("converting JDF/JMF to " + ext);
-			final String fnNew = UrlUtil.newExtension(fn, ext);
-			final File fileToRead = new File(fnNew);
-			if (!reallysave || eDoc.checkSave(fileToRead))
-			{
-				final KElement xJDF = extractXJDF(e, fn, ext);
-				if (xJDF != null)
-				{
-					final XMLDoc d = xJDF.getOwnerDocument_KElement();
-					if (reallysave)
-					{
-						log.info("writing XJDF " + fileToRead.getAbsolutePath());
-						d.write2File(fileToRead, 2, false);
-						MainView.getFrame().readFile(fileToRead);
-					}
-					else
-					{
-						final JDFDoc doc = new JDFDoc(d);
-						doc.setOriginalFileName(EditorUtils.getNewPath(fnNew));
-						MainView.getFrame().setJDFDoc(doc, null);
+			saveJDFasXJDF(reallysave, node);
+		}
+	}
 
-					}
+	void saveJDFasXJDF(final boolean reallysave, final JDFTreeNode node)
+	{
+		final EditorDocument eDoc = MainView.getEditorDoc();
+		final KElement e = node.getElement();
+		String ext = null;
+		if (e instanceof JDFNode)
+		{
+			ext = XJDFConstants.XJDF.toLowerCase();
+		}
+		else if (e instanceof JDFJMF)
+		{
+			ext = XJDFConstants.XJMF.toLowerCase();
+		}
+		log.info("converting JDF/JMF to " + ext);
+		String fn = eDoc.getOriginalFileName();
+		String fnNew = UrlUtil.newExtension(fn, ext);
+		final File fileToRead = new File(fnNew);
+		if (!reallysave || eDoc.checkSave(fileToRead))
+		{
+			final KElement xJDF = extractXJDF(e, fn, ext);
+			if (xJDF != null)
+			{
+				final XMLDoc d = xJDF.getOwnerDocument_KElement();
+				if (reallysave)
+				{
+					log.info("writing XJDF " + fileToRead.getAbsolutePath());
+					d.write2File(fileToRead, 2, false);
+					MainView.getFrame().readFile(fileToRead);
 				}
 				else
 				{
-					log.warn("problems converting JDF to " + ext);
+					final JDFDoc doc = new JDFDoc(d);
+					fnNew = FilenameUtils.getName(fnNew);
+
+					doc.setOriginalFileName(EditorUtils.getNewPath(fnNew));
+					MainView.getFrame().setJDFDoc(doc, null);
+
 				}
 			}
 			else
 			{
-				log.info("skipping conversion of " + fileToRead + " to " + ext + " reallysave=" + reallysave);
+				log.warn("problems converting JDF to " + ext);
 			}
+		}
+		else
+		{
+			log.info("skipping conversion of " + fileToRead + " to " + ext + " reallysave=" + reallysave);
 		}
 	}
 
@@ -1300,7 +1330,20 @@ public class JDFTreeModel extends DefaultTreeModel
 			return;
 		}
 		final EditorDocument eDoc = MainView.getEditorDoc();
-		eDoc.setJson(true, true);
+		List<EditorDocument> eDocs = eDoc.splitJSON();
+		if (eDocs != null)
+		{
+			final JDFFrame frame = MainView.getFrame();
+			for (EditorDocument ed : eDocs)
+			{
+				ed.setJson(true, true);
+				frame.setEditorDoc(ed);
+			}
+		}
+		else
+		{
+			eDoc.setJson(true, true);
+		}
 		log.info("converting XJDF to JSON ");
 	}
 
@@ -1472,6 +1515,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	/**
 	 * Finds a JDFTreeNode in the JDFTree.
+	 * 
 	 * @param row - The row in the JTree
 	 * @param jTree - The JTree
 	 * @return The JDFTreeNode. Moved 07-08-17
