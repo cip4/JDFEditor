@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2016 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2022 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -87,6 +87,8 @@ import javax.swing.KeyStroke;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.JDFDoc;
+import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.elementwalker.RemoveCompare;
 import org.cip4.jdflib.elementwalker.URLExtractor;
 import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.StringUtil;
@@ -95,6 +97,7 @@ import org.cip4.tools.jdfeditor.EditorDocument;
 import org.cip4.tools.jdfeditor.EditorMenuBar;
 import org.cip4.tools.jdfeditor.EditorMenuBar.Menu_MouseListener;
 import org.cip4.tools.jdfeditor.JDFFrame;
+import org.cip4.tools.jdfeditor.JDFTreeNode;
 import org.cip4.tools.jdfeditor.PreferenceDialog;
 import org.cip4.tools.jdfeditor.SendToDevice;
 import org.cip4.tools.jdfeditor.controller.MainController;
@@ -116,6 +119,7 @@ public class MenuTools implements ActionListener, MenuInterface
 	private JMenuItem sendToDeviceItem;
 	public JMenuItem m_fixVersionItem;
 	private JMenuItem m_fixCleanupItem;
+	private JMenuItem removeIDItem;
 	private JMenuItem m_removeExtenisionItem;
 	private JMenuItem extractItem;
 
@@ -191,6 +195,12 @@ public class MenuTools implements ActionListener, MenuInterface
 		extractItem.setEnabled(true);
 		menu.add(extractItem);
 
+		removeIDItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.removeid"));
+		removeIDItem.addActionListener(this);
+		removeIDItem.setEnabled(true);
+
+		menu.add(removeIDItem);
+
 		return menu;
 	}
 
@@ -199,6 +209,7 @@ public class MenuTools implements ActionListener, MenuInterface
 	{
 		sendToDeviceItem.setEnabled(false);
 		extractItem.setEnabled(false);
+		removeIDItem.setEnabled(false);
 	}
 
 	@Override
@@ -206,10 +217,12 @@ public class MenuTools implements ActionListener, MenuInterface
 	{
 		sendToDeviceItem.setEnabled(true);
 		extractItem.setEnabled(true);
+		removeIDItem.setEnabled(true);
 	}
 
 	/**
 	 * enable or disable spawn n merge in bulk
+	 * 
 	 * @param enable
 	 */
 	public void setSpawnMergeEnabled(final boolean enable)
@@ -248,6 +261,10 @@ public class MenuTools implements ActionListener, MenuInterface
 		{
 			extractAll();
 		}
+		else if (eSrc == removeIDItem)
+		{
+			removeIDs();
+		}
 		else if (eSrc == m_fixCleanupItem)
 		{
 			MainView.getFrame().cleanupSelected();
@@ -258,12 +275,43 @@ public class MenuTools implements ActionListener, MenuInterface
 		}
 	}
 
+	void removeIDs()
+	{
+		final EditorDocument ed = MainView.getEditorDoc();
+		if (ed == null)
+		{
+			return;
+		}
+		final JDFFrame frame = MainView.getFrame();
+		try
+		{
+			final JDFTreeNode node = (JDFTreeNode) ed.getSelectionPath().getLastPathComponent();
+			final KElement selectedNode = node.getElement();
+			RemoveCompare removeCompare = new RemoveCompare();
+			removeCompare.setStandard();
+			removeCompare.cleanup(selectedNode);
+			String fn = ed.getOriginalFileName();
+			if (!"cleanid".equals(StringUtil.token(fn, -2, fn)))
+			{
+				fn = UrlUtil.newExtension(fn, "cleanid." + UrlUtil.extension(fn));
+			}
+			ed.saveFile(new File(fn));
+		}
+		catch (final Exception e)
+		{
+			JOptionPane.showMessageDialog(frame, ResourceUtil.getMessage("SpawnErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""),
+					ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+		}
+
+	}
+
 	void showPreferences()
 	{
 		final String[] options = { ResourceUtil.getMessage("OkKey"), ResourceUtil.getMessage("CancelKey") };
 		final PreferenceDialog pd = new PreferenceDialog();
 
-		final int option = JOptionPane.showOptionDialog(menu, pd, ResourceUtil.getMessage("PreferenceKey"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+		final int option = JOptionPane.showOptionDialog(menu, pd, ResourceUtil.getMessage("PreferenceKey"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
+				options[0]);
 
 		if (option == JOptionPane.OK_OPTION)
 		{
@@ -343,14 +391,14 @@ public class MenuTools implements ActionListener, MenuInterface
 				sb.append("\n");
 			}
 
-			//			if (!extractor.getNotSaved().isEmpty()) // FIXME: implement this method
-			//			{
-			//				sb.append(ResourceUtil.getMessage("main.menu.tools.extract.files.not.extracted"));
-			//				for (String fileName : extractor.getNotSaved())
-			//				{
-			//					sb.append(fileName + "\n");
-			//				}
-			//			}
+			// if (!extractor.getNotSaved().isEmpty()) // FIXME: implement this method
+			// {
+			// sb.append(ResourceUtil.getMessage("main.menu.tools.extract.files.not.extracted"));
+			// for (String fileName : extractor.getNotSaved())
+			// {
+			// sb.append(fileName + "\n");
+			// }
+			// }
 
 			final String finalExtractedMessage = sb.toString();
 			JOptionPane.showMessageDialog(MainView.getFrame(), finalExtractedMessage, ResourceUtil.getMessage("main.menu.tools.extract.results"), JOptionPane.INFORMATION_MESSAGE);
