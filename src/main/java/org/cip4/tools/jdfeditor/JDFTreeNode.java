@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2021 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
+ * Copyright (c) 2001-2022 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  *
@@ -42,6 +42,7 @@ import java.util.Enumeration;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
+import org.apache.xerces.dom.AttrNSImpl;
 import org.cip4.jdflib.auto.JDFAutoRefAnchor.EnumAnchor;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.ElementName;
@@ -57,6 +58,7 @@ import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.core.JDFSeparationList;
 import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.core.StringArray;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.datatypes.JDFAttributeMap;
 import org.cip4.jdflib.extensions.ResourceHelper;
@@ -106,8 +108,8 @@ import org.cip4.jdflib.util.StringUtil;
 import org.w3c.dom.Attr;
 
 /**
- * @author AnderssA ThunellE The tree node in the JTree To change this generated comment edit the template variable "typecomment": Window>Preferences>Java>Templates. To enable and disable the creation
- *         of type comments go to Window>Preferences>Java>Code Generation.
+ * @author AnderssA ThunellE The tree node in the JTree To change this generated comment edit the template variable "typecomment": Window>Preferences>Java>Templates. To enable and
+ *         disable the creation of type comments go to Window>Preferences>Java>Code Generation.
  */
 public class JDFTreeNode extends DefaultMutableTreeNode
 {
@@ -251,7 +253,12 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 	 */
 	public boolean hasForeignNS()
 	{
-		final KElement e = getElement();
+		final KElement e = (userObject instanceof KElement) ? getElement() : null;
+		if (e == null && (userObject instanceof AttrNSImpl))
+		{
+			String namespaceURI = ((AttrNSImpl) userObject).getNamespaceURI();
+			return !StringUtil.isEmpty(namespaceURI) && !JDFElement.isInAnyJDFNameSpaceStatic(namespaceURI);
+		}
 		return (e != null) && !(e instanceof JDFElement);
 	}
 
@@ -1055,6 +1062,11 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		}
 		final JDFResource r = (JDFResource) e;
 		final String partKey = r.getLocalPartitionKey();
+		String status = e.getNonEmpty_KElement(AttributeName.STATUS);
+		if (status != null)
+		{
+			s += " / " + status;
+		}
 		if (partKey != null)
 		{
 			s += " [@" + partKey + "=" + r.getAttribute(partKey) + "]";
@@ -1116,19 +1128,23 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		{
 			prefix += "(" + cpi + ")";
 		}
-		if (prefix != null)
-		{
-			s = prefix + JDFConstants.BLANK + s;
-		}
+		s = prefix + JDFConstants.BLANK + s;
 		if (name != null)
 		{
 			s += JDFConstants.BLANK + name;
 		}
+		s += " size=" + e.numChildElements(XJDFConstants.Resource, null);
 		return s;
 	}
 
 	protected String displayXRes(final KElement e, String s)
 	{
+		ResourceHelper rh = new ResourceHelper(e);
+		String name = rh.getName();
+		if (!StringUtil.isEmpty(name))
+		{
+			s += " " + name;
+		}
 		final String extID = e.getNonEmpty(XJDFConstants.ExternalID);
 		if (extID != null)
 		{
@@ -1139,7 +1155,8 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		{
 			s += ": " + desc;
 		}
-		return s;
+		JDFAttributeMap common = rh.getPartMapVector().getCommonMap();
+		return addPartMap(s, common);
 	}
 
 	/**
@@ -1149,13 +1166,13 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 	 */
 	private String addPartMap(String s, final JDFAttributeMap map)
 	{
-		final VString keys = map == null ? null : map.getKeys();
+		final StringArray keys = map == null ? null : map.getKeyList();
 		if (keys != null)
 		{
 			Collections.sort(keys);
-			for (int i = 0; i < keys.size(); i++)
+			for (String key : keys)
 			{
-				s += JDFConstants.BLANK + keys.elementAt(i) + "=" + map.get(keys.elementAt(i));
+				s += JDFConstants.BLANK + key + "=" + map.get(key);
 			}
 		}
 		return s;

@@ -132,6 +132,7 @@ public abstract class AbstractTreeCellRenderer extends DefaultTreeCellRenderer
 
 	/**
 	 * Create a logger object for logging.
+	 * 
 	 * @return A new Logger object.
 	 */
 	protected abstract Log getLogger();
@@ -168,13 +169,15 @@ public abstract class AbstractTreeCellRenderer extends DefaultTreeCellRenderer
 		setOpaque(true);
 		setBackground(isSelected ? COLOR_SELECTED : COLOR_DEFAULT);
 
-		final Font cellFont = getCellFont();
+		final Font cellFont = getCellFont(node);
 		setFont(cellFont);
 	}
 
-	Font getCellFont()
+	Font getCellFont(JDFTreeNode node)
 	{
-		return new Font(null, Font.PLAIN, RuntimeProperties.enlargedTextFontSize);
+
+		int style = node.isElement() ? Font.BOLD : Font.PLAIN;
+		return new Font(null, style, RuntimeProperties.enlargedTextFontSize);
 	}
 
 	/**
@@ -208,15 +211,16 @@ public abstract class AbstractTreeCellRenderer extends DefaultTreeCellRenderer
 	}
 
 	// define colors
-	final static Color colorFont = new Color(0, 0, 0);
-	final static Color colorFontNamespace = new Color(0, 120, 255);
+	final static Color colorFont = new Color(0, 120, 0);
+	final static Color colorFontElement = new Color(0, 0, 0);
+	final static Color colorFontNamespace = new Color(123, 0, 33);
 	final static Color colorFontError = new Color(255, 0, 0);
 	final static Color colorFontNew = new Color(255, 0, 255);
 
 	/**
 	 * Defines the text color for a tree element.
 	 *
-	 * @param node  The JDFTreeNode object for the element.
+	 * @param node The JDFTreeNode object for the element.
 	 * @param model The model for the element.
 	 */
 	protected void setTextColor(final JDFTreeNode node, final JDFTreeModel model)
@@ -240,19 +244,19 @@ public abstract class AbstractTreeCellRenderer extends DefaultTreeCellRenderer
 		}
 		else
 		{
-			setForeground(getFontColor());
+			setForeground(getFontColor(node));
 		}
 	}
 
-	Color getFontColor()
+	Color getFontColor(JDFTreeNode node)
 	{
-		return colorFont;
+		return node.isElement() ? colorFontElement : colorFont;
 	}
 
 	/**
 	 * Defines the icon for a element in tree.
 	 *
-	 * @param node  The JDFTreeNode object for the element.
+	 * @param node The JDFTreeNode object for the element.
 	 * @param model The model for the element.
 	 */
 	protected void setNodeIcon(final JDFTreeNode node, final JDFTreeModel model)

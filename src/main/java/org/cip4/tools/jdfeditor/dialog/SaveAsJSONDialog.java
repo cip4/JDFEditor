@@ -79,6 +79,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.cip4.lib.jdf.jsonutil.JSONWriter.eJSONCase;
@@ -125,7 +126,9 @@ public class SaveAsJSONDialog extends JPanel
 		cbTypesafe = new JCheckBox(ResourceUtil.getMessage("convert.json.typesafe"));
 		cbSplitXJMF = new JCheckBox(ResourceUtil.getMessage("convert.json.splitxjmf"));
 
+		checkboxesPanel.add(new JLabel(ResourceUtil.getMessage("convert.json.case")));
 		checkboxesPanel.add(cbCase);
+		checkboxesPanel.add(new JLabel(ResourceUtil.getMessage("convert.json.prefix")));
 		checkboxesPanel.add(cbPrefix);
 		checkboxesPanel.add(cbTypesafe);
 		checkboxesPanel.add(cbSplitXJMF);

@@ -77,6 +77,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.tools.jdfeditor.EditorDocument;
 import org.cip4.tools.jdfeditor.JDFFrame;
+import org.cip4.tools.jdfeditor.JDFTreeNode;
 import org.cip4.tools.jdfeditor.view.MainView;
 
 /**
@@ -104,10 +105,10 @@ public class JDFTreeCellRenderer extends AbstractTreeCellRenderer
 	 * @see org.cip4.tools.jdfeditor.view.renderer.AbstractTreeCellRenderer#getFontColor()
 	 */
 	@Override
-	Color getFontColor()
+	Color getFontColor(JDFTreeNode node)
 	{
 		final boolean b = isJson();
-		return !b ? super.getFontColor() : colorFontJson;
+		return !b ? super.getFontColor(node) : colorFontJson;
 	}
 
 	private boolean isJson()
@@ -122,12 +123,12 @@ public class JDFTreeCellRenderer extends AbstractTreeCellRenderer
 	 * @see org.cip4.tools.jdfeditor.view.renderer.AbstractTreeCellRenderer#getCellFont()
 	 */
 	@Override
-	Font getCellFont()
+	Font getCellFont(JDFTreeNode node)
 	{
-		final Font cellFont = super.getCellFont();
+		final Font cellFont = super.getCellFont(node);
 		if (isJson())
 		{
-			return new Font(cellFont.getName(), Font.ITALIC, cellFont.getSize());
+			return new Font(cellFont.getName(), cellFont.getStyle() | Font.ITALIC, cellFont.getSize());
 		}
 		return cellFont;
 	}
