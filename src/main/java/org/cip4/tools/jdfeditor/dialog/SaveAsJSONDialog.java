@@ -72,18 +72,21 @@ package org.cip4.tools.jdfeditor.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.cip4.lib.jdf.jsonutil.JSONWriter.eJSONCase;
 import org.cip4.lib.jdf.jsonutil.JSONWriter.eJSONPrefix;
+import org.cip4.tools.jdfeditor.EditorSwingUtils;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
@@ -119,6 +122,8 @@ public class SaveAsJSONDialog extends JPanel
 
 		final JPanel checkboxesPanel = new JPanel();
 		checkboxesPanel.setLayout(new BoxLayout(checkboxesPanel, BoxLayout.Y_AXIS));
+		GridLayout layout = new GridLayout(6, 1);
+		checkboxesPanel.setLayout(layout);
 
 		cbCase = new JComboBox<>(new Vector<>(eJSONCase.getNames()));
 
@@ -126,10 +131,19 @@ public class SaveAsJSONDialog extends JPanel
 		cbTypesafe = new JCheckBox(ResourceUtil.getMessage("convert.json.typesafe"));
 		cbSplitXJMF = new JCheckBox(ResourceUtil.getMessage("convert.json.splitxjmf"));
 
-		checkboxesPanel.add(new JLabel(ResourceUtil.getMessage("convert.json.case")));
-		checkboxesPanel.add(cbCase);
-		checkboxesPanel.add(new JLabel(ResourceUtil.getMessage("convert.json.prefix")));
+		final JPanel pCase = new JPanel();
+		pCase.setLayout(new GridBagLayout());
+		pCase.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("convert.json.case")));
+		pCase.add(cbCase, EditorSwingUtils.getOutConstraints());
+		checkboxesPanel.add(pCase);
+
 		checkboxesPanel.add(cbPrefix);
+		final JPanel pPrefix = new JPanel();
+		pPrefix.setLayout(new GridBagLayout());
+		pPrefix.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("convert.json.prefix")));
+		pPrefix.add(cbPrefix, EditorSwingUtils.getOutConstraints());
+		checkboxesPanel.add(pPrefix);
+
 		checkboxesPanel.add(cbTypesafe);
 		checkboxesPanel.add(cbSplitXJMF);
 

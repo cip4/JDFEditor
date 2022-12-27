@@ -81,6 +81,7 @@ import javax.mail.MessagingException;
 import javax.swing.JOptionPane;
 import javax.swing.tree.TreePath;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.AttributeName;
@@ -119,6 +120,7 @@ import org.cip4.tools.jdfeditor.view.MainView;
 
 /**
  * static utilities for the editor
+ * 
  * @author prosirai
  *
  */
@@ -130,6 +132,7 @@ public class EditorUtils
 
 	/**
 	 * Check if a KElement is valid or not.
+	 * 
 	 * @param elem - The KElement you want to check.
 	 * @return True if the KElement is valid, false otherwise.
 	 */
@@ -144,6 +147,7 @@ public class EditorUtils
 
 	/**
 	 * gets all resources from this node and from all its ancestors.
+	 * 
 	 * @param jdfNode
 	 * @param usage
 	 * @return - vector of all resources allowed to be linked from the level of jdfNode
@@ -220,6 +224,7 @@ public class EditorUtils
 
 	/**
 	 * Method getAttributeOptions
+	 * 
 	 * @param parentElement
 	 * @return
 	 */
@@ -257,13 +262,15 @@ public class EditorUtils
 
 	/**
 	 * Method chooseElementName. gets the valid element to insert into parentElement
+	 * 
 	 * @param parentElement -
 	 * @return the name of the selected element to insert
 	 */
 	public static String chooseElementName(final KElement parentElement)
 	{
 		final String validValues[] = EditorUtils.getElementOptions(parentElement);
-		String selectedElementName = (String) JOptionPane.showInputDialog(MainView.getFrame(), "Choose an element to insert", "Insert new element", JOptionPane.PLAIN_MESSAGE, null, validValues, validValues[0]);
+		String selectedElementName = (String) JOptionPane.showInputDialog(MainView.getFrame(), "Choose an element to insert", "Insert new element", JOptionPane.PLAIN_MESSAGE, null,
+				validValues, validValues[0]);
 
 		if (selectedElementName != null && selectedElementName.equals("Other.."))
 		{
@@ -274,6 +281,7 @@ public class EditorUtils
 
 	/**
 	 * Method getAttributeOptions
+	 * 
 	 * @param element
 	 * @return
 	 */
@@ -313,6 +321,7 @@ public class EditorUtils
 
 	/**
 	 * Method getElement. gets the KElement for this treepath or the parent in case this is an attribute selection
+	 * 
 	 * @param path
 	 * @return KElement
 	 */
@@ -338,6 +347,7 @@ public class EditorUtils
 
 	/**
 	 * Creates the String which is to be displayed...
+	 * 
 	 * @param file the File object to display
 	 * @param length - The length of the title...
 	 * @return The file name, may be a little bit altered.
@@ -373,6 +383,7 @@ public class EditorUtils
 	// ////////////////////////////////////////////////////////////////////////////
 	/**
 	 * creates the standard error box
+	 * 
 	 * @param errorKey the key in the resources that will be used to display the message
 	 * @param addedString
 	 */
@@ -643,7 +654,8 @@ public class EditorUtils
 
 	public static File getNewFile(final String fileName)
 	{
-		return new File(new File(getUserDir().getToolPath(), "data"), fileName);
+		String fnNew = FilenameUtils.getName(fileName);
+		return new File(new File(getUserDir().getToolPath(), "data"), fnNew);
 	}
 
 	public static String getNewPath(final String fileName)
@@ -681,6 +693,7 @@ public class EditorUtils
 	/**
 	 *
 	 * get the converter with the options set in this dialog
+	 * 
 	 * @return the converter
 	 */
 	public static XJDF20 getXJDFConverter()
@@ -735,7 +748,7 @@ public class EditorUtils
 
 		JDFDoc jdfDoc = null;
 
-		ensurePluginsLoade();
+		ensurePluginsLoaded();
 		final List<IStreamLoader> lstStreamLoaders = pluginLoader.getPlugins();
 
 		for (final IStreamLoader loader : lstStreamLoaders)
@@ -766,7 +779,7 @@ public class EditorUtils
 		return jdfDoc;
 	}
 
-	public static void ensurePluginsLoade() throws UnsupportedEncodingException
+	public static void ensurePluginsLoaded() throws UnsupportedEncodingException
 	{
 		if (pluginLoader == null)
 		{

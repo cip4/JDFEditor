@@ -240,12 +240,14 @@ public class JDFTreeModel extends DefaultTreeModel
 	 */
 	private static final long serialVersionUID = -5922527273385407946L;
 	private boolean m_ignoreAttributes = false;
+	private boolean json;
 
-	public JDFTreeModel(final JDFTreeNode _root, final boolean ignoreAttributes)
+	public JDFTreeModel(final JDFTreeNode _root, final boolean ignoreAttributes, boolean json)
 	{
 		super(_root);
 		m_ignoreAttributes = ignoreAttributes;
 		validationResult = null;
+		this.json = json;
 	}
 
 	/**
@@ -456,6 +458,11 @@ public class JDFTreeModel extends DefaultTreeModel
 		{
 			return setText(parentNode, attValue);
 		}
+		else if (json && "xmlns".equals(StringUtil.token(attName, 0, ":")))
+		{
+			return null;
+		}
+
 		JDFTreeNode nOld = parentNode.getNodeWithName(attName);
 
 		final KElement e = parentNode.getElement();
@@ -674,6 +681,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	 * Adds the attributes to the JDFTreeNode and checks if they are invalid and inherited or not.
 	 * 
 	 * @param node - The JDFTreeNode you want to add the attributes to * @param m_invalidNode - The InvalidNode
+	 * @param json
 	 */
 	public void addNodeAttributes(final JDFTreeNode node)
 	{
@@ -1535,5 +1543,11 @@ public class JDFTreeModel extends DefaultTreeModel
 		}
 
 		return node;
+	}
+
+	@Override
+	public String toString()
+	{
+		return "JDFTreeModel [json=" + json + ", validationResult=" + validationResult + ", m_ignoreAttributes=" + m_ignoreAttributes + "]";
 	}
 }

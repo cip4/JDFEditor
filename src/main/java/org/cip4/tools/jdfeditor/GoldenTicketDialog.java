@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2014 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2022 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -73,7 +73,6 @@ package org.cip4.tools.jdfeditor;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -100,7 +99,8 @@ import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
 /**
- * DeviceCapsDialog.java
+ * 
+ * 
  * @author Elena Skobchenko
  */
 
@@ -115,7 +115,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 	private JButton browse;
 	private File idFile;
 	private final GridBagLayout outLayout = new GridBagLayout();
-	private final GridBagConstraints outConstraints = new GridBagConstraints();
+	private final GridBagConstraints outConstraints;
 
 	private JComboBox<String> goldenTicketLabel;
 	private JComboBox<String> misICSLevel1;
@@ -148,6 +148,8 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 	public GoldenTicketDialog()
 	{
 		super();
+		outConstraints = EditorSwingUtils.getOutConstraints();
+
 		final JDFFrame parent = MainView.getFrame();
 
 		init();
@@ -155,7 +157,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 
 		final int option = JOptionPane.showOptionDialog(parent, this, "Golden Ticket File Creation", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
-		if (option == JOptionPane.OK_OPTION)//will create the Golden Ticket
+		if (option == JOptionPane.OK_OPTION)// will create the Golden Ticket
 		{
 			misSelectLevel = StringUtil.parseInt(misSelected, 1);
 			jmfSelectLevel = StringUtil.parseInt(jmfSelected, 1);
@@ -265,15 +267,13 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 	private void init()
 	{
 		final JPanel panel = new JPanel();
-		outConstraints.fill = GridBagConstraints.BOTH;
-		outConstraints.insets = new Insets(0, 0, 10, 0);
 		outLayout.setConstraints(panel, outConstraints);
 		setLayout(outLayout);
 		final GridBagLayout inLayout = new GridBagLayout();
 		panel.setLayout(new GridLayout(6, 1));
 		panel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("GTInputKey")));
 
-		//Golden Ticket Chooser
+		// Golden Ticket Chooser
 		final JPanel gtChooser = new JPanel();
 		gtChooser.setLayout(inLayout);
 		gtChooser.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("GTFileKey")));
@@ -282,7 +282,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		initGTLabels(panel, gtChooser);
 		initGTType(panel);
 
-		//MIS Level
+		// MIS Level
 		final JPanel MISLevel = new JPanel();
 		MISLevel.setLayout(inLayout);
 		MISLevel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("MISLevelKey")));
@@ -294,7 +294,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		MISLevel.add(misICSLevel1);
 		panel.add(MISLevel);
 
-		//JMF Level
+		// JMF Level
 		final JPanel JMFLevel = new JPanel();
 		JMFLevel.setLayout(inLayout);
 		JMFLevel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("JMFLevelKey")));
@@ -306,7 +306,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 		JMFLevel.add(jmfICSLevel1);
 		panel.add(JMFLevel);
 
-		//GT Level
+		// GT Level
 		final JPanel GTLevel = new JPanel();
 		GTLevel.setLayout(inLayout);
 		GTLevel.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("GTLevelKey")));
@@ -341,7 +341,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 
 	private void initGTLabels(final JPanel panel, final JPanel gtChooser)
 	{
-		//Add Golden Tickets as they become available.
+		// Add Golden Tickets as they become available.
 		final String[] gt = { "MISCP", MISPreGoldenTicket.MISPRE_CONTENTCREATION, MISPreGoldenTicket.MISPRE_IMPOSITIONPREPARATION, MISPreGoldenTicket.MISPRE_IMPOSITIONRIPING,
 				MISPreGoldenTicket.MISPRE_PLATEMAKING, MISPreGoldenTicket.MISPRE_PLATESETTING, MISPreGoldenTicket.MISPRE_PREPRESSPREPARATION, "IDP", "ODP", "DPW",
 				MISFinGoldenTicket.MISFIN_SHEETFIN, MISFinGoldenTicket.MISFIN_STITCHFIN, MISFinGoldenTicket.MISFIN_BOXMAKING, MISFinGoldenTicket.MISFIN_SOFTCOVERFIN,
@@ -423,6 +423,7 @@ public class GoldenTicketDialog extends JPanel implements ActionListener
 
 	/**
 	 * Methods to return the Levels and which golden ticket to create.
+	 * 
 	 * @return
 	 */
 	private String getGoldenTicketName()

@@ -451,7 +451,7 @@ public class EditorDocument
 	 * @param selNode
 	 * @return
 	 */
-	private TreePath getPathFromNode(final JDFTreeNode selNode)
+	private TreePath getPathFromNode(JDFTreeNode selNode)
 	{
 		final JDFTreeModel model = MainView.getModel();
 		if (model == null)
@@ -459,6 +459,10 @@ public class EditorDocument
 			return null;
 		}
 		final JDFTreeNode theRoot = model.getRootNode();
+		if (selNode == null)
+		{
+			selNode = theRoot;
+		}
 		TreePath path = null;
 		if (theRoot.equals(selNode))
 		{
@@ -550,12 +554,11 @@ public class EditorDocument
 		final JDFDoc doc = getJDFDoc();
 		if (doc == null)
 		{
-			jdfTreeModel = new JDFTreeModel(new JDFTreeNode(), false);
+			jdfTreeModel = new JDFTreeModel(new JDFTreeNode(), false, isJson());
 			return null;
 		}
 		final JDFTreeNode root = new JDFTreeNode(doc.getRoot());
-		jdfTreeModel = new JDFTreeModel(root, false);
-
+		jdfTreeModel = new JDFTreeModel(root, false, isJson());
 		jdfTreeModel.buildModel(root);
 		jdfTreeModel.addTreeModelListener(new MyTreeModelListener());
 		if (settingService.getSetting(SettingKey.GENERAL_AUTO_VALIDATE, Boolean.class))

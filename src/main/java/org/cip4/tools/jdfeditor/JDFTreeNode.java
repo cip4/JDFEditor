@@ -61,6 +61,7 @@ import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.StringArray;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.datatypes.JDFAttributeMap;
+import org.cip4.jdflib.datatypes.JDFMatrix;
 import org.cip4.jdflib.extensions.ResourceHelper;
 import org.cip4.jdflib.extensions.XJDF20;
 import org.cip4.jdflib.extensions.XJDFConstants;
@@ -864,12 +865,12 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		final String ord = e.getAttribute("Ord", null, null);
 		if (ord != null)
 		{
-			s += " Ord=" + ord;
+			s += "[" + ord + "]";
 		}
-		final String ctm = e.getAttribute("CTM", null, null);
-		if (ord != null)
+		final JDFMatrix ctm = JDFMatrix.createMatrix(e.getAttribute("CTM", null, null));
+		if (ctm != null)
 		{
-			s += " CTM=" + ctm;
+			s += " CTM=" + ctm.getString(1);
 		}
 		return s;
 	}
@@ -992,6 +993,14 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		if (att != null)
 		{
 			s += JDFConstants.BLANK + att;
+		}
+		else // XJDF
+		{
+			att = e.getAttribute(AttributeName.STATUS, null, null);
+			if (att != null)
+			{
+				s += JDFConstants.BLANK + att;
+			}
 		}
 		att = e.getAttribute(AttributeName.STATUSDETAILS, null, null);
 		if (att != null)
@@ -1122,7 +1131,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		String prefix = e.getAttribute(AttributeName.USAGE);
 		if (procUsage != null)
 		{
-			prefix += JDFConstants.SLASH + procUsage;
+			prefix += "(" + procUsage + ")";
 		}
 		if (cpi != null)
 		{
@@ -1133,7 +1142,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		{
 			s += JDFConstants.BLANK + name;
 		}
-		s += " size=" + e.numChildElements(XJDFConstants.Resource, null);
+		s += "[" + e.numChildElements(XJDFConstants.Resource, null) + "]";
 		return s;
 	}
 
