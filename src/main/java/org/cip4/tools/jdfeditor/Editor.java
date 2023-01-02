@@ -89,7 +89,6 @@ import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.util.MyArgs;
 import org.cip4.jdflib.util.file.UserDir;
 import org.cip4.jdfutility.logging.LogConfigurator;
-import org.cip4.lib.jdf.jsonutil.JSONPrepWalker;
 import org.cip4.lib.jdf.jsonutil.JSONWriter;
 import org.cip4.lib.jdf.jsonutil.JSONWriter.eJSONCase;
 import org.cip4.tools.jdfeditor.commandline.EditorCommandLine;
@@ -246,8 +245,6 @@ public class Editor
 			final KElement schema = KElement.parseStream(is);
 			w.fillTypesFromSchema(schema, settingService.getBool(SettingKey.JSON_XJMF_SPLIT));
 			removeMessages(w);
-			final JSONPrepWalker prepWalker = new JSONPrepWalker();
-			w.setPrepWalker(prepWalker);
 			jsonWriter = w;
 		}
 		return jsonWriter;

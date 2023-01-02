@@ -250,6 +250,11 @@ public class JDFTreeModel extends DefaultTreeModel
 		this.json = json;
 	}
 
+	public JDFTreeModel(final JDFTreeNode _root, final boolean ignoreAttributes)
+	{
+		this(_root, ignoreAttributes, false);
+	}
+
 	/**
 	 *
 	 * @return
