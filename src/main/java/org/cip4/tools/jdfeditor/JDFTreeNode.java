@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2022 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
+ * Copyright (c) 2001-2023 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  *
@@ -728,6 +728,10 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		{
 			s = displayProduct(e, s);
 		}
+		else if (nodeName.equals(XJDFConstants.ProductList))
+		{
+			s += " [" + e.numChildElements(XJDFConstants.Product, null) + "]";
+		}
 		else if (XJDFConstants.SurfaceColor.equals(nodeName))
 		{
 			s += JDFConstants.BLANK + e.getAttribute(XJDFConstants.Surface) + " / " + e.getAttribute(ElementName.COLORSUSED);
@@ -743,6 +747,14 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		else if (nodeName.equals("Price"))
 		{
 			s = displayPrice(e, s);
+		}
+		else if (nodeName.equals("Credential"))
+		{
+			s += " " + e.getAttribute("domain") + "=" + e.getXPathAttribute("Identity", "");
+		}
+		else if (nodeName.equals("Request"))
+		{
+			s += " BusinessID=" + e.getAttribute("BusinessID");
 		}
 		return s;
 	}
