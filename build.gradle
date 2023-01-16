@@ -52,7 +52,7 @@ dependencies {
     implementation 'commons-configuration:commons-configuration:1.10'
     implementation 'commons-collections:commons-collections:3.2.2'
     implementation 'com.sun.woodstock.dependlibs:jhall:2.0'
-    implementation 'com.fifesoft:rsyntaxtextarea:3.2.0'
+    implementation 'com.fifesoft:rsyntaxtextarea:3.3.2'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:3.+'
