@@ -660,8 +660,16 @@ public class EditorDocument
 
 		if (!UrlUtil.isMIME(file))
 		{
-			writeToFile(file);
-			jdfDoc.setOriginalFileName(file.getAbsolutePath());
+			boolean ok = writeToFile(file);
+			if (ok)
+			{
+				jdfDoc.setOriginalFileName(file.getAbsolutePath());
+			}
+			else
+			{
+				JOptionPane.showMessageDialog(MainView.getFrame(), ResourceUtil.getMessage("SaveJDFErrorKey") + "\n" + file, ResourceUtil.getMessage("SaveJDFErrorKey"),
+						JOptionPane.ERROR_MESSAGE);
+			}
 		}
 		else
 		{
@@ -754,7 +762,7 @@ public class EditorDocument
 	 *
 	 * @param file
 	 */
-	void writeToFile(final File file)
+	boolean writeToFile(final File file)
 	{
 		final int indent = settingService.getSetting(SettingKey.GENERAL_INDENT, Boolean.class) ? 2 : 0;
 		if (json)
@@ -762,16 +770,17 @@ public class EditorDocument
 			final JSONWriter jw = Editor.getEditor().getJSonWriter();
 			List<JSONObject> split = jw.splitConvert(jdfDoc.getRoot());
 			int n = 0;
+			boolean ok = false;
 			for (JSONObject json : split)
 			{
 				File file2 = (split.size() > 1) ? FileUtil.newExtension(file, n + "." + FileUtil.getExtension(file)) : file;
-				FileUtil.writeFile(new JSONObjHelper(json), file2);
-
+				ok = FileUtil.writeFile(new JSONObjHelper(json), file2) != null || ok;
 			}
+			return ok;
 		}
 		else
 		{
-			jdfDoc.write2File(file.getAbsolutePath(), indent, !settingService.getSetting(SettingKey.GENERAL_INDENT, Boolean.class));
+			return jdfDoc.write2File(file.getAbsolutePath(), indent, !settingService.getSetting(SettingKey.GENERAL_INDENT, Boolean.class));
 		}
 	}
 
