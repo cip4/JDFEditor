@@ -72,6 +72,7 @@ package org.cip4.tools.jdfeditor;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URL;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
@@ -91,6 +92,7 @@ import org.cip4.jdflib.core.JDFConstants;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFElement.EnumNodeStatus;
+import org.cip4.jdflib.core.JDFElement.EnumVersion;
 import org.cip4.jdflib.core.JDFException;
 import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
@@ -263,11 +265,29 @@ public class JDFTreeModel extends DefaultTreeModel
 	{
 		// this may be what needs to be done (i.e. getFrame()) for the variables in other methods that are being moved from JDFFrame to here.
 		final JDFFrame m_frame = MainView.getFrame();
-		final JDFDoc theDoc = m_frame.getJDFDoc();
-		if (theDoc == null)
+		EditorDocument eDoc = MainView.getEditorDoc();
+		if (eDoc == null)
 		{
 			return false;
 		}
+		if (eDoc.isXJDF())
+		{
+			return validateXJDF();
+		}
+		else if (eDoc.isJDF())
+		{
+			return validateJDF();
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	protected boolean validateJDF()
+	{
+		EditorDocument eDoc = MainView.getEditorDoc();
+		final JDFDoc theDoc = eDoc.getJDFDoc();
 
 		final JDFValidator checkJDF = new JDFValidator();
 		checkJDF.setPrint(false);
@@ -334,6 +354,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		// TODO addFile
 		validationResult = checkJDF.processSingleDocument(theDoc);
 
+		JDFFrame m_frame = MainView.getFrame();
 		m_frame.getBottomTabs().m_validErrScroll.drawCheckJDFOutputTree(validationResult);
 		m_frame.getBottomTabs().m_SchemaErrScroll.drawSchemaOutputTree(schemaValidationResult);
 		if (MainView.getEditorDoc().getJDFTree() != null)
@@ -342,6 +363,45 @@ public class JDFTreeModel extends DefaultTreeModel
 			m_frame.getJDFTreeArea().goToPath(m_frame.getJDFTreeArea().getSelectionPath()); // TODO: what this code actually do ?
 		}
 		return validationResult.getRoot().getFirstChildElement().getBoolAttribute("IsValid", null, true);
+	}
+
+	protected boolean validateXJDF()
+	{
+		EditorDocument eDoc = MainView.getEditorDoc();
+		final JDFDoc theDoc = eDoc.getJDFDoc();
+
+		validationResult = null;
+		XMLDoc schemaValidationResult = null;
+		try
+		{
+			final ByteArrayIOStream outStream = new ByteArrayIOStream();
+			theDoc.write2Stream(outStream, 0, false);
+			final URL url = ResourceUtil.class.getResource(EditorUtils.RES_SCHEMA_20);
+			String sUrl = url == null ? null : url.toExternalForm();
+			JDFDoc tmpDoc = EditorUtils.parseInStream(outStream.getInputStream(), JDFElement.getSchemaURL(EnumVersion.Version_2_0), sUrl);
+			if (tmpDoc == null)
+			{
+				tmpDoc = EditorUtils.parseInStream(outStream.getInputStream(), null);
+			}
+
+			if (tmpDoc != null)
+			{
+				schemaValidationResult = tmpDoc.getValidationResult();
+			}
+		}
+		catch (final Exception e)
+		{
+			// nop
+		}
+
+		JDFFrame m_frame = MainView.getFrame();
+		m_frame.getBottomTabs().m_SchemaErrScroll.drawSchemaOutputTree(schemaValidationResult);
+		if (MainView.getEditorDoc().getJDFTree() != null)
+		{
+			MainView.getEditorDoc().getJDFTree().repaint();
+			m_frame.getJDFTreeArea().goToPath(m_frame.getJDFTreeArea().getSelectionPath()); // TODO: what this code actually do ?
+		}
+		return schemaValidationResult == null || "Valid".equals(schemaValidationResult.getRoot().getAttribute("ValidationResult"));
 	}
 
 	/**

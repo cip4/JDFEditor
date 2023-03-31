@@ -86,6 +86,7 @@ import javax.swing.JPanel;
 
 import org.cip4.lib.jdf.jsonutil.JSONWriter.eJSONCase;
 import org.cip4.lib.jdf.jsonutil.JSONWriter.eJSONPrefix;
+import org.cip4.tools.jdfeditor.Editor;
 import org.cip4.tools.jdfeditor.EditorSwingUtils;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
@@ -175,6 +176,7 @@ public class SaveAsJSONDialog extends JPanel
 		settingService.set(SettingKey.JSON_PREFIX, (String) cbPrefix.getSelectedItem());
 		settingService.set(SettingKey.JSON_TYPESAFE, cbTypesafe.isSelected());
 		settingService.set(SettingKey.JSON_XJMF_SPLIT, cbSplitXJMF.isSelected());
+		Editor.getEditor().resetJSON();
 	}
 
 }

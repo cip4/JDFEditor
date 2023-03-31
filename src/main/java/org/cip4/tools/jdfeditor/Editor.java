@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2022 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2023 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -221,8 +221,6 @@ public class Editor
 		return JMFBuilderFactory.getJMFBuilder(getClass());
 	}
 
-	private static final String RES_SCHEMA = "/org/cip4/tools/jdfeditor/schema/xjdf.xsd";
-
 	public void resetJSON()
 	{
 		jsonWriter = null;
@@ -232,16 +230,17 @@ public class Editor
 	 * @return
 	 */
 	public JSONWriter getJSonWriter()
+
 	{
-		final SettingService settingService = SettingService.getSettingService();
 		if (jsonWriter == null)
 		{
+			final SettingService settingService = SettingService.getSettingService();
 			final JSONWriter w = new JSONWriter();
 			w.setXJDF(settingService.getBool(SettingKey.JSON_XJMF_SPLIT), false);
 			w.setTypeSafe(settingService.getBool(SettingKey.JSON_TYPESAFE));
 			w.setKeyCase(eJSONCase.valueOf(settingService.getString(SettingKey.JSON_CASE)));
 			w.setWantArray(false);
-			final InputStream is = ResourceUtil.class.getResourceAsStream(RES_SCHEMA);
+			final InputStream is = ResourceUtil.class.getResourceAsStream(EditorUtils.RES_SCHEMA_20);
 			final KElement schema = KElement.parseStream(is);
 			w.fillTypesFromSchema(schema, settingService.getBool(SettingKey.JSON_XJMF_SPLIT));
 			removeMessages(w);

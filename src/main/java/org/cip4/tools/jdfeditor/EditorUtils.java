@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2022 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2023 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -91,6 +91,7 @@ import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFElement.EnumValidationLevel;
 import org.cip4.jdflib.core.JDFParser;
+import org.cip4.jdflib.core.JDFParserFactory;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
@@ -127,6 +128,7 @@ import org.cip4.tools.jdfeditor.view.MainView;
 public class EditorUtils
 {
 	private static final Log LOGGER = LogFactory.getLog(EditorUtils.class);
+	public static final String RES_SCHEMA_20 = "/org/cip4/tools/jdfeditor/schema/xjdf.xsd";
 
 	private static PluginLoader<IStreamLoader> pluginLoader = null;
 
@@ -673,6 +675,20 @@ public class EditorUtils
 		}
 
 		return p.parseStream(inStream);
+	}
+
+	static JDFDoc parseInStream(final InputStream inStream, String nsURI, final String schemaURL) throws IOException
+	{
+		final JDFParser p = JDFParserFactory.getFactory().get();
+
+		if (schemaURL != null)
+		{
+			p.setSchemaLocation(nsURI, schemaURL);
+		}
+
+		JDFDoc parsed = p.parseStream(inStream);
+		JDFParserFactory.getFactory().push(p);
+		return parsed;
 	}
 
 	public static boolean isXJDF(final String name)

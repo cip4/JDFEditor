@@ -78,10 +78,12 @@ import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.XMLDoc;
+import org.cip4.jdflib.util.StringUtil;
 import org.cip4.tools.jdfeditor.view.renderer.SchemaOutputTreeCellRenderer;
 
 /**
  * this class encapsulates the output of the dev caps test
+ * 
  * @author prosirai
  *
  */
@@ -121,13 +123,13 @@ public class SchemaScrollPane extends ValidationScrollPane
 		m_reportTree.setEditable(false);
 		ToolTipManager.sharedInstance().registerComponent(m_reportTree);
 
-		//        DCOutputWrapper bugReportRoot = null;
+		// DCOutputWrapper bugReportRoot = null;
 
 		setSchemaOutputTree(m_checkRoot);
-		//        if (bugReportRoot != null)
-		//        {
-		//            m_reportTree.expandPath(new TreePath(bugReportRoot.getPath()));
-		//        }
+		// if (bugReportRoot != null)
+		// {
+		// m_reportTree.expandPath(new TreePath(bugReportRoot.getPath()));
+		// }
 
 		m_SelectionListener = new ValidationSelectionListener();
 		m_reportTree.addTreeSelectionListener(m_SelectionListener);
@@ -148,8 +150,6 @@ public class SchemaScrollPane extends ValidationScrollPane
 		VString vAtts = repElem.getAttributeVector();
 		for (int i = 0; i < vAtts.size(); i++)
 		{
-			if (vAtts.get(i).equals("Message"))
-				continue;
 			SchemaOutputWrapper next = new SchemaOutputWrapper(repElem.getAttributeNode(vAtts.get(i)));
 			bugReport.add(next);
 		}
@@ -157,6 +157,16 @@ public class SchemaScrollPane extends ValidationScrollPane
 		VElement childVector = repElem.getChildElementVector(null, null, null, true, 0, false);
 		for (KElement kEl : childVector)
 		{
+			String msg = kEl.getNonEmpty("Message");
+			if (msg != null)
+			{
+				String id = StringUtil.token(msg, 0, ":");
+				kEl.setAttribute("id", id);
+				msg = StringUtil.removeToken(msg, 0, ":");
+				msg = StringUtil.replaceString(msg, "src=Stream", null);
+				msg = StringUtil.trim(msg, null);
+				kEl.setAttribute("Message", msg);
+			}
 			SchemaOutputWrapper next = new SchemaOutputWrapper(kEl);
 			setSchemaOutputTree(next);
 			bugReport.add(next);
