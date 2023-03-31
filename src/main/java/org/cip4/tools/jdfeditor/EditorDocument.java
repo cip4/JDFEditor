@@ -153,7 +153,7 @@ public class EditorDocument
 	 */
 	public boolean isXJDF()
 	{
-		return jdfDoc != null && EditorUtils.isXJDF(jdfDoc.getRoot().getLocalName());
+		return jdfDoc != null && (EditorUtils.isXJDF(jdfDoc.getRoot().getLocalName()) || JDFElement.isInXJDFNameSpaceStatic(jdfDoc.getRoot()));
 	}
 
 	/**
@@ -161,7 +161,7 @@ public class EditorDocument
 	 */
 	public boolean isJDF()
 	{
-		return jdfDoc != null && EditorUtils.isJDF(jdfDoc.getRoot().getLocalName());
+		return jdfDoc != null && (EditorUtils.isJDF(jdfDoc.getRoot().getLocalName()) || JDFElement.isInJDFNameSpaceStatic(jdfDoc.getRoot()));
 	}
 
 	/**
