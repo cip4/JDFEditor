@@ -86,6 +86,7 @@ import javax.swing.JPanel;
 
 import org.cip4.lib.jdf.jsonutil.JSONWriter.eJSONCase;
 import org.cip4.lib.jdf.jsonutil.JSONWriter.eJSONPrefix;
+import org.cip4.lib.jdf.jsonutil.JSONWriter.eJSONRoot;
 import org.cip4.tools.jdfeditor.Editor;
 import org.cip4.tools.jdfeditor.EditorSwingUtils;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
@@ -109,6 +110,7 @@ public class SaveAsJSONDialog extends JPanel
 
 	private final JComboBox<String> cbCase;
 	private final JComboBox<String> cbPrefix;
+	private final JComboBox<String> cbRoot;
 	private final JCheckBox cbTypesafe;
 	private final JCheckBox cbSplitXJMF;
 
@@ -127,8 +129,8 @@ public class SaveAsJSONDialog extends JPanel
 		checkboxesPanel.setLayout(layout);
 
 		cbCase = new JComboBox<>(new Vector<>(eJSONCase.getNames()));
-
 		cbPrefix = new JComboBox<>(new Vector<>(eJSONPrefix.getNames()));
+		cbRoot = new JComboBox<>(new Vector<>(eJSONRoot.getNames()));
 		cbTypesafe = new JCheckBox(ResourceUtil.getMessage("convert.json.typesafe"));
 		cbSplitXJMF = new JCheckBox(ResourceUtil.getMessage("convert.json.splitxjmf"));
 
@@ -144,6 +146,13 @@ public class SaveAsJSONDialog extends JPanel
 		pPrefix.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("convert.json.prefix")));
 		pPrefix.add(cbPrefix, EditorSwingUtils.getOutConstraints());
 		checkboxesPanel.add(pPrefix);
+
+		checkboxesPanel.add(cbRoot);
+		final JPanel pRoot = new JPanel();
+		pRoot.setLayout(new GridBagLayout());
+		pRoot.setBorder(BorderFactory.createTitledBorder(ResourceUtil.getMessage("convert.json.root")));
+		pRoot.add(cbRoot, EditorSwingUtils.getOutConstraints());
+		checkboxesPanel.add(pRoot);
 
 		checkboxesPanel.add(cbTypesafe);
 		checkboxesPanel.add(cbSplitXJMF);
@@ -164,6 +173,7 @@ public class SaveAsJSONDialog extends JPanel
 
 		cbCase.setSelectedItem(settingService.getString(SettingKey.JSON_CASE));
 		cbPrefix.setSelectedItem(settingService.getString(SettingKey.JSON_PREFIX));
+		cbRoot.setSelectedItem(settingService.getString(SettingKey.JSON_ROOT));
 		cbTypesafe.setSelected(settingService.getBool(SettingKey.JSON_TYPESAFE));
 		cbSplitXJMF.setSelected(settingService.getBool(SettingKey.JSON_XJMF_SPLIT));
 
@@ -174,6 +184,7 @@ public class SaveAsJSONDialog extends JPanel
 	{
 		settingService.set(SettingKey.JSON_CASE, (String) cbCase.getSelectedItem());
 		settingService.set(SettingKey.JSON_PREFIX, (String) cbPrefix.getSelectedItem());
+		settingService.set(SettingKey.JSON_ROOT, (String) cbRoot.getSelectedItem());
 		settingService.set(SettingKey.JSON_TYPESAFE, cbTypesafe.isSelected());
 		settingService.set(SettingKey.JSON_XJMF_SPLIT, cbSplitXJMF.isSelected());
 		Editor.getEditor().resetJSON();

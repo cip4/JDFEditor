@@ -91,6 +91,8 @@ import org.cip4.jdflib.util.file.UserDir;
 import org.cip4.jdfutility.logging.LogConfigurator;
 import org.cip4.lib.jdf.jsonutil.JSONWriter;
 import org.cip4.lib.jdf.jsonutil.JSONWriter.eJSONCase;
+import org.cip4.lib.jdf.jsonutil.JSONWriter.eJSONPrefix;
+import org.cip4.lib.jdf.jsonutil.JSONWriter.eJSONRoot;
 import org.cip4.tools.jdfeditor.commandline.EditorCommandLine;
 import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
@@ -239,6 +241,8 @@ public class Editor
 			w.setXJDF(settingService.getBool(SettingKey.JSON_XJMF_SPLIT), false);
 			w.setTypeSafe(settingService.getBool(SettingKey.JSON_TYPESAFE));
 			w.setKeyCase(eJSONCase.valueOf(settingService.getString(SettingKey.JSON_CASE)));
+			w.setJsonRoot(eJSONRoot.valueOf(settingService.getString(SettingKey.JSON_ROOT)));
+			w.setPrefix(eJSONPrefix.valueOf(settingService.getString(SettingKey.JSON_PREFIX)));
 			w.setWantArray(false);
 			final InputStream is = ResourceUtil.class.getResourceAsStream(EditorUtils.RES_SCHEMA_20);
 			final KElement schema = KElement.parseStream(is);
