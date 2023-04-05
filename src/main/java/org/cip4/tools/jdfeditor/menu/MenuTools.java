@@ -86,6 +86,7 @@ import javax.swing.KeyStroke;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cip4.jdflib.core.JDFConstants;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.elementwalker.RemoveCompare;
@@ -291,7 +292,7 @@ public class MenuTools implements ActionListener, MenuInterface
 			removeCompare.setStandard();
 			removeCompare.cleanup(selectedNode);
 			String fn = ed.getOriginalFileName();
-			if (!"cleanid".equals(StringUtil.token(fn, -2, fn)))
+			if (!"cleanid".equals(StringUtil.token(fn, -2, JDFConstants.DOT)) && !"cleanid".equals(UrlUtil.prefix(fn)))
 			{
 				fn = UrlUtil.newExtension(fn, "cleanid." + UrlUtil.extension(fn));
 			}
