@@ -48,7 +48,7 @@ dependencies {
     implementation 'org.cip4.tools.jdfutility:JDFUtility:1.7.5'
     implementation 'org.cip4.lib.jdf:JDFLibJ:2.1.7.+'
     implementation 'org.eclipse.jetty:jetty-servlet:10.0.7'
-    implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+    implementation ('com.googlecode.json-simple:json-simple:1.1.1'){transitive=false}
     implementation 'commons-configuration:commons-configuration:1.10'
     implementation 'commons-collections:commons-collections:3.2.2'
     implementation 'com.sun.woodstock.dependlibs:jhall:2.0'
