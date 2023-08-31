@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2006 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2023 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -70,61 +70,61 @@
  */
 package org.cip4.tools.jdfeditor;
 
-import org.cip4.tools.jdfeditor.view.MainView;
-
 import javax.swing.tree.TreePath;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
+
+import org.cip4.tools.jdfeditor.view.MainView;
 
 /*
  * InsertAttrEdit.java
  * @author Elena Skobchenko
  */
 
-public class InsertAttrEdit extends EditorUndoableEdit 
+public class InsertAttrEdit extends EditorUndoableEdit
 {
-    private static final long serialVersionUID = -2778264565816334345L;
-    
-    private TreePath path;
-    private JDFTreeNode intoNode=null;
-    private JDFTreeNode attrNode;
-    private int pos;
-    
-    public InsertAttrEdit(final TreePath treePath, final JDFTreeNode newAttrNode) 
-    {
-         super();
-         path = treePath;
-         attrNode = newAttrNode;         
-         intoNode = (JDFTreeNode) path.getLastPathComponent();
-         if(!intoNode.isElement())
-             intoNode = (JDFTreeNode) path.getParentPath().getLastPathComponent();
+	private static final long serialVersionUID = -2778264565816334345L;
 
-         pos = intoNode.getIndex(attrNode);
-         MainView.getFrame().updateViews(path);
-    }
+	private final TreePath path;
+	private JDFTreeNode intoNode;
+	private final JDFTreeNode attrNode;
+	private final int pos;
 
-    @Override
-	public void undo() throws CannotUndoException 
-    { 
-         TreePath attrPath=new TreePath(attrNode.getPath());
-         MainView.getModel().deleteItem(attrPath);
-         MainView.getFrame().updateViews(path);
-         super.undo();
-    }
+	public InsertAttrEdit(final TreePath treePath, final JDFTreeNode newAttrNode)
+	{
+		super();
+		path = treePath;
+		attrNode = newAttrNode;
+		intoNode = (JDFTreeNode) path.getLastPathComponent();
+		if (!intoNode.isElement())
+			intoNode = (JDFTreeNode) path.getParentPath().getLastPathComponent();
 
-    @Override
-	public void redo() throws CannotRedoException 
-    {
-        MainView.getModel().insertInto(attrNode, intoNode, pos);
-        intoNode.getElement().setAttributeNode(attrNode.getAttr());
-        MainView.getFrame().updateViews(path);
-        super.redo();
-    }
+		pos = intoNode.getIndex(attrNode);
+		MainView.getFrame().updateViews(path);
+	}
 
-    @Override
-	public String getPresentationName() 
-    {
-         return "InsertAttribute";
-    }
+	@Override
+	public void undo() throws CannotUndoException
+	{
+		TreePath attrPath = new TreePath(attrNode.getPath());
+		MainView.getModel().deleteItem(attrPath);
+		MainView.getFrame().updateViews(path);
+		super.undo();
+	}
+
+	@Override
+	public void redo() throws CannotRedoException
+	{
+		MainView.getModel().insertInto(attrNode, intoNode, pos);
+		intoNode.getElement().setAttributeNode(attrNode.getAttr());
+		MainView.getFrame().updateViews(path);
+		super.redo();
+	}
+
+	@Override
+	public String getPresentationName()
+	{
+		return "InsertAttribute";
+	}
 
 }
