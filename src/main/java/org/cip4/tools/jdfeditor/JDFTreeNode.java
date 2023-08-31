@@ -887,19 +887,19 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		return s;
 	}
 
-	protected String displayJDF(final KElement e, String s)
+	String displayJDF(final KElement e, String s)
 	{
 		String typ = e.getNonEmpty(AttributeName.TYPE);
 		if (typ != null)
 		{
-			s += ": " + typ;
+			s += " " + typ;
 		}
 		else
 		{
 			typ = e.getNonEmpty(AttributeName.TYPES);
 			if (typ != null)
 			{
-				s += ": " + typ;
+				s += " " + typ;
 			}
 		}
 		typ = e.getAttribute(AttributeName.CATEGORY, null, null);
@@ -920,7 +920,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		final String stat = e.getAttribute(AttributeName.STATUS, null, null);
 		if (stat != null)
 		{
-			s += " Status=" + stat;
+			s += " , " + stat;
 		}
 		return s;
 	}
