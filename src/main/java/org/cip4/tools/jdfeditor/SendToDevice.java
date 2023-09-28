@@ -99,6 +99,9 @@ import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.elementwalker.AttributeReplacer;
+import org.cip4.jdflib.extensions.XJDFHelper;
+import org.cip4.jdflib.extensions.XJDFZipWriter;
+import org.cip4.jdflib.extensions.XJMFHelper;
 import org.cip4.jdflib.extensions.xjdfwalker.jdftoxjdf.JDFToXJDF;
 import org.cip4.jdflib.jmf.JDFCommand;
 import org.cip4.jdflib.jmf.JDFJMF;
@@ -156,9 +159,9 @@ public class SendToDevice extends JPanel implements ActionListener
 	}
 
 	/**
-	 * Creates the input field for the URL of the device. The behaviour of the of the input window depends on the settings in the Editor.ini -if method is set
-	 * to "JMF" - the message will be send as a SubmitQueueEntry with the location of the JDF as an URL - if method is set to "MIME" a multipart/related message
-	 * will be send - if method is set to "User" the user will be able to choose the method to be send by means of radio buttons
+	 * Creates the input field for the URL of the device. The behaviour of the of the input window depends on the settings in the Editor.ini -if method is set to "JMF" - the
+	 * message will be send as a SubmitQueueEntry with the location of the JDF as an URL - if method is set to "MIME" a multipart/related message will be send - if method is set to
+	 * "User" the user will be able to choose the method to be send by means of radio buttons
 	 */
 	private void init()
 	{
@@ -302,6 +305,25 @@ public class SendToDevice extends JPanel implements ActionListener
 		}
 	}
 
+	static class EditorZipWriter extends XJDFZipWriter
+	{
+
+		private String singlePath;
+
+		public EditorZipWriter(String singlePath)
+		{
+			super();
+			this.singlePath = singlePath;
+		}
+
+		@Override
+		protected String getXJDFPath(int i)
+		{
+			return singlePath;
+		}
+
+	}
+
 	/**
 	 * @param url
 	 * @param bMime
@@ -346,7 +368,14 @@ public class SendToDevice extends JPanel implements ActionListener
 
 				if (editorDoc.isXJDF())
 				{
-					qsp.setURL(fileName);
+					if (editorDoc.isJson())
+					{
+						qsp.setURL(fileName);
+					}
+					else
+					{
+						qsp.setURL("xjdf/" + fileName);
+					}
 					final JDFToXJDF conv = EditorUtils.getXJDFConverter();
 					final KElement xjmf = conv.convert(jmfRoot);
 					jmfDoc = new JDFDoc(xjmf.getOwnerDocument());
@@ -365,13 +394,21 @@ public class SendToDevice extends JPanel implements ActionListener
 						bph2.setFileName(fileName);
 						mw.addBodyPart(bph2);
 					}
+					else
+					{
+						XJDFZipWriter zw = new EditorZipWriter("xjdf/" + fileName);
+						zw.setXjmf(XJMFHelper.getHelper(xjmf));
+						zw.addXJDF(XJDFHelper.getHelper(theDoc.getRoot()));
+						up = UrlUtil.writerToURL(url.toExternalForm(), zw, UrlUtil.POST, UrlUtil.APPLICATION_ZIP, null);
+					}
 
 				}
 				else
 				{
 					mw.buildMimePackage(jmfDoc, theDoc, packageAll);
 				}
-				up = mw.writeToURL(url.toExternalForm());
+				if (up == null)
+					up = mw.writeToURL(url.toExternalForm());
 			}
 			else
 			{
@@ -537,6 +574,7 @@ public class SendToDevice extends JPanel implements ActionListener
 	 * getURL
 	 *
 	 * returns the URL of the device given by the user
+	 * 
 	 * @param bReturn if true, the url is the returnurl, else it is the device url
 	 *
 	 * @return URL the url
@@ -610,7 +648,8 @@ public class SendToDevice extends JPanel implements ActionListener
 		boolean bSendTrue = false;
 		final String[] options = { ResourceUtil.getMessage("OkKey"), ResourceUtil.getMessage("CancelKey") };
 
-		final int option = JOptionPane.showOptionDialog(MainView.getFrame(), this, ResourceUtil.getMessage("JDFSendToDevice"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+		final int option = JOptionPane.showOptionDialog(MainView.getFrame(), this, ResourceUtil.getMessage("JDFSendToDevice"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE,
+				null, options, options[0]);
 
 		if (option == JOptionPane.OK_OPTION)
 		{
