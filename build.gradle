@@ -13,7 +13,7 @@ sourceCompatibility = 11
 targetCompatibility = 11
 
 if (project.hasProperty('projectVersion')) {
-    version = project.projectVersion
+version = project.projectVersion
 } else {
     version = 'development'
 }
@@ -22,17 +22,17 @@ repositories {
     mavenCentral()
     maven {
         url "https://oss.sonatype.org/content/repositories/snapshots"
-    }
+	}
 }
 
 processResources {
     filesMatching('**/*.properties') {
         filter(ReplaceTokens, tokens: [
-                'name'     : project.properties['name'],
-                'version'  : project.properties['version'],
-                'timestamp': new Date().format('yyyy-MM-dd HH:mm:ss')
+		'name'     : project.properties['name'],
+		'version'  : project.properties['version'],
+		'timestamp': new Date().format('yyyy-MM-dd HH:mm:ss')
         ])
-    }
+	}
 }
 
 application {
@@ -46,50 +46,60 @@ configurations {
 dependencies {
     implementation 'org.cip4.lib.jdf:JDFLibJ-JSON:+'
     implementation 'org.cip4.tools.jdfutility:JDFUtility:1.7.6'
-    implementation 'org.cip4.lib.jdf:JDFLibJ:2.1.7.+'
+	implementation ('org.cip4.lib.jdf:JDFLibJ:2.1.7.+'){
+		exclude group: 'xml-apis'
+	}
+	implementation ('xerces:xercesImpl:2.12.2'){transitive=false}
     implementation 'org.eclipse.jetty:jetty-servlet:10.0.7'
     implementation ('com.googlecode.json-simple:json-simple:1.1.1'){transitive=false}
     implementation 'commons-configuration:commons-configuration:1.10'
     implementation 'commons-collections:commons-collections:3.2.2'
     implementation 'com.sun.woodstock.dependlibs:jhall:2.0'
     implementation 'com.fifesoft:rsyntaxtextarea:3.3.3'
+	
+    implementation 'commons-logging:commons-logging-api:1.1'
+    implementation 'commons-lang:commons-lang:2.6'
+    implementation 'commons-io:commons-io:2.13.0'
 
+    implementation 'javax.mail:mail:1.4.7'
+
+	
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:3.+'
 }
 
 runtime {
     modules = [
-            'jdk.xml.dom',
-            'jdk.unsupported'
+	'jdk.xml.dom',
+	'jdk.unsupported'
     ]
     additive = true
     jpackage {
         imageOptions = [
-                "--copyright", "CIP4 Organization",
-                "--vendor", "CIP4 Organization"
+		"--copyright", "CIP4 Organization",
+		"--vendor", "CIP4 Organization"
         ]
         def currentOs = org.gradle.internal.os.OperatingSystem.current()
         def icon = "src/main/dist/windows/jdfeditor_128.ico"
         if (currentOs.macOsX) {
             imageOptions += [
-                    "--mac-sign",
-                    "--mac-signing-key-user-name", "CIP4 Organization (4DL5XX9SG8)",
-                    "--mac-package-identifier", "org.cip4.jdfeditor"
+			"--mac-sign",
+			"--mac-signing-key-user-name", "CIP4 Organization (4DL5XX9SG8)",
+			"--mac-package-identifier", "org.cip4.jdfeditor"
             ]
             icon = "src/main/dist/macosx/jdfeditor.icns"
-        }
+		}
         if (currentOs.windows) {
             installerOptions += [
-                    "--win-dir-chooser",
-                    "--win-menu",
-                    "--win-upgrade-uuid", "800cfb27-5ece-4275-9ed3-1a305b5b1636",
-                    "--vendor", "CIP4 Organization"
+			"--win-dir-chooser",
+			"--win-menu",
+			"--win-upgrade-uuid", "800cfb27-5ece-4275-9ed3-1a305b5b1636",
+			"--vendor", "CIP4 Organization"
             ]
-        }
+		}
         imageOptions += ["--icon", icon]
         appVersion = project.version == "development" ? "1.0.0" : project.version
-    }
+	}
 }
 
 java {
