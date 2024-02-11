@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2024 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -103,7 +103,7 @@ import org.cip4.tools.jdfeditor.view.MainView;
  * 
  * @author Dr. Rainer Prosi, Heidelberger Druckmaschinen AG
  * 
- * before June 3, 2009
+ *         before June 3, 2009
  */
 public class FixVersionDialog extends JPanel implements ActionListener
 {
@@ -131,7 +131,8 @@ public class FixVersionDialog extends JPanel implements ActionListener
 
 		init();
 		final String[] options = { ResourceUtil.getMessage("FixVersionKey"), ResourceUtil.getMessage("CancelKey") };
-		final int option = JOptionPane.showOptionDialog(MainView.getFrame(), this, "Fix Version in file", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+		final int option = JOptionPane.showOptionDialog(MainView.getFrame(), this, "Fix Version in file", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
+				options[0]);
 
 		if (option == JOptionPane.OK_OPTION)
 		{
@@ -195,12 +196,12 @@ public class FixVersionDialog extends JPanel implements ActionListener
 
 		final Vector<String> allValues = new Vector<String>();
 		allValues.addElement("Retain Version");
-		allValues.addElement(EnumVersion.Version_1_0.getName());
-		allValues.addElement(EnumVersion.Version_1_1.getName());
-		allValues.addElement(EnumVersion.Version_1_2.getName());
-		allValues.addElement(EnumVersion.Version_1_3.getName());
-		allValues.addElement(EnumVersion.Version_1_4.getName());
-		allValues.addElement(EnumVersion.Version_1_5.getName());
+		for (final Object o : EnumVersion.getEnumList())
+		{
+			final EnumVersion v = (EnumVersion) o;
+			if (v.getMajorVersion() == 1)
+				allValues.addElement(v.getName());
+		}
 		chooseVersion = new JComboBox(allValues);
 		chooseVersion.setSelectedItem(defVersion.getName());
 		chooseVersion.addActionListener(this);
@@ -250,6 +251,7 @@ public class FixVersionDialog extends JPanel implements ActionListener
 
 	/**
 	 * fix the version for the element specified in Path
+	 * 
 	 * @param path
 	 */
 	public void fixIt(final TreePath path)
@@ -303,15 +305,16 @@ public class FixVersionDialog extends JPanel implements ActionListener
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("FixVersionErrorKey") + e.getClass() + " \n"
-					+ (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this,
+					ResourceUtil.getMessage("FixVersionErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""),
+					ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
 	/**
 	 * @see java.awt.Component#toString()
 	 * @return
-	*/
+	 */
 	@Override
 	public String toString()
 	{
