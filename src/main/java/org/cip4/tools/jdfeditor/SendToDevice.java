@@ -284,13 +284,14 @@ public class SendToDevice extends JPanel implements ActionListener
 		final URL url = getURL(false);
 		if (url == null)
 		{
-			EditorUtils.errorBox("ErrorSendDevice", "URL =null");
+			EditorUtils.errorBox("ErrorSendDevice", "URL = null");
 		}
 		// create a JMF message
 		final EditorDocument editorDoc = MainView.getEditorDoc();
 		final JDFDoc theDoc = editorDoc.getJDFDoc();
 		final JDFJMF theJMF = theDoc.getJMFRoot();
-		if (theJMF != null || isRaw())
+		final XJMFHelper xjmf = XJMFHelper.getHelper(theDoc);
+		if (theJMF != null || xjmf != null || isRaw())
 		{
 			return sendRaw(url);
 		}
@@ -308,16 +309,16 @@ public class SendToDevice extends JPanel implements ActionListener
 	static class EditorZipWriter extends XJDFZipWriter
 	{
 
-		private String singlePath;
+		private final String singlePath;
 
-		public EditorZipWriter(String singlePath)
+		public EditorZipWriter(final String singlePath)
 		{
 			super();
 			this.singlePath = singlePath;
 		}
 
 		@Override
-		protected String getXJDFPath(int i)
+		protected String getXJDFPath(final int i)
 		{
 			return singlePath;
 		}
@@ -396,7 +397,7 @@ public class SendToDevice extends JPanel implements ActionListener
 					}
 					else
 					{
-						XJDFZipWriter zw = new EditorZipWriter("xjdf/" + fileName);
+						final XJDFZipWriter zw = new EditorZipWriter("xjdf/" + fileName);
 						zw.setXjmf(XJMFHelper.getHelper(xjmf));
 						zw.addXJDF(XJDFHelper.getHelper(theDoc.getRoot()));
 						up = UrlUtil.writerToURL(url.toExternalForm(), zw, UrlUtil.POST, UrlUtil.APPLICATION_ZIP, null);

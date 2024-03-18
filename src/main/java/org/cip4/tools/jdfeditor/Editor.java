@@ -105,6 +105,8 @@ import org.cip4.tools.jdfeditor.util.ResourceUtil;
  */
 public class Editor
 {
+	public static final String JDF_EDITOR = "JDFEditor";
+
 	private static Editor my_Editor;
 
 	private static Log log = null;
@@ -169,7 +171,7 @@ public class Editor
 	{
 		// dummy call to initialize logging early
 		// log file location
-		final String pathDir = new UserDir("JDFEditor").getLogPath();
+		final String pathDir = new UserDir(JDF_EDITOR).getLogPath();
 		LogConfigurator.configureLog(pathDir, "JDFEditor.log");
 		// nothing to do here (yet)
 		SettingService.getSettingService();
@@ -198,7 +200,7 @@ public class Editor
 		// read the initialization stuff
 		JDFAudit.setStaticAgentName(BuildPropsUtil.getAppName());
 		JDFAudit.setStaticAgentVersion(BuildPropsUtil.getAppVersion());
-		JMFBuilderFactory.setSenderID(getClass(), "JDFEditor");
+		JMFBuilderFactory.setSenderID(getClass(), JDF_EDITOR);
 
 		KElement.setLongID(mainController.getSetting(SettingKey.GENERAL_LONG_ID, Boolean.class));
 		JDFElement.setDefaultJDFVersion(JDFElement.EnumVersion.getEnum(mainController.getSetting(SettingKey.VALIDATION_VERSION, String.class)));
@@ -237,6 +239,7 @@ public class Editor
 		if (jsonWriter == null)
 		{
 			final SettingService settingService = SettingService.getSettingService();
+			// TODO JSONWriter.set... EditorUtils.getSchemaFile(XJDF20.getDefaultVersion());
 			final JSONWriter w = new JSONWriter();
 			w.setXJDF(settingService.getBool(SettingKey.JSON_XJMF_SPLIT), false);
 			w.setTypeSafe(settingService.getBool(SettingKey.JSON_TYPESAFE));

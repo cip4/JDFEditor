@@ -79,6 +79,7 @@ import org.w3c.dom.Attr;
 
 /**
  * ModifyAttrEdit.java
+ * 
  * @author Elena Skobchenko
  */
 public class ModifyAttrEdit extends EditorUndoableEdit
@@ -89,7 +90,7 @@ public class ModifyAttrEdit extends EditorUndoableEdit
 	private final JDFTreeNode attrNode;
 	private String previousValue;
 
-	public ModifyAttrEdit(final TreePath treePath, JDFTreeNode _attrNode, String previousVal)
+	public ModifyAttrEdit(final TreePath treePath, final JDFTreeNode _attrNode, final String previousVal)
 	{
 		super();
 		path = treePath;
@@ -102,11 +103,22 @@ public class ModifyAttrEdit extends EditorUndoableEdit
 	@Override
 	public void undo() throws CannotUndoException
 	{
-		Attr atr = attrNode.getAttr();
-		String keep = atr.getNodeValue();
-		atr.setNodeValue(previousValue);
+		final Attr atr = attrNode.getAttr();
+		final String keep;
+		if (atr == null)
+		{
+			keep = attrNode.getText();
+			attrNode.setText(previousValue);
+			final JDFTreeNode elem = (JDFTreeNode) path.getLastPathComponent();
+			elem.getElement().setText(previousValue);
+		}
+		else
+		{
+			keep = atr.getNodeValue();
+			atr.setNodeValue(previousValue);
+		}
 		previousValue = keep;
-		//        attrNode.setUserObject(atr);
+		// attrNode.setUserObject(atr);
 		MainView.getFrame().updateViews(path);
 	}
 

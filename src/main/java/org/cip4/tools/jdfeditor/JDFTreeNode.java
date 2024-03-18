@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2023 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
+ * Copyright (c) 2001-2024 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  *
@@ -257,7 +257,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		final KElement e = (userObject instanceof KElement) ? getElement() : null;
 		if (e == null && (userObject instanceof AttrNSImpl))
 		{
-			String namespaceURI = ((AttrNSImpl) userObject).getNamespaceURI();
+			final String namespaceURI = ((AttrNSImpl) userObject).getNamespaceURI();
 			return !StringUtil.isEmpty(namespaceURI) && !JDFElement.isInAnyJDFNameSpaceStatic(namespaceURI);
 		}
 		return (e != null) && !(e instanceof JDFElement);
@@ -382,6 +382,14 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 			return JDFTreeModel.TEXT;
 		}
 		return ((Attr) userObject).getNodeName();
+	}
+
+	/**
+	 * @return
+	 */
+	public static String getName(final JDFTreeNode node)
+	{
+		return node == null ? "null" : node.getName();
 	}
 
 	// /////////////////////////////////////////////////////////////////////
@@ -1083,7 +1091,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		}
 		final JDFResource r = (JDFResource) e;
 		final String partKey = r.getLocalPartitionKey();
-		String status = e.getNonEmpty_KElement(AttributeName.STATUS);
+		final String status = e.getNonEmpty_KElement(AttributeName.STATUS);
 		if (status != null)
 		{
 			s += " / " + status;
@@ -1160,8 +1168,8 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 
 	protected String displayXRes(final KElement e, String s)
 	{
-		ResourceHelper rh = new ResourceHelper(e);
-		String name = rh.getName();
+		final ResourceHelper rh = new ResourceHelper(e);
+		final String name = rh.getName();
 		if (!StringUtil.isEmpty(name))
 		{
 			s += " " + name;
@@ -1176,7 +1184,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		{
 			s += ": " + desc;
 		}
-		JDFAttributeMap common = rh.getPartMapVector().getCommonMap();
+		final JDFAttributeMap common = rh.getPartMapVector().getCommonMap();
 		return addPartMap(s, common);
 	}
 
@@ -1191,7 +1199,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		if (keys != null)
 		{
 			Collections.sort(keys);
-			for (String key : keys)
+			for (final String key : keys)
 			{
 				s += JDFConstants.BLANK + key + "=" + map.get(key);
 			}

@@ -242,9 +242,9 @@ public class JDFTreeModel extends DefaultTreeModel
 	 */
 	private static final long serialVersionUID = -5922527273385407946L;
 	private boolean m_ignoreAttributes = false;
-	private boolean json;
+	private final boolean json;
 
-	public JDFTreeModel(final JDFTreeNode _root, final boolean ignoreAttributes, boolean json)
+	public JDFTreeModel(final JDFTreeNode _root, final boolean ignoreAttributes, final boolean json)
 	{
 		super(_root);
 		m_ignoreAttributes = ignoreAttributes;
@@ -265,7 +265,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	{
 		// this may be what needs to be done (i.e. getFrame()) for the variables in other methods that are being moved from JDFFrame to here.
 		final JDFFrame m_frame = MainView.getFrame();
-		EditorDocument eDoc = MainView.getEditorDoc();
+		final EditorDocument eDoc = MainView.getEditorDoc();
 		if (eDoc == null)
 		{
 			return false;
@@ -286,7 +286,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	protected boolean validateJDF()
 	{
-		EditorDocument eDoc = MainView.getEditorDoc();
+		final EditorDocument eDoc = MainView.getEditorDoc();
 		final JDFDoc theDoc = eDoc.getJDFDoc();
 
 		final JDFValidator checkJDF = new JDFValidator();
@@ -313,8 +313,16 @@ public class JDFTreeModel extends DefaultTreeModel
 		{
 
 			File f = theDoc.getSchemaLocationFile(JDFElement.getSchemaURL());
-			final String validationSchemaUrl = settingService.getSetting(SettingKey.VALIDATION_SCHEMA_URL, String.class);
+			String validationSchemaUrl = settingService.getSetting(SettingKey.VALIDATION_SCHEMA_URL, String.class);
+			if (validationSchemaUrl == null)
+			{
+				EnumVersion v = EnumVersion.getEnum(settingService.getString(SettingKey.VALIDATION_VERSION));
+				if (v == null)
+					v = EnumVersion.getEnum(theDoc.getRoot().getAttribute(AttributeName.VERSION));
+				f = EditorUtils.getSchemaFile(v);
+				validationSchemaUrl = UrlUtil.fileToUrl(f, false);
 
+			}
 			if (!UrlUtil.isFileOK(f) && validationSchemaUrl != null)
 			{
 				f = new File(validationSchemaUrl);
@@ -329,7 +337,7 @@ public class JDFTreeModel extends DefaultTreeModel
 					final ByteArrayIOStream outStream = new ByteArrayIOStream();
 					theDoc.write2Stream(outStream, 0, false);
 					theDoc.setOriginalFileName(fn);
-					JDFDoc tmpDoc = EditorUtils.parseInStream(outStream.getInputStream(), EditorUtils.getSchemaLoc());
+					JDFDoc tmpDoc = EditorUtils.parseInStream(outStream.getInputStream(), f);
 					if (tmpDoc == null)
 					{
 						tmpDoc = EditorUtils.parseInStream(outStream.getInputStream(), null);
@@ -354,7 +362,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		// TODO addFile
 		validationResult = checkJDF.processSingleDocument(theDoc);
 
-		JDFFrame m_frame = MainView.getFrame();
+		final JDFFrame m_frame = MainView.getFrame();
 		m_frame.getBottomTabs().m_validErrScroll.drawCheckJDFOutputTree(validationResult);
 		m_frame.getBottomTabs().m_SchemaErrScroll.drawSchemaOutputTree(schemaValidationResult);
 		if (MainView.getEditorDoc().getJDFTree() != null)
@@ -367,7 +375,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	protected boolean validateXJDF()
 	{
-		EditorDocument eDoc = MainView.getEditorDoc();
+		final EditorDocument eDoc = MainView.getEditorDoc();
 		final JDFDoc theDoc = eDoc.getJDFDoc();
 
 		validationResult = null;
@@ -376,8 +384,10 @@ public class JDFTreeModel extends DefaultTreeModel
 		{
 			final ByteArrayIOStream outStream = new ByteArrayIOStream();
 			theDoc.write2Stream(outStream, 0, false);
+			final EnumVersion v = EnumVersion.getEnum(theDoc.getRoot().getAttribute(AttributeName.VERSION));
+			final File schema = EditorUtils.getSchemaFile(v);
 			final URL url = ResourceUtil.class.getResource(EditorUtils.RES_SCHEMA_20);
-			String sUrl = url == null ? null : url.toExternalForm();
+			final String sUrl = schema == null ? url.toExternalForm() : UrlUtil.fileToUrl(schema, false);
 			JDFDoc tmpDoc = EditorUtils.parseInStream(outStream.getInputStream(), JDFElement.getSchemaURL(EnumVersion.Version_2_0), sUrl);
 			if (tmpDoc == null)
 			{
@@ -394,7 +404,7 @@ public class JDFTreeModel extends DefaultTreeModel
 			// nop
 		}
 
-		JDFFrame m_frame = MainView.getFrame();
+		final JDFFrame m_frame = MainView.getFrame();
 		m_frame.getBottomTabs().m_SchemaErrScroll.drawSchemaOutputTree(schemaValidationResult);
 		if (MainView.getEditorDoc().getJDFTree() != null)
 		{
@@ -1338,7 +1348,7 @@ public class JDFTreeModel extends DefaultTreeModel
 			ext = XJDFConstants.XJMF.toLowerCase();
 		}
 		log.info("converting JDF/JMF to " + ext);
-		String fn = eDoc.getOriginalFileName();
+		final String fn = eDoc.getOriginalFileName();
 		String fnNew = UrlUtil.newExtension(fn, ext);
 		final File fileToRead = new File(fnNew);
 		if (!reallysave || eDoc.checkSave(fileToRead))
@@ -1398,26 +1408,29 @@ public class JDFTreeModel extends DefaultTreeModel
 	public void saveAsJSON(final TreePath selectionPath)
 	{
 		final JDFTreeNode node = selectionPath == null ? (JDFTreeNode) getRootNode() : (JDFTreeNode) selectionPath.getLastPathComponent();
-		if (node == null || !EditorUtils.isJSONEnabled(node.getElement().getLocalName()))
+		if (node == null || !EditorUtils.isJSONEnabled(node.getName()))
 		{
-			return;
-		}
-		final EditorDocument eDoc = MainView.getEditorDoc();
-		List<EditorDocument> eDocs = eDoc.splitJSON();
-		if (eDocs != null)
-		{
-			final JDFFrame frame = MainView.getFrame();
-			for (EditorDocument ed : eDocs)
-			{
-				ed.setJson(true, true);
-				frame.setEditorDoc(ed);
-			}
+			log.warn("cannot convert " + JDFTreeNode.getName(node) + " to JSON ");
 		}
 		else
 		{
-			eDoc.setJson(true, true);
+			final EditorDocument eDoc = MainView.getEditorDoc();
+			final List<EditorDocument> eDocs = eDoc.splitJSON();
+			if (eDocs != null)
+			{
+				final JDFFrame frame = MainView.getFrame();
+				for (final EditorDocument ed : eDocs)
+				{
+					ed.setJson(true, true);
+					frame.setEditorDoc(ed);
+				}
+			}
+			else
+			{
+				eDoc.setJson(true, true);
+			}
+			log.info("converting " + JDFTreeNode.getName(node) + " to JSON ");
 		}
-		log.info("converting XJDF to JSON ");
 	}
 
 	KElement convertJDF(final KElement e, final String fn, final XJDF20 xjdf20)
@@ -1615,4 +1628,5 @@ public class JDFTreeModel extends DefaultTreeModel
 	{
 		return "JDFTreeModel [json=" + json + ", validationResult=" + validationResult + ", m_ignoreAttributes=" + m_ignoreAttributes + "]";
 	}
+
 }

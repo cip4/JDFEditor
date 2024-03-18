@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2006 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2024 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -79,44 +79,49 @@ import javax.swing.undo.CannotUndoException;
  * @author Rainer Prosi
  */
 
-public abstract class EditorUndoableEdit extends AbstractUndoableEdit 
+public abstract class EditorUndoableEdit extends AbstractUndoableEdit
 {
-    private static final long serialVersionUID = -2778264567776334345L;
-    
-    protected boolean canUndo = true;
-    protected boolean canRedo = false;
-    
- 
-    public EditorUndoableEdit() 
-    {
-         canUndo=true;
-         canRedo=false;
-    }
+	private static final long serialVersionUID = -2778264567776334345L;
 
-    @Override
-	public void undo() throws CannotUndoException 
-    { 
-         canRedo=true;
-         canUndo=false;
-    }
+	protected boolean canUndo = true;
+	protected boolean canRedo = false;
 
-    @Override
-	public void redo() throws CannotRedoException 
-    {
-        canRedo=false;
-        canUndo=true;
-    }
+	public EditorUndoableEdit()
+	{
+		canUndo = true;
+		canRedo = false;
+	}
 
-    @Override
-	public boolean canUndo() 
-    {
-         return canUndo;
-    }
+	@Override
+	public void undo() throws CannotUndoException
+	{
+		canRedo = true;
+		canUndo = false;
+	}
 
-    @Override
-	public boolean canRedo() 
-    {
-        return canRedo;
-    }
+	@Override
+	public void redo() throws CannotRedoException
+	{
+		canRedo = false;
+		canUndo = true;
+	}
+
+	@Override
+	public boolean canUndo()
+	{
+		return canUndo;
+	}
+
+	@Override
+	public boolean canRedo()
+	{
+		return canRedo;
+	}
+
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName() + " [canUndo=" + canUndo + ", canRedo=" + canRedo + "]";
+	}
 
 }

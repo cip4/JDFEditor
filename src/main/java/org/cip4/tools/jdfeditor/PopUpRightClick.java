@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2021 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2024 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -77,7 +77,6 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Enumeration;
-import java.util.Vector;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -86,15 +85,11 @@ import javax.swing.JSeparator;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
 import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.extensions.XJDFConstants;
 import org.cip4.jdflib.jmf.JDFJMF;
-import org.cip4.jdflib.jmf.JDFMessage;
-import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
-import org.cip4.jdflib.jmf.JDFMessage.EnumType;
 import org.cip4.jdflib.jmf.JDFMessageService;
-import org.cip4.jdflib.jmf.JMFBuilder;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourceLinkPool;
 import org.cip4.jdflib.pool.JDFResourcePool;
@@ -106,6 +101,7 @@ import org.cip4.tools.jdfeditor.view.MainView;
 
 /**
  * Class to implement all the menu bar and menu related stuff moved here from JDFFrame
+ * 
  * @author prosirai
  *
  */
@@ -150,92 +146,9 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 	private JMenuItem m_spawn = null;
 	private JMenuItem m_unspawn = null;
 
-	private class MessageSender
-	{
-
-		JDFMessageService mService;
-
-		/**
-		 * @param ms
-		 */
-		public MessageSender(final JDFMessageService ms)
-		{
-			mService = ms;
-		}
-
-		/**
-		 *
-		 */
-		public void sendJMF()
-		{
-			final boolean b = generateDoc();
-			if (b)
-			{
-				final SendToDevice sendTo = new SendToDevice();
-				sendTo.trySend();
-			}
-
-		}
-
-		/**
-		 * @return
-		 */
-		private boolean generateDoc()
-		{
-			final Vector<EnumFamily> vf = mService.getFamilies();
-			if (vf == null || vf.size() == 0)
-			{
-				return false;
-			}
-			EnumFamily f = vf.get(0);
-			if (vf.contains(EnumFamily.Command))
-			{
-				f = EnumFamily.Command;
-			}
-
-			final JMFBuilder b = new JMFBuilder();
-			b.setSenderID("JDFEditor");
-
-			final JDFJMF jmf = b.newJMF(f, mService.getType());
-			final JDFDoc doc = jmf.getOwnerDocument_JDFElement();
-			doc.setOriginalFileName(EditorUtils.getNewPath("Auto" + mService.getType() + ".jmf"));
-			final JDFMessage m = jmf.getMessageElement(f, EnumType.getEnum(mService.getType()), 0);
-			extendMessage(m);
-			MainView.getFrame().setJDFDoc(doc, null);
-			MainView.getFrame().getJDFTreeArea().drawTreeView(MainView.getEditorDoc());
-
-			return true;
-		}
-
-		/**
-		 * @param m
-		 */
-		private void extendMessage(final JDFMessage m)
-		{
-			final EnumType t = m == null ? null : EnumType.getEnum(m.getType());
-			if (t == null || m == null)
-			{
-				return;
-			}
-			if (EnumType.AbortQueueEntry.equals(t))
-			{
-				m.appendQueueEntryDef();
-			}
-			else if (EnumType.HoldQueueEntry.equals(t))
-			{
-				m.appendQueueEntryDef();
-			}
-			else if (EnumType.RemoveQueueEntry.equals(t))
-			{
-				m.appendQueueEntryDef();
-			}
-
-		}
-
-	}
-
 	/**
 	 * Creates the popupmenu after a right mouse click on node in the Tree View.
+	 * 
 	 * @param path - The path to the clicked node
 	 */
 	public PopUpRightClick(final TreePath path)
@@ -245,6 +158,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 
 		final JDFTreeNode node = (JDFTreeNode) path.getLastPathComponent();
 		final KElement elem = (node.isElement()) ? node.getElement() : null;
+		final String elemName = elem == null ? null : elem.getLocalName();
 
 		final JMenu insertNewElementPopupMenu = new JMenu(ResourceUtil.getMessage("InsertElKey"));
 		insertNewElementPopupMenu.setEnabled(elem != null);
@@ -359,7 +273,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 			m_saveXJDF = addMenuItem("SaveXJDFKey");
 			add(separator);
 		}
-		else if (elem != null && EditorUtils.isJSONEnabled(elem.getLocalName()))
+		else if (elem != null && EditorUtils.isJSONEnabled(elemName))
 		{
 			final EditorDocument eDoc = MainView.getEditorDoc();
 			if (eDoc.isXJDF())
@@ -375,6 +289,11 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 			{
 				m_saveJSON = addMenuItem("SaveJSONKey");
 			}
+			if (XJDFConstants.XJMF.equals(elemName))
+			{
+				m_sendMessage = addMenuItem("SendJMF");
+			}
+			add(separator);
 		}
 
 		m_xpandPopupItem = addMenuItem("ExpandKey");
@@ -394,6 +313,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 
 	/**
 	 * Disables the MenuItems in the MouseMenu that isn't selectable for the selected JDFTreeNode.
+	 * 
 	 * @param node - The selected node
 	 * @param elem - The KElement for the selected node, can be null
 	 */
@@ -411,8 +331,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 				if (elem.getTagName().equals("Comment"))
 				{
 					m_insertElemIntoPopupItem.setEnabled(false);
-					// TODO insert text
-					m_insertTextPopupItem.setEnabled(false);
+					m_insertTextPopupItem.setEnabled(true);
 				}
 				else
 				{
@@ -476,6 +395,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 
 	/**
 	 * perform any actions that this relates to
+	 * 
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 * @param e
 	 */
@@ -549,7 +469,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 			}
 			else if (eSrc == m_insertTextPopupItem)
 			{
-				// ta.insertText();
+				treeArea.insertText();
 			}
 			else if (eSrc == m_requiredAttrPopupItem)
 			{
@@ -643,9 +563,10 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		if (e instanceof JDFMessageService)
 		{
 			final JDFMessageService ms = (JDFMessageService) e;
+
 			new MessageSender(ms).sendJMF();
 		}
-		if (e instanceof JDFJMF)
+		if (e instanceof JDFJMF || XJDFConstants.XJMF.equals(e.getLocalName()))
 		{
 			final SendToDevice sendTo = new SendToDevice();
 			sendTo.trySend();
@@ -659,6 +580,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 
 	/**
 	 * copies the content of the marked node to the system clip board
+	 * 
 	 * @param p - The TreePath to collapse
 	 */
 	private void copyToClipBoard(final TreePath p)

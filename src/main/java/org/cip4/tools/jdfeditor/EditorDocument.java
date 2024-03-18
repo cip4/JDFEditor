@@ -1,7 +1,7 @@
 /**
  * The CIP4 Software License, Version 1.0
  *
- * Copyright (c) 2001-2022 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2024 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -89,6 +89,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
+import org.cip4.jdflib.core.JDFElement.EnumVersion;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.extensions.XJMFHelper;
 import org.cip4.jdflib.util.ByteArrayIOStream;
@@ -187,13 +188,14 @@ public class EditorDocument
 			this.json = json;
 
 			jdfDoc.setOriginalFileName(newExtension);
-			MainView.getFrame().refreshView(this, null);
+			JDFFrame frame = MainView.getFrame();
+			frame.refreshView(this, null);
 
-			MainView.getFrame().refreshTitle();
-			MainView.getFrame().getJDFTreeArea().setHeaderLabel(json);
-			MainView.getFrame().getJDFTreeArea().drawTreeView(this);
+			frame.refreshTitle();
+			frame.getJDFTreeArea().setHeaderLabel(json);
+			frame.getJDFTreeArea().drawTreeView(this);
 
-			MainView.getFrame().setEnableOpen(true);
+			frame.setEnableOpen(true);
 			saveFile(null);
 		}
 		else
@@ -306,6 +308,21 @@ public class EditorDocument
 		}
 
 		return jdfDoc.getOriginalFileName();
+	}
+
+	/**
+	 * Returns the original file name of a JDF Document.
+	 * 
+	 * @return The original file name of a JDF Document as String.
+	 */
+	public EnumVersion getVersion()
+	{
+		if (jdfDoc == null)
+		{
+			return null;
+		}
+
+		return ((JDFElement) jdfDoc.getRoot()).getVersion(true);
 	}
 
 	/**
@@ -660,7 +677,7 @@ public class EditorDocument
 
 		if (!UrlUtil.isMIME(file))
 		{
-			boolean ok = writeToFile(file);
+			final boolean ok = writeToFile(file);
 			if (ok)
 			{
 				jdfDoc.setOriginalFileName(file.getAbsolutePath());
@@ -730,8 +747,8 @@ public class EditorDocument
 		if (json)
 		{
 			final JSONWriter jw = Editor.getEditor().getJSonWriter();
-			List<JSONObject> l = jw.splitConvert(root);
-			for (JSONObject o : l)
+			final List<JSONObject> l = jw.splitConvert(root);
+			for (final JSONObject o : l)
 			{
 				final JSONIndentWalker iw = new JSONIndentWalker(new JSONObjHelper(o));
 				iw.setSingleIndent(2);
@@ -768,12 +785,12 @@ public class EditorDocument
 		if (json)
 		{
 			final JSONWriter jw = Editor.getEditor().getJSonWriter();
-			List<JSONObject> split = jw.splitConvert(jdfDoc.getRoot());
-			int n = 0;
+			final List<JSONObject> split = jw.splitConvert(jdfDoc.getRoot());
+			final int n = 0;
 			boolean ok = false;
-			for (JSONObject json : split)
+			for (final JSONObject json : split)
 			{
-				File file2 = (split.size() > 1) ? FileUtil.newExtension(file, n + "." + FileUtil.getExtension(file)) : file;
+				final File file2 = (split.size() > 1) ? FileUtil.newExtension(file, n + "." + FileUtil.getExtension(file)) : file;
 				ok = FileUtil.writeFile(new JSONObjHelper(json), file2) != null || ok;
 			}
 			return ok;
@@ -846,24 +863,24 @@ public class EditorDocument
 	{
 		if (jdfDoc != null && SettingService.getSettingService().getBool(SettingKey.JSON_XJMF_SPLIT))
 		{
-			XJMFHelper xjdf = XJMFHelper.getHelper(jdfDoc);
+			final XJMFHelper xjdf = XJMFHelper.getHelper(jdfDoc);
 			if (xjdf != null)
 			{
 				final JSONPrepWalker jsonPrepWalker = new JSONPrepWalker();
 				jsonPrepWalker.setExplicitAudit(false);
 				jsonPrepWalker.setSplitXJMF(true);
-				List<KElement> xjmfs = jsonPrepWalker.split(xjdf.getRoot());
+				final List<KElement> xjmfs = jsonPrepWalker.split(xjdf.getRoot());
 				if (ContainerUtil.size(xjmfs) > 1)
 				{
-					List<EditorDocument> ret = new ArrayList<>();
+					final List<EditorDocument> ret = new ArrayList<>();
 					int n = 0;
-					for (KElement xjmf : xjmfs)
+					for (final KElement xjmf : xjmfs)
 					{
-						JDFDoc newDoc = new JDFDoc(xjmf.getOwnerDocument_KElement());
+						final JDFDoc newDoc = new JDFDoc(xjmf.getOwnerDocument_KElement());
 						String fileName = jdfDoc.getOriginalFileName();
 						fileName = UrlUtil.newExtension(fileName, (++n) + "." + UrlUtil.extension(fileName));
 						newDoc.setOriginalFileName(fileName);
-						EditorDocument ed = new EditorDocument(newDoc, null);
+						final EditorDocument ed = new EditorDocument(newDoc, null);
 
 						ret.add(ed);
 					}

@@ -136,7 +136,7 @@ public class JMFServlet extends HttpServlet
 
 	private String lastDump;
 	private RollingBackupDirectory dumpDir;
-	private JDFFrame jdfFrame = MainView.getFrame();
+	private final JDFFrame jdfFrame = MainView.getFrame();
 
 	/**
 	 *
@@ -151,7 +151,7 @@ public class JMFServlet extends HttpServlet
 		final String dump = settingService.getSetting(SettingKey.HTTP_STORE_PATH, String.class);
 		if (!ContainerUtil.equals(dump, lastDump))
 		{
-			dumpDir = new RollingBackupDirectory(new File(dump), 420, "http_received");
+			dumpDir = new RollingBackupDirectory(new File(dump), 666, "http_received");
 			lastDump = dump;
 		}
 		return dumpDir;
@@ -185,7 +185,7 @@ public class JMFServlet extends HttpServlet
 	{
 		final String logMessage = "Receiving message from " + req.getHeader("User-Agent") + " @ " + req.getRemoteHost() + " (" + req.getRemoteAddr() + ")...";
 		LOGGER.info(logMessage);
-		//		Build incoming Message
+		// Build incoming Message
 		final String headerContentType = req.getHeader("Content-type");
 		LOGGER.info("header Content-type: " + headerContentType);
 
@@ -388,51 +388,25 @@ public class JMFServlet extends HttpServlet
 		return false;
 	}
 
-	/*private void processMultipartPostMessage(final InputStream inputStream) throws IOException
-	{
-		final MimeReader mr = new MimeReader(inputStream);
-		final BodyPart[] bp = mr.getBodyParts();
-
-		LOGGER.info("Received total parts: " + bp.length);
-
-		for (int bodyPartNumber = 0; bodyPartNumber < bp.length; bodyPartNumber++)
-		{
-			BodyPart part = bp[bodyPartNumber];
-			try
-			{
-				if (part.isMimeType(CONTENT_JMF))
-				{
-					LOGGER.info("Processing bodyPartNumber: " + bodyPartNumber);
-					SharedByteArrayInputStream is = (SharedByteArrayInputStream) part.getContent();
-					String jmfRequestString = IOUtils.toString(is, UTF_8);
-	//					LOGGER.info("jmfRequestString: " + jmfRequestString);
-
-	//					next 4 lines are quite tricky, idea is - to get JDFJMF initialized from String
-					JDFDoc jdfDocTemp = new JDFDoc();
-					XMLDoc xmlDoc = jdfDocTemp.parseString(jmfRequestString);
-					JDFDoc jdfDoc = new JDFDoc(xmlDoc);
-					JDFJMF jmf = jdfDoc.getJMFRoot();
-
-					if ((jmf == null) || (jmf.isJDFNode()))
-					{
-						LOGGER.info("Skip bodyPartNumber: " + bodyPartNumber + ", jmf: " + jmf);
-						continue;
-					}
-
-					String originalJmf = jmf.toDisplayXML(INDENT);
-					LOGGER.info("bodyPartNumber: " + bodyPartNumber + ", originalJmf: \n" + originalJmf);
-					InputStream inputStreamJmf = IOUtils.toInputStream(originalJmf, UTF_8);
-
-					processJmfMessage(jmf, inputStreamJmf);
-				} else
-				{
-					LOGGER.info("Skip bodyPartNumber: " + bodyPartNumber);
-				}
-			}
-			catch (MessagingException e)
-			{
-				LOGGER.error("Error: " + e.getMessage() + ", while processing bodyPartNumber: " + bodyPartNumber, e);
-			}
-		}
-	}*/
+	/*
+	 * private void processMultipartPostMessage(final InputStream inputStream) throws IOException { final MimeReader mr = new MimeReader(inputStream); final BodyPart[] bp =
+	 * mr.getBodyParts();
+	 * 
+	 * LOGGER.info("Received total parts: " + bp.length);
+	 * 
+	 * for (int bodyPartNumber = 0; bodyPartNumber < bp.length; bodyPartNumber++) { BodyPart part = bp[bodyPartNumber]; try { if (part.isMimeType(CONTENT_JMF)) {
+	 * LOGGER.info("Processing bodyPartNumber: " + bodyPartNumber); SharedByteArrayInputStream is = (SharedByteArrayInputStream) part.getContent(); String jmfRequestString =
+	 * IOUtils.toString(is, UTF_8); // LOGGER.info("jmfRequestString: " + jmfRequestString);
+	 * 
+	 * // next 4 lines are quite tricky, idea is - to get JDFJMF initialized from String JDFDoc jdfDocTemp = new JDFDoc(); XMLDoc xmlDoc = jdfDocTemp.parseString(jmfRequestString);
+	 * JDFDoc jdfDoc = new JDFDoc(xmlDoc); JDFJMF jmf = jdfDoc.getJMFRoot();
+	 * 
+	 * if ((jmf == null) || (jmf.isJDFNode())) { LOGGER.info("Skip bodyPartNumber: " + bodyPartNumber + ", jmf: " + jmf); continue; }
+	 * 
+	 * String originalJmf = jmf.toDisplayXML(INDENT); LOGGER.info("bodyPartNumber: " + bodyPartNumber + ", originalJmf: \n" + originalJmf); InputStream inputStreamJmf =
+	 * IOUtils.toInputStream(originalJmf, UTF_8);
+	 * 
+	 * processJmfMessage(jmf, inputStreamJmf); } else { LOGGER.info("Skip bodyPartNumber: " + bodyPartNumber); } } catch (MessagingException e) { LOGGER.error("Error: " +
+	 * e.getMessage() + ", while processing bodyPartNumber: " + bodyPartNumber, e); } } }
+	 */
 }

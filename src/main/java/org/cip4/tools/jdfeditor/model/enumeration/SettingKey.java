@@ -73,7 +73,7 @@ package org.cip4.tools.jdfeditor.model.enumeration;
 import javax.swing.UIManager;
 
 import org.cip4.jdflib.core.JDFConstants;
-import org.cip4.tools.jdfeditor.util.DirectoryUtil;
+import org.cip4.tools.jdfeditor.EditorUtils;
 
 /**
  * Enum of all setting keys.
@@ -91,7 +91,7 @@ public enum SettingKey
 	GOLDENTICKET_MISURL("goldenticket.misurl", null), GOLDENTICKET_BASELEVEL("goldenticket.baselevel", 1), GOLDENTICKET_MISLEVEL("goldenticket.mislevel",
 			1), GOLDENTICKET_JMFLEVEL("goldenticket.jmflevel", 1),
 
-	HTTP_STORE_PATH("http.store.path", DirectoryUtil.getReceivedMessagesDir()), HTTP_PRESELECTED_ADDRESS("http.preselected.address", "127.0.0.1"),
+	HTTP_STORE_PATH("http.store.path", EditorUtils.getReceivedMessagesDir()), HTTP_PRESELECTED_ADDRESS("http.preselected.address", "127.0.0.1"),
 
 	FONT_SIZE_ENLARGED("font.size.enlarged", "100"),
 

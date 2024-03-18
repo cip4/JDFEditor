@@ -124,6 +124,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.ElementName;
+import org.cip4.jdflib.core.JDFComment;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFElement.EnumVersion;
@@ -506,7 +507,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		return eDocs != null;
 	}
 
-	void importDocs(EditorDocument[] eDocs)
+	void importDocs(final EditorDocument[] eDocs)
 	{
 		for (final EditorDocument eDoc : eDocs)
 		{
@@ -1483,6 +1484,11 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 					if (elem instanceof JDFNode)
 					{
 						m_menuBar.getMenuTools().setSpawnMergeEnabled(true);
+					}
+					if (elem instanceof JDFComment)
+					{
+						m_menuBar.getMenuTools().setSpawnMergeEnabled(true);
+						m_topTabs.setEnabledAt(m_topTabs.m_COM_INDEX, true);
 					}
 					else
 					{

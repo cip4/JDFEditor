@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2023 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2024 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -90,6 +90,7 @@ import org.cip4.jdflib.core.JDFConstants;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFElement.EnumValidationLevel;
+import org.cip4.jdflib.core.JDFElement.EnumVersion;
 import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.core.JDFParserFactory;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
@@ -98,6 +99,7 @@ import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.extensions.XJDF20;
 import org.cip4.jdflib.extensions.XJDFConstants;
+import org.cip4.jdflib.extensions.XJDFHelper;
 import org.cip4.jdflib.extensions.xjdfwalker.XJDFToJDFConverter;
 import org.cip4.jdflib.extensions.xjdfwalker.jdftoxjdf.JDFToXJDF.EnumProcessPartition;
 import org.cip4.jdflib.node.JDFNode;
@@ -107,10 +109,12 @@ import org.cip4.jdflib.util.ByteArrayIOStream;
 import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.StringUtil;
+import org.cip4.jdflib.util.URLReader;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.jdflib.util.file.UserDir;
 import org.cip4.jdflib.util.mime.BodyPartHelper;
 import org.cip4.jdflib.util.mime.MimeReader;
+import org.cip4.jdflib.util.zip.ZipReader;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.streamloader.IStreamLoader;
@@ -651,13 +655,55 @@ public class EditorUtils
 
 	public static UserDir getUserDir()
 	{
-		return new UserDir("JDFEditor");
+		return new UserDir(Editor.JDF_EDITOR);
 	}
 
 	public static File getNewFile(final String fileName)
 	{
-		String fnNew = FilenameUtils.getName(fileName);
+		final String fnNew = FilenameUtils.getName(fileName);
 		return new File(new File(getUserDir().getToolPath(), "data"), fnNew);
+	}
+
+	public static File getSchemaFile(final EnumVersion v)
+	{
+		if (v == null)
+			return null;
+		final String name = (v.getMajorVersion() == 1) ? "JDF.xsd" : "xjdf.xsd";
+		final File f = new File(getUserDir().getToolPath(), "schema/schema" + v.getName() + "/" + name);
+		return downloadschema(f, v, 1000 * 3600 * 42l);
+	}
+
+	static File downloadschema(final File f, final EnumVersion v, final long age)
+	{
+		if (!f.exists() || System.currentTimeMillis() - f.lastModified() > age)
+		{
+
+			final int minorVersion = v.getMinorVersion();
+			String vs = Integer.toString(minorVersion);
+			if (v.getMajorVersion() == 1)
+			{
+				if (minorVersion > JDFElement.getDefaultJDFVersion().getMinorVersion())
+				{
+					vs = "x";
+				}
+				final String url = "https://schema.cip4.org/jdfschema_1_" + vs + ".zip";
+				final ZipReader zr = ZipReader.getZipReader(new URLReader(url).getURLInputStream());
+				if (zr != null)
+				{
+					zr.unPack(f.getParentFile());
+				}
+			}
+			else
+			{
+				if (minorVersion > XJDFHelper.getDefaultVersion().getMinorVersion())
+				{
+					vs = "x";
+				}
+				final String url = "https://schema.cip4.org/jdfschema_2_" + vs + "/xjdf.xsd";
+				FileUtil.streamToFile(new URLReader(url).getURLInputStream(), f);
+			}
+		}
+		return f.exists() ? f : null;
 	}
 
 	public static String getNewPath(final String fileName)
@@ -677,7 +723,7 @@ public class EditorUtils
 		return p.parseStream(inStream);
 	}
 
-	static JDFDoc parseInStream(final InputStream inStream, String nsURI, final String schemaURL) throws IOException
+	static JDFDoc parseInStream(final InputStream inStream, final String nsURI, final String schemaURL) throws IOException
 	{
 		final JDFParser p = JDFParserFactory.getFactory().get();
 
@@ -686,7 +732,7 @@ public class EditorUtils
 			p.setSchemaLocation(nsURI, schemaURL);
 		}
 
-		JDFDoc parsed = p.parseStream(inStream);
+		final JDFDoc parsed = p.parseStream(inStream);
 		JDFParserFactory.getFactory().push(p);
 		return parsed;
 	}
@@ -816,6 +862,14 @@ public class EditorUtils
 		if (isXJDF(name) || isJDF(name))
 			return name.toLowerCase();
 		return "xml";
+	}
+
+	private static final String MESSAGES_FOLDER = "ReceivedHTTP";
+
+	public static String getReceivedMessagesDir()
+	{
+		final File messagesDir = new File(new File(getUserDir().getToolPath()), MESSAGES_FOLDER);
+		return messagesDir.getAbsolutePath();
 	}
 
 }

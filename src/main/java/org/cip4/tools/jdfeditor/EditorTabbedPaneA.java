@@ -71,22 +71,27 @@
 
 package org.cip4.tools.jdfeditor;
 
+import java.awt.Color;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+import javax.swing.BorderFactory;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
+import javax.swing.tree.TreePath;
+
 import org.cip4.jdflib.core.JDFComment;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.node.JDFNode;
+import org.cip4.jdflib.util.StringUtil;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
-import javax.swing.*;
-import javax.swing.tree.TreePath;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
 /**
- * this handles anything located in the top right tabbed panes
- * it has been misused as a dump from JDFFrame
+ * this handles anything located in the top right tabbed panes it has been misused as a dump from JDFFrame
  */
 public class EditorTabbedPaneA extends JTabbedPane
 {
@@ -110,7 +115,7 @@ public class EditorTabbedPaneA extends JTabbedPane
 
 	/**
 	 * sets up the top right frame
-	 *  
+	 * 
 	 */
 	public EditorTabbedPaneA()
 	{
@@ -141,8 +146,8 @@ public class EditorTabbedPaneA extends JTabbedPane
 		setComponentAt(m_DC_INDEX, m_devCapScrollPane);
 
 		m_commentArea = new JTextArea();
-		m_commentArea.setEditable(true);
-		m_commentArea.setBackground(Color.white);
+		m_commentArea.setEditable(false);
+		m_commentArea.setBackground(new Color(0xff, 0xff, 0xf0));
 
 		m_commentScrollPane = new JScrollPane();
 		m_commentScrollPane.getViewport().add(m_commentArea, null);
@@ -155,10 +160,10 @@ public class EditorTabbedPaneA extends JTabbedPane
 		final MouseAdapter tabbedPaneListener = new MouseAdapter()
 		{
 			@Override
-			public void mouseClicked(MouseEvent e)
+			public void mouseClicked(final MouseEvent e)
 			{
 				onSelect();
-				EditorDocument ed = MainView.getEditorDoc();
+				final EditorDocument ed = MainView.getEditorDoc();
 				if (ed != null)
 					ed.setTopTab(getSelectedIndex());
 			}
@@ -186,7 +191,7 @@ public class EditorTabbedPaneA extends JTabbedPane
 
 	/**
 	 * 
-	 *  
+	 * 
 	 * @return
 	 */
 	public boolean inOutIsNull()
@@ -203,11 +208,12 @@ public class EditorTabbedPaneA extends JTabbedPane
 	 */
 	void showComment()
 	{
-		JDFFrame m_frame = MainView.getFrame();
+		final JDFFrame m_frame = MainView.getFrame();
 
-		EditorDocument ed = m_frame.getEditorDoc();
+		final EditorDocument ed = m_frame.getEditorDoc();
 		if (ed.getSelectionPath() != null)
 		{
+			m_commentArea.setText("");
 			final TreePath path = ed.getSelectionPath();
 			final JDFTreeNode node = (JDFTreeNode) path.getLastPathComponent();
 
@@ -216,16 +222,12 @@ public class EditorTabbedPaneA extends JTabbedPane
 				final KElement jdfElem = node.getElement();
 				if (jdfElem instanceof JDFComment)
 				{
-					final String txt = jdfElem.getTextContent().trim();
-					m_commentArea.setText(txt.equals("") ? ResourceUtil.getMessage("EmptyCommentKey") : txt);
+					final String txt = StringUtil.trim(jdfElem.getText(), null);
+					m_commentArea.setText(txt == null ? ResourceUtil.getMessage("EmptyCommentKey") : txt);
 					setEnabledAt(m_COM_INDEX, true);
 					setSelectedIndex(m_COM_INDEX);
 				}
-				else
-					setEnabledAt(m_COM_INDEX, false);
 			}
-			else
-				setEnabledAt(m_COM_INDEX, false);
 
 			m_commentScrollPane.getViewport().add(m_commentArea);
 			setComponentAt(m_COM_INDEX, m_commentScrollPane);
@@ -236,10 +238,10 @@ public class EditorTabbedPaneA extends JTabbedPane
 
 	/**
 	 * 
-	 *  
+	 * 
 	 * @param eDoc
 	 */
-	public void refreshView(EditorDocument eDoc)
+	public void refreshView(final EditorDocument eDoc)
 	{
 
 		m_inOutScrollPane.clearInOutView();
@@ -250,7 +252,7 @@ public class EditorTabbedPaneA extends JTabbedPane
 			setSelectedIndex(eDoc.getTopTab());
 			onSelect();
 		}
-		JDFDoc jdfDoc = eDoc.getJDFDoc();
+		final JDFDoc jdfDoc = eDoc.getJDFDoc();
 		final KElement rootElement = jdfDoc.getRoot();
 		final int selectedIndex = getSelectedIndex();
 		if (rootElement instanceof JDFNode)
@@ -268,8 +270,7 @@ public class EditorTabbedPaneA extends JTabbedPane
 	}
 
 	/**
-	 * Method clearViews.
-	 * clear all views before opening a new file
+	 * Method clearViews. clear all views before opening a new file
 	 */
 	void clearViews()
 	{
@@ -278,7 +279,7 @@ public class EditorTabbedPaneA extends JTabbedPane
 		m_pArea.repaint();
 		m_commentArea.setText("");
 		m_commentArea.repaint();
-		setEnabledAt(m_COM_INDEX, false);
+		setEnabledAt(m_COM_INDEX, true);
 	}
 
 	/**
@@ -288,7 +289,7 @@ public class EditorTabbedPaneA extends JTabbedPane
 	{
 		final int selectedIndex = getSelectedIndex();
 		final boolean bProcSel = selectedIndex == m_PROC_INDEX;
-		JDFFrame m_frame = MainView.getFrame();
+		final JDFFrame m_frame = MainView.getFrame();
 		m_frame.m_buttonBar.updateZoomButtons(EditorButtonBar.DEFAULT_ZOOM);
 		if (bProcSel)
 		{
