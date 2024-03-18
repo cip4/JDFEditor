@@ -87,10 +87,12 @@ import javax.swing.tree.TreePath;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFElement.EnumVersion;
 import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.extensions.XJDFHelper;
 import org.cip4.jdflib.extensions.XJMFHelper;
 import org.cip4.jdflib.util.ByteArrayIOStream;
 import org.cip4.jdflib.util.ContainerUtil;
@@ -114,7 +116,7 @@ import org.json.simple.JSONObject;
  */
 public class EditorDocument
 {
-	private final SettingService settingService = SettingService.getSettingService();
+	private final static SettingService settingService = SettingService.getSettingService();
 
 	private final JDFDoc jdfDoc;
 
@@ -188,7 +190,7 @@ public class EditorDocument
 			this.json = json;
 
 			jdfDoc.setOriginalFileName(newExtension);
-			JDFFrame frame = MainView.getFrame();
+			final JDFFrame frame = MainView.getFrame();
 			frame.refreshView(this, null);
 
 			frame.refreshTitle();
@@ -321,8 +323,14 @@ public class EditorDocument
 		{
 			return null;
 		}
-
-		return ((JDFElement) jdfDoc.getRoot()).getVersion(true);
+		final KElement root = jdfDoc.getRoot();
+		final String v = root.getNonEmpty(AttributeName.VERSION);
+		if (v != null)
+			return ((JDFElement) root).getVersion(true);
+		else
+		{
+			return EditorUtils.isJSONEnabled(root.getLocalName()) ? XJDFHelper.defaultVersion() : JDFElement.getDefaultJDFVersion();
+		}
 	}
 
 	/**

@@ -126,4 +126,13 @@ public class EditorDocumentTest extends EditorTestBase
 		assertEquals(XJDFHelper.defaultVersion(), v);
 	}
 
+	@Test
+	public void testGetVersionPTK()
+	{
+		final JDFDoc doc = new JDFDoc("PrintTalk");
+		final EditorDocument d = new EditorDocument(doc, null);
+		final EnumVersion v = d.getVersion();
+		assertEquals(XJDFHelper.defaultVersion(), v);
+	}
+
 }
