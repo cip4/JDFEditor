@@ -38,6 +38,7 @@ package org.cip4.tools.jdfeditor;
 
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
@@ -62,9 +63,11 @@ import org.cip4.jdflib.core.StringArray;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.datatypes.JDFAttributeMap;
 import org.cip4.jdflib.datatypes.JDFMatrix;
+import org.cip4.jdflib.extensions.MessageHelper;
 import org.cip4.jdflib.extensions.ResourceHelper;
 import org.cip4.jdflib.extensions.XJDF20;
 import org.cip4.jdflib.extensions.XJDFConstants;
+import org.cip4.jdflib.extensions.XJMFHelper;
 import org.cip4.jdflib.jmf.JDFDeviceInfo;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFJobPhase;
@@ -515,6 +518,22 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		else if (e instanceof JDFMessage)
 		{
 			s = displayMessage(e, s);
+		}
+		else if (XJDFConstants.XJMF.equals(nodeName))
+		{
+			final XJMFHelper xh = XJMFHelper.getHelper(e);
+			final List<MessageHelper> mhs = xh.getMessageHelpers();
+			final StringArray a = new StringArray();
+			for (final MessageHelper mh : mhs)
+			{
+				a.appendUnique(mh.getLocalName());
+			}
+			String msgs = a.getString();
+			if (msgs.length() > 42)
+			{
+				msgs = StringUtil.leftStr(msgs, 40) + "...";
+			}
+			s += " " + msgs;
 		}
 		else if (e instanceof JDFJMF)
 		{
