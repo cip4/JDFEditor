@@ -739,7 +739,7 @@ public class EditorDocument
 		}
 		else
 		{
-			// jdfDoc.write2File(file.getAbsolutePath(), indent, !settingService.getSetting(SettingKey.GENERAL_INDENT, Boolean.class));
+			jdfDoc.write2File(file.getAbsolutePath(), indent, !settingService.getSetting(SettingKey.GENERAL_INDENT, Boolean.class));
 		}
 	}
 

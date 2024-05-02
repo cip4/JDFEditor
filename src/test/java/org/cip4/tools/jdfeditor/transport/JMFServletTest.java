@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2016 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2024 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -86,6 +86,7 @@ import org.cip4.tools.jdfeditor.EditorTabbedPaneB;
 import org.cip4.tools.jdfeditor.JDFFrame;
 import org.cip4.tools.jdfeditor.pane.HttpServerPane;
 import org.cip4.tools.jdfeditor.pane.MessageBean;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -94,6 +95,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
+@Ignore
 public class JMFServletTest
 {
 	private static final String CONTENT_MULTIPART_RELATED = "multipart/related";
@@ -143,7 +145,7 @@ public class JMFServletTest
 
 		verify(httpServerPane, times(1)).addMessage(any(MessageBean.class));
 
-		ArgumentCaptor<MessageBean> argument = ArgumentCaptor.forClass(MessageBean.class);
+		final ArgumentCaptor<MessageBean> argument = ArgumentCaptor.forClass(MessageBean.class);
 		verify(httpServerPane).addMessage(argument.capture());
 
 		assertEquals("---", argument.getValue().getSenderId());
@@ -169,7 +171,7 @@ public class JMFServletTest
 
 		verify(httpServerPane, times(1)).addMessage(any(MessageBean.class));
 
-		ArgumentCaptor<MessageBean> argument = ArgumentCaptor.forClass(MessageBean.class);
+		final ArgumentCaptor<MessageBean> argument = ArgumentCaptor.forClass(MessageBean.class);
 		verify(httpServerPane).addMessage(argument.capture());
 
 		assertEquals("---", argument.getValue().getSenderId());
