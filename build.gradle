@@ -9,8 +9,8 @@ plugins {
 mainClassName = 'org.cip4.tools.jdfeditor.Editor'
 def simpleProjectName = "JDFEditor"
 
-sourceCompatibility = 11
-targetCompatibility = 11
+sourceCompatibility = 17
+targetCompatibility = 17
 
 if (project.hasProperty('projectVersion')) {
 version = project.projectVersion
