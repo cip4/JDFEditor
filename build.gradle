@@ -45,7 +45,7 @@ configurations {
 
 dependencies {
     implementation 'org.cip4.lib.jdf:JDFLibJ-JSON:+'
-    implementation 'org.cip4.tools.jdfutility:JDFUtility:1.8.0'
+    implementation 'org.cip4.tools.jdfutility:JDFUtility:1.8.+'
 	implementation ('org.cip4.lib.jdf:JDFLibJ:2.1.7.+'){
 		exclude group: 'xml-apis'
 	}
