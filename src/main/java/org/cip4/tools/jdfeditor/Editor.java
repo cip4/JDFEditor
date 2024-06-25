@@ -80,9 +80,6 @@ import org.cip4.jdflib.core.JDFAudit;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.core.KElement;
-import org.cip4.jdflib.core.StringArray;
-import org.cip4.jdflib.core.VString;
-import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
 import org.cip4.jdflib.jmf.JMFBuilder;
 import org.cip4.jdflib.jmf.JMFBuilderFactory;
 import org.cip4.jdflib.resource.JDFResource;
@@ -250,27 +247,9 @@ public class Editor
 			final InputStream is = ResourceUtil.class.getResourceAsStream(EditorUtils.RES_SCHEMA_20);
 			final KElement schema = KElement.parseStream(is);
 			w.fillTypesFromSchema(schema, settingService.getBool(SettingKey.JSON_XJMF_SPLIT));
-			removeMessages(w);
 			jsonWriter = w;
 		}
 		return jsonWriter;
-	}
-
-	void removeMessages(final JSONWriter w)
-	{
-		final StringArray a = new StringArray(w.getArrayNames());
-		final VString fams = EnumFamily.getFamilies();
-		for (int i = 0; i < fams.size(); i++)
-			fams.set(i, fams.get(i).toLowerCase());
-		for (final String msg : a)
-		{
-			for (final String fam : fams)
-			{
-				if (msg.startsWith(fam))
-					w.removeArray(msg);
-			}
-		}
-
 	}
 
 }

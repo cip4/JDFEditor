@@ -86,12 +86,8 @@ import org.cip4.jdflib.core.JDFElement.EnumVersion;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 
 /**
- * @author ThunellE AnderssonA
- * Choose format of new file
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * @author ThunellE AnderssonA Choose format of new file To change this generated comment edit the template variable "typecomment": Window>Preferences>Java>Templates. To enable and
+ *         disable the creation of type comments go to Window>Preferences>Java>Code Generation.
  */
 public class NewFileChooser extends JPanel implements ActionListener
 {
@@ -119,14 +115,13 @@ public class NewFileChooser extends JPanel implements ActionListener
 	}
 
 	/**
-	 * Method init.
-	 * Create the new file chooser
+	 * Method init. Create the new file chooser
 	 */
 	private void init()
 	{
 		/*
-		* Need to add this getString "Golden Ticket" b/c it states right now Do you want to create a new JDF or JMF file?
-		*/
+		 * Need to add this getString "Golden Ticket" b/c it states right now Do you want to create a new JDF or JMF file?
+		 */
 		final JLabel label = new JLabel(ResourceUtil.getMessage("ChooseNewFileKey"));
 		add(label);
 		final JPanel p1 = new JPanel();
@@ -160,7 +155,7 @@ public class NewFileChooser extends JPanel implements ActionListener
 			vs[i] = ((EnumVersion) enumList.get(i)).getName();
 		gtVersion = new JComboBox<String>(vs);
 		gtVersion.addActionListener(this);
-		gtVersion.setSelectedIndex(8);
+		gtVersion.setSelectedIndex(9); // 1.8
 
 		add(gtVersion);
 	}
@@ -192,8 +187,8 @@ public class NewFileChooser extends JPanel implements ActionListener
 	}
 
 	/**
-	 * Method getSelection.
-	 * get the format of the file to open
+	 * Method getSelection. get the format of the file to open
+	 * 
 	 * @return String
 	 */
 	public String getSelection()
