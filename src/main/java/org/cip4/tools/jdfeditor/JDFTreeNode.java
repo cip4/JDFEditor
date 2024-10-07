@@ -75,6 +75,7 @@ import org.cip4.jdflib.jmf.JDFMessage;
 import org.cip4.jdflib.jmf.JDFMessageService;
 import org.cip4.jdflib.jmf.JDFQueueEntry;
 import org.cip4.jdflib.jmf.JDFResourceInfo;
+import org.cip4.jdflib.node.JDFAncestor;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.resource.JDFDevice;
 import org.cip4.jdflib.resource.JDFEvent;
@@ -543,7 +544,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 				s += " SenderID: " + senderID;
 			}
 		}
-		else if (e instanceof JDFNode || XJDF20.rootName.equals(nodeName))
+		else if (e instanceof JDFNode || XJDF20.rootName.equals(nodeName) || e instanceof JDFAncestor)
 		{
 			s = displayJDF(e, s);
 		}
@@ -873,6 +874,8 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		{
 			s += d.getFormattedDateTime(" MMM dd yyyy - HH:mm");
 		}
+		s = StringUtil.addToken(s, JDFConstants.BLANK, a.getNonEmpty(AttributeName.STATUS));
+		s = StringUtil.addToken(s, JDFConstants.BLANK, a.getNonEmpty(AttributeName.ENDSTATUS));
 		return s;
 	}
 
@@ -917,18 +920,13 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 	String displayJDF(final KElement e, String s)
 	{
 		String typ = e.getNonEmpty(AttributeName.TYPE);
-		if (typ != null)
+		s = StringUtil.addToken(s, JDFConstants.BLANK, typ);
+		final String typs = e.getNonEmpty(AttributeName.TYPES);
+		if (typs != null)
 		{
-			s += " " + typ;
+			s += " / " + typs;
 		}
-		else
-		{
-			typ = e.getNonEmpty(AttributeName.TYPES);
-			if (typ != null)
-			{
-				s += " " + typ;
-			}
-		}
+
 		typ = e.getAttribute(AttributeName.CATEGORY, null, null);
 		if (typ != null)
 		{

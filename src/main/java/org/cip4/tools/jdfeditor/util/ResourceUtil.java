@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2024 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -91,7 +91,7 @@ public class ResourceUtil
 {
 	private static final Log LOGGER = LogFactory.getLog(ResourceUtil.class);
 
-	private static /*final*/ ResourceBundle messageBundle;
+	private static ResourceBundle messageBundle = initMessageBundle();
 
 	private static final String RES_MESSAGE_BUNDLE = "org.cip4.tools.jdfeditor.messages.JDFEditor";
 	private static final String ICONS_PATH = "/org/cip4/tools/jdfeditor/icons/";
@@ -107,7 +107,7 @@ public class ResourceUtil
 	 */
 	private ResourceUtil()
 	{
-		messageBundle = initMessageBundle();
+
 	}
 
 	public static ResourceUtil getInstance()
@@ -117,17 +117,18 @@ public class ResourceUtil
 
 	/**
 	 * Return a localized message by key.
+	 * 
 	 * @param key Key of the message.
 	 * @return Localized message as String.
 	 */
-	public static String getMessage(String key)
+	public static String getMessage(final String key)
 	{
 		String result = "undefined";
 		try
 		{
 			result = messageBundle.getString(key);
 		}
-		catch (MissingResourceException e)
+		catch (final MissingResourceException e)
 		{
 			result = "?" + key + "?";
 			LOGGER.error("Error, no key found, key: " + key + ", return result: " + result, e);
@@ -137,23 +138,24 @@ public class ResourceUtil
 
 	/**
 	 * Returns a resource as ImageIcon object.
+	 * 
 	 * @param imageName Resource String of Icon.
 	 * @return The ImageIcon object.
 	 */
 	public static ImageIcon getImageIcon(final String imageName)
 	{
 		ImageIcon imageIcon = null;
-		InputStream is = ResourceUtil.class.getResourceAsStream(ICONS_PATH + imageName);
+		final InputStream is = ResourceUtil.class.getResourceAsStream(ICONS_PATH + imageName);
 
 		try
 		{
 			if (is == null)
 				throw new IOException("Image not existing: " + imageName);
 
-			byte[] bytes = IOUtils.toByteArray(is);
+			final byte[] bytes = IOUtils.toByteArray(is);
 			imageIcon = new ImageIcon(bytes);
 		}
-		catch (IOException e)
+		catch (final IOException e)
 		{
 			LOGGER.error("Error during loading image: " + imageName, e);
 		}
@@ -163,18 +165,19 @@ public class ResourceUtil
 
 	/**
 	 * Initializes and returns the localized message bundle.
+	 * 
 	 * @return The Messages ResourceBundle object.
 	 */
 	private static ResourceBundle initMessageBundle()
 	{
 
 		// setup application language
-		String language = SettingService.getSettingService().getSetting(SettingKey.GENERAL_LANGUAGE, String.class);
+		final String language = SettingService.getSettingService().getSetting(SettingKey.GENERAL_LANGUAGE, String.class);
 		final Locale currentLocale = new Locale(language, language.toUpperCase());
 		Locale.setDefault(currentLocale);
 
 		// init and return
-		ResourceBundle messages = ResourceBundle.getBundle(RES_MESSAGE_BUNDLE, currentLocale);
+		final ResourceBundle messages = ResourceBundle.getBundle(RES_MESSAGE_BUNDLE, currentLocale);
 		return messages;
 	}
 }

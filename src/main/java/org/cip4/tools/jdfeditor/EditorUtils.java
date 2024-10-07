@@ -445,6 +445,7 @@ public class EditorUtils
 
 								if (jdfDoc != null)
 								{
+									LOGGER.info("parsed file " + inputFile + " with loader: " + loader.getClass().getSimpleName());
 									break;
 								}
 							}
@@ -848,6 +849,7 @@ public class EditorUtils
 			final File fileAppDir = new File(getUserDir().getToolPath());
 			final File filePluginDir = new File(fileAppDir, "plugins");
 			LOGGER.info("using plugin directory: " + filePluginDir.getAbsolutePath());
+			filePluginDir.mkdirs();
 			pluginLoader = new PluginLoader<IStreamLoader>(IStreamLoader.class, filePluginDir);
 		}
 	}

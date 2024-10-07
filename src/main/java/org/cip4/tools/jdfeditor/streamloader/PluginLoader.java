@@ -127,7 +127,7 @@ public class PluginLoader<I>
 		if (m_alPlugins == null)
 		{
 			final ArrayList<I> alPlugins = new ArrayList<I>();
-
+			m_filePluginDir.mkdirs();
 			final File[] fileList = m_filePluginDir.listFiles(new PlugInFilter());
 
 			if ((fileList != null) && (fileList.length > 0))
