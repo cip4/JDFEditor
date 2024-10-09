@@ -754,32 +754,37 @@ public class EditorDocument
 		}
 		if (json)
 		{
-			final JSONWriter jw = Editor.getEditor().getJSonWriter();
-			final List<JSONObject> l = jw.splitConvert(root);
-			for (final JSONObject o : l)
-			{
-				final JSONIndentWalker iw = new JSONIndentWalker(new JSONObjHelper(o));
-				iw.setSingleIndent(2);
-				iw.setSorted(true);
-				final ByteArrayIOStream ios = new ByteArrayIOStream();
-				try
-				{
-					iw.writeStream(ios);
-				}
-				catch (final IOException e)
-				{
-					continue;
-				}
-				final String s = new String(ios.toByteArray());
-				return s;
-			}
-			return null;
+			return getJSONString(root, 2);
 		}
 		else
 		{
 			return root.toXML(2);
 		}
 
+	}
+
+	String getJSONString(final KElement root, final int indent)
+	{
+		final JSONWriter jw = Editor.getEditor().getJSonWriter();
+		final List<JSONObject> l = jw.splitConvert(root);
+		for (final JSONObject o : l)
+		{
+			final JSONIndentWalker iw = new JSONIndentWalker(new JSONObjHelper(o));
+			iw.setSingleIndent(indent);
+			iw.setSorted(true);
+			final ByteArrayIOStream ios = new ByteArrayIOStream();
+			try
+			{
+				iw.writeStream(ios);
+			}
+			catch (final IOException e)
+			{
+				continue;
+			}
+			final String s = new String(ios.toByteArray());
+			return s;
+		}
+		return null;
 	}
 
 	/**

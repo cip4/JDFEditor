@@ -133,6 +133,7 @@ public class EditorUtils
 {
 	private static final Log LOGGER = LogFactory.getLog(EditorUtils.class);
 	public static final String RES_SCHEMA_20 = "/org/cip4/tools/jdfeditor/schema/xjdf.xsd";
+	public static final String RES_SCHEMA_JSON = "resource:/org/cip4/tools/jdfeditor/schema/xjdf.json";
 
 	private static PluginLoader<IStreamLoader> pluginLoader = null;
 

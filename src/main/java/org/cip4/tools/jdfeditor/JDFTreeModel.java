@@ -73,6 +73,7 @@ package org.cip4.tools.jdfeditor;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
@@ -118,12 +119,15 @@ import org.cip4.jdflib.util.JDFSpawn;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.jdflib.validate.JDFValidator;
+import org.cip4.lib.jdf.jsonutil.schema.JSONSchemaReader;
 import org.cip4.tools.jdfeditor.extension.Caps;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 import org.w3c.dom.Attr;
+
+import com.networknt.schema.ValidationMessage;
 
 /**
  * @author rainer prosi This is a new dump for some of the JDFFrame classes anything related to the abstract datamodel in the jdf tree belongs here TODO move some of the routines
@@ -270,7 +274,11 @@ public class JDFTreeModel extends DefaultTreeModel
 		{
 			return false;
 		}
-		if (eDoc.isXJDF())
+		if (eDoc.isJson())
+		{
+			return validateJSON();
+		}
+		else if (eDoc.isXJDF())
 		{
 			return validateXJDF();
 		}
@@ -282,6 +290,32 @@ public class JDFTreeModel extends DefaultTreeModel
 		{
 			return false;
 		}
+	}
+
+	boolean validateJSON()
+	{
+		final EditorDocument eDoc = MainView.getEditorDoc();
+		final String json = eDoc.getJSONString(eDoc.getJDFDoc().getRoot(), 0);
+		final JSONSchemaReader sr = new JSONSchemaReader(EditorUtils.RES_SCHEMA_JSON);
+		final Collection<ValidationMessage> results = sr.checkJSON(json);
+		validationResult = null;
+		final KElement schemaValidationResult = KElement.createRoot("SchemaValidationOutput", null);
+		schemaValidationResult.setAttribute("SchemaLocation", EditorUtils.RES_SCHEMA_JSON);
+		schemaValidationResult.setAttribute("ValidationResult", ContainerUtil.isEmpty(results) ? "Valid" : "Error");
+		for (final ValidationMessage m : results)
+		{
+			final KElement error = schemaValidationResult.appendElement("Error");
+			error.setAttribute("Message", m.toString());
+			error.setAttribute("Path", m.getInstanceLocation().toString());
+		}
+		final JDFFrame m_frame = MainView.getFrame();
+		m_frame.getBottomTabs().m_SchemaErrScroll.drawSchemaOutputTree(schemaValidationResult.getOwnerDocument_KElement());
+		if (MainView.getEditorDoc().getJDFTree() != null)
+		{
+			MainView.getEditorDoc().getJDFTree().repaint();
+			m_frame.getJDFTreeArea().goToPath(m_frame.getJDFTreeArea().getSelectionPath()); // TODO: what this code actually do ?
+		}
+		return ContainerUtil.isEmpty(results);
 	}
 
 	protected boolean validateJDF()
@@ -384,7 +418,9 @@ public class JDFTreeModel extends DefaultTreeModel
 		{
 			final ByteArrayIOStream outStream = new ByteArrayIOStream();
 			theDoc.write2Stream(outStream, 0, false);
-			final EnumVersion v = EnumVersion.getEnum(theDoc.getRoot().getAttribute(AttributeName.VERSION));
+			EnumVersion v = EnumVersion.getEnum(theDoc.getRoot().getAttribute(AttributeName.VERSION));
+			if (v == null)
+				v = XJDF20.getDefaultVersion();
 			final File schema = EditorUtils.getSchemaFile(v);
 			final URL url = ResourceUtil.class.getResource(EditorUtils.RES_SCHEMA_20);
 			final String sUrl = schema == null ? url.toExternalForm() : UrlUtil.fileToUrl(schema, false);
