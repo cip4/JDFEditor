@@ -34,7 +34,7 @@
  * For more information on The International Cooperation for the Integration of Processes in Prepress, Press and Postpress , please see <http://www.cip4.org/>.
  *
  */
-package org.cip4.tools.jdfeditor;
+package org.cip4.tools.jdfeditor.view.renderer;
 
 import static org.junit.Assert.assertEquals;
 
