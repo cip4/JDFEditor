@@ -3,8 +3,8 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2016 The International Cooperation for the Integration of
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights
+ * Copyright (c) 2001-2024 The International Cooperation for the Integration of 
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +12,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -20,17 +20,17 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
- *        The International Cooperation for the Integration of
+ *        The International Cooperation for the Integration of 
  *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of 
  *    Processes in  Prepress, Press and Postpress" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact info@cip4.org.
  *
  * 5. Products derived from this software may not be called "CIP4",
@@ -56,66 +56,87 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration
+ * individuals on behalf of the The International Cooperation for the Integration 
  * of Processes in Prepress, Press and Postpress and was
- * originally based on software
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
- * copyright (c) 1999-2001, Agfa-Gevaert N.V.
- *
- * For more information on The International Cooperation for the
+ * originally based on software 
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
+ *  
+ * For more information on The International Cooperation for the 
  * Integration of Processes in  Prepress, Press and Postpress , please see
  * <http://www.cip4.org/>.
- *
- *
+ *  
+ * 
  */
-package org.cip4.tools.jdfeditor;
+package org.cip4.tools.jdfeditor.view.renderer;
 
-import javax.swing.tree.TreeNode;
+import org.cip4.jdflib.core.KElement;
+import org.w3c.dom.Attr;
 
-import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;
+public class JSONSchemaOutputWrapper extends JDFTreeNode
+{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2575958231112905133L;
 
-import java.util.Enumeration;
-import java.util.NoSuchElementException;
+	public JSONSchemaOutputWrapper(final KElement element)
+	{
+		super(element);
+	}
 
-/**
- * Wrapper for Enumeration<TreeNode> that only returns elements of type JDFTreeNode.
- */
-public class JDFTreeNodeEnumeration implements Enumeration<JDFTreeNode> {
+	/**
+	 * 
+	 * @param atr
+	 */
+	public JSONSchemaOutputWrapper(final Attr atr)
+	{
+		super(atr, false);
+	}
 
-    private Enumeration<TreeNode> delegate;
+	/**
+	 * generates the string to be displayed in the tree
+	 */
+	@Override
+	public String toDisplayString()
+	{
+		String s = super.toDisplayString();
+		if (s == null)
+			return null;
+		final Object o = this.getUserObject();
+		if (o instanceof Attr)
+		{
+			final Attr atr = (Attr) o;
+			final String nam = atr.getLocalName();
+			return s;
+		}
 
-    private JDFTreeNode next;
+		final KElement e = (KElement) o;
+		final String nam = getName();
+		if (nam.equals("JSONSchema"))
+		{
+			s += getDCString("ValidationResult", " Validation=", "");
+		}
+		if (nam.equals("Error") || nam.equals("Warning"))
+		{
+			String path = getElement().getNonEmpty("Path");
+			if ("$".equals(path))
+				path = "JSON root";
+			else if (path == null)
+			{
+				path = "Message";
+			}
+			else if (path.startsWith("$."))
+			{
+				path = path.substring(2);
+			}
+			final String s2 = getElement().getAttribute("Message", null, null);
+			if (s2 != null)
+				s += ": " + path + ": " + s2;
 
-    public JDFTreeNodeEnumeration(Enumeration<TreeNode> delegate) {
-        this.delegate = delegate;
-        findNext();
-    }
+		}
+		return s;
 
-    private void findNext() {
-        if (!delegate.hasMoreElements()) {
-            this.next = null;
-            return;
-        }
-        final TreeNode next = delegate.nextElement();
-        if (next instanceof JDFTreeNode) {
-            this.next = (JDFTreeNode) next;
-        } else {
-            findNext();
-        }
-    }
+	}
 
-    @Override
-    public boolean hasMoreElements() {
-        return next != null;
-    }
-
-    @Override
-    public JDFTreeNode nextElement() {
-        final JDFTreeNode next = this.next;
-        if (next == null) {
-            throw new NoSuchElementException();
-        }
-        findNext();
-        return next;
-    }
 }

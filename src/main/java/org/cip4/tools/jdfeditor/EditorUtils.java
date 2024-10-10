@@ -122,6 +122,7 @@ import org.cip4.tools.jdfeditor.streamloader.JSONStreamLoader;
 import org.cip4.tools.jdfeditor.streamloader.PluginLoader;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
+import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;
 
 /**
  * static utilities for the editor

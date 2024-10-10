@@ -122,6 +122,7 @@ import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 import org.cip4.tools.jdfeditor.view.renderer.JDFTreeCellRenderer;
+import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;
 
 /**
  * This is a new dump for some of the JDFFrame classes that relate to the actual tree view TODO move some of the routines here into the model where they belong and reduce the

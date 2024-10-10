@@ -70,6 +70,7 @@
  */
 package org.cip4.tools.jdfeditor;
 
+import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;
 import org.junit.Test;
 import org.mockito.Mockito;
 

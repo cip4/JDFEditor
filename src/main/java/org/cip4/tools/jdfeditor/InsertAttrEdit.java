@@ -75,6 +75,7 @@ import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
 import org.cip4.tools.jdfeditor.view.MainView;
+import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;
 
 /*
  * InsertAttrEdit.java

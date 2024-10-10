@@ -71,6 +71,7 @@
 package org.cip4.tools.jdfeditor;
 
 import org.cip4.tools.jdfeditor.view.MainView;
+import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;
 
 import javax.swing.tree.TreePath;
 import javax.swing.undo.CannotRedoException;

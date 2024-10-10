@@ -150,6 +150,7 @@ import org.cip4.tools.jdfeditor.service.DocumentService;
 import org.cip4.tools.jdfeditor.util.RecentFileUtil;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
+import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;
 
 /**
  * @author AnderssA ThunellE SvenoniusI Elena Skobchenko

@@ -34,7 +34,7 @@
  * For more information on The International Cooperation for the Integration of Processes in Prepress, Press and Postpress , please see <http://www.cip4.org/>.
  *
  */
-package org.cip4.tools.jdfeditor;
+package org.cip4.tools.jdfeditor.view.renderer;
 
 import java.util.Collections;
 import java.util.Enumeration;
@@ -110,6 +110,8 @@ import org.cip4.jdflib.resource.process.JDFStation;
 import org.cip4.jdflib.span.JDFSpanBase;
 import org.cip4.jdflib.util.JDFDate;
 import org.cip4.jdflib.util.StringUtil;
+import org.cip4.tools.jdfeditor.JDFTreeModel;
+import org.cip4.tools.jdfeditor.JDFTreeNodeEnumeration;
 import org.w3c.dom.Attr;
 
 /**

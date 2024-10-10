@@ -6,7 +6,6 @@ import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.validate.JDFValidator;
 import org.cip4.tools.jdfeditor.JDFTreeModel;
-import org.cip4.tools.jdfeditor.JDFTreeNode;
 
 /**
  * @author Elena Skobchenko

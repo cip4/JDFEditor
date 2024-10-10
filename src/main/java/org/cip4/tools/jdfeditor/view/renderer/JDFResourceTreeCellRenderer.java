@@ -4,7 +4,6 @@ import java.awt.Color;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cip4.tools.jdfeditor.JDFTreeNode;
 
 /**
  * Tree renderer for JDFResource elements.

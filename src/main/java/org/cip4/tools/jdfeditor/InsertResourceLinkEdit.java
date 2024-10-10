@@ -7,6 +7,7 @@ import javax.swing.undo.CannotUndoException;
 import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourceLinkPool;
+import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;
 
 /*
  * InsertResourceLinkEdit.java

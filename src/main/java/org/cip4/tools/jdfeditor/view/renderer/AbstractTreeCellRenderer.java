@@ -75,6 +75,7 @@ import java.awt.Component;
 import java.awt.Font;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.EnumMap;
 
 import javax.swing.ImageIcon;
 import javax.swing.JTree;
@@ -85,8 +86,8 @@ import org.apache.commons.logging.Log;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.node.JDFNode;
+import org.cip4.jdflib.util.StringUtil;
 import org.cip4.tools.jdfeditor.JDFTreeModel;
-import org.cip4.tools.jdfeditor.JDFTreeNode;
 import org.cip4.tools.jdfeditor.service.RuntimeProperties;
 
 /**
@@ -107,8 +108,9 @@ public abstract class AbstractTreeCellRenderer extends DefaultTreeCellRenderer
 	{
 
 		NODE_JDF("node_jdf.png"), NODE_XJDF("node_xjdf.png"), NODE_REF("node_link.png"), NODE_REF_IN("node_link.png"), NODE_REF_OUT("node_link.png"), NODE_WARN(
-				"WarnElemIcon.gif"), NODE_ERR("ErrorElemIcon.gif"), NODE_DEFAULT("node.png"), ATTR_PARTKEYS("leaf_keys.png"), ATTR_INHERITED(
-						"leaf_inherit.png"), ATTR_REF("leaf_ref.png"), ATTR_WARN("WarnAttIcon.gif"), ATTR_ERR("leaf_error.png"), ATTR_DEFAULT("leaf.png");
+				"WarnElemIcon.gif"), NODE_ERR("ErrorElemIcon.gif"), OK("ValidateFile.GIF"), ERROR("ErrorIcon.gif"), WARN("WarnIcon.gif"), NODE_DEFAULT("node.png"), ATTR_PARTKEYS(
+						"leaf_keys.png"), ATTR_INHERITED(
+								"leaf_inherit.png"), ATTR_REF("leaf_ref.png"), ATTR_WARN("WarnAttIcon.gif"), ATTR_ERR("leaf_error.png"), ATTR_DEFAULT("leaf.png");
 
 		private final String fileName;
 
@@ -173,10 +175,10 @@ public abstract class AbstractTreeCellRenderer extends DefaultTreeCellRenderer
 		setFont(cellFont);
 	}
 
-	Font getCellFont(JDFTreeNode node)
+	Font getCellFont(final JDFTreeNode node)
 	{
 
-		int style = node.isElement() ? Font.BOLD : Font.PLAIN;
+		final int style = node.isElement() ? Font.BOLD : Font.PLAIN;
 		return new Font(null, style, RuntimeProperties.enlargedTextFontSize);
 	}
 
@@ -248,7 +250,7 @@ public abstract class AbstractTreeCellRenderer extends DefaultTreeCellRenderer
 		}
 	}
 
-	Color getFontColor(JDFTreeNode node)
+	Color getFontColor(final JDFTreeNode node)
 	{
 		return node.isElement() ? colorFontElement : colorFont;
 	}
@@ -376,6 +378,8 @@ public abstract class AbstractTreeCellRenderer extends DefaultTreeCellRenderer
 		}
 	}
 
+	private final static EnumMap<TreeIcon, ImageIcon> icons = new EnumMap<>(TreeIcon.class);
+
 	/**
 	 * Load and returns an image icon object.
 	 *
@@ -384,21 +388,30 @@ public abstract class AbstractTreeCellRenderer extends DefaultTreeCellRenderer
 	 */
 	protected ImageIcon loadImageIcon(final TreeIcon treeIcon)
 	{
-
-		final String resPath = ICON_ROOT_PATH + treeIcon.getFileName();
-		byte[] bytes = null;
-
-		try
+		ImageIcon icon = icons.get(treeIcon);
+		if (icon == null)
 		{
-			final InputStream is = JDFTreeCellRenderer.class.getResourceAsStream(resPath);
-			bytes = IOUtils.toByteArray(is);
-			is.close();
-		}
-		catch (final IOException e)
-		{
-			LOGGER.error(e);
-		}
+			String resPath = ICON_ROOT_PATH + treeIcon.getFileName();
+			byte[] bytes = null;
 
-		return new ImageIcon(bytes);
+			try
+			{
+				InputStream is = JDFTreeCellRenderer.class.getResourceAsStream(resPath);
+				if (is == null)
+				{
+					resPath = StringUtil.leftStr(ICON_ROOT_PATH, -9) + treeIcon.getFileName();
+					is = JDFTreeCellRenderer.class.getResourceAsStream(resPath);
+				}
+				bytes = IOUtils.toByteArray(is);
+				is.close();
+				icon = new ImageIcon(bytes);
+				icons.put(treeIcon, icon);
+			}
+			catch (final IOException e)
+			{
+				LOGGER.error(e);
+			}
+		}
+		return icon;
 	}
 }

@@ -80,6 +80,7 @@ import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.tools.jdfeditor.view.renderer.SchemaOutputTreeCellRenderer;
+import org.cip4.tools.jdfeditor.view.renderer.SchemaOutputWrapper;
 
 /**
  * this class encapsulates the output of the dev caps test

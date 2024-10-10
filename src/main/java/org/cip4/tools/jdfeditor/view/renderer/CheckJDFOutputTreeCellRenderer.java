@@ -75,7 +75,6 @@ import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.validate.JDFValidator;
 import org.cip4.tools.jdfeditor.JDFTreeModel;
-import org.cip4.tools.jdfeditor.JDFTreeNode;
 
 /**
  * @author Elena Skobchenko
@@ -98,12 +97,12 @@ public class CheckJDFOutputTreeCellRenderer extends AbstractTreeCellRenderer
 	}
 
 	@Override
-	protected void setNodeIcon(JDFTreeNode node, JDFTreeModel model)
+	protected void setNodeIcon(final JDFTreeNode node, final JDFTreeModel model)
 	{
-		String n = node.getName();
+		final String n = node.getName();
 		if (node.isElement())
 		{
-			KElement elem = node.getElement();
+			final KElement elem = node.getElement();
 
 			if (n.equals("TestAttribute"))
 			{
@@ -116,7 +115,7 @@ public class CheckJDFOutputTreeCellRenderer extends AbstractTreeCellRenderer
 					setIcon(loadImageIcon(TreeIcon.ATTR_DEFAULT));
 				}
 
-				String tts = JDFValidator.toMessageString(elem);
+				final String tts = JDFValidator.toMessageString(elem);
 				if (tts != null)
 					setToolTipText(tts);
 			}
@@ -150,10 +149,32 @@ public class CheckJDFOutputTreeCellRenderer extends AbstractTreeCellRenderer
 					setToolTipText(elem.getAttribute("Message"));
 
 			}
+			else if (n.equals("JSONSchema"))
+			{
+				if (elem != null && !elem.getAttribute("ValidationResult", null, "").equals("Valid"))
+				{
+					setIcon(loadImageIcon(TreeIcon.ERROR));
+				}
+				else
+				{
+					setIcon(loadImageIcon(TreeIcon.OK));
+				}
 
+				if (elem.getAttribute("Message") != null)
+					setToolTipText(elem.getAttribute("Message"));
+
+			}
 			else if (n.equals("Part"))
 			{
 				setIcon(loadImageIcon(TreeIcon.NODE_JDF));
+			}
+			else if (n.equals("Error"))
+			{
+				setIcon(loadImageIcon(TreeIcon.ERROR));
+			}
+			else if (n.equals("Warning"))
+			{
+				setIcon(loadImageIcon(TreeIcon.WARN));
 			}
 			else
 			{

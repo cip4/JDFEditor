@@ -72,6 +72,7 @@ package org.cip4.tools.jdfeditor;
 
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.node.JDFNode;
+import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;
 import org.w3c.dom.Attr;
 
 

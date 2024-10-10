@@ -81,6 +81,7 @@ import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourceLinkPool;
 import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.jdflib.resource.JDFResource;
+import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;
 
 /**
  * InsertResourceAndLinkEdit.java

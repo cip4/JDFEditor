@@ -89,6 +89,7 @@ import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
+import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;
 
 /**
  * this handles anything located in the top right tabbed panes it has been misused as a dump from JDFFrame

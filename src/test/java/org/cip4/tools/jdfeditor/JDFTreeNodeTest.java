@@ -42,6 +42,7 @@ import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFSeparationList;
 import org.cip4.jdflib.resource.process.JDFColorantAlias;
+import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;
 import org.junit.Test;
 
 /**

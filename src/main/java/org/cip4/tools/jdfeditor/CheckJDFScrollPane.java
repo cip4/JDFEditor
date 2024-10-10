@@ -80,9 +80,12 @@ import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.tools.jdfeditor.view.renderer.CheckJDFOutputTreeCellRenderer;
+import org.cip4.tools.jdfeditor.view.renderer.CheckJDFOutputWrapper;
+import org.cip4.tools.jdfeditor.view.renderer.JSONSchemaOutputWrapper;
 
 /**
  * this class encapsulates the output of the dev caps test
+ * 
  * @author prosirai
  *
  */
@@ -90,7 +93,6 @@ public class CheckJDFScrollPane extends ValidationScrollPane
 {
 	private static final long serialVersionUID = 2367868076065696719L;
 
-	private CheckJDFOutputWrapper checkJDFRoot;
 	private CheckJDFOutputTreeCellRenderer treeCellRenderer;
 
 	public CheckJDFScrollPane()
@@ -108,16 +110,17 @@ public class CheckJDFScrollPane extends ValidationScrollPane
 	/**
 	 * 
 	 * TODO Please insert comment!
+	 * 
 	 * @param bugReport
 	 */
 	public void drawCheckJDFOutputTree(final XMLDoc bugReport)
 	{
 		if (bugReport == null)
 			return;
-		KElement repRoot = bugReport.getRoot().getChildByTagName("CheckJDFOutput", null, 0, null, false, true);
+		final KElement repRoot = bugReport.getRoot().getChildByTagName("CheckJDFOutput", null, 0, null, false, true);
 		if (repRoot == null)
 			return;
-		checkJDFRoot = new CheckJDFOutputWrapper(repRoot);
+		final CheckJDFOutputWrapper checkJDFRoot = new CheckJDFOutputWrapper(repRoot);
 		m_reportTree = new JTree(checkJDFRoot);
 		m_reportTree.setModel(new JDFTreeModel(checkJDFRoot, false));
 		m_reportTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -125,10 +128,38 @@ public class CheckJDFScrollPane extends ValidationScrollPane
 		m_reportTree.setEditable(false);
 		ToolTipManager.sharedInstance().registerComponent(m_reportTree);
 
-		//DCOutputWrapper bugReportRoot = null;
-
 		setCheckJDFOutputTree(checkJDFRoot);
-		//        m_reportTree.expandPath(new TreePath(bugReportRoot.getPath()));
+		m_reportTree.expandPath(new TreePath(checkJDFRoot.getPath()));
+
+		m_SelectionListener = new ValidationSelectionListener();
+		m_reportTree.addTreeSelectionListener(m_SelectionListener);
+
+		m_reportTree.setCellRenderer(treeCellRenderer);
+		m_reportTree.setRowHeight(0); // apply height of each cell from cell-renderer
+
+		final ValidationPopupListener popupListener = new ValidationPopupListener();
+		m_reportTree.addMouseListener(popupListener);
+
+		getViewport().setView(m_reportTree);
+	}
+
+	/**
+	 * 
+	 * @param bugReport
+	 */
+	public void drawJSONSchemaOutputTree(final XMLDoc bugReport)
+	{
+		final KElement repRoot = bugReport.getRoot();
+		final JSONSchemaOutputWrapper checkJDFRoot = new JSONSchemaOutputWrapper(repRoot);
+		m_reportTree = new JTree(checkJDFRoot);
+		m_reportTree.setModel(new JDFTreeModel(checkJDFRoot, false));
+		m_reportTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		m_reportTree.setExpandsSelectedPaths(true);
+		m_reportTree.setEditable(false);
+		ToolTipManager.sharedInstance().registerComponent(m_reportTree);
+
+		setJSONSchemaOutputTree(checkJDFRoot);
+		// m_reportTree.expandPath(new TreePath(bugReportRoot.getPath()));
 		m_reportTree.expandPath(new TreePath(checkJDFRoot.getPath()));
 
 		m_SelectionListener = new ValidationSelectionListener();
@@ -145,9 +176,9 @@ public class CheckJDFScrollPane extends ValidationScrollPane
 
 	private void setCheckJDFOutputTree(final CheckJDFOutputWrapper bugReport)
 	{
-		KElement repElem = bugReport.getElement();
+		final KElement repElem = bugReport.getElement();
 		// now add the individual attributes
-		VString vAtts = repElem.getAttributeVector();
+		final VString vAtts = repElem.getAttributeVector();
 		for (int i = 0; i < vAtts.size(); i++)
 		{
 			final String stringAt = vAtts.get(i);
@@ -173,17 +204,38 @@ public class CheckJDFScrollPane extends ValidationScrollPane
 				continue;
 			if (stringAt.equals("Separation"))
 				continue;
-			CheckJDFOutputWrapper next = new CheckJDFOutputWrapper(repElem.getAttributeNode(stringAt));
+			final CheckJDFOutputWrapper next = new CheckJDFOutputWrapper(repElem.getAttributeNode(stringAt));
 			bugReport.add(next);
 		}
 		// recurse through children
-		VElement childVector = repElem.getChildElementVector(null, null, null, true, 0, false);
+		final VElement childVector = repElem.getChildElementVector(null, null, null, true, 0, false);
 		for (int i = 0; i < childVector.size(); i++)
 		{
-			KElement kEl = childVector.elementAt(i);
-			CheckJDFOutputWrapper next = new CheckJDFOutputWrapper(kEl);
+			final KElement kEl = childVector.elementAt(i);
+			final CheckJDFOutputWrapper next = new CheckJDFOutputWrapper(kEl);
 			setCheckJDFOutputTree(next);
 			bugReport.add(next);
+		}
+	}
+
+	private void setJSONSchemaOutputTree(final JSONSchemaOutputWrapper checkJDFRoot)
+	{
+		final KElement repElem = checkJDFRoot.getElement();
+		final VString vAtts = repElem.getAttributeVector();
+		for (final String stringAt : vAtts)
+		{
+			final JSONSchemaOutputWrapper next = new JSONSchemaOutputWrapper(repElem.getAttributeNode(stringAt));
+			checkJDFRoot.add(next);
+		}
+
+		final VElement childVector = repElem.getChildElementVector(null, null, null, true, 0, false);
+		childVector.unifyElement();
+		childVector.sort();
+		for (final KElement kEl : childVector)
+		{
+			final JSONSchemaOutputWrapper next = new JSONSchemaOutputWrapper(kEl);
+			setJSONSchemaOutputTree(next);
+			checkJDFRoot.add(next);
 		}
 	}
 

@@ -125,6 +125,7 @@ import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
+import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;
 import org.w3c.dom.Attr;
 
 import com.networknt.schema.ValidationMessage;
@@ -276,6 +277,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		}
 		if (eDoc.isJson())
 		{
+			validateXJDF();
 			return validateJSON();
 		}
 		else if (eDoc.isXJDF())
@@ -299,17 +301,19 @@ public class JDFTreeModel extends DefaultTreeModel
 		final JSONSchemaReader sr = new JSONSchemaReader(EditorUtils.RES_SCHEMA_JSON);
 		final Collection<ValidationMessage> results = sr.checkJSON(json);
 		validationResult = null;
-		final KElement schemaValidationResult = KElement.createRoot("SchemaValidationOutput", null);
-		schemaValidationResult.setAttribute("SchemaLocation", EditorUtils.RES_SCHEMA_JSON);
-		schemaValidationResult.setAttribute("ValidationResult", ContainerUtil.isEmpty(results) ? "Valid" : "Error");
+		final KElement jsonSchemaResult = KElement.createRoot("JSONSchema", null);
+		jsonSchemaResult.setAttribute("SchemaLocation", EditorUtils.RES_SCHEMA_JSON);
+		jsonSchemaResult.setAttribute("ValidationResult", ContainerUtil.isEmpty(results) ? "Valid" : "Error");
 		for (final ValidationMessage m : results)
 		{
-			final KElement error = schemaValidationResult.appendElement("Error");
+			final String loc = m.getInstanceLocation().toString();
+			final String typ = "$".equals(loc) ? "Warning" : "Error";
+			final KElement error = jsonSchemaResult.appendElement(typ);
 			error.setAttribute("Message", m.toString());
-			error.setAttribute("Path", m.getInstanceLocation().toString());
+			error.setAttribute("Path", loc);
 		}
 		final JDFFrame m_frame = MainView.getFrame();
-		m_frame.getBottomTabs().m_SchemaErrScroll.drawSchemaOutputTree(schemaValidationResult.getOwnerDocument_KElement());
+		m_frame.getBottomTabs().m_validErrScroll.drawJSONSchemaOutputTree(jsonSchemaResult.getOwnerDocument_KElement());
 		if (MainView.getEditorDoc().getJDFTree() != null)
 		{
 			MainView.getEditorDoc().getJDFTree().repaint();

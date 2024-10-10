@@ -98,13 +98,13 @@ import org.cip4.tools.jdfeditor.EditorDocument;
 import org.cip4.tools.jdfeditor.EditorMenuBar;
 import org.cip4.tools.jdfeditor.EditorMenuBar.Menu_MouseListener;
 import org.cip4.tools.jdfeditor.JDFFrame;
-import org.cip4.tools.jdfeditor.JDFTreeNode;
 import org.cip4.tools.jdfeditor.PreferenceDialog;
 import org.cip4.tools.jdfeditor.SendToDevice;
 import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.util.FontUtil;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
+import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;
 
 public class MenuTools implements ActionListener, MenuInterface
 {

@@ -98,6 +98,7 @@ import org.cip4.tools.jdfeditor.menu.MenuView;
 import org.cip4.tools.jdfeditor.menu.MenuEdit;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
+import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;
 
 /**
  * Class to implement all the menu bar and menu related stuff moved here from JDFFrame

@@ -87,6 +87,7 @@ import org.cip4.tools.jdfeditor.pane.HttpServerPane;
 import org.cip4.tools.jdfeditor.service.RuntimeProperties;
 import org.cip4.tools.jdfeditor.util.FontUtil;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
+import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;

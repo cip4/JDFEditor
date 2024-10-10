@@ -5,7 +5,6 @@ import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.validate.JDFValidator;
 import org.cip4.tools.jdfeditor.JDFTreeModel;
-import org.cip4.tools.jdfeditor.JDFTreeNode;
 
 public class SchemaOutputTreeCellRenderer extends AbstractTreeCellRenderer
 {
@@ -28,14 +27,14 @@ public class SchemaOutputTreeCellRenderer extends AbstractTreeCellRenderer
 	}
 
 	@Override
-	protected void setNodeIcon(JDFTreeNode node, JDFTreeModel model)
+	protected void setNodeIcon(final JDFTreeNode node, final JDFTreeModel model)
 	{
 
-		String n = node.getName();
+		final String n = node.getName();
 		if (node.isElement())
 		{
-			KElement elem = node.getElement();
-			String tts = JDFValidator.toMessageString(elem);
+			final KElement elem = node.getElement();
+			final String tts = JDFValidator.toMessageString(elem);
 			if (tts != null)
 				setToolTipText(tts);
 
@@ -51,7 +50,7 @@ public class SchemaOutputTreeCellRenderer extends AbstractTreeCellRenderer
 				}
 				else
 				{
-					setIcon(loadImageIcon(TreeIcon.NODE_JDF));
+					setIcon(loadImageIcon(TreeIcon.OK));
 				}
 
 				if (elem.getAttribute("Message") != null)

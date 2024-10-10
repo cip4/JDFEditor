@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2024 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -68,20 +68,20 @@
  *  
  * 
  */
-package org.cip4.tools.jdfeditor;
+package org.cip4.tools.jdfeditor.view.renderer;
 
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.node.JDFNode;
 import org.w3c.dom.Attr;
 
-class CheckJDFOutputWrapper extends JDFTreeNode
+public class CheckJDFOutputWrapper extends JDFTreeNode
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2575958231112905133L;
 
-	public CheckJDFOutputWrapper(KElement element)
+	public CheckJDFOutputWrapper(final KElement element)
 	{
 		super(element);
 	}
@@ -90,7 +90,7 @@ class CheckJDFOutputWrapper extends JDFTreeNode
 	 * 
 	 * @param atr
 	 */
-	public CheckJDFOutputWrapper(Attr atr)
+	public CheckJDFOutputWrapper(final Attr atr)
 	{
 		super(atr, false);
 	}
@@ -104,11 +104,11 @@ class CheckJDFOutputWrapper extends JDFTreeNode
 		String s = super.toDisplayString();
 		if (s == null)
 			return null;
-		Object o = this.getUserObject();
+		final Object o = this.getUserObject();
 		if (o instanceof Attr)
 		{
-			Attr atr = (Attr) o;
-			String nam = atr.getLocalName();
+			final Attr atr = (Attr) o;
+			final String nam = atr.getLocalName();
 			if (nam.equals("XPath"))
 			{
 				s = " XPath: " + atr.getNodeValue();
@@ -116,10 +116,10 @@ class CheckJDFOutputWrapper extends JDFTreeNode
 			return s;
 		}
 
-		KElement e = (KElement) o;
+		final KElement e = (KElement) o;
 		if (e instanceof JDFNode)
 			return s;
-		String nam = getName();
+		final String nam = getName();
 		if (nam.equals("TestElement"))
 		{
 			s = getDCString("ErrorType", "", " ") + getDCString("NodeName", "", " ");
