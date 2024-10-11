@@ -770,20 +770,28 @@ public class EditorDocument
 		final List<JSONObject> l = jw.splitConvert(root);
 		for (final JSONObject o : l)
 		{
-			final JSONIndentWalker iw = new JSONIndentWalker(new JSONObjHelper(o));
-			iw.setSingleIndent(indent);
-			iw.setSorted(true);
-			final ByteArrayIOStream ios = new ByteArrayIOStream();
-			try
+			if (indent > 0)
 			{
-				iw.writeStream(ios);
+				final JSONIndentWalker iw = new JSONIndentWalker(new JSONObjHelper(o));
+				iw.setSingleIndent(indent);
+				iw.setSorted(true);
+				iw.setRetainNull(true);
+				final ByteArrayIOStream ios = new ByteArrayIOStream();
+				try
+				{
+					iw.writeStream(ios);
+				}
+				catch (final IOException e)
+				{
+					continue;
+				}
+				final String s = new String(ios.toByteArray());
+				return s.trim();
 			}
-			catch (final IOException e)
+			else
 			{
-				continue;
+				return o.toJSONString();
 			}
-			final String s = new String(ios.toByteArray());
-			return s;
 		}
 		return null;
 	}
