@@ -71,6 +71,7 @@ package org.cip4.tools.jdfeditor.streamloader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.zip.ZipEntry;
 
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.util.FileUtil;
@@ -79,6 +80,7 @@ import org.cip4.jdflib.util.zip.ZipReader;
 
 /**
  * simple implementation for a zip stream loader
+ * 
  * @author rainer prosi
  * @date Sep 5, 2013
  */
@@ -100,9 +102,9 @@ public class ZipStreamLoader implements IStreamLoader
 	public JDFDoc readStream(final InputStream jdf, final InputStream schema) throws IOException
 	{
 		final ZipReader zr = new ZipReader(jdf);
-		zr.getNextEntry();
+		final ZipEntry e = zr.getNextEntry();
 		zr.close();
-		return zr.getJDFDoc();
+		return e == null ? null : zr.getJDFDoc();
 	}
 
 }
