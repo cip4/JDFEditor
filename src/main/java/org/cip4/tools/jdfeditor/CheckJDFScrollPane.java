@@ -150,17 +150,17 @@ public class CheckJDFScrollPane extends ValidationScrollPane
 	public void drawJSONSchemaOutputTree(final XMLDoc bugReport)
 	{
 		final KElement repRoot = bugReport.getRoot();
-		final JSONSchemaOutputWrapper checkJDFRoot = new JSONSchemaOutputWrapper(repRoot);
-		m_reportTree = new JTree(checkJDFRoot);
-		m_reportTree.setModel(new JDFTreeModel(checkJDFRoot, false));
+		final JSONSchemaOutputWrapper jsonOutputRoot = new JSONSchemaOutputWrapper(repRoot);
+		m_reportTree = new JTree(jsonOutputRoot);
+		m_reportTree.setModel(new JDFTreeModel(jsonOutputRoot, false));
 		m_reportTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		m_reportTree.setExpandsSelectedPaths(true);
 		m_reportTree.setEditable(false);
 		ToolTipManager.sharedInstance().registerComponent(m_reportTree);
 
-		setJSONSchemaOutputTree(checkJDFRoot);
+		setJSONSchemaOutputTree(jsonOutputRoot);
 		// m_reportTree.expandPath(new TreePath(bugReportRoot.getPath()));
-		m_reportTree.expandPath(new TreePath(checkJDFRoot.getPath()));
+		m_reportTree.expandPath(new TreePath(jsonOutputRoot.getPath()));
 
 		m_SelectionListener = new ValidationSelectionListener();
 		m_reportTree.addTreeSelectionListener(m_SelectionListener);

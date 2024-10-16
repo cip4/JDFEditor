@@ -1,4 +1,4 @@
-package org.cip4.tools.jdfeditor;
+package org.cip4.tools.jdfeditor.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -92,7 +92,8 @@ import org.cip4.tools.jdfeditor.util.ResourceUtil;
 * <http://www.cip4.org/>.
 *
 *
-*/class ValidationTab extends JPanel implements ActionListener
+*/
+class ValidationTab extends JPanel implements ActionListener
 {
 	public ValidationTab()
 	{
@@ -130,7 +131,7 @@ import org.cip4.tools.jdfeditor.util.ResourceUtil;
 	private EnumValidationLevel validationLevel = null;
 	private EnumVersion validationVersion = null;
 
-	void writeToIni()
+	public void writeToIni()
 	{
 		final SettingService settingService = SettingService.getSettingService();
 
@@ -240,7 +241,7 @@ import org.cip4.tools.jdfeditor.util.ResourceUtil;
 		allValues.addElement(EnumVersion.Version_1_6.getName());
 		allValues.addElement(EnumVersion.Version_1_7.getName());
 		allValues.addElement(EnumVersion.Version_1_8.getName());
-		//		allValues.addElement("2.0");
+		// allValues.addElement("2.0");
 		final JPanel versionPanel = new JPanel();
 		versionPanel.setBorder(BorderFactory.createTitledBorder("JDFVersion"));
 

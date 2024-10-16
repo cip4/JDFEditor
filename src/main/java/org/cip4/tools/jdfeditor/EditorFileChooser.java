@@ -73,6 +73,7 @@ package org.cip4.tools.jdfeditor;
 import java.io.File;
 
 import javax.swing.JFileChooser;
+import javax.swing.JTextField;
 
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.util.StringUtil;
@@ -80,6 +81,7 @@ import org.cip4.tools.jdfeditor.util.ResourceUtil;
 
 /**
  * generic file chooser for the editor
+ * 
  * @author prosirai
  *
  */
@@ -143,4 +145,23 @@ public class EditorFileChooser extends JFileChooser
 		}
 		setFileFilter(xmlFilterAll);
 	}
+
+	/**
+	 * @param schemaPath
+	 * @return the newly set schema file, if it is readable
+	 */
+	public static File getSchemaURL(final JTextField schemaPath)
+	{
+		final String s = schemaPath.getText();
+		if (!StringUtil.isEmpty(s))
+		{
+			final File f = new File(s);
+			if (f.canRead())
+			{
+				return f;
+			}
+		}
+		return null;
+	}
+
 }

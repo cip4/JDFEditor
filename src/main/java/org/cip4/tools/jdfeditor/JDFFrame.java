@@ -145,6 +145,7 @@ import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.file.UserDir;
 import org.cip4.tools.jdfeditor.controller.MainController;
+import org.cip4.tools.jdfeditor.dialog.PreferenceDialog;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.DocumentService;
 import org.cip4.tools.jdfeditor.util.RecentFileUtil;
@@ -1816,14 +1817,16 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		if (doc != null)
 		{
 			i = documentService.indexOfJDF(doc, m_VjdfDocument);
+			final EditorDocument ed = new EditorDocument(doc, mimePackage);
 
 			if (i >= 0)
 			{
 				m_DocPos = i;
+				m_VjdfDocument.set(i, ed);
 			}
 			else
 			{
-				m_VjdfDocument.add(new EditorDocument(doc, mimePackage));
+				m_VjdfDocument.add(ed);
 				m_DocPos = m_VjdfDocument.size() - 1;
 				// make sure that we have a global dirty policy in force
 				doc.getCreateXMLDocUserData().setDirtyPolicy(EnumDirtyPolicy.Doc);

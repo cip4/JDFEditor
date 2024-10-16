@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2015 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2024 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -107,7 +107,6 @@ class MessageSender
 			final SendToDevice sendTo = new SendToDevice();
 			sendTo.trySend();
 		}
-
 	}
 
 	/**
@@ -125,13 +124,12 @@ class MessageSender
 		else
 		{
 			doc = generateJMFDoc();
-
 		}
 		if (doc != null)
 		{
 			MainView.getFrame().setJDFDoc(doc, null);
 			final EditorDocument edNew = MainView.getEditorDoc();
-			edNew.setJson(json, json);
+			edNew.setJson(json, false);
 			MainView.getFrame().getJDFTreeArea().drawTreeView(edNew);
 		}
 		return doc != null;

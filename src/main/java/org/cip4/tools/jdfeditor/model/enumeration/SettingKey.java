@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2023 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2024 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -73,6 +73,7 @@ package org.cip4.tools.jdfeditor.model.enumeration;
 import javax.swing.UIManager;
 
 import org.cip4.jdflib.core.JDFConstants;
+import org.cip4.jdflib.core.JDFElement;
 import org.cip4.tools.jdfeditor.EditorUtils;
 
 /**
@@ -96,7 +97,7 @@ public enum SettingKey
 	FONT_SIZE_ENLARGED("font.size.enlarged", "100"),
 
 	JSON_PREFIX("json.save.prefix", "retain"), JSON_ROOT("json.save.root", "xmlname"), JSON_CASE("json.save.case", "retain"), JSON_TYPESAFE("json.save.typesafe",
-			true), JSON_XJMF_SPLIT("json.xjmf.split", true),
+			true), JSON_XJMF_SPLIT("json.xjmf.split", true), JSON_SCHEMA_URL("json.schema.url", null),
 
 	LOGGING_LEVEL("logging.level", "INFO"), LOGGING_ENABLED("logging.enabled", true),
 
@@ -108,9 +109,9 @@ public enum SettingKey
 	TREEVIEW_ATTRIBUTE("treeview.attribute", true), TREEVIEW_ATTRIBUTE_INHERITED("treeview.attribute.inherited", true),
 
 	VALIDATION_EXPORT("validation.export", false), IGNORE_PRIVATE_VALIDATION("validation.ignoreprivate", false), VALIDATION_HIGHTLIGHT_FN("validation.highlight.fn",
-			true), VALIDATION_SCHEMA_URL("validation.schema.url", null), VALIDATION_VERSION("validation.version", "1.5"), VALIDATION_LEVEL("validation.level",
-					JDFConstants.VALIDATIONLEVEL_RECURSIVECOMPLETE), VALIDATION_IGNORE_DEFAULT("validation.ignore.default", true), VALIDATION_CHECK_URL("validation.check.url",
-							false), VALIDATION_FIX_ICS_VERSION("validation.fix.ics.version", false), VALIDATION_CONVERT_LPP("validation.convert.lpp",
+			true), VALIDATION_SCHEMA_URL("validation.schema.url", null), VALIDATION_VERSION("validation.version", JDFElement.getDefaultJDFVersion().getName()), VALIDATION_LEVEL(
+					"validation.level", JDFConstants.VALIDATIONLEVEL_RECURSIVECOMPLETE), VALIDATION_IGNORE_DEFAULT("validation.ignore.default", true), VALIDATION_CHECK_URL(
+							"validation.check.url", false), VALIDATION_FIX_ICS_VERSION("validation.fix.ics.version", false), VALIDATION_CONVERT_LPP("validation.convert.lpp",
 									false), VALIDATION_GENERATE_FULL("validation.generate.full", true), VALIDATION_GENERIC_ATTR("validation.generic.attr", initGenericAttr()),
 
 	XJDF_CONVERT_SINGLENODE("xjdf.convert.singlenode", "zip"), XJDF_CONVERT_STRIPPING("xjdf.convert.stripping", true), XJDF_CONVERT_SPAN("xjdf.convert.span",

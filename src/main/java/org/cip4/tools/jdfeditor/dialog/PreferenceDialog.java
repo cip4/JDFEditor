@@ -68,7 +68,7 @@
  *
  *
  */
-package org.cip4.tools.jdfeditor;
+package org.cip4.tools.jdfeditor.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -95,9 +95,8 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
 import org.cip4.jdflib.core.VString;
-import org.cip4.tools.jdfeditor.dialog.SaveAsJDFDialog;
-import org.cip4.tools.jdfeditor.dialog.SaveAsJSONDialog;
-import org.cip4.tools.jdfeditor.dialog.SaveAsXJDFDialog;
+import org.cip4.tools.jdfeditor.EditorFileChooser;
+import org.cip4.tools.jdfeditor.JDFFrame;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
@@ -106,7 +105,7 @@ import org.cip4.tools.jdfeditor.view.MainView;
 /**
  * @author Dr. Rainer Prosi, Heidelberger Druckmaschinen AG
  *
- * Jun 8, 2009
+ *         Jun 8, 2009
  */
 public class PreferenceDialog extends JTabbedPane implements ActionListener
 {
@@ -130,8 +129,8 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private JButton schemaBrowse;
 	private JTextField schemaPath;
 
-	//	private JButton defaultIconButton;
-	//	private JButton changeIconButton;
+	// private JButton defaultIconButton;
+	// private JButton changeIconButton;
 	private JButton applyLnFButton;
 	private JTextField enlargeTextField;
 
@@ -160,10 +159,10 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 	private JRadioButton ger;
 	private JRadioButton spa;
 	private JRadioButton jap;
-	//	private JLabel iconPreview;
+	// private JLabel iconPreview;
 	private final ButtonGroup langGroup = new ButtonGroup();
 	private String currLang;
-	//	private String currIcon;
+	// private String currIcon;
 	private String currLNF;
 	private boolean currRemoveDefault;
 	private boolean currDispDefault;
@@ -296,7 +295,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		enlargeTextField = new JTextField(3);
 		enlargeTextField.setText(settingService.getString(SettingKey.FONT_SIZE_ENLARGED));
 
-		setPreferredSize(new Dimension(390, 420));
+		setPreferredSize(new Dimension(420, 420));
 		drawTabs();
 		setVisible(true);
 	}
@@ -440,6 +439,7 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 
 	/**
 	 * draw the flags etc. for the language preferences
+	 * 
 	 * @return
 	 */
 	private JPanel createLanguagePref()
@@ -907,9 +907,10 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		validTab.writeToIni();
 		settingService.setSetting(SettingKey.GENERAL_USE_SCHEMA, useSchema);
 
-		if (getSchemaURL() != null)
+		final File schemaURL = EditorFileChooser.getSchemaURL(schemaPath);
+		if (schemaURL != null)
 		{
-			settingService.setSetting(SettingKey.VALIDATION_SCHEMA_URL, getSchemaURL().getAbsolutePath());
+			settingService.setSetting(SettingKey.VALIDATION_SCHEMA_URL, schemaURL.getAbsolutePath());
 		}
 
 		settingService.setSetting(SettingKey.GOLDENTICKET_BASELEVEL, getBaseLevel());
@@ -937,23 +938,6 @@ public class PreferenceDialog extends JTabbedPane implements ActionListener
 		xjdfPanel.write2Ini();
 		jsonPanel.write2Ini();
 		jdfPanel.write2Ini();
-	}
-
-	/**
-	 * @return the newly set schema file, if it is readable
-	 */
-	private File getSchemaURL()
-	{
-		final String s = schemaPath.getText();
-		if (s != null && s.length() != 0)
-		{
-			final File f = new File(s);
-			if (f.canRead())
-			{
-				schemaFile = f;
-			}
-		}
-		return schemaFile;
 	}
 
 }

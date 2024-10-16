@@ -181,16 +181,19 @@ public class EditorDocument
 	 */
 	public void setJson(final boolean json, final boolean checkFile)
 	{
-		if (jdfDoc != null && checkFile)
+		if (this.json != json)
 		{
-
 			final String extension = EditorUtils.getExtension(jdfDoc.getRoot(), json);
 			final String newExtension = UrlUtil.newExtension(getOriginalFileName(), extension);
-			if (!checkSave(UrlUtil.urlToFile(newExtension)))
-				return;
+			if (jdfDoc != null && checkFile)
+			{
+				if (!checkSave(UrlUtil.urlToFile(newExtension)))
+					return;
+			}
 			this.json = json;
 
 			jdfDoc.setOriginalFileName(newExtension);
+
 			final JDFFrame frame = MainView.getFrame();
 			frame.refreshView(this, null);
 
@@ -199,11 +202,7 @@ public class EditorDocument
 			frame.getJDFTreeArea().drawTreeView(this);
 
 			frame.setEnableOpen(true);
-			saveFile(null);
-		}
-		else
-		{
-			this.json = json;
+			setDirtyFlag();
 		}
 	}
 
@@ -349,6 +348,8 @@ public class EditorDocument
 	 */
 	public JDFTreeModel getModel()
 	{
+		if (jdfTreeModel == null)
+			createModel();
 		return jdfTreeModel;
 	}
 

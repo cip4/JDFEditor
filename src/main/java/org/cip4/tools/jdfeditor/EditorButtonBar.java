@@ -150,12 +150,10 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 	}
 
 	/**
-	 * Method drawButtonBar.
-	 * Editor.java contains ICONS_PATH. This package can be found under JDFEditor/src/Java/org.cip4.jdfeditor.icons
-	 * You can add icons to this packagae by putting your .gif files into the following folder. This folder comes from whereever you
-	 * downloaded yoru code from SubVersion. My place (BIskey) is the reference point. You can make it whatever you like.
-	 *  C:\Subversion_Root\My_Root\JDFEditor\src\java\org\cip4\jdfeditor\icons
-	 *  After adding the icons to this folder, you need to come here and refresh the package w/in your Java editing software.
+	 * Method drawButtonBar. Editor.java contains ICONS_PATH. This package can be found under JDFEditor/src/Java/org.cip4.jdfeditor.icons You can add icons to this packagae by
+	 * putting your .gif files into the following folder. This folder comes from whereever you downloaded yoru code from SubVersion. My place (BIskey) is the reference point. You
+	 * can make it whatever you like. C:\Subversion_Root\My_Root\JDFEditor\src\java\org\cip4\jdfeditor\icons After adding the icons to this folder, you need to come here and
+	 * refresh the package w/in your Java editing software.
 	 */
 	public void drawButtonBar()
 	{
@@ -248,7 +246,8 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 
 	/**
 	 * Creates a JButton with the default settings.
-	 * @param tip     - The tool tip
+	 * 
+	 * @param tip - The tool tip
 	 * @param enabled - If the button is enabled or disabled initially
 	 * @return The default JButton.
 	 */
@@ -352,6 +351,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 	///////////////////////////////////////////////////////////////
 	/**
 	 * Mother of all action dispatchers
+	 * 
 	 * @param e the event that gets checked
 	 */
 	@Override
@@ -370,7 +370,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		}
 		else if (eSrc == m_saveButton) // save document
 		{
-			if (m_frame.getTitle().contains("Untitled.j") /*|| m_frame.getTitle().equalsIgnoreCase("Untitled.jmf")*/)
+			if (m_frame.getTitle().contains("Untitled.j") /* || m_frame.getTitle().equalsIgnoreCase("Untitled.jmf") */)
 			{
 				m_frame.saveAs();
 			}
@@ -391,11 +391,11 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		}
 		else if (eSrc == m_convert2XJdf) // convert 2 XJDF
 		{
-			MainView.getModel().saveAsXJDF(null, true);
+			MainView.getModel().saveAsXJDF(null, false);
 		}
 		else if (eSrc == m_convert2JSON) // convert 2 json
 		{
-			MainView.getModel().saveAsJSON(null);
+			MainView.getModel().saveAsJSON(null, false);
 		}
 		else if (eSrc == m_upOneLevelButton) // navigate up
 		{

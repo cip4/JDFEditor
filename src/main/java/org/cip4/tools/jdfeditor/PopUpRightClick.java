@@ -513,7 +513,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		}
 		else if (eSrc == m_saveJSON)
 		{
-			MainView.getModel().saveAsJSON(treeArea.getSelectionPath());
+			MainView.getModel().saveAsJSON(treeArea.getSelectionPath(), true);
 		}
 		else if (eSrc == m_saveJDF)
 		{

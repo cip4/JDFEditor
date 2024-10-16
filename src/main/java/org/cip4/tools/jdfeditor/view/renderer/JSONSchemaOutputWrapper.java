@@ -101,17 +101,12 @@ public class JSONSchemaOutputWrapper extends JDFTreeNode
 	public String toDisplayString()
 	{
 		String s = super.toDisplayString();
-		if (s == null)
-			return null;
 		final Object o = this.getUserObject();
-		if (o instanceof Attr)
+		if ((o instanceof Attr) || s == null)
 		{
-			final Attr atr = (Attr) o;
-			final String nam = atr.getLocalName();
 			return s;
 		}
 
-		final KElement e = (KElement) o;
 		final String nam = getName();
 		if (nam.equals("JSONSchema"))
 		{
@@ -121,7 +116,9 @@ public class JSONSchemaOutputWrapper extends JDFTreeNode
 		{
 			String path = getElement().getNonEmpty("Path");
 			if ("$".equals(path))
+			{
 				path = "JSON root";
+			}
 			else if (path == null)
 			{
 				path = "Message";
@@ -130,10 +127,16 @@ public class JSONSchemaOutputWrapper extends JDFTreeNode
 			{
 				path = path.substring(2);
 			}
-			final String s2 = getElement().getAttribute("Message", null, null);
+			final String s3 = getElement().getNonEmpty("Value");
+			if (s3 != null)
+				path += "=" + s3;
+			String s2 = getElement().getNonEmpty("Message");
 			if (s2 != null)
+			{
+				while (!s2.isEmpty() && " .$".indexOf(s2.charAt(0), 0) >= 0)
+					s2 = s2.substring(1);
 				s += ": " + path + ": " + s2;
-
+			}
 		}
 		return s;
 

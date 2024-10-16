@@ -297,11 +297,10 @@ public class JDFTreeModel extends DefaultTreeModel
 	{
 		final EditorDocument eDoc = MainView.getEditorDoc();
 		final String json = eDoc.getJSONString(eDoc.getJDFDoc().getRoot(), 0);
-		final JSONSchemaReader sr = new JSONSchemaReader(EditorUtils.RES_SCHEMA_JSON);
+		final JSONSchemaReader sr = new JSONSchemaReader(getJsonschemaURL());
 		final Collection<ValidationMessage> results = sr.checkJSON(json);
-		validationResult = null;
 		final KElement jsonSchemaResult = KElement.createRoot("JSONSchema", null);
-		jsonSchemaResult.setAttribute("SchemaLocation", EditorUtils.RES_SCHEMA_JSON);
+		jsonSchemaResult.setAttribute("SchemaLocation", getJsonschemaURL());
 		jsonSchemaResult.setAttribute("ValidationResult", ContainerUtil.isEmpty(results) ? "Valid" : "Error");
 		for (final ValidationMessage m : results)
 		{
@@ -310,6 +309,10 @@ public class JDFTreeModel extends DefaultTreeModel
 			final KElement error = jsonSchemaResult.appendElement(typ);
 			error.setAttribute("Message", m.toString());
 			error.setAttribute("Path", loc);
+			if (m.getInstanceNode() != null)
+			{
+				error.setNonEmpty("Value", m.getInstanceNode().asText());
+			}
 		}
 		final JDFFrame m_frame = MainView.getFrame();
 		m_frame.getBottomTabs().m_validErrScroll.drawJSONSchemaOutputTree(jsonSchemaResult.getOwnerDocument_KElement());
@@ -319,6 +322,16 @@ public class JDFTreeModel extends DefaultTreeModel
 			m_frame.getJDFTreeArea().goToPath(m_frame.getJDFTreeArea().getSelectionPath()); // TODO: what this code actually do ?
 		}
 		return ContainerUtil.isEmpty(results);
+	}
+
+	String getJsonschemaURL()
+	{
+		final String file = SettingService.getSettingService().getString(SettingKey.JSON_SCHEMA_URL);
+		if (!StringUtil.isEmpty(file))
+		{
+			return UrlUtil.fileToUrl(new File(file), false);
+		}
+		return EditorUtils.RES_SCHEMA_JSON;
 	}
 
 	protected boolean validateJDF()
@@ -416,7 +429,6 @@ public class JDFTreeModel extends DefaultTreeModel
 		final JDFDoc theDoc = eDoc.getJDFDoc();
 
 		validationResult = null;
-		XMLDoc schemaValidationResult = null;
 		try
 		{
 			final ByteArrayIOStream outStream = new ByteArrayIOStream();
@@ -435,7 +447,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 			if (tmpDoc != null)
 			{
-				schemaValidationResult = tmpDoc.getValidationResult();
+				validationResult = tmpDoc.getValidationResult();
 			}
 		}
 		catch (final Exception e)
@@ -444,13 +456,13 @@ public class JDFTreeModel extends DefaultTreeModel
 		}
 
 		final JDFFrame m_frame = MainView.getFrame();
-		m_frame.getBottomTabs().m_SchemaErrScroll.drawSchemaOutputTree(schemaValidationResult);
+		m_frame.getBottomTabs().m_SchemaErrScroll.drawSchemaOutputTree(validationResult);
 		if (MainView.getEditorDoc().getJDFTree() != null)
 		{
 			MainView.getEditorDoc().getJDFTree().repaint();
 			m_frame.getJDFTreeArea().goToPath(m_frame.getJDFTreeArea().getSelectionPath()); // TODO: what this code actually do ?
 		}
-		return schemaValidationResult == null || "Valid".equals(schemaValidationResult.getRoot().getAttribute("ValidationResult"));
+		return validationResult == null || "Valid".equals(validationResult.getRoot().getAttribute("ValidationResult"));
 	}
 
 	/**
@@ -1365,7 +1377,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		if (xjdf)
 		{
 			log.info("converting JSON to XJDF");
-			eDoc.setJson(false, true);
+			eDoc.setJson(false, reallysave);
 		}
 		else
 		{
@@ -1406,10 +1418,10 @@ public class JDFTreeModel extends DefaultTreeModel
 				{
 					final JDFDoc doc = new JDFDoc(d);
 					fnNew = FilenameUtils.getName(fnNew);
-
 					doc.setOriginalFileName(EditorUtils.getNewPath(fnNew));
 					MainView.getFrame().setJDFDoc(doc, null);
-
+					MainView.getEditorDoc().setDirtyFlag();
+					MainView.getFrame().refreshView(MainView.getEditorDoc(), null);
 				}
 			}
 			else
@@ -1444,7 +1456,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	 * @param selectionPath
 	 * @experimental
 	 */
-	public void saveAsJSON(final TreePath selectionPath)
+	public void saveAsJSON(final TreePath selectionPath, final boolean reallySave)
 	{
 		final JDFTreeNode node = selectionPath == null ? (JDFTreeNode) getRootNode() : (JDFTreeNode) selectionPath.getLastPathComponent();
 		if (node == null || !EditorUtils.isJSONEnabled(node.getName()))
@@ -1462,11 +1474,15 @@ public class JDFTreeModel extends DefaultTreeModel
 				{
 					ed.setJson(true, true);
 					frame.setEditorDoc(ed);
+					if (reallySave)
+						ed.saveFile(null);
 				}
 			}
 			else
 			{
-				eDoc.setJson(true, true);
+				eDoc.setJson(true, reallySave);
+				if (reallySave)
+					eDoc.saveFile(null);
 			}
 			log.info("converting " + JDFTreeNode.getName(node) + " to JSON ");
 		}

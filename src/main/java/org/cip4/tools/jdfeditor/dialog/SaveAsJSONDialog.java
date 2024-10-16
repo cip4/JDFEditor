@@ -75,19 +75,27 @@ import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
+import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.lib.jdf.jsonutil.JSONWriter.eJSONCase;
 import org.cip4.lib.jdf.jsonutil.JSONWriter.eJSONPrefix;
 import org.cip4.lib.jdf.jsonutil.JSONWriter.eJSONRoot;
 import org.cip4.tools.jdfeditor.Editor;
+import org.cip4.tools.jdfeditor.EditorFileChooser;
 import org.cip4.tools.jdfeditor.EditorSwingUtils;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
@@ -97,7 +105,7 @@ import org.cip4.tools.jdfeditor.util.ResourceUtil;
  * Class that implements a "Save as XJDF..." dialog.
  *
  */
-public class SaveAsJSONDialog extends JPanel
+public class SaveAsJSONDialog extends JPanel implements ActionListener
 {
 
 	final SettingService settingService;
@@ -113,20 +121,23 @@ public class SaveAsJSONDialog extends JPanel
 	private final JComboBox<String> cbRoot;
 	private final JCheckBox cbTypesafe;
 	private final JCheckBox cbSplitXJMF;
+	private final JButton schemaBrowse;
+	private final JTextField schemaPath;
 
 	/**
 	 *
 	 */
 	public SaveAsJSONDialog()
 	{
-		setLayout(new BorderLayout());
+		// setLayout(new BorderLayout());
 
 		settingService = SettingService.getSettingService();
 
+		// setLayout(new GridLayout(1, 0));
 		final JPanel checkboxesPanel = new JPanel();
 		checkboxesPanel.setLayout(new BoxLayout(checkboxesPanel, BoxLayout.Y_AXIS));
-		GridLayout layout = new GridLayout(6, 1);
-		checkboxesPanel.setLayout(layout);
+		final GridLayout layout = new GridLayout(6, 4);
+		// checkboxesPanel.setLayout(layout);
 
 		cbCase = new JComboBox<>(new Vector<>(eJSONCase.getNames()));
 		cbPrefix = new JComboBox<>(new Vector<>(eJSONPrefix.getNames()));
@@ -157,25 +168,33 @@ public class SaveAsJSONDialog extends JPanel
 		checkboxesPanel.add(cbTypesafe);
 		checkboxesPanel.add(cbSplitXJMF);
 
-		final JPanel buttonsPanel = new JPanel();
-		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
-		buttonsPanel.add(Box.createHorizontalGlue());
-
 		add(checkboxesPanel, BorderLayout.CENTER);
 
+		final JPanel schemaPannel = new JPanel();
+		schemaPath = new JTextField(42);
+		schemaPannel.add(schemaPath);
+
+		schemaBrowse = new JButton(ResourceUtil.getMessage("BrowseKey"));
+		schemaBrowse.setPreferredSize(new Dimension(85, 22));
+		schemaBrowse.addActionListener(this);
+		schemaPannel.add(schemaBrowse);
+		schemaPannel.setLayout(new GridLayout(2, 1));
+
+		checkboxesPanel.add(schemaPannel);
 		final Toolkit tk = Toolkit.getDefaultToolkit();
 		final Dimension screenSize = tk.getScreenSize();
 		final int screenHeight = screenSize.height;
 		final int screenWidth = screenSize.width;
 
-		setSize(screenWidth / 4, screenHeight / 4);
-		setLocation(screenWidth / 4, screenHeight / 4);
+		setSize(screenWidth / 3, screenHeight / 3);
+		// setLocation(screenWidth / 4, screenHeight / 4);
 
 		cbCase.setSelectedItem(settingService.getString(SettingKey.JSON_CASE));
 		cbPrefix.setSelectedItem(settingService.getString(SettingKey.JSON_PREFIX));
 		cbRoot.setSelectedItem(settingService.getString(SettingKey.JSON_ROOT));
 		cbTypesafe.setSelected(settingService.getBool(SettingKey.JSON_TYPESAFE));
 		cbSplitXJMF.setSelected(settingService.getBool(SettingKey.JSON_XJMF_SPLIT));
+		schemaPath.setText(settingService.getString(SettingKey.JSON_SCHEMA_URL));
 
 		setVisible(true);
 	}
@@ -188,6 +207,35 @@ public class SaveAsJSONDialog extends JPanel
 		settingService.set(SettingKey.JSON_TYPESAFE, cbTypesafe.isSelected());
 		settingService.set(SettingKey.JSON_XJMF_SPLIT, cbSplitXJMF.isSelected());
 		Editor.getEditor().resetJSON();
+	}
+
+	@Override
+	public void actionPerformed(final ActionEvent e)
+	{
+		final Object source = e.getSource();
+
+		if (source == schemaBrowse)
+		{
+			perFormSchemaButton();
+		}
+
+	}
+
+	private void perFormSchemaButton()
+	{
+		final EditorFileChooser files = new EditorFileChooser(UrlUtil.urlToFile(schemaPath.getText()), "json");
+		final int option = files.showOpenDialog(this);
+
+		if (option == JFileChooser.APPROVE_OPTION)
+		{
+			final File schemaFile = files.getSelectedFile();
+			schemaPath.setText(schemaFile.getAbsolutePath());
+			settingService.set(SettingKey.JSON_SCHEMA_URL, schemaFile.getAbsolutePath());
+		}
+		else if (option == JFileChooser.ERROR_OPTION)
+		{
+			JOptionPane.showMessageDialog(this, "File is not accepted", "Error", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 }
