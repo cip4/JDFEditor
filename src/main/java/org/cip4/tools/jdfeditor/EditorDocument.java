@@ -195,13 +195,16 @@ public class EditorDocument
 			jdfDoc.setOriginalFileName(newExtension);
 
 			final JDFFrame frame = MainView.getFrame();
-			frame.refreshView(this, null);
+			if (frame != null)
+			{
+				frame.refreshView(this, null);
 
-			frame.refreshTitle();
-			frame.getJDFTreeArea().setHeaderLabel(json);
-			frame.getJDFTreeArea().drawTreeView(this);
+				frame.refreshTitle();
+				frame.getJDFTreeArea().setHeaderLabel(json);
+				frame.getJDFTreeArea().drawTreeView(this);
 
-			frame.setEnableOpen(true);
+				frame.setEnableOpen(true);
+			}
 			setDirtyFlag();
 		}
 	}
