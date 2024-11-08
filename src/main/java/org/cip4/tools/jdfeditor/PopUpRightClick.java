@@ -142,7 +142,6 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 	private JMenuItem m_saveJDF = null;
 	private JMenuItem m_nodeFromCaps = null;
 	private JMenuItem m_normalize = null;
-	private JMenuItem m_saveXJDFCaps = null;
 	private JMenuItem m_sendMessage = null;
 	private JMenuItem m_spawn = null;
 	private JMenuItem m_unspawn = null;
@@ -279,7 +278,6 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 			final EditorDocument eDoc = MainView.getEditorDoc();
 			if (eDoc.isXJDF())
 			{
-				m_saveXJDFCaps = addMenuItem("ExportToDevCapKey");
 				m_saveJDF = addMenuItem("SaveJDFKey");
 			}
 			if (eDoc.isJson())
@@ -517,11 +515,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		}
 		else if (eSrc == m_saveJDF)
 		{
-			MainView.getModel().saveAsJDF(treeArea.getSelectionPath(), EditorUtils.getJDFConverter());
-		}
-		else if (eSrc == m_saveXJDFCaps)
-		{
-			MainView.getModel().saveAsXJDFCaps(treeArea.getSelectionPath(), true);
+			MainView.getModel().saveAsJDF(treeArea.getSelectionPath(), EditorUtils.getJDFConverter(), true);
 		}
 		else if (eSrc == m_spawn)
 		{

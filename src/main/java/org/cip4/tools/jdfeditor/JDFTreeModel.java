@@ -120,7 +120,6 @@ import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.jdflib.validate.JDFValidator;
 import org.cip4.lib.jdf.jsonutil.schema.JSONSchemaReader;
-import org.cip4.tools.jdfeditor.extension.Caps;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
@@ -1556,7 +1555,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	 * @param selectionPath
 	 * @experimental
 	 */
-	public void saveAsJDF(final TreePath selectionPath, final XJDFToJDFConverter c)
+	public void saveAsJDF(final TreePath selectionPath, final XJDFToJDFConverter c, final boolean reallySave)
 	{
 		final JDFTreeNode node = selectionPath == null ? (JDFTreeNode) getRootNode() : (JDFTreeNode) selectionPath.getLastPathComponent();
 		if (node == null || node.getElement() instanceof JDFNode)
@@ -1568,15 +1567,29 @@ public class JDFTreeModel extends DefaultTreeModel
 		final EditorDocument eDoc = MainView.getEditorDoc();
 		final String fn = eDoc.getOriginalFileName();
 		final String ext = XJDFConstants.XJMF.equalsIgnoreCase(e.getLocalName()) ? "jmf" : "jdf";
-		final String fnNew = UrlUtil.newExtension(fn, ext);
-		if (eDoc.checkSave(UrlUtil.urlToFile(fnNew)))
+		String fnNew = UrlUtil.newExtension(fn, ext);
+		if (!reallySave || eDoc.checkSave(UrlUtil.urlToFile(fnNew)))
 		{
 			log.info("converting to JDF/JMF " + fnNew);
 			final JDFDoc d = c.convert(e);
 			if (d != null)
 			{
-				d.write2File(fnNew, 2, false);
-				MainView.getFrame().readFile(new File(fnNew));
+				if (reallySave)
+				{
+					log.info("writing XJDF " + fnNew);
+					d.write2File(fnNew, 2, false);
+					MainView.getFrame().readFile(new File(fnNew));
+				}
+				else
+				{
+					final JDFDoc doc = new JDFDoc(d);
+					fnNew = FilenameUtils.getName(fnNew);
+					doc.setOriginalFileName(EditorUtils.getNewPath(fnNew));
+					MainView.getFrame().setJDFDoc(doc, null);
+					MainView.getEditorDoc().setDirtyFlag();
+					MainView.getFrame().refreshView(MainView.getEditorDoc(), null);
+				}
+
 				log.info("converted to JDF " + fnNew);
 			}
 			else
@@ -1584,29 +1597,6 @@ public class JDFTreeModel extends DefaultTreeModel
 				EditorUtils.errorBox("FixVersionErrorKey", "could not convert xjdf to jdf");
 			}
 		}
-	}
-
-	/**
-	 * @param selectionPath the selection path to convert
-	 * @param structuredCaps if true, create a slightly more structured version of caps
-	 * @experimental
-	 */
-	public void saveAsXJDFCaps(final TreePath selectionPath, final boolean structuredCaps)
-	{
-		final JDFTreeNode node = (JDFTreeNode) selectionPath.getLastPathComponent();
-		if (node == null)
-		{
-			return;
-		}
-		final KElement e = node.getElement();
-		final EditorDocument eDoc = MainView.getEditorDoc();
-		final String fn = eDoc.getOriginalFileName();
-		final KElement caps = new Caps(e).createCaps(structuredCaps);
-		final XMLDoc d = caps.getOwnerDocument_KElement();
-		final String fnNew = UrlUtil.newExtension(fn, "cap");
-		d.write2File(fnNew, 2, false);
-		// VString badCaps=Caps.getBadAttributes(d, e);
-		MainView.getFrame().readFile(new File(fnNew));
 	}
 
 	/**

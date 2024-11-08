@@ -54,6 +54,7 @@ import org.cip4.jdflib.core.JDFCustomerInfo;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFElement.EnumNodeStatus;
 import org.cip4.jdflib.core.JDFNodeInfo;
+import org.cip4.jdflib.core.JDFPartAmount;
 import org.cip4.jdflib.core.JDFRefElement;
 import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
@@ -92,10 +93,12 @@ import org.cip4.jdflib.resource.intent.JDFDropItemIntent;
 import org.cip4.jdflib.resource.process.JDFBinderySignature;
 import org.cip4.jdflib.resource.process.JDFColor;
 import org.cip4.jdflib.resource.process.JDFColorantAlias;
+import org.cip4.jdflib.resource.process.JDFColorantControl;
 import org.cip4.jdflib.resource.process.JDFComChannel;
 import org.cip4.jdflib.resource.process.JDFCompany;
 import org.cip4.jdflib.resource.process.JDFContact;
 import org.cip4.jdflib.resource.process.JDFContentObject;
+import org.cip4.jdflib.resource.process.JDFConventionalPrintingParams;
 import org.cip4.jdflib.resource.process.JDFEmployee;
 import org.cip4.jdflib.resource.process.JDFFileSpec;
 import org.cip4.jdflib.resource.process.JDFGeneralID;
@@ -558,6 +561,10 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		{
 			s = displaySpanBase(e, s);
 		}
+		else if (e instanceof JDFColorantControl)
+		{
+			s += " " + ((JDFColorantControl) e).getSeparations().getString();
+		}
 		else if ((e instanceof JDFContact))
 		{
 			final String contactTypes = e.getAttribute(AttributeName.CONTACTTYPES, null, null);
@@ -660,6 +667,14 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		{
 			s = displayPart(e, s);
 		}
+		else if (e instanceof JDFPartAmount)
+		{
+			for (final String a : new StringArray("Amount ActualAmount Waste"))
+			{
+				if (e.hasAttribute(a))
+					s += " " + a + "=" + e.getAttribute(a);
+			}
+		}
 		else if (e instanceof JDFColor)
 		{
 			final JDFColor p = (JDFColor) e;
@@ -668,6 +683,11 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 			{
 				s += JDFConstants.BLANK + acn;
 			}
+		}
+		else if (e instanceof JDFConventionalPrintingParams)
+		{
+			final JDFConventionalPrintingParams p = (JDFConventionalPrintingParams) e;
+			s += addAttributeValue(e, AttributeName.WORKSTYLE);
 		}
 		else if (e instanceof JDFIdentical)
 		{
@@ -787,6 +807,16 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 			s += " BusinessID=" + e.getAttribute("BusinessID");
 		}
 		return s;
+	}
+
+	String addAttributeValue(final KElement e, final String key)
+	{
+		final String val = e.getNonEmpty(key);
+		if (val != null)
+		{
+			return JDFConstants.BLANK + val;
+		}
+		return JDFConstants.EMPTYSTRING;
 	}
 
 	protected String displayPart(final KElement e, String s)

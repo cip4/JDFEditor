@@ -386,7 +386,7 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		}
 		else if (eSrc == m_convert2Jdf) // convert 2 JDF
 		{
-			MainView.getModel().saveAsJDF(null, EditorUtils.getJDFConverter());
+			MainView.getModel().saveAsJDF(null, EditorUtils.getJDFConverter(), false);
 
 		}
 		else if (eSrc == m_convert2XJdf) // convert 2 XJDF
