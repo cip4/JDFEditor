@@ -74,7 +74,7 @@ import javax.swing.UIManager;
 
 import org.cip4.jdflib.core.JDFConstants;
 import org.cip4.jdflib.core.JDFElement;
-import org.cip4.tools.jdfeditor.EditorUtils;
+import org.cip4.tools.jdfeditor.util.EditorUtils;
 
 /**
  * Enum of all setting keys.
@@ -109,10 +109,11 @@ public enum SettingKey
 	TREEVIEW_ATTRIBUTE("treeview.attribute", true), TREEVIEW_ATTRIBUTE_INHERITED("treeview.attribute.inherited", true),
 
 	VALIDATION_EXPORT("validation.export", false), IGNORE_PRIVATE_VALIDATION("validation.ignoreprivate", false), VALIDATION_HIGHTLIGHT_FN("validation.highlight.fn",
-			true), VALIDATION_SCHEMA_URL("validation.schema.url", null), VALIDATION_VERSION("validation.version", JDFElement.getDefaultJDFVersion().getName()), VALIDATION_LEVEL(
-					"validation.level", JDFConstants.VALIDATIONLEVEL_RECURSIVECOMPLETE), VALIDATION_IGNORE_DEFAULT("validation.ignore.default", true), VALIDATION_CHECK_URL(
-							"validation.check.url", false), VALIDATION_FIX_ICS_VERSION("validation.fix.ics.version", false), VALIDATION_CONVERT_LPP("validation.convert.lpp",
-									false), VALIDATION_GENERATE_FULL("validation.generate.full", true), VALIDATION_GENERIC_ATTR("validation.generic.attr", initGenericAttr()),
+			true), VALIDATION_SCHEMA_URL("validation.schema.url", null), VALIDATION_PRUNE_SCHEMA_URL("validation.prune.schema.url", null), VALIDATION_VERSION("validation.version",
+					JDFElement.getDefaultJDFVersion().getName()), VALIDATION_LEVEL("validation.level", JDFConstants.VALIDATIONLEVEL_RECURSIVECOMPLETE), VALIDATION_IGNORE_DEFAULT(
+							"validation.ignore.default", true), VALIDATION_CHECK_URL("validation.check.url", false), VALIDATION_FIX_ICS_VERSION("validation.fix.ics.version",
+									false), VALIDATION_CONVERT_LPP("validation.convert.lpp", false), VALIDATION_GENERATE_FULL("validation.generate.full",
+											true), VALIDATION_GENERIC_ATTR("validation.generic.attr", initGenericAttr()),
 
 	XJDF_CONVERT_SINGLENODE("xjdf.convert.singlenode", "zip"), XJDF_CONVERT_STRIPPING("xjdf.convert.stripping", true), XJDF_CONVERT_SPAN("xjdf.convert.span",
 			true), XJDF_CONVERT_RUNLIST("xjdf.convert.runlist", true), XJDF_CONVERT_LAYOUTPREP("xjdf.convert.layoutprep", true), XJDF_CONVERT_TILDE("xjdf.convert.tilde",

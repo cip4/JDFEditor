@@ -66,7 +66,7 @@
  * <http://www.cip4.org/>.
  *
  */
-package org.cip4.tools.jdfeditor;
+package org.cip4.tools.jdfeditor.util;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -115,12 +115,14 @@ import org.cip4.jdflib.util.file.UserDir;
 import org.cip4.jdflib.util.mime.BodyPartHelper;
 import org.cip4.jdflib.util.mime.MimeReader;
 import org.cip4.jdflib.util.zip.ZipReader;
+import org.cip4.tools.jdfeditor.Editor;
+import org.cip4.tools.jdfeditor.EditorDocument;
+import org.cip4.tools.jdfeditor.JDFFrame;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.streamloader.IStreamLoader;
 import org.cip4.tools.jdfeditor.streamloader.JSONStreamLoader;
 import org.cip4.tools.jdfeditor.streamloader.PluginLoader;
-import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;
 
@@ -714,7 +716,7 @@ public class EditorUtils
 		return getNewFile(fileName).getAbsolutePath();
 	}
 
-	static JDFDoc parseInStream(final InputStream inStream, final File fileSchema) throws IOException
+	public static JDFDoc parseInStream(final InputStream inStream, final File fileSchema) throws IOException
 	{
 		final JDFParser p = new JDFParser();
 
@@ -726,7 +728,7 @@ public class EditorUtils
 		return p.parseStream(inStream);
 	}
 
-	static JDFDoc parseInStream(final InputStream inStream, final String nsURI, final String schemaURL) throws IOException
+	public static JDFDoc parseInStream(final InputStream inStream, final String nsURI, final String schemaURL) throws IOException
 	{
 		final JDFParser p = JDFParserFactory.getFactory().get();
 

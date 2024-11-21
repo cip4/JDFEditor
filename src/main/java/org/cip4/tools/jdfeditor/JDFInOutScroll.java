@@ -100,6 +100,7 @@ import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourceLinkPool;
 import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.tools.jdfeditor.service.RuntimeProperties;
+import org.cip4.tools.jdfeditor.util.EditorUtils;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 import org.cip4.tools.jdfeditor.view.renderer.JDFResourceTreeCellRenderer;

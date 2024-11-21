@@ -95,6 +95,7 @@ import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.BuildPropsUtil;
+import org.cip4.tools.jdfeditor.util.EditorUtils;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 
 /**

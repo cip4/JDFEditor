@@ -10,6 +10,8 @@ import org.cip4.tools.jdfeditor.service.SettingService;
 public class RecentFileUtil
 {
 
+	public static final int MAX_RECENT = 10;
+
 	private final static String[] recentFiles = initRecentFiles();
 
 	private final static String SEPARATOR = ";";
@@ -23,20 +25,21 @@ public class RecentFileUtil
 
 	/**
 	 * Initialize the recentFiles attribute.
+	 * 
 	 * @return The recentFiles String array.
 	 */
 	private static String[] initRecentFiles()
 	{
 
-		String[] result = new String[5];
+		final String[] result = new String[MAX_RECENT];
 
 		// load recent files
-		String strRecentFiles = SettingService.getSettingService().getSetting(SettingKey.RECENT_FILES, String.class);
+		final String strRecentFiles = SettingService.getSettingService().getSetting(SettingKey.RECENT_FILES, String.class);
 
 		// create result
 		if (strRecentFiles != null)
 		{
-			String[] items = strRecentFiles.split(SEPARATOR);
+			final String[] items = strRecentFiles.split(SEPARATOR);
 
 			for (int i = 0; i < result.length && i < items.length; i++)
 			{
@@ -44,7 +47,6 @@ public class RecentFileUtil
 			}
 		}
 
-		// return result
 		return result;
 	}
 
@@ -80,6 +82,7 @@ public class RecentFileUtil
 
 	/**
 	 * Returns the string array of the recent files.
+	 * 
 	 * @return The string array of the recent files.
 	 */
 	public static String[] getRecentFiles()
@@ -89,6 +92,7 @@ public class RecentFileUtil
 
 	/**
 	 * Checks how many file paths the recentFiles String contains.
+	 * 
 	 * @return The number of previously opened files.
 	 */
 	public static int nrOfRecentFiles()
@@ -109,6 +113,7 @@ public class RecentFileUtil
 
 	/**
 	 * Checks if the file that is to be opened already exists in the recent files menu.
+	 * 
 	 * @param s - The path to the file
 	 * @return true if the path already is in the recent files menu; false otherwise.
 	 */
@@ -127,12 +132,13 @@ public class RecentFileUtil
 
 	/**
 	 * Updates the order in the recent files menu.
+	 * 
 	 * @param s - The path to the file
 	 * @param exist - Do the path already exists?
 	 */
 	public static void updateOrder(final String s, final boolean exist)
 	{
-		final String[] tmpFiles = new String[5];
+		final String[] tmpFiles = new String[MAX_RECENT];
 
 		if (exist)
 		{
@@ -149,7 +155,7 @@ public class RecentFileUtil
 		{
 			if (nrOfRecentFiles() > 0)
 			{
-				for (int j = 1; j <= nrOfRecentFiles() && j < 5; j++)
+				for (int j = 1; j <= nrOfRecentFiles() && j < MAX_RECENT; j++)
 				{
 					tmpFiles[j] = recentFiles[j - 1];
 				}
@@ -157,7 +163,7 @@ public class RecentFileUtil
 		}
 		recentFiles[0] = s;
 		int n = 1;
-		while (n < 5 && tmpFiles[n] != null)
+		while (n < MAX_RECENT && tmpFiles[n] != null)
 		{
 			recentFiles[n] = tmpFiles[n];
 			n++;
@@ -169,6 +175,7 @@ public class RecentFileUtil
 
 	/**
 	 * The position which the filepath has in the recent files menu.
+	 * 
 	 * @param s - The path to the file
 	 * @return The position in the m_recentFiles String[] as an integer.
 	 */

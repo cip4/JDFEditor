@@ -8,6 +8,7 @@ import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.util.JDFMerge;
 import org.cip4.jdflib.util.UrlUtil;
+import org.cip4.tools.jdfeditor.util.EditorUtils;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 

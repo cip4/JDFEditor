@@ -474,6 +474,11 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		final KElement e = (KElement) o;
 		String s = e.getNodeName();
 		final String nodeName = e.getLocalName();
+		final String nsUri = e.getNamespaceURI();
+		if ("http://www.w3.org/2001/XMLSchema".equals(nsUri))
+		{
+			return displaySchema(e, s);
+		}
 		s = displaySpecial(e, s, nodeName);
 
 		// always add id
@@ -488,6 +493,19 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		{
 			s = displayResource(e, s);
 		}
+		return s;
+	}
+
+	String displaySchema(final KElement e, String s)
+	{
+
+		final String name = addAttributeValue(e, "name");
+		s += name;
+		final String type = addAttributeValue(e, "type");
+		if (!StringUtil.equals(name, type))
+			s += type;
+		s += addAttributeValue(e, "ref", " ref=", null);
+		s += addAttributeValue(e, "use", " ", null);
 		return s;
 	}
 
@@ -811,10 +829,19 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 
 	String addAttributeValue(final KElement e, final String key)
 	{
-		final String val = e.getNonEmpty(key);
+		return addAttributeValue(e, key, null, null);
+	}
+
+	String addAttributeValue(final KElement e, final String key, String prefix, final String suffix)
+	{
+		String val = e.getNonEmpty(key);
 		if (val != null)
 		{
-			return JDFConstants.BLANK + val;
+			if (!StringUtil.isEmpty(suffix))
+				val += suffix;
+			if (StringUtil.isEmpty(prefix))
+				prefix = JDFConstants.BLANK;
+			return prefix + val;
 		}
 		return JDFConstants.EMPTYSTRING;
 	}
@@ -1029,23 +1056,12 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 
 	protected String displayPhase(final KElement e, String s)
 	{
-		String att = e.getAttribute(AttributeName.STATUS, null, null);
-		if (att != null)
-		{
-			s += JDFConstants.BLANK + att;
-		}
-		att = e.getAttribute(AttributeName.STATUSDETAILS, null, null);
-		if (att != null)
-		{
-			s += "/" + att;
-		}
+		s += addAttributeValue(e, AttributeName.STATUS, null, null);
+		s += addAttributeValue(e, AttributeName.STATUSDETAILS, "/", null);
 		if (e instanceof JDFJobPhase)
 		{
-			att = e.getAttribute(AttributeName.JOBID, null, null);
-			if (att != null)
-			{
-				s += " JobID=" + att;
-			}
+			s += addAttributeValue(e, AttributeName.PERCENTCOMPLETED, null, "%");
+			s += addAttributeValue(e, AttributeName.JOBID, " JobID=", null);
 		}
 		return s;
 	}

@@ -79,8 +79,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.util.StringUtil;
-import org.cip4.tools.jdfeditor.EditorUtils;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.util.EditorUtils;
 
 /**
  * This services is responsible for all configuration settings stored in the external configuration file.

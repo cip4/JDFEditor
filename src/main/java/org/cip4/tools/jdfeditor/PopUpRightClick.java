@@ -96,6 +96,7 @@ import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.jdflib.resource.devicecapability.JDFDeviceCap;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
+import org.cip4.tools.jdfeditor.util.EditorUtils;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;
@@ -276,6 +277,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		else if (elem != null && EditorUtils.isJSONEnabled(elemName))
 		{
 			final EditorDocument eDoc = MainView.getEditorDoc();
+			m_normalize = addMenuItem("NormalizeKey");
 			if (eDoc.isXJDF())
 			{
 				m_saveJDF = addMenuItem("SaveJDFKey");

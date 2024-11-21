@@ -76,6 +76,7 @@ import java.io.File;
 import org.cip4.jdflib.core.JDFElement.EnumVersion;
 import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.net.UrlCheck;
+import org.cip4.tools.jdfeditor.util.EditorUtils;
 import org.junit.Test;
 
 public class EditorUtilsTest extends EditorTestBase

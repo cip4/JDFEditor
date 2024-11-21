@@ -72,7 +72,6 @@ package org.cip4.tools.jdfeditor;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.URL;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
@@ -103,6 +102,7 @@ import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.datatypes.JDFAttributeMap;
 import org.cip4.jdflib.datatypes.VJDFAttributeMap;
 import org.cip4.jdflib.elementwalker.XPathWalker;
+import org.cip4.jdflib.extensions.BaseXJDFHelper;
 import org.cip4.jdflib.extensions.XJDF20;
 import org.cip4.jdflib.extensions.XJDFConstants;
 import org.cip4.jdflib.extensions.XJDFHelper;
@@ -122,6 +122,7 @@ import org.cip4.jdflib.validate.JDFValidator;
 import org.cip4.lib.jdf.jsonutil.schema.JSONSchemaReader;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
+import org.cip4.tools.jdfeditor.util.EditorUtils;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;
@@ -275,12 +276,12 @@ public class JDFTreeModel extends DefaultTreeModel
 		}
 		if (eDoc.isJson())
 		{
-			validateXJDF();
+			validateXJDF(null);
 			return validateJSON();
 		}
 		else if (eDoc.isXJDF())
 		{
-			return validateXJDF();
+			return validateXJDF(null);
 		}
 		else if (eDoc.isJDF())
 		{
@@ -422,9 +423,9 @@ public class JDFTreeModel extends DefaultTreeModel
 		return validationResult.getRoot().getFirstChildElement().getBoolAttribute("IsValid", null, true);
 	}
 
-	protected boolean validateXJDF()
+	public boolean validateXJDF(final String baseUrl)
 	{
-		final EditorDocument eDoc = MainView.getEditorDoc();
+		final EditorDocument eDoc = EditorDocument.getEditorDoc();
 		final JDFDoc theDoc = eDoc.getJDFDoc();
 
 		validationResult = null;
@@ -432,12 +433,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		{
 			final ByteArrayIOStream outStream = new ByteArrayIOStream();
 			theDoc.write2Stream(outStream, 0, false);
-			EnumVersion v = EnumVersion.getEnum(theDoc.getRoot().getAttribute(AttributeName.VERSION));
-			if (v == null)
-				v = XJDF20.getDefaultVersion();
-			final File schema = EditorUtils.getSchemaFile(v);
-			final URL url = ResourceUtil.class.getResource(EditorUtils.RES_SCHEMA_20);
-			final String sUrl = schema == null ? url.toExternalForm() : UrlUtil.fileToUrl(schema, false);
+			final String sUrl = baseUrl == null ? EditorDocument.getXJDFSchemaUrl() : baseUrl;
 			JDFDoc tmpDoc = EditorUtils.parseInStream(outStream.getInputStream(), JDFElement.getSchemaURL(EnumVersion.Version_2_0), sUrl);
 			if (tmpDoc == null)
 			{
@@ -557,7 +553,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	 * 
 	 * @return the root Node
 	 */
-	JDFTreeNode getRootNode()
+	public JDFTreeNode getRootNode()
 	{
 		return (JDFTreeNode) getRoot();
 	}
@@ -1386,7 +1382,7 @@ public class JDFTreeModel extends DefaultTreeModel
 
 	void saveJDFasXJDF(final boolean reallysave, final JDFTreeNode node)
 	{
-		final EditorDocument eDoc = MainView.getEditorDoc();
+		final EditorDocument eDoc = EditorDocument.getEditorDoc();
 		final KElement e = node.getElement();
 		String ext = null;
 		if (e instanceof JDFNode)
@@ -1399,29 +1395,14 @@ public class JDFTreeModel extends DefaultTreeModel
 		}
 		log.info("converting JDF/JMF to " + ext);
 		final String fn = eDoc.getOriginalFileName();
-		String fnNew = UrlUtil.newExtension(fn, ext);
+		final String fnNew = UrlUtil.newExtension(fn, ext);
 		final File fileToRead = new File(fnNew);
 		if (!reallysave || eDoc.checkSave(fileToRead))
 		{
 			final KElement xJDF = extractXJDF(e, fn, ext);
 			if (xJDF != null)
 			{
-				final XMLDoc d = xJDF.getOwnerDocument_KElement();
-				if (reallysave)
-				{
-					log.info("writing XJDF " + fileToRead.getAbsolutePath());
-					d.write2File(fileToRead, 2, false);
-					MainView.getFrame().readFile(fileToRead);
-				}
-				else
-				{
-					final JDFDoc doc = new JDFDoc(d);
-					fnNew = FilenameUtils.getName(fnNew);
-					doc.setOriginalFileName(EditorUtils.getNewPath(fnNew));
-					MainView.getFrame().setJDFDoc(doc, null);
-					MainView.getEditorDoc().setDirtyFlag();
-					MainView.getFrame().refreshView(MainView.getEditorDoc(), null);
-				}
+				saveElement(xJDF, fnNew, reallysave);
 			}
 			else
 			{
@@ -1431,6 +1412,27 @@ public class JDFTreeModel extends DefaultTreeModel
 		else
 		{
 			log.info("skipping conversion of " + fileToRead + " to " + ext + " reallysave=" + reallysave);
+		}
+	}
+
+	public static void saveElement(final KElement xJDF, String fnNew, final boolean reallysave)
+	{
+		final XMLDoc d = xJDF.getOwnerDocument_KElement();
+		if (reallysave)
+		{
+			log.info("writing " + xJDF.getNodeName() + " " + fnNew);
+			d.write2File(fnNew, 2, false);
+			final File fileNew = new File(fnNew);
+			MainView.getFrame().readFile(fileNew);
+		}
+		else
+		{
+			final JDFDoc doc = new JDFDoc(d);
+			fnNew = FilenameUtils.getName(fnNew);
+			doc.setOriginalFileName(EditorUtils.getNewPath(fnNew));
+			MainView.getFrame().setJDFDoc(doc, null);
+			MainView.getEditorDoc().setDirtyFlag();
+			MainView.getFrame().refreshView(MainView.getEditorDoc(), null);
 		}
 	}
 
@@ -1632,7 +1634,12 @@ public class JDFTreeModel extends DefaultTreeModel
 			return;
 		}
 		final KElement e = node.getElement();
-		if (e != null)
+		final BaseXJDFHelper h = BaseXJDFHelper.getBaseHelper(e);
+		if (h != null)
+		{
+			h.cleanUp();
+		}
+		else if (e != null)
 		{
 			e.sortChildren();
 		}

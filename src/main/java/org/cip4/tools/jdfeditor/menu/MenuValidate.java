@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2024 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -73,34 +73,94 @@ package org.cip4.tools.jdfeditor.menu;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
+import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 
+import org.cip4.jdflib.core.JDFDoc;
+import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.core.VString;
+import org.cip4.jdflib.core.XMLDoc;
+import org.cip4.jdflib.extensions.XJDFSchemaPrune;
+import org.cip4.jdflib.node.JDFNode;
+import org.cip4.jdflib.util.StringUtil;
+import org.cip4.jdflib.util.UrlUtil;
+import org.cip4.tools.jdfeditor.EditorDocument;
+import org.cip4.tools.jdfeditor.EditorFileChooser;
 import org.cip4.tools.jdfeditor.EditorMenuBar;
-import org.cip4.tools.jdfeditor.JDFFrame;
 import org.cip4.tools.jdfeditor.EditorMenuBar.Menu_MouseListener;
+import org.cip4.tools.jdfeditor.ExportDialog;
+import org.cip4.tools.jdfeditor.JDFFrame;
+import org.cip4.tools.jdfeditor.JDFTreeModel;
 import org.cip4.tools.jdfeditor.controller.MainController;
+import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.service.SettingService;
+import org.cip4.tools.jdfeditor.util.EditorUtils;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
 public class MenuValidate implements ActionListener, MenuInterface
 {
-	private MainController mainController;
+	private final MainController mainController;
 
 	private JMenu menu;
 
 	private JMenuItem m_QuickValidateItem;
 	public JMenuItem m_copyValidationListItem;
-	public JMenuItem m_exportItem;
-	public JMenuItem m_devCapItem;
+	private JMenuItem m_exportItem;
+	private JMenuItem m_pruneXJDFItem;
+	private JMenuItem m_pruneSchemaItem;
+	private JMenuItem m_pruneValidateItem;
 
+	public JMenuItem m_devCapItem;
 
 	public MenuValidate(final MainController mainController)
 	{
 		this.mainController = mainController;
+	}
+
+	/**
+	 * Export to Device Capabilities File
+	 */
+	void exportToDevCap()
+	{
+		final JDFFrame frame = MainView.getFrame();
+		final JDFDoc doc = EditorDocument.getEditorDoc().getJDFDoc();
+		final JDFNode root = doc.getJDFRoot();
+		if (root == null)
+		{
+			EditorUtils.errorBox("RootNotAJDFKey", doc.getRoot().getNodeName());
+			return;
+		}
+		try
+		{
+			frame.cleanupSelected(); // remove all defaults etc. so that the generated file remains reasonable
+			final ExportDialog exportDialog = new ExportDialog(root);
+
+			final File fileToOpen = exportDialog.getFileToOpen();
+			if (fileToOpen != null)
+			{
+				final VString vs = StringUtil.tokenize(exportDialog.generAttrString, " ", false);
+				vs.unify();
+
+				final String s = StringUtil.setvString(vs, " ", null, null);
+				mainController.setSetting(SettingKey.VALIDATION_GENERIC_ATTR, s);
+				frame.clearViews();
+				frame.readFile(fileToOpen);
+			}
+		}
+		catch (final Exception e)
+		{
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(frame,
+					ResourceUtil.getMessage("DevcapExportErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""),
+					ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	@Override
@@ -128,9 +188,21 @@ public class MenuValidate implements ActionListener, MenuInterface
 		menu.add(m_copyValidationListItem);
 
 		m_exportItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.validate.export"));
-		m_exportItem.addActionListener(frame);
+		m_exportItem.addActionListener(this);
 		m_exportItem.setAccelerator(KeyStroke.getKeyStroke('E', menuKeyMask));
 		menu.add(m_exportItem);
+
+		m_pruneXJDFItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.validate.prune"));
+		m_pruneXJDFItem.addActionListener(this);
+		menu.add(m_pruneXJDFItem);
+
+		m_pruneSchemaItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.validate.pruneschema"));
+		m_pruneSchemaItem.addActionListener(this);
+		menu.add(m_pruneSchemaItem);
+
+		m_pruneValidateItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.validate.prunevalidate"));
+		m_pruneValidateItem.addActionListener(this);
+		menu.add(m_pruneValidateItem);
 
 		m_devCapItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.validate.test"));
 		m_devCapItem.addActionListener(frame);
@@ -147,6 +219,8 @@ public class MenuValidate implements ActionListener, MenuInterface
 		m_devCapItem.setEnabled(false);
 		m_exportItem.setEnabled(false);
 		m_QuickValidateItem.setEnabled(false);
+		m_pruneXJDFItem.setEnabled(false);
+		m_pruneValidateItem.setEnabled(false);
 	}
 
 	@Override
@@ -154,22 +228,74 @@ public class MenuValidate implements ActionListener, MenuInterface
 	{
 		m_devCapItem.setEnabled(true);
 		m_exportItem.setEnabled(true);
-		m_QuickValidateItem.setEnabled(true);
+		m_QuickValidateItem.setEnabled(MainView.getModel() != null);
+		final boolean ok = EditorDocument.getEditorDoc().isXJDF() && !EditorDocument.getEditorDoc().isJson();
+		m_pruneXJDFItem.setEnabled(ok);
+		m_pruneValidateItem.setEnabled(ok && getPrunedSchema() != null);
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e)
+	public void actionPerformed(final ActionEvent e)
 	{
 		MainView.setCursor(1, null);
 		final Object eSrc = e.getSource();
-		final JDFFrame frame = MainView.getFrame();
-		
+
 		if (eSrc == m_QuickValidateItem && MainView.getModel() != null)
 		{
 			MainView.getModel().validate();
 		}
-		
+		else if (eSrc == m_exportItem)
+		{
+			exportToDevCap();
+		}
+		else if (eSrc == m_pruneXJDFItem)
+		{
+			pruneSchema();
+		}
+		else if (eSrc == m_pruneSchemaItem)
+		{
+			openPrunedSchema();
+		}
+		else if (eSrc == m_pruneValidateItem)
+		{
+			MainView.getModel().validateXJDF(getPrunedSchema());
+		}
 		MainView.setCursor(0, null);
+	}
+
+	void pruneSchema()
+	{
+		final EditorDocument editorDoc = EditorDocument.getEditorDoc();
+		final XMLDoc schema = XMLDoc.parseURL(EditorDocument.getXJDFSchemaUrl(), null);
+		final JDFDoc doc = editorDoc.getJDFDoc();
+		final XJDFSchemaPrune prune = new XJDFSchemaPrune(schema);
+		prune.setCheckAttributes(true);
+		final KElement pruned = prune.prune(doc.getRoot());
+		final String fileName = editorDoc.getOriginalFileName() + ".xsd";
+		JDFTreeModel.saveElement(pruned, fileName, false);
+	}
+
+	/**
+	 * Choose which file to open.
+	 */
+	public void openPrunedSchema()
+	{
+		final String prunedSchema = getPrunedSchema();
+		File fileToOpen = UrlUtil.urlToFile(prunedSchema);
+		final EditorFileChooser chooser = new EditorFileChooser(fileToOpen, "xsd");
+
+		final int answer = chooser.showOpenDialog(JDFFrame.getFrame());
+
+		if (answer == JFileChooser.APPROVE_OPTION)
+		{
+			fileToOpen = chooser.getSelectedFile();
+			SettingService.getSettingService().set(SettingKey.VALIDATION_PRUNE_SCHEMA_URL, UrlUtil.fileToUrl(fileToOpen, false));
+		}
+	}
+
+	String getPrunedSchema()
+	{
+		return SettingService.getSettingService().getString(SettingKey.VALIDATION_PRUNE_SCHEMA_URL);
 	}
 
 }

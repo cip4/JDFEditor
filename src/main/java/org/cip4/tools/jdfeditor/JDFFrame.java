@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2022 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2024 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -136,18 +136,19 @@ import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.core.XMLDocUserData.EnumDirtyPolicy;
 import org.cip4.jdflib.elementwalker.FixVersion;
 import org.cip4.jdflib.elementwalker.RemoveEmpty;
+import org.cip4.jdflib.elementwalker.RemovePrivate;
 import org.cip4.jdflib.goldenticket.BaseGoldenTicket;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.util.EnumUtil;
 import org.cip4.jdflib.util.FileUtil;
-import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.file.UserDir;
 import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.dialog.PreferenceDialog;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.DocumentService;
+import org.cip4.tools.jdfeditor.util.EditorUtils;
 import org.cip4.tools.jdfeditor.util.RecentFileUtil;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
@@ -345,6 +346,11 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		}
 	}
 
+	public static JDFFrame getFrame()
+	{
+		return MainView.getFrame();
+	}
+
 	public void applyLookAndFeel(final PreferenceDialog pd)
 	{
 		try
@@ -408,43 +414,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			}
 
 			PrintDialog.printIt(comp);
-		}
-	}
-
-	/**
-	 * Export to Device Capabilities File
-	 */
-	void exportToDevCap()
-	{
-		final JDFNode root = getJDFDoc().getJDFRoot();
-		if (root == null)
-		{
-			EditorUtils.errorBox("RootNotAJDFKey", getJDFDoc().getRoot().getNodeName());
-			return;
-		}
-		try
-		{
-			cleanupSelected(); // remove all defaults etc. so that the generated file remains reasonable
-			final ExportDialog exportDialog = new ExportDialog(root);
-
-			final File fileToOpen = exportDialog.getFileToOpen();
-			if (fileToOpen != null)
-			{
-				final VString vs = StringUtil.tokenize(exportDialog.generAttrString, " ", false);
-				vs.unify();
-
-				final String s = StringUtil.setvString(vs, " ", null, null);
-				mainController.setSetting(SettingKey.VALIDATION_GENERIC_ATTR, s);
-				clearViews();
-				readFile(fileToOpen);
-			}
-		}
-		catch (final Exception e)
-		{
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this,
-					ResourceUtil.getMessage("DevcapExportErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""),
-					ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -686,7 +655,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	/**
 	 * Method clearViews. clear all views before opening a new file
 	 */
-	void clearViews()
+	public void clearViews()
 	{
 		m_topTabs.clearViews();
 		m_bottomTabs.clearViews();
@@ -1007,14 +976,13 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 		try
 		{
-
 			// find the closest selectd JDF or JMF element and fix it
 			final TreePath path = m_treeArea.getSelectionPath();
 			final KElement element = EditorUtils.getElement(path);
 			if (element instanceof JDFElement)
 			{
 				final JDFElement n1 = (JDFElement) element;
-				n1.removeExtensions();
+				new RemovePrivate().walkTree(n1, null);
 			}
 			refreshView(getEditorDoc(), path);
 		}
@@ -1048,11 +1016,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		MainView.setCursor(1, null);
 
 		final Object eSrc = e.getSource();
-		if (eSrc == m_menuBar.getMenuValidate().m_exportItem)
-		{
-			exportToDevCap();
-		}
-		else if (eSrc == m_menuBar.getMenuFile().m_quitItem)
+		if (eSrc == m_menuBar.getMenuFile().m_quitItem)
 		{
 			if (closeFile(9999) != JOptionPane.CANCEL_OPTION)
 			{

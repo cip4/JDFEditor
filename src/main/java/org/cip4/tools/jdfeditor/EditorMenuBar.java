@@ -96,6 +96,7 @@ import org.cip4.tools.jdfeditor.menu.MenuInsert;
 import org.cip4.tools.jdfeditor.menu.MenuValidate;
 import org.cip4.tools.jdfeditor.menu.MenuView;
 import org.cip4.tools.jdfeditor.menu.MenuEdit;
+import org.cip4.tools.jdfeditor.util.EditorUtils;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;

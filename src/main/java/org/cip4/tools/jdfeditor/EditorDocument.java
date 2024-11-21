@@ -70,6 +70,7 @@ package org.cip4.tools.jdfeditor;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -92,6 +93,8 @@ import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFElement.EnumVersion;
 import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.core.XMLDoc;
+import org.cip4.jdflib.extensions.XJDF20;
 import org.cip4.jdflib.extensions.XJDFHelper;
 import org.cip4.jdflib.extensions.XJMFHelper;
 import org.cip4.jdflib.util.ByteArrayIOStream;
@@ -107,6 +110,7 @@ import org.cip4.lib.jdf.jsonutil.rtf.JSONIndentWalker;
 import org.cip4.lib.jdf.jsonutil.rtf.JSONRtfWalker;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
+import org.cip4.tools.jdfeditor.util.EditorUtils;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;
@@ -117,6 +121,17 @@ import org.json.simple.JSONObject;
  */
 public class EditorDocument
 {
+
+	/**
+	 * get the JDFDoc of the currently displayed JDF
+	 * 
+	 * @return the JDFDoc that is currently being displayed
+	 */
+	public static EditorDocument getEditorDoc()
+	{
+		return MainView.getFrame().getEditorDoc();
+	}
+
 	private final static SettingService settingService = SettingService.getSettingService();
 
 	private final JDFDoc jdfDoc;
@@ -288,6 +303,18 @@ public class EditorDocument
 	public String getPackageName()
 	{
 		return packageName;
+	}
+
+	public static String getXJDFSchemaUrl()
+	{
+		final XMLDoc theDoc = getEditorDoc().getJDFDoc();
+		EnumVersion v = EnumVersion.getEnum(theDoc.getRoot().getAttribute(AttributeName.VERSION));
+		if (v == null)
+			v = XJDF20.getDefaultVersion();
+		final File schema = EditorUtils.getSchemaFile(v);
+		final URL url = ResourceUtil.class.getResource(EditorUtils.RES_SCHEMA_20);
+		final String sUrl = schema == null ? url.toExternalForm() : UrlUtil.fileToUrl(schema, false);
+		return sUrl;
 	}
 
 	@Override

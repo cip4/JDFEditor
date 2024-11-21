@@ -70,6 +70,7 @@
 */
 package org.cip4.tools.jdfeditor;
 
+import org.cip4.tools.jdfeditor.util.EditorUtils;
 import org.cip4.tools.jdfeditor.view.MainView;
 import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;
 

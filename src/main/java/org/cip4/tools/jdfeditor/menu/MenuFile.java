@@ -81,30 +81,30 @@ import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 
 import org.cip4.tools.jdfeditor.EditorMenuBar;
-import org.cip4.tools.jdfeditor.EditorUtils;
-import org.cip4.tools.jdfeditor.JDFFrame;
 import org.cip4.tools.jdfeditor.EditorMenuBar.Menu_MouseListener;
+import org.cip4.tools.jdfeditor.JDFFrame;
 import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.util.EditorUtils;
 import org.cip4.tools.jdfeditor.util.RecentFileUtil;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
 public class MenuFile implements ActionListener, MenuInterface
 {
-	private MainController mainController;
+	private final MainController mainController;
 	final JDFFrame frame = MainView.getFrame();
-	
+
 	private JMenu menu;
 	private JMenu recentFilesMenu;
-	
+
 	private JMenuItem m_newItem;
 	private JMenuItem m_openItem;
 	private JMenuItem m_closeItem;
 	private JMenuItem m_closeAllItem;
 	private JMenuItem m_saveItem;
 	private JMenuItem m_saveAsItem;
-	private JMenuItem[] recentFilesMenuItemArray = new JMenuItem[5];
+	private final JMenuItem[] recentFilesMenuItemArray = new JMenuItem[RecentFileUtil.MAX_RECENT];
 	private JMenuItem m_devcapOpenMenu;
 	private JMenuItem m_csvItem;
 	public JMenuItem m_quitItem;
@@ -114,6 +114,7 @@ public class MenuFile implements ActionListener, MenuInterface
 		this.mainController = mainController;
 	}
 
+	@Override
 	public JMenu createMenu()
 	{
 		final Menu_MouseListener menuListener = new EditorMenuBar().new Menu_MouseListener();
@@ -188,7 +189,8 @@ public class MenuFile implements ActionListener, MenuInterface
 
 		return menu;
 	}
-	
+
+	@Override
 	public void setEnableClose()
 	{
 		m_saveItem.setEnabled(false);
@@ -197,7 +199,8 @@ public class MenuFile implements ActionListener, MenuInterface
 		m_closeItem.setEnabled(false);
 		m_closeAllItem.setEnabled(false);
 	}
-	
+
+	@Override
 	public void setEnableOpen(final boolean mode)
 	{
 		m_csvItem.setEnabled(true);
@@ -245,7 +248,7 @@ public class MenuFile implements ActionListener, MenuInterface
 		}
 		else if (eSrc == m_devcapOpenMenu)
 		{
-			String s = mainController.getSetting(SettingKey.RECENT_DEV_CAP, String.class);
+			final String s = mainController.getSetting(SettingKey.RECENT_DEV_CAP, String.class);
 			File f = null;
 
 			if (s != null)
@@ -269,9 +272,10 @@ public class MenuFile implements ActionListener, MenuInterface
 		}
 		MainView.setCursor(0, null);
 	}
-	
+
 	/**
 	 * Checks if the String[] m_iniFile.recentFiles file has any content. Called to check if the the m_recentFilesMenu is to be created.
+	 * 
 	 * @return true if any file has recently been opened; false otherwise.
 	 */
 	private String[] recentFiles()
@@ -306,6 +310,7 @@ public class MenuFile implements ActionListener, MenuInterface
 
 	/**
 	 * Called if a file is opened from the recent files menu.
+	 * 
 	 * @param fileToSave - Path to the file that is to be opened
 	 */
 	private void openRecentFile(final File fileToSave)
@@ -331,6 +336,7 @@ public class MenuFile implements ActionListener, MenuInterface
 
 	/**
 	 * Updates the order in the Recent Files Menu. also updates all windows and the ini file - just in case
+	 * 
 	 * @param pathName - The path to the file
 	 */
 	public void updateRecentFilesMenu(final String pathName)

@@ -91,11 +91,13 @@ import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
+import org.cip4.tools.jdfeditor.util.EditorUtils;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
 /**
  * spawnDialog.java
+ * 
  * @author Elena Skobchenko
  */
 
@@ -107,7 +109,7 @@ public class ExportDialog extends JPanel implements ActionListener
 
 	private JTextField idPath;
 	private JTextField generAttrField;
-	String generAttrString;
+	public String generAttrString;
 	private JButton browse;
 	private final File originalFile;
 	private File newDCFile;
@@ -124,11 +126,12 @@ public class ExportDialog extends JPanel implements ActionListener
 		super();
 		this.originalFile = new File(jdfRoot.getOwnerDocument_KElement().getOriginalFileName());
 		generAttrString = settingService.getSetting(SettingKey.VALIDATION_GENERIC_ATTR, String.class);
-		JDFFrame frame = MainView.getFrame();
+		final JDFFrame frame = MainView.getFrame();
 		init();
 		final String[] options = { ResourceUtil.getMessage("OkKey"), ResourceUtil.getMessage("CancelKey") };
 
-		final int option = JOptionPane.showOptionDialog(frame, this, ResourceUtil.getMessage("ExportToDevCapKey"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+		final int option = JOptionPane.showOptionDialog(frame, this, ResourceUtil.getMessage("ExportToDevCapKey"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
+				options[0]);
 
 		if (option == JOptionPane.OK_OPTION)
 		{
@@ -155,8 +158,8 @@ public class ExportDialog extends JPanel implements ActionListener
 					final JDFDeviceCapGenerator devCapGenerator = new JDFDeviceCapGenerator(jdfRoot, genericAttributes);
 					final JDFDoc devCapDoc = devCapGenerator.getDevCapDoc();
 
-					boolean success = devCapDoc.write2File(newDCFile.getAbsolutePath(), 2, true);
-					//                    boolean success = devCapDoc.write2File(newDCFile.getAbsolutePath(), 2, false);                   
+					final boolean success = devCapDoc.write2File(newDCFile.getAbsolutePath(), 2, true);
+					// boolean success = devCapDoc.write2File(newDCFile.getAbsolutePath(), 2, false);
 					if (!success)
 					{
 						JOptionPane.showMessageDialog(frame, ResourceUtil.getMessage("ExportFailedKey"), "Error", JOptionPane.ERROR_MESSAGE);
@@ -166,18 +169,18 @@ public class ExportDialog extends JPanel implements ActionListener
 						setOpenFileDialog();
 					}
 				}
-				catch (Exception e)
+				catch (final Exception e)
 				{
 					e.printStackTrace();
-					JOptionPane.showMessageDialog(frame, "An internal error occured: \n" + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""), "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(frame, "An internal error occured: \n" + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""),
+							"Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		}
 	}
 
 	/**
-	 * Creates the fields and view for the Spawn Dialog and also the default
-	 * file names for the jdfFile and partFile.
+	 * Creates the fields and view for the Spawn Dialog and also the default file names for the jdfFile and partFile.
 	 */
 	private void init()
 	{
@@ -201,7 +204,7 @@ public class ExportDialog extends JPanel implements ActionListener
 		final Box idBox = Box.createHorizontalBox();
 
 		newDCFile = new File(createFileName("Generated_DevCaps_"));
-		int col = newDCFile.getName().length() < 35 ? newDCFile.getName().length() : 35;
+		final int col = newDCFile.getName().length() < 35 ? newDCFile.getName().length() : 35;
 		idPath = new JTextField(newDCFile.getAbsolutePath(), col);
 
 		idBox.add(idPath);
@@ -236,7 +239,8 @@ public class ExportDialog extends JPanel implements ActionListener
 		final JLabel label = new JLabel(ResourceUtil.getMessage("DCOpenAfterGenerationKey"));
 		final String[] options = { ResourceUtil.getMessage("YesKey"), ResourceUtil.getMessage("NoKey") };
 
-		final int option = JOptionPane.showOptionDialog(MainView.getFrame(), label, ResourceUtil.getMessage("DCHappyMessageKey"), JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+		final int option = JOptionPane.showOptionDialog(MainView.getFrame(), label, ResourceUtil.getMessage("DCHappyMessageKey"), JOptionPane.OK_OPTION,
+				JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 
 		if (option == JOptionPane.OK_OPTION)
 		{
@@ -246,7 +250,7 @@ public class ExportDialog extends JPanel implements ActionListener
 
 	/**
 	 * 
-	 *  
+	 * 
 	 * @return
 	 */
 	public File getFileToOpen()
@@ -255,11 +259,11 @@ public class ExportDialog extends JPanel implements ActionListener
 	}
 
 	/**
-	 * Create the default file name including its absolute path. The String addOn
-	 * is added just ahead of the file's extension.
+	 * Create the default file name including its absolute path. The String addOn is added just ahead of the file's extension.
+	 * 
 	 * @return The file name with the addon.
 	 */
-	private String createFileName(String addBefore)
+	private String createFileName(final String addBefore)
 	{
 		int index = originalFile.getAbsolutePath().lastIndexOf('\\');
 		final String path = originalFile.getAbsolutePath().substring(0, index + 1);
@@ -276,7 +280,7 @@ public class ExportDialog extends JPanel implements ActionListener
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	@Override
-	public void actionPerformed(ActionEvent e)
+	public void actionPerformed(final ActionEvent e)
 	{
 		if (e.getSource() == browse)
 		{

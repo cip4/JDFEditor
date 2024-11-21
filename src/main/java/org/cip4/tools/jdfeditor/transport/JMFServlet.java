@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2021 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2024 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -107,11 +107,11 @@ import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.jdflib.util.file.RollingBackupDirectory;
 import org.cip4.jdflib.util.mime.MimeReader;
-import org.cip4.tools.jdfeditor.EditorUtils;
 import org.cip4.tools.jdfeditor.JDFFrame;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.pane.MessageBean;
 import org.cip4.tools.jdfeditor.service.SettingService;
+import org.cip4.tools.jdfeditor.util.EditorUtils;
 import org.cip4.tools.jdfeditor.view.MainView;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -190,7 +190,6 @@ public class JMFServlet extends HttpServlet
 		LOGGER.info("header Content-type: " + headerContentType);
 
 		final boolean isMultipart = MimeUtil.isMimeMultiPart(headerContentType);
-		LOGGER.info("isMultipart: " + isMultipart);
 
 		final InputStream inputStream = req.getInputStream();
 
