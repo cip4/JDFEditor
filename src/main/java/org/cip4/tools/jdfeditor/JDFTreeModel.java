@@ -1428,8 +1428,13 @@ public class JDFTreeModel extends DefaultTreeModel
 		else
 		{
 			final JDFDoc doc = new JDFDoc(d);
-			fnNew = FilenameUtils.getName(fnNew);
-			doc.setOriginalFileName(EditorUtils.getNewPath(fnNew));
+			if (!new File(fnNew).isAbsolute())
+			{
+				fnNew = FilenameUtils.getName(fnNew);
+				fnNew = EditorUtils.getNewPath(fnNew);
+			}
+			doc.setOriginalFileName(fnNew);
+
 			MainView.getFrame().setJDFDoc(doc, null);
 			MainView.getEditorDoc().setDirtyFlag();
 			MainView.getFrame().refreshView(MainView.getEditorDoc(), null);

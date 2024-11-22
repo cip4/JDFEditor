@@ -76,6 +76,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.util.HashSet;
 
 import javax.swing.Box;
@@ -85,6 +86,7 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.EditorUtils;
@@ -335,9 +337,10 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		m_LastButton.setEnabled(true);
 		m_NextButton.setEnabled(true);
 
-		final EditorDocument eDoc = MainView.getEditorDoc();
+		final EditorDocument eDoc = EditorDocument.getEditorDoc();
 		if (eDoc != null)
 		{
+			m_saveButton.setEnabled(eDoc.isDirty());
 			m_convert2Jdf.setEnabled(eDoc.isXJDF());
 			m_convert2XJdf.setEnabled(eDoc.isJson() || eDoc.isJDF());
 			m_convert2JSON.setEnabled(eDoc.isJSONEnabled() && !eDoc.isJson());
@@ -371,14 +374,17 @@ public class EditorButtonBar extends JToolBar implements ActionListener
 		}
 		else if (eSrc == m_saveButton) // save document
 		{
-			if (m_frame.getTitle().contains("Untitled.j") /* || m_frame.getTitle().equalsIgnoreCase("Untitled.jmf") */)
+			final JDFDoc d = m_frame.getJDFDoc();
+			final File file = new File(d.getOriginalFileName());
+			if (file.isAbsolute())
 			{
-				m_frame.saveAs();
+				m_frame.save();
+				// d.write2File((String) null, 2, false);
+				// d.clearDirtyIDs();
 			}
 			else
 			{
-				m_frame.getJDFDoc().write2File((String) null, 2, false);
-				m_frame.getJDFDoc().clearDirtyIDs();
+				m_frame.saveAs();
 			}
 		}
 		else if (eSrc == m_validateButton && m_frame.getModel() != null) // validate

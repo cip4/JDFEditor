@@ -148,6 +148,7 @@ import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.dialog.PreferenceDialog;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.DocumentService;
+import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.EditorUtils;
 import org.cip4.tools.jdfeditor.util.RecentFileUtil;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
@@ -1146,7 +1147,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		}
 		if (fileToSave != null)
 		{
-			if (doc.isDirtyFlag() && !mainController.getSetting(SettingKey.GENERAL_READ_ONLY, Boolean.class))
+			if (doc.isDirtyFlag() && SettingService.getSettingService().getBool(SettingKey.GENERAL_READ_ONLY))
 			{
 				saveAs();
 				m_menuBar.updateRecentFilesMenu(fileToSave.toString());
@@ -1155,6 +1156,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			{
 				doc.saveFile(fileToSave);
 			}
+			setEnableOpen(true);
 		}
 		else
 		{
