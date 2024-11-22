@@ -66,7 +66,7 @@
  * <http://www.cip4.org/>.
  *
  */
-package org.cip4.tools.jdfeditor;
+package org.cip4.tools.jdfeditor.util;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -76,6 +76,7 @@ import java.io.File;
 import org.cip4.jdflib.core.JDFElement.EnumVersion;
 import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.net.UrlCheck;
+import org.cip4.tools.jdfeditor.EditorTestBase;
 import org.cip4.tools.jdfeditor.util.EditorUtils;
 import org.junit.Test;
 
