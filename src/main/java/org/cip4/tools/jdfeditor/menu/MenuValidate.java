@@ -74,6 +74,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
 
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
@@ -104,7 +105,7 @@ import org.cip4.tools.jdfeditor.util.EditorUtils;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 
-public class MenuValidate implements ActionListener, MenuInterface
+public class MenuValidate<E> implements ActionListener, MenuInterface
 {
 	private final MainController mainController;
 
@@ -114,6 +115,7 @@ public class MenuValidate implements ActionListener, MenuInterface
 	public JMenuItem m_copyValidationListItem;
 	private JMenuItem m_exportItem;
 	private JMenuItem m_pruneXJDFItem;
+	private JMenuItem m_pruneAllXJDFItem;
 	private JMenuItem m_pruneSchemaItem;
 	private JMenuItem m_pruneValidateItem;
 
@@ -196,6 +198,10 @@ public class MenuValidate implements ActionListener, MenuInterface
 		m_pruneXJDFItem.addActionListener(this);
 		menu.add(m_pruneXJDFItem);
 
+		m_pruneAllXJDFItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.validate.pruneall"));
+		m_pruneAllXJDFItem.addActionListener(this);
+		menu.add(m_pruneAllXJDFItem);
+
 		m_pruneSchemaItem = new JMenuItem(ResourceUtil.getMessage("main.menu.tools.validate.pruneschema"));
 		m_pruneSchemaItem.addActionListener(this);
 		menu.add(m_pruneSchemaItem);
@@ -250,7 +256,11 @@ public class MenuValidate implements ActionListener, MenuInterface
 		}
 		else if (eSrc == m_pruneXJDFItem)
 		{
-			pruneSchema();
+			pruneSchema(false);
+		}
+		else if (eSrc == m_pruneAllXJDFItem)
+		{
+			pruneSchema(true);
 		}
 		else if (eSrc == m_pruneSchemaItem)
 		{
@@ -263,15 +273,29 @@ public class MenuValidate implements ActionListener, MenuInterface
 		MainView.setCursor(0, null);
 	}
 
-	void pruneSchema()
+	void pruneSchema(final boolean all)
 	{
+		final ArrayList<KElement> toPrune = new ArrayList<>();
+		if (all)
+		{
+			for (final EditorDocument ed : EditorDocument.getEditorDocs())
+			{
+				if (ed != null && ed.isXJDF())
+				{
+					toPrune.add(ed.getJDFDoc().getRoot());
+				}
+			}
+		}
+		else
+		{
+			toPrune.add(EditorDocument.getEditorDoc().getJDFDoc().getRoot());
+		}
 		final EditorDocument editorDoc = EditorDocument.getEditorDoc();
 		final XMLDoc schema = XMLDoc.parseURL(EditorDocument.getXJDFSchemaUrl(), null);
-		final JDFDoc doc = editorDoc.getJDFDoc();
 		final XJDFSchemaPrune prune = new XJDFSchemaPrune(schema);
 		prune.setCheckAttributes(true);
-		final KElement pruned = prune.prune(doc.getRoot());
-		final String fileName = editorDoc.getOriginalFileName() + ".xsd";
+		final KElement pruned = prune.prune(toPrune.toArray(new KElement[0]));
+		final String fileName = editorDoc.getOriginalFileName() + "." + toPrune.size() + ".xsd";
 		JDFTreeModel.saveElement(pruned, fileName, false);
 	}
 

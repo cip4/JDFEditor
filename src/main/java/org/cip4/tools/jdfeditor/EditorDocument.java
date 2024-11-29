@@ -132,6 +132,16 @@ public class EditorDocument
 		return MainView.getFrame().getEditorDoc();
 	}
 
+	/**
+	 * get the JDFDoc of the currently displayed JDF
+	 * 
+	 * @return the JDFDoc that is currently being displayed
+	 */
+	public static List<EditorDocument> getEditorDocs()
+	{
+		return MainView.getFrame().m_VjdfDocument;
+	}
+
 	private final static SettingService settingService = SettingService.getSettingService();
 
 	private final JDFDoc jdfDoc;
