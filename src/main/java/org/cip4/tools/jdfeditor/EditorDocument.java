@@ -95,6 +95,7 @@ import org.cip4.jdflib.core.JDFElement.EnumVersion;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.extensions.XJDF20;
+import org.cip4.jdflib.extensions.XJDFConstants;
 import org.cip4.jdflib.extensions.XJDFHelper;
 import org.cip4.jdflib.extensions.XJMFHelper;
 import org.cip4.jdflib.util.ByteArrayIOStream;
@@ -808,7 +809,13 @@ public class EditorDocument
 	String getJSONString(final KElement root, final int indent)
 	{
 		final JSONWriter jw = Editor.getEditor().getJSonWriter();
-		final List<JSONObject> l = jw.splitConvert(root);
+		final List<JSONObject> l = new ArrayList<JSONObject>();
+		if (XJDFConstants.XJMF.equalsIgnoreCase(root.getLocalName()))
+			l.addAll(jw.splitConvert(root));
+		else
+		{
+			l.add(jw.convert(root));
+		}
 		for (final JSONObject o : l)
 		{
 			if (indent > 0)

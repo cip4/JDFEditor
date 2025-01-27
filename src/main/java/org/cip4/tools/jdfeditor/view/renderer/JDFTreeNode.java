@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2024 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
+ * Copyright (c) 2001-2025 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  *
@@ -83,6 +83,7 @@ import org.cip4.jdflib.resource.JDFEvent;
 import org.cip4.jdflib.resource.JDFMarkObject;
 import org.cip4.jdflib.resource.JDFNotification;
 import org.cip4.jdflib.resource.JDFPart;
+import org.cip4.jdflib.resource.JDFPatch;
 import org.cip4.jdflib.resource.JDFPhaseTime;
 import org.cip4.jdflib.resource.JDFRefAnchor;
 import org.cip4.jdflib.resource.JDFResource;
@@ -99,6 +100,8 @@ import org.cip4.jdflib.resource.process.JDFCompany;
 import org.cip4.jdflib.resource.process.JDFContact;
 import org.cip4.jdflib.resource.process.JDFContentObject;
 import org.cip4.jdflib.resource.process.JDFConventionalPrintingParams;
+import org.cip4.jdflib.resource.process.JDFDeliveryParams;
+import org.cip4.jdflib.resource.process.JDFDropItem;
 import org.cip4.jdflib.resource.process.JDFEmployee;
 import org.cip4.jdflib.resource.process.JDFFileSpec;
 import org.cip4.jdflib.resource.process.JDFGeneralID;
@@ -401,8 +404,6 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		return node == null ? "null" : node.getName();
 	}
 
-	// /////////////////////////////////////////////////////////////////////
-
 	/**
 	 * @return
 	 */
@@ -481,12 +482,9 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		}
 		s = displaySpecial(e, s, nodeName);
 
-		// always add id
-		final String id = e.getAttribute_KElement(AttributeName.ID, null, null);
-		if (id != null)
-		{
-			s += ", " + id;
-		}
+		s += addAttribute(e, AttributeName.ID);
+		s += addAttribute(e, AttributeName.PRODUCTID);
+		s += addAttribute(e, XJDFConstants.ExternalID);
 
 		// add any partidkeys in resources
 		if (e instanceof JDFResource)
@@ -539,6 +537,11 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 				s += ": " + nam;
 			}
 		}
+		else if (e instanceof JDFResourceInfo)
+		{
+			final String nam = ((JDFResourceInfo) e).getResourceName();
+			s += ": " + nam;
+		}
 		else if (e instanceof JDFMessage)
 		{
 			s = displayMessage(e, s);
@@ -561,11 +564,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		}
 		else if (e instanceof JDFJMF)
 		{
-			final String senderID = StringUtil.getNonEmpty(((JDFJMF) e).getSenderID());
-			if (senderID != null)
-			{
-				s += " SenderID: " + senderID;
-			}
+			s += addAttribute(e, AttributeName.SENDERID);
 		}
 		else if (e instanceof JDFNode || XJDF20.rootName.equals(nodeName) || e instanceof JDFAncestor)
 		{
@@ -597,19 +596,20 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		}
 		else if (e instanceof JDFDevice)
 		{
-			final String att = e.getAttribute(AttributeName.DEVICEID, null, null);
-			if (att != null)
-			{
-				s += " DeviceID=" + att;
-			}
+			s += addAttribute(e, AttributeName.DEVICEID);
+		}
+		else if (e instanceof JDFDeliveryParams)
+		{
+			s += addAttribute(e, AttributeName.REQUIRED);
 		}
 		else if (e instanceof JDFDropItemIntent)
 		{
-			final String att = e.getAttribute(AttributeName.AMOUNT, null, null);
-			if (att != null)
-			{
-				s += " Amount=" + att;
-			}
+			s += addAttribute(e, AttributeName.AMOUNT);
+			s += addAttribute(e, AttributeName.EARLIEST);
+		}
+		else if (e instanceof JDFDropItem)
+		{
+			s += addAttribute(e, AttributeName.AMOUNT);
 		}
 		else if (e instanceof JDFLayoutElement)
 		{
@@ -621,19 +621,11 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		}
 		else if (e instanceof JDFFileSpec)
 		{
-			final String att = e.getAttribute(AttributeName.URL, null, null);
-			if (att != null)
-			{
-				s += " URL=" + att;
-			}
+			s += addAttribute(e, AttributeName.URL);
 		}
 		else if (e instanceof JDFEmployee)
 		{
-			final String att = e.getAttribute(AttributeName.PERSONALID, null, null);
-			if (att != null)
-			{
-				s += " PersonalID=" + att;
-			}
+			s += addAttribute(e, AttributeName.PERSONALID);
 		}
 		else if (e instanceof JDFQueueEntry)
 		{
@@ -689,8 +681,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		{
 			for (final String a : new StringArray("Amount ActualAmount Waste"))
 			{
-				if (e.hasAttribute(a))
-					s += " " + a + "=" + e.getAttribute(a);
+				s += addAttribute(e, a);
 			}
 		}
 		else if (e instanceof JDFColor)
@@ -702,10 +693,14 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 				s += JDFConstants.BLANK + acn;
 			}
 		}
+		else if (e instanceof JDFPatch)
+		{
+			s += addAttribute(e, AttributeName.PATCHUSAGE);
+		}
 		else if (e instanceof JDFConventionalPrintingParams)
 		{
 			final JDFConventionalPrintingParams p = (JDFConventionalPrintingParams) e;
-			s += addAttributeValue(e, AttributeName.WORKSTYLE);
+			s += addAttribute(e, AttributeName.WORKSTYLE);
 		}
 		else if (e instanceof JDFIdentical)
 		{
@@ -830,6 +825,11 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 	String addAttributeValue(final KElement e, final String key)
 	{
 		return addAttributeValue(e, key, null, null);
+	}
+
+	String addAttribute(final KElement e, final String key)
+	{
+		return addAttributeValue(e, key, " " + key + "=", null);
 	}
 
 	String addAttributeValue(final KElement e, final String key, String prefix, final String suffix)
