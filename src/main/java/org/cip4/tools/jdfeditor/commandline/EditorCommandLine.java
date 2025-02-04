@@ -134,9 +134,9 @@ public class EditorCommandLine extends JDFValidator
 	 * 
 	 * @param argv
 	 */
-	public static void main(String argv[])
+	public static void main(final String argv[])
 	{
-		EditorCommandLine checker = new EditorCommandLine();
+		final EditorCommandLine checker = new EditorCommandLine();
 		checker.validate(argv, null);
 	}
 
@@ -145,9 +145,9 @@ public class EditorCommandLine extends JDFValidator
 	 * 
 	 * @param commandLineArgs command line arguments
 	 */
-	public XMLDoc validate(String commandLineArgs[], InputStream inStream)
+	public XMLDoc validate(final String commandLineArgs[], final InputStream inStream)
 	{
-		String url = parseArgs(commandLineArgs);
+		final String url = parseArgs(commandLineArgs);
 		// for all files do
 		if (inStream != null || url != null)
 		{
@@ -156,9 +156,9 @@ public class EditorCommandLine extends JDFValidator
 		return processAllFiles();
 	}
 
-	private String parseArgs(String[] commandLineArgs)
+	private String parseArgs(final String[] commandLineArgs)
 	{
-		MyArgs args = new MyArgs(commandLineArgs, "?cCmnPqQtUvVw", "dlfLhpTuxX", null);
+		final MyArgs args = new MyArgs(commandLineArgs, "?cCmnPqQtUvVw", "dlfLhpTuxX", null);
 
 		if (args.boolParameter('?'))
 		{
@@ -166,7 +166,7 @@ public class EditorCommandLine extends JDFValidator
 			System.exit(0);
 		}
 		bWarning = args.boolParameter('w');
-		bTiming = args.boolParameter('t');
+		bTiming = false;
 		bQuiet = args.boolParameter('q');
 		bWarnDanglingURL = args.boolParameter('U');
 
@@ -175,10 +175,10 @@ public class EditorCommandLine extends JDFValidator
 		xslStyleSheet = args.parameterString('X');
 		getTranslation(args);
 		pOut = new XMLDoc("CheckOutput", null);
-		KElement xmlRoot = pOut.getRoot();
+		final KElement xmlRoot = pOut.getRoot();
 		xmlRoot.setAttribute("Language", "EN");
 
-		boolean bVersion = !bQuiet || args.boolParameter('V');
+		final boolean bVersion = !bQuiet || args.boolParameter('V');
 		if (bVersion)
 		{
 			sysOut.println('\n' + version + '\n');
@@ -218,7 +218,7 @@ public class EditorCommandLine extends JDFValidator
 		// convert "," to blank
 		if (schemaLocation0 != null)
 		{
-			VString vs = new VString(schemaLocation0, JDFConstants.COMMA);
+			final VString vs = new VString(schemaLocation0, JDFConstants.COMMA);
 			if (vs.size() % 2 != 0)
 			{
 				sysOut.println("error in schema location: format is \"NameSpaceURI1,Location1,NameSpaceURI2,Location2\"\n - bailing out!" + usage);
@@ -231,7 +231,7 @@ public class EditorCommandLine extends JDFValidator
 		if (args.hasParameter('d'))
 		{
 			devCapFile = args.parameterString('d');
-			File fDC = UrlUtil.urlToFile(devCapFile);
+			final File fDC = UrlUtil.urlToFile(devCapFile);
 			if (fDC == null || !fDC.canRead())
 			{
 				sysOut.println("Error reading devcap file: " + devCapFile + "\n - bailing out!\n" + usage);
@@ -240,10 +240,10 @@ public class EditorCommandLine extends JDFValidator
 		}
 
 		bValidate = (args.boolParameter('v')) || (schemaLocation != null);
-		String jdfVersion = args.parameterString('f');
+		final String jdfVersion = args.parameterString('f');
 		if (jdfVersion != null)
 		{
-			EnumVersion v = EnumVersion.getEnum(jdfVersion);
+			final EnumVersion v = EnumVersion.getEnum(jdfVersion);
 			JDFElement.setDefaultJDFVersion(v);
 			JDFVersions.setForceVersion(true);
 		}
@@ -260,13 +260,13 @@ public class EditorCommandLine extends JDFValidator
 			testlists = EnumFitsValue.Present;
 		}
 
-		String url = args.parameterString('u');
+		final String url = args.parameterString('u');
 
 		setAllFiles(args);
 		return url;
 	}
 
-	private void getTranslation(MyArgs args)
+	private void getTranslation(final MyArgs args)
 	{
 		translation = args.parameterString('T');
 		if (translation != null)

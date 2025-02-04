@@ -345,82 +345,88 @@ public class JDFTreeModel extends DefaultTreeModel
 		checkJDF.level = JDFElement.EnumValidationLevel.getEnum(settingService.getSetting(SettingKey.VALIDATION_LEVEL, String.class));
 		checkJDF.bMultiID = true;
 		checkJDF.setWarning(!JDFElement.EnumValidationLevel.isNoWarn(checkJDF.level));
-		XMLDoc schemaValidationResult = null;
 
 		checkJDF.setIgnorePrivate(settingService.getSetting(SettingKey.IGNORE_PRIVATE_VALIDATION, Boolean.class));
 		checkJDF.bWarnDanglingURL = settingService.getSetting(SettingKey.VALIDATION_CHECK_URL, Boolean.class);
 
-		final String fn = theDoc.getOriginalFileName();
 		if (settingService.getSetting(SettingKey.VALIDATION_EXPORT, Boolean.class))
 		{
+			final String fn = theDoc.getOriginalFileName();
 			checkJDF.xmlOutputName = UrlUtil.newExtension(fn, ".validate.xml");
 		}
 		else
 		{
 			checkJDF.xmlOutputName = null;
 		}
-		if (settingService.getSetting(SettingKey.GENERAL_USE_SCHEMA, Boolean.class))
+		if (settingService.getBool(SettingKey.GENERAL_USE_SCHEMA))
 		{
-
-			File f = theDoc.getSchemaLocationFile(JDFElement.getSchemaURL());
-			String validationSchemaUrl = settingService.getSetting(SettingKey.VALIDATION_SCHEMA_URL, String.class);
-			if (validationSchemaUrl == null)
-			{
-				EnumVersion v = EnumVersion.getEnum(settingService.getString(SettingKey.VALIDATION_VERSION));
-				if (v == null)
-					v = EnumVersion.getEnum(theDoc.getRoot().getAttribute(AttributeName.VERSION));
-				f = EditorUtils.getSchemaFile(v);
-				validationSchemaUrl = UrlUtil.fileToUrl(f, false);
-
-			}
-			if (!UrlUtil.isFileOK(f) && validationSchemaUrl != null)
-			{
-				f = new File(validationSchemaUrl);
-			}
-
-			if (UrlUtil.isFileOK(f))
-			{
-				checkJDF.setJDFSchemaLocation(f);
-
-				try
-				{
-					final ByteArrayIOStream outStream = new ByteArrayIOStream();
-					theDoc.write2Stream(outStream, 0, false);
-					theDoc.setOriginalFileName(fn);
-					JDFDoc tmpDoc = EditorUtils.parseInStream(outStream.getInputStream(), f);
-					if (tmpDoc == null)
-					{
-						tmpDoc = EditorUtils.parseInStream(outStream.getInputStream(), null);
-					}
-
-					if (tmpDoc != null)
-					{
-						schemaValidationResult = tmpDoc.getValidationResult();
-					}
-				}
-				catch (final Exception e)
-				{
-					// nop
-				}
-
-			}
-			else
-			{
-				settingService.setSetting(SettingKey.VALIDATION_SCHEMA_URL, null);
-			}
+			validateJDFSchema(theDoc, checkJDF);
 		}
 		// TODO addFile
 		validationResult = checkJDF.processSingleDocument(theDoc);
 
 		final JDFFrame m_frame = MainView.getFrame();
 		m_frame.getBottomTabs().m_validErrScroll.drawCheckJDFOutputTree(validationResult);
-		m_frame.getBottomTabs().m_SchemaErrScroll.drawSchemaOutputTree(schemaValidationResult);
 		if (MainView.getEditorDoc().getJDFTree() != null)
 		{
 			MainView.getEditorDoc().getJDFTree().repaint();
 			m_frame.getJDFTreeArea().goToPath(m_frame.getJDFTreeArea().getSelectionPath()); // TODO: what this code actually do ?
 		}
 		return validationResult.getRoot().getFirstChildElement().getBoolAttribute("IsValid", null, true);
+	}
+
+	void validateJDFSchema(final JDFDoc theDoc, final JDFValidator checkJDF)
+	{
+
+		File schemaLocation = theDoc.getSchemaLocationFile(JDFElement.getSchemaURL());
+		String validationSchemaUrl = settingService.getSetting(SettingKey.VALIDATION_SCHEMA_URL, String.class);
+		if (validationSchemaUrl == null)
+		{
+			EnumVersion v = EnumVersion.getEnum(settingService.getString(SettingKey.VALIDATION_VERSION));
+			if (v == null)
+				v = EnumVersion.getEnum(theDoc.getRoot().getAttribute(AttributeName.VERSION));
+			schemaLocation = EditorUtils.getSchemaFile(v);
+			validationSchemaUrl = UrlUtil.fileToUrl(schemaLocation, false);
+
+		}
+		if (!UrlUtil.isFileOK(schemaLocation) && validationSchemaUrl != null)
+		{
+			schemaLocation = new File(validationSchemaUrl);
+		}
+
+		if (UrlUtil.isFileOK(schemaLocation))
+		{
+			checkJDF.setJDFSchemaLocation(schemaLocation);
+
+			try
+			{
+				final String fn = theDoc.getOriginalFileName();
+				final ByteArrayIOStream outStream = new ByteArrayIOStream();
+				theDoc.write2Stream(outStream, 0, false);
+				theDoc.setOriginalFileName(fn);
+				JDFDoc tmpDoc = EditorUtils.parseInStream(outStream.getInputStream(), schemaLocation);
+				if (tmpDoc == null)
+				{
+					tmpDoc = EditorUtils.parseInStream(outStream.getInputStream(), null);
+				}
+
+				if (tmpDoc != null)
+				{
+					final JDFFrame m_frame = MainView.getFrame();
+					final XMLDoc schemaValidationResult = tmpDoc.getValidationResult();
+					m_frame.getBottomTabs().m_SchemaErrScroll.drawSchemaOutputTree(schemaValidationResult);
+				}
+			}
+			catch (final Exception e)
+			{
+				// nop
+			}
+
+		}
+		else
+		{
+			settingService.setSetting(SettingKey.VALIDATION_SCHEMA_URL, null);
+		}
 	}
 
 	public boolean validateXJDF(final String baseUrl)
