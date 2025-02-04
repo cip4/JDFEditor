@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2024 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2025 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -107,7 +107,7 @@ public class EditorDocumentTest extends EditorTestBase
 	}
 
 	@Test
-	public void testGetStringJ()
+	public void testGetStringJson()
 	{
 		final JDFDoc doc = new JDFDoc("XJDF");
 		final EditorDocument d = new EditorDocument(doc, null);
