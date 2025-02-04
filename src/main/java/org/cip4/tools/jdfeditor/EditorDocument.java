@@ -811,7 +811,9 @@ public class EditorDocument
 		final JSONWriter jw = Editor.getEditor().getJSonWriter();
 		final List<JSONObject> l = new ArrayList<JSONObject>();
 		if (XJDFConstants.XJMF.equalsIgnoreCase(root.getLocalName()))
+		{
 			l.addAll(jw.splitConvert(root));
+		}
 		else
 		{
 			l.add(jw.convert(root));
