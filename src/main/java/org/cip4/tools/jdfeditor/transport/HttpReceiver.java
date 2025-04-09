@@ -78,7 +78,6 @@ public class HttpReceiver extends JettyServer
 {
 	private static HttpReceiver instance;
 
-	public static final String DEF_PROTOCOL = "http";
 	public static final String DEF_PATH = "/jmf/*";
 
 	public static HttpReceiver getInstance()
@@ -112,6 +111,19 @@ public class HttpReceiver extends JettyServer
 	protected String getHome()
 	{
 		return "/";
+	}
+
+	public void setPort(final boolean ssl, final int port)
+	{
+		setPort(port);
+		if (ssl)
+		{
+			setSSLPort(port);
+			getSSLData().setAllowFlakySSL(true);
+		}
+		else
+			setSSLPort(0);
+
 	}
 
 }

@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2024 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2025 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -229,6 +229,7 @@ public class JMFServlet extends HttpServlet
 				final XJMFHelper h = XJMFHelper.getHelper(doc);
 				if (h != null)
 				{
+					extension = "xjmf";
 					final MessageHelper message = h.getMessageHelper(0);
 					type = message == null ? "xjmf" : message.getType();
 					if (message != null)
@@ -247,6 +248,7 @@ public class JMFServlet extends HttpServlet
 					timestamp = message.getTime();
 					device = message.getSenderID();
 				}
+				extension = "jmf";
 			}
 		}
 		final File dumpFile = dumpDir.getNewFileWithExt(type + "." + extension);

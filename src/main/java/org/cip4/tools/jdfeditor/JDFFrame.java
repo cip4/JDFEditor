@@ -294,7 +294,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	{
 		final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		m_topTabs = new EditorTabbedPaneA();
-		m_bottomTabs = new EditorTabbedPaneB();
+		if (m_bottomTabs == null)
+			m_bottomTabs = new EditorTabbedPaneB();
 
 		m_treeArea = new JDFTreeArea(this);
 		new DropTarget(m_treeArea, this);

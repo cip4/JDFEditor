@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2022 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2025 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -86,6 +86,7 @@ import java.util.Enumeration;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -122,6 +123,7 @@ public class HttpServerPane implements ActionListener
 	private final SettingService settingService = SettingService.getSettingService();
 
 	private JComboBox<String> ipComboBox;
+	private JCheckBox sslBox;
 	private JTextField portValueLabel;
 	private JLabel statusValueLabel;
 	private JTextField gatewayValueLabel;
@@ -130,6 +132,7 @@ public class HttpServerPane implements ActionListener
 	private JButton buttonClear;
 	private JButton buttonSelectPath;
 	private JTextField labelStorePath;
+	private JTextField messagesReceived;
 
 	private final MessageTableModel tableModel = new MessageTableModel();
 
@@ -157,7 +160,8 @@ public class HttpServerPane implements ActionListener
 		settingsLayout.putConstraint(SpringLayout.NORTH, ipLabel, 10, SpringLayout.NORTH, settingsPanel);
 
 		ipComboBox = new JComboBox<String>();
-		new Thread(new FillWithIPAddresses()).start();
+		new FillWithIPAddresses().run();
+
 		settingsLayout.putConstraint(SpringLayout.WEST, ipComboBox, 5, SpringLayout.EAST, ipLabel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, ipComboBox, 10, SpringLayout.NORTH, settingsPanel);
 
@@ -169,26 +173,46 @@ public class HttpServerPane implements ActionListener
 		settingsLayout.putConstraint(SpringLayout.WEST, portValueLabel, 0, SpringLayout.WEST, ipComboBox);
 		settingsLayout.putConstraint(SpringLayout.NORTH, portValueLabel, 10, SpringLayout.SOUTH, ipLabel);
 
+		final JLabel sslLabel = new JLabel("SSL:");
+		settingsLayout.putConstraint(SpringLayout.WEST, sslLabel, 5, SpringLayout.WEST, settingsPanel);
+		settingsLayout.putConstraint(SpringLayout.NORTH, sslLabel, 10, SpringLayout.SOUTH, portLabel);
+
+		// ToDo enable when ready
+		sslBox = new JCheckBox();
+		settingsLayout.putConstraint(SpringLayout.WEST, sslBox, 0, SpringLayout.WEST, portValueLabel);
+		settingsLayout.putConstraint(SpringLayout.NORTH, sslBox, 10, SpringLayout.SOUTH, portLabel);
+		sslBox.setEnabled(false);
+		sslBox.setSelected(false);
+		sslBox.setVisible(false);
+
 		final JLabel statusLabel = new JLabel(ResourceUtil.getMessage("Status") + ":");
 		settingsLayout.putConstraint(SpringLayout.WEST, statusLabel, 5, SpringLayout.WEST, settingsPanel);
-		settingsLayout.putConstraint(SpringLayout.NORTH, statusLabel, 10, SpringLayout.SOUTH, portLabel);
+		settingsLayout.putConstraint(SpringLayout.NORTH, statusLabel, 10, SpringLayout.SOUTH, sslLabel);
 
 		statusValueLabel = new JLabel(ResourceUtil.getMessage("Stopped"));
 		settingsLayout.putConstraint(SpringLayout.WEST, statusValueLabel, 0, SpringLayout.WEST, portValueLabel);
-		settingsLayout.putConstraint(SpringLayout.NORTH, statusValueLabel, 10, SpringLayout.SOUTH, portLabel);
+		settingsLayout.putConstraint(SpringLayout.NORTH, statusValueLabel, 10, SpringLayout.SOUTH, sslLabel);
 
 		createGatewaylabel();
 		settingsLayout.putConstraint(SpringLayout.WEST, gatewayValueLabel, 5, SpringLayout.WEST, settingsPanel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, gatewayValueLabel, 10, SpringLayout.SOUTH, statusLabel);
 
+		messagesReceived = new JTextField("0000000000000");
+		messagesReceived.setEditable(false);
+		settingsLayout.putConstraint(SpringLayout.WEST, messagesReceived, 0, SpringLayout.WEST, gatewayValueLabel);
+		settingsLayout.putConstraint(SpringLayout.NORTH, messagesReceived, 10, SpringLayout.SOUTH, gatewayValueLabel);
+
 		settingsPanel.add(ipLabel);
 		settingsPanel.add(ipComboBox);
 		settingsPanel.add(portLabel);
 		settingsPanel.add(portValueLabel);
+		settingsPanel.add(sslLabel);
+		settingsPanel.add(sslBox);
 		settingsPanel.add(statusLabel);
 		settingsPanel.add(statusValueLabel);
 
 		settingsPanel.add(gatewayValueLabel);
+		settingsPanel.add(messagesReceived);
 
 		leftPanel.add(settingsPanel, BorderLayout.CENTER);
 
@@ -276,13 +300,19 @@ public class HttpServerPane implements ActionListener
 	{
 		final String interfaceAddress = (String) ipComboBox.getSelectedItem();
 
-		gatewayValueLabel = new JTextField(HttpReceiver.DEF_PROTOCOL + "://" + interfaceAddress + ":" + portValueLabel.getText() + HttpReceiver.DEF_PATH);
+		gatewayValueLabel = new JTextField(getProtocol() + "://" + interfaceAddress + ":" + portValueLabel.getText() + HttpReceiver.DEF_PATH);
 		gatewayValueLabel.setEnabled(true);
 		gatewayValueLabel.setEditable(false);
 	}
 
+	String getProtocol()
+	{
+		return sslBox.isSelected() ? "https" : "http";
+	}
+
 	private class FillWithIPAddresses implements Runnable
 	{
+
 		@Override
 		public void run()
 		{
@@ -290,13 +320,13 @@ public class HttpServerPane implements ActionListener
 			ipComboBox.setEditable(false);
 			final VString ipReal = new VString();
 			final VString ipLoopback = new VString();
+			final String preselectAddress = settingService.getSetting(SettingKey.HTTP_PRESELECTED_ADDRESS, String.class);
 			try
 			{
 				final Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
 				while (interfaces.hasMoreElements())
 				{
 					final NetworkInterface ni = interfaces.nextElement();
-					LOGGER.debug("network interface: " + ni + ", isLoopback: " + ni.isLoopback() + ", isVirtual: " + ni.isVirtual());
 
 					final Enumeration<InetAddress> inetAddress = ni.getInetAddresses();
 					while (inetAddress.hasMoreElements())
@@ -304,7 +334,6 @@ public class HttpServerPane implements ActionListener
 						final InetAddress address = inetAddress.nextElement();
 						if (address instanceof Inet6Address)
 							continue; // skip IPv6 addresses
-						LOGGER.debug("host name: " + address.getHostName() + ", host address: " + address.getHostAddress());
 
 						if (address.isLoopbackAddress())
 						{
@@ -314,6 +343,10 @@ public class HttpServerPane implements ActionListener
 						{
 							ipReal.appendUnique(address.getHostAddress());
 							ipReal.appendUnique(address.getHostName());
+							ipComboBox.removeAllItems();
+							sortIPFillComboBox(ipReal);
+							sortIPFillComboBox(ipLoopback);
+							ipComboBox.setSelectedItem(preselectAddress);
 						}
 					}
 					LOGGER.debug("------- next interface");
@@ -323,12 +356,6 @@ public class HttpServerPane implements ActionListener
 			{
 				LOGGER.error("Snafu filling addresses", e);
 			}
-
-			sortIPFillComboBox(ipReal);
-			sortIPFillComboBox(ipLoopback);
-
-			final String preselectAddress = settingService.getSetting(SettingKey.HTTP_PRESELECTED_ADDRESS, String.class);
-			ipComboBox.setSelectedItem(preselectAddress);
 		}
 	}
 
@@ -347,11 +374,13 @@ public class HttpServerPane implements ActionListener
 		buttonStop.setEnabled(!enabled);
 		ipComboBox.setEnabled(enabled);
 		portValueLabel.setEnabled(enabled);
+		sslBox.setEnabled(enabled);
 	}
 
 	public void addMessage(final MessageBean msg)
 	{
 		tableModel.addMessage(msg);
+		messagesReceived.setText("" + tableModel.getReceived());
 	}
 
 	@Override
@@ -359,24 +388,7 @@ public class HttpServerPane implements ActionListener
 	{
 		if (e.getSource() == buttonStart)
 		{
-			try
-			{
-				final String interfaceAddress = (String) ipComboBox.getSelectedItem();
-				final HttpReceiver server = HttpReceiver.getInstance();
-				server.setPort(StringUtil.parseInt(portValueLabel.getText(), 8080));
-				server.start();
-				statusValueLabel.setText(ResourceUtil.getMessage("Started"));
-				gatewayValueLabel.setText(
-						HttpReceiver.DEF_PROTOCOL + "://" + (String) ipComboBox.getSelectedItem() + ":" + portValueLabel.getText() + HttpReceiver.DEF_PATH);
-				updateControls(false);
-
-				settingService.setSetting(SettingKey.HTTP_PRESELECTED_ADDRESS, interfaceAddress);
-			}
-			catch (final Exception ex)
-			{
-				ex.printStackTrace();
-				JOptionPane.showMessageDialog(MainView.getFrame(), "Could not start server", "Error", JOptionPane.ERROR_MESSAGE);
-			}
+			startHTTP();
 		}
 		else if (e.getSource() == buttonStop)
 		{
@@ -401,6 +413,27 @@ public class HttpServerPane implements ActionListener
 				settingService.setSetting(SettingKey.HTTP_STORE_PATH, chooser.getSelectedFile().getAbsolutePath());
 				labelStorePath.setText(chooser.getSelectedFile().getAbsolutePath());
 			}
+		}
+	}
+
+	void startHTTP()
+	{
+		try
+		{
+			final String interfaceAddress = (String) ipComboBox.getSelectedItem();
+			final HttpReceiver server = HttpReceiver.getInstance();
+			server.setPort(sslBox.isSelected(), StringUtil.parseInt(portValueLabel.getText(), 8080));
+			server.runServer();
+			statusValueLabel.setText(ResourceUtil.getMessage("Started"));
+			gatewayValueLabel.setText(getProtocol() + "://" + (String) ipComboBox.getSelectedItem() + ":" + portValueLabel.getText() + HttpReceiver.DEF_PATH);
+			updateControls(false);
+
+			settingService.setSetting(SettingKey.HTTP_PRESELECTED_ADDRESS, interfaceAddress);
+		}
+		catch (final Exception ex)
+		{
+			ex.printStackTrace();
+			JOptionPane.showMessageDialog(MainView.getFrame(), "Could not start server", "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 

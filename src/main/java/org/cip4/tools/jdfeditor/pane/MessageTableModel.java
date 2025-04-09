@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2025 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -86,6 +86,7 @@ import org.apache.commons.logging.LogFactory;
 public class MessageTableModel extends AbstractTableModel
 {
 
+	private long received = 0;
 	/**
 	 * 
 	 */
@@ -110,7 +111,7 @@ public class MessageTableModel extends AbstractTableModel
 	}
 
 	@Override
-	public Object getValueAt(int rowIndex, int columnIndex)
+	public Object getValueAt(final int rowIndex, final int columnIndex)
 	{
 		if (columnIndex == 0)
 		{
@@ -140,24 +141,31 @@ public class MessageTableModel extends AbstractTableModel
 	}
 
 	@Override
-	public String getColumnName(int col)
+	public String getColumnName(final int col)
 	{
 		return columnNames[col];
 	}
 
-	public synchronized void addMessage(MessageBean msg)
+	public synchronized void addMessage(final MessageBean msg)
 	{
 		data.add(msg);
+		received++;
+		while (data.size() > 666)
+		{
+			data.remove(0);
+		}
+
 		fireTableDataChanged();
 	}
 
 	public synchronized void clearAll()
 	{
 		data.clear();
+		received = 0;
 		fireTableDataChanged();
 	}
 
-	public MessageBean getItem(int i)
+	public MessageBean getItem(final int i)
 	{
 		return data.get(i);
 	}
@@ -166,6 +174,11 @@ public class MessageTableModel extends AbstractTableModel
 	public String toString()
 	{
 		return "MessageTableModel [data=" + data + "]";
+	}
+
+	public long getReceived()
+	{
+		return received;
 	}
 
 }

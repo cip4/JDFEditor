@@ -110,7 +110,7 @@ public class EditorTabbedPaneB extends JTabbedPane implements Runnable
 	public CheckJDFScrollPane m_validErrScroll;
 	public SchemaScrollPane m_SchemaErrScroll;
 
-	//    Pane containing XML editor
+	// Pane containing XML editor
 	private final RSyntaxTextArea xmlEditorTextArea;
 	private final HttpServerPane httpPanel;
 
@@ -130,12 +130,12 @@ public class EditorTabbedPaneB extends JTabbedPane implements Runnable
 		addTab(ResourceUtil.getMessage("DevCapOutputKey"), null, m_devCapErrScroll, ResourceUtil.getMessage("DevCapOutputKey"));
 		setComponentAt(m_DC_ERRORS_INDEX, m_devCapErrScroll);
 
-		//        XML Editor tab
+		// XML Editor tab
 		xmlEditorTextArea = createXMLPane(SyntaxConstants.SYNTAX_STYLE_XML, "XmlEditor");
 
-		//		HTTP server tab
+		// HTTP server tab
 		httpPanel = new HttpServerPane();
-		run();
+		new Thread(this).start();
 	}
 
 	/**
@@ -270,7 +270,7 @@ public class EditorTabbedPaneB extends JTabbedPane implements Runnable
 		JTree errTree = null;
 		if (this.getSelectedIndex() == m_VAL_ERRORS_INDEX)
 		{
-			//JDFTreeNode
+			// JDFTreeNode
 			errTree = m_validErrScroll.m_reportTree;
 		}
 		else
