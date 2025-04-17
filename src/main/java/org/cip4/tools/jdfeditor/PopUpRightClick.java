@@ -144,6 +144,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 	private JMenuItem m_nodeFromCaps = null;
 	private JMenuItem m_normalize = null;
 	private JMenuItem m_sendMessage = null;
+	private JMenuItem m_createMessage = null;
 	private JMenuItem m_spawn = null;
 	private JMenuItem m_unspawn = null;
 
@@ -266,6 +267,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		else if (elem instanceof JDFMessageService)
 		{
 			m_sendMessage = addMenuItem("SendJMF");
+			m_createMessage = addMenuItem("CreateJMF");
 			add(separator);
 		}
 		else if (elem instanceof JDFJMF)
@@ -540,7 +542,11 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		}
 		else if (eSrc == m_sendMessage)
 		{
-			sendJMF(treeArea.getSelectionPath());
+			sendJMF(treeArea.getSelectionPath(), true);
+		}
+		else if (eSrc == m_createMessage)
+		{
+			sendJMF(treeArea.getSelectionPath(), false);
 		}
 
 		MainView.setCursor(0, null);
@@ -548,8 +554,9 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 
 	/**
 	 * @param selectionPath
+	 * @param send
 	 */
-	private void sendJMF(final TreePath selectionPath)
+	private void sendJMF(final TreePath selectionPath, final boolean send)
 	{
 		final JDFTreeNode node = (JDFTreeNode) selectionPath.getLastPathComponent();
 		if (node == null)
@@ -560,8 +567,14 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 		if (e instanceof JDFMessageService)
 		{
 			final JDFMessageService ms = (JDFMessageService) e;
-
-			new MessageSender(ms).sendJMF();
+			if (send)
+			{
+				new MessageSender(ms).sendJMF();
+			}
+			else
+			{
+				new MessageSender(ms).generateDoc();
+			}
 		}
 		if (e instanceof JDFJMF || XJDFConstants.XJMF.equals(e.getLocalName()))
 		{
