@@ -78,8 +78,8 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.cip4.jdflib.util.JDFDate;
 import org.cip4.tools.jdfeditor.EditorTabbedPaneB;

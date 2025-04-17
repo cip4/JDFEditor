@@ -74,6 +74,7 @@ import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFAudit;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.extensions.MessageHelper;
 import org.cip4.jdflib.extensions.XJMFHelper;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFMessage;
@@ -166,15 +167,21 @@ class MessageSender
 		final String type = mService.getType();
 
 		final XJMFHelper h = new XJMFHelper();
-		h.appendMessage(type);
+		final MessageHelper mh = h.appendMessage(type);
 		final KElement header = h.getHeader();
 		header.setAttribute(AttributeName.AGENTNAME, JDFAudit.getStaticAgentName());
 		header.setAttribute(AttributeName.DESCRIPTIVENAME, "XJMF From MessageService for " + type);
-
+		extendXJMF(h);
 		final JDFDoc xjmfDoc = new JDFDoc(h.getRoot().getOwnerDocument_KElement());
 		xjmfDoc.setOriginalFileName(EditorUtils.getNewPath("Auto" + type + ".xjmf"));
 
 		return xjmfDoc;
+	}
+
+	void extendXJMF(final XJMFHelper h)
+	{
+		// mService.
+
 	}
 
 	/**
