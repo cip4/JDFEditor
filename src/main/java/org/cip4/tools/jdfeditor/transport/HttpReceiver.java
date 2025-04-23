@@ -71,8 +71,8 @@
 package org.cip4.tools.jdfeditor.transport;
 
 import org.cip4.jdfutility.server.JettyServer;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee10.servlet.ServletHolder;
 
 public class HttpReceiver extends JettyServer
 {
