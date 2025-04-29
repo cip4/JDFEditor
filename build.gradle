@@ -65,7 +65,8 @@ dependencies {
     implementation 'commons-io:commons-io:2.19.0'
 	implementation ('com.networknt:json-schema-validator:1.5.6')
 
-    implementation 'javax.mail:mail:1.4.7'
+	implementation 'com.sun.mail:jakarta.mail:2.0.1'
+
 
 	
     testImplementation 'junit:junit:4.13.2'

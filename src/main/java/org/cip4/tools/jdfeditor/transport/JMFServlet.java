@@ -76,8 +76,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.mail.BodyPart;
-import javax.mail.MessagingException;
+import jakarta.mail.BodyPart;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

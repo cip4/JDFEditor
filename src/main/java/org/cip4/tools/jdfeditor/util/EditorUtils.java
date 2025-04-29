@@ -77,7 +77,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.mail.MessagingException;
+import jakarta.mail.MessagingException;
 import javax.swing.JOptionPane;
 import javax.swing.tree.TreePath;
 

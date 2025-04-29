@@ -76,8 +76,8 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
 
-import javax.mail.BodyPart;
-import javax.mail.Multipart;
+import jakarta.mail.BodyPart;
+import jakarta.mail.Multipart;
 import javax.swing.JOptionPane;
 import javax.swing.JTree;
 import javax.swing.event.TreeModelEvent;
