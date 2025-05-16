@@ -91,6 +91,8 @@ import org.cip4.jdflib.resource.devicecapability.JDFAbstractState;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCap;
 import org.cip4.jdflib.resource.devicecapability.JDFDevCaps;
 import org.cip4.jdflib.resource.intent.JDFDropItemIntent;
+import org.cip4.jdflib.resource.process.JDFAssembly;
+import org.cip4.jdflib.resource.process.JDFAssemblySection;
 import org.cip4.jdflib.resource.process.JDFBinderySignature;
 import org.cip4.jdflib.resource.process.JDFColor;
 import org.cip4.jdflib.resource.process.JDFColorantAlias;
@@ -109,6 +111,7 @@ import org.cip4.jdflib.resource.process.JDFIdentical;
 import org.cip4.jdflib.resource.process.JDFLayoutElement;
 import org.cip4.jdflib.resource.process.JDFMedia;
 import org.cip4.jdflib.resource.process.JDFPerson;
+import org.cip4.jdflib.resource.process.JDFPreview;
 import org.cip4.jdflib.resource.process.JDFRuleLength;
 import org.cip4.jdflib.resource.process.JDFSeparationSpec;
 import org.cip4.jdflib.resource.process.JDFSourceResource;
@@ -517,6 +520,10 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		{
 			s = displayComment(e, s);
 		}
+		else if ((e instanceof JDFAssembly) || (e instanceof JDFAssemblySection))
+		{
+			s = displayAssembly(e, s);
+		}
 		else if (e instanceof JDFRefElement)
 		{
 			final String ref = e.getAttribute("rRef", null, null);
@@ -622,6 +629,11 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		else if (e instanceof JDFFileSpec)
 		{
 			s += addAttribute(e, AttributeName.URL);
+		}
+		else if (e instanceof JDFPreview)
+		{
+			s += addAttribute(e, AttributeName.URL);
+			s += addAttribute(e, AttributeName.PREVIEWUSAGE);
 		}
 		else if (e instanceof JDFEmployee)
 		{
@@ -735,10 +747,9 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		}
 		else if (e instanceof JDFBinderySignature)
 		{
-			final JDFBinderySignature bs = (JDFBinderySignature) e;
-			final String foldCatalog = bs.getFoldCatalog();
-			if (!"".equals(foldCatalog))
-				s += JDFConstants.BLANK + foldCatalog;
+			s += addAttribute(e, AttributeName.BINDERYSIGNATURETYPE);
+			s += addAttribute(e, AttributeName.SPREADTYPE);
+			s += addAttribute(e, AttributeName.FOLDCATALOG);
 		}
 		else if (e instanceof JDFRuleLength)
 		{
@@ -819,6 +830,12 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		{
 			s += " BusinessID=" + e.getAttribute("BusinessID");
 		}
+		return s;
+	}
+
+	String displayAssembly(final KElement e, String s)
+	{
+		s += addAttributeValue(e, AttributeName.ORDER);
 		return s;
 	}
 
