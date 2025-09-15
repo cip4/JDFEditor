@@ -63,7 +63,7 @@ dependencies {
     implementation 'commons-logging:commons-logging-api:1.1'
     implementation 'commons-lang:commons-lang:2.6'
     implementation 'commons-io:commons-io:2.19.0'
-	implementation ('com.networknt:json-schema-validator:1.5.8')
+	implementation ('com.networknt:json-schema-validator:1.5.9')
 
 	implementation 'com.sun.mail:jakarta.mail:2.0.1'
 
