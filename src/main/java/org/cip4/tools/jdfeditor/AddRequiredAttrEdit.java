@@ -3,7 +3,7 @@
 * The CIP4 Software License, Version 1.0
 *
 *
-* Copyright (c) 2001-2012 The International Cooperation for the Integration of 
+* Copyright (c) 2001-2025 The International Cooperation for the Integration of 
 * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
 * reserved.
 *
@@ -70,16 +70,18 @@
 */
 package org.cip4.tools.jdfeditor;
 
-import org.cip4.tools.jdfeditor.view.MainView;
-import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;
+import java.util.List;
 
 import javax.swing.tree.TreePath;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
-import java.util.Vector;
+
+import org.cip4.tools.jdfeditor.view.MainView;
+import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;
 
 /**
  * AddRequiredAttrEdit.java
+ * 
  * @author Elena Skobchenko
  */
 public class AddRequiredAttrEdit extends EditorUndoableEdit
@@ -90,15 +92,14 @@ public class AddRequiredAttrEdit extends EditorUndoableEdit
 
 	private final JDFTreeNode intoNode;
 
-	private final Vector<JDFTreeNode> addedVector;
+	private final List<JDFTreeNode> addedVector;
 
 	/**
-	 * 
 	 * @param treePath
 	 * @param intoNod
 	 * @param addedVect
 	 */
-	public AddRequiredAttrEdit(final TreePath treePath, final JDFTreeNode intoNod, final Vector<JDFTreeNode> addedVect)
+	public AddRequiredAttrEdit(final TreePath treePath, final JDFTreeNode intoNod, final List<JDFTreeNode> addedVect)
 	{
 		super();
 		path = treePath;
@@ -110,15 +111,13 @@ public class AddRequiredAttrEdit extends EditorUndoableEdit
 	}
 
 	/**
-	 * 
 	 * @see org.cip4.tools.jdfeditor.EditorUndoableEdit#undo()
 	 */
 	@Override
 	public void undo() throws CannotUndoException
 	{
-		for (int i = 0; i < addedVector.size(); i++)
+		for (JDFTreeNode attrNode : addedVector)
 		{
-			JDFTreeNode attrNode = addedVector.elementAt(i);
 			MainView.getModel().deleteNode(attrNode, null);
 		}
 		MainView.getFrame().updateViews(path);
@@ -126,7 +125,6 @@ public class AddRequiredAttrEdit extends EditorUndoableEdit
 	}
 
 	/**
-	 * 
 	 * @see org.cip4.tools.jdfeditor.EditorUndoableEdit#redo()
 	 */
 	@Override
@@ -134,36 +132,33 @@ public class AddRequiredAttrEdit extends EditorUndoableEdit
 	{
 		for (int i = 0; i < addedVector.size(); i++)
 		{
-			JDFTreeNode attrNode = addedVector.elementAt(i);
+			JDFTreeNode attrNode = addedVector.get(i);
 			attrNode = MainView.getModel().setAttribute(intoNode, attrNode.getName(), attrNode.getValue(), null, false);
-			addedVector.setElementAt(attrNode, i);
+			addedVector.set(i, attrNode);
 		}
 		MainView.getFrame().updateViews(path);
 		super.redo();
 	}
 
 	/**
-	 * 
 	 * @see org.cip4.tools.jdfeditor.EditorUndoableEdit#canUndo()
 	 */
 	@Override
 	public boolean canUndo()
 	{
-		return super.canUndo() && addedVector.size() > 0;
+		return super.canUndo() && !addedVector.isEmpty();
 	}
 
 	/**
-	 * 
 	 * @see org.cip4.tools.jdfeditor.EditorUndoableEdit#canRedo()
 	 */
 	@Override
 	public boolean canRedo()
 	{
-		return super.canRedo() && addedVector.size() > 0;
+		return super.canRedo() && !addedVector.isEmpty();
 	}
 
 	/**
-	 * 
 	 * @see javax.swing.undo.AbstractUndoableEdit#getPresentationName()
 	 */
 	@Override
