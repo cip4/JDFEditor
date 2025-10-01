@@ -1,6 +1,6 @@
 package org.cip4.tools.jdfeditor.util;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
 import org.cip4.tools.jdfeditor.service.SettingService;
 
@@ -133,7 +133,7 @@ public class RecentFileUtil
 	/**
 	 * Updates the order in the recent files menu.
 	 * 
-	 * @param s - The path to the file
+	 * @param s     - The path to the file
 	 * @param exist - Do the path already exists?
 	 */
 	public static void updateOrder(final String s, final boolean exist)

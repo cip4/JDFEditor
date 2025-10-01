@@ -83,7 +83,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.AttributeName;
@@ -173,7 +173,8 @@ public class JDFTreeModel extends DefaultTreeModel
 		}
 		catch (final Exception e)
 		{
-			JOptionPane.showMessageDialog(frame, ResourceUtil.getMessage("SpawnErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""),
+			JOptionPane.showMessageDialog(frame,
+					ResourceUtil.getMessage("SpawnErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""),
 					ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
@@ -199,7 +200,9 @@ public class JDFTreeModel extends DefaultTreeModel
 				selectedNode.setPartStatus((JDFAttributeMap) null, EnumNodeStatus.Waiting, null);
 				final JDFNode unspawned = new JDFSpawn(selectedNode).unSpawn(null);
 				if (unspawned == null)
+				{
 					break;
+				}
 			}
 
 			frame.refreshView(ed, null);
@@ -208,7 +211,8 @@ public class JDFTreeModel extends DefaultTreeModel
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(frame, ResourceUtil.getMessage("SpawnErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""),
+			JOptionPane.showMessageDialog(frame,
+					ResourceUtil.getMessage("SpawnErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""),
 					ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
@@ -232,7 +236,8 @@ public class JDFTreeModel extends DefaultTreeModel
 		catch (final Exception e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(frame, ResourceUtil.getMessage("MergeErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""),
+			JOptionPane.showMessageDialog(frame,
+					ResourceUtil.getMessage("MergeErrorKey") + e.getClass() + " \n" + (e.getMessage() != null ? ("\"" + e.getMessage() + "\"") : ""),
 					ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
@@ -263,7 +268,6 @@ public class JDFTreeModel extends DefaultTreeModel
 	}
 
 	/**
-	 *
 	 * @return
 	 */
 	public boolean validate()
@@ -384,7 +388,9 @@ public class JDFTreeModel extends DefaultTreeModel
 		{
 			EnumVersion v = EnumVersion.getEnum(settingService.getString(SettingKey.VALIDATION_VERSION));
 			if (v == null)
+			{
 				v = EnumVersion.getEnum(theDoc.getRoot().getAttribute(AttributeName.VERSION));
+			}
 			schemaLocation = EditorUtils.getSchemaFile(v);
 			validationSchemaUrl = UrlUtil.fileToUrl(schemaLocation, false);
 
@@ -745,7 +751,6 @@ public class JDFTreeModel extends DefaultTreeModel
 	 * @param newNode
 	 * @param parentNode
 	 * @param pos
-	 *
 	 */
 	public void insertInto(final JDFTreeNode newNode, final JDFTreeNode parentNode, int pos)
 	{
@@ -825,8 +830,8 @@ public class JDFTreeModel extends DefaultTreeModel
 		vAttNames = processDefaultAttributes(vAttNames, elem, showDefaultAtts);
 		for (final String attName : vAttNames)
 		{
-			if (!m_ignoreAttributes || attName.equals(AttributeName.TYPE) || attName.equals(AttributeName.TYPES) || attName.equals(AttributeName.DESCRIPTIVENAME)
-					|| attName.equals(AttributeName.ID))
+			if (!m_ignoreAttributes || attName.equals(AttributeName.TYPE) || attName.equals(AttributeName.TYPES)
+					|| attName.equals(AttributeName.DESCRIPTIVENAME) || attName.equals(AttributeName.ID))
 			{
 				final String attVal = elem.getAttribute(attName);
 				setAttribute(node, attName, attVal, null, false);
@@ -840,7 +845,9 @@ public class JDFTreeModel extends DefaultTreeModel
 			{
 				final String id = StringUtil.getNonEmpty(res.getID());
 				if (id != null)
+				{
 					setAttribute(node, AttributeName.ID, id, null, true);
+				}
 
 			}
 			if (!m_ignoreAttributes && (elem instanceof JDFResource && settingService.getSetting(SettingKey.TREEVIEW_ATTRIBUTE_INHERITED, Boolean.class)))
@@ -940,15 +947,16 @@ public class JDFTreeModel extends DefaultTreeModel
 	/**
 	 * Inserts new Resource JDFTreeNode into the m_jdfTree. If node had no ResourcePool - creates it.
 	 * 
-	 * @param parentNode - JDFNode to add resource to
-	 * @param node - JDFTreeNode representation of parentNode
+	 * @param parentNode       - JDFNode to add resource to
+	 * @param node             - JDFTreeNode representation of parentNode
 	 * @param selectedResource - name of resource to insert
-	 * @param hasResourcePool - Has parentNode had a resourcePool before action started? Importent for representation of m_jdfTree. ResourcePool is automatically added to
-	 *        parentNode but we need to insert it into m_model.
-	 * @param usage - resource link usage. true - input, false - output
+	 * @param hasResourcePool  - Has parentNode had a resourcePool before action started? Importent for representation of m_jdfTree. ResourcePool is automatically added to
+	 *                         parentNode but we need to insert it into m_model.
+	 * @param usage            - resource link usage. true - input, false - output
 	 * @return JDFTreeNode created newResourceNode. null if operation was not completed successful
 	 */
-	public JDFTreeNode insertNewResourceNode(final JDFNode parentNode, final JDFTreeNode node, final String selectedResource, final boolean hasResourcePool, final EnumUsage usage)
+	public JDFTreeNode insertNewResourceNode(final JDFNode parentNode, final JDFTreeNode node, final String selectedResource, final boolean hasResourcePool,
+			final EnumUsage usage)
 	{
 		JDFTreeNode newResourceNode = null;
 
@@ -1001,8 +1009,8 @@ public class JDFTreeModel extends DefaultTreeModel
 	 * Inserts new ResourceLink JDFTreeNode into the m_jdfTree. If node had no ResourceLinkPool - creates it.
 	 * 
 	 * @param parentNode - JDFNode to add resource link to
-	 * @param node - JDFTreeNode representation of parentNode automatically added to parentNode but we need to insert it into m_model.
-	 * @param resLink - ResourceLink to insert
+	 * @param node       - JDFTreeNode representation of parentNode automatically added to parentNode but we need to insert it into m_model.
+	 * @param resLink    - ResourceLink to insert
 	 * @returns created newLinkNode. null if operation was not completed successful
 	 */
 	public JDFTreeNode insertNewResourceLinkNode(final JDFNode parentNode, final JDFTreeNode node, final boolean hasLinkPool, final JDFResourceLink resLink)
@@ -1097,8 +1105,8 @@ public class JDFTreeModel extends DefaultTreeModel
 
 			if (selectedName != null && selectedName.equals("Other.."))
 			{
-				selectedName = JOptionPane.showInputDialog(m_frame, ResourceUtil.getMessage("InsertNewAttTypeKey"), ResourceUtil.getMessage("InsertNewAttTypeKey"),
-						JOptionPane.PLAIN_MESSAGE);
+				selectedName = JOptionPane.showInputDialog(m_frame, ResourceUtil.getMessage("InsertNewAttTypeKey"),
+						ResourceUtil.getMessage("InsertNewAttTypeKey"), JOptionPane.PLAIN_MESSAGE);
 			}
 		}
 
@@ -1108,7 +1116,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	/**
 	 * rename the attribute described by node to selectedValue
 	 * 
-	 * @param node the JDFTreeNode that represents the attribute
+	 * @param node          the JDFTreeNode that represents the attribute
 	 * @param selectedValue the new attribute name
 	 * @return JDFTreeNode the treeNode that represents the renamed attribute
 	 */
@@ -1261,7 +1269,6 @@ public class JDFTreeModel extends DefaultTreeModel
 	}
 
 	/**
-	 *
 	 * @param treeNode
 	 * @return
 	 */
@@ -1305,7 +1312,8 @@ public class JDFTreeModel extends DefaultTreeModel
 		final KElement element = node.getElement();
 		final String[] possibleValues = EditorUtils.getAttributeOptions(element);
 		final String attName = ResourceUtil.getMessage("ChooseNewAttTypeKey");
-		String selectedValue = (String) JOptionPane.showInputDialog(m_frame, attName, attName, JOptionPane.PLAIN_MESSAGE, null, possibleValues, possibleValues[0]);
+		String selectedValue = (String) JOptionPane.showInputDialog(m_frame, attName, attName, JOptionPane.PLAIN_MESSAGE, null, possibleValues,
+				possibleValues[0]);
 
 		if (selectedValue != null && selectedValue.equals("Other.."))
 		{
@@ -1487,14 +1495,18 @@ public class JDFTreeModel extends DefaultTreeModel
 					ed.setJson(true, true);
 					frame.setEditorDoc(ed);
 					if (reallySave)
+					{
 						ed.saveFile(null);
+					}
 				}
 			}
 			else
 			{
 				eDoc.setJson(true, reallySave);
 				if (reallySave)
+				{
 					eDoc.saveFile(null);
+				}
 			}
 			log.info("converting " + JDFTreeNode.getName(node) + " to JSON ");
 		}
@@ -1535,9 +1547,13 @@ public class JDFTreeModel extends DefaultTreeModel
 	{
 		final JDFTreeNode node;
 		if (selectionPath == null)
+		{
 			node = getRootNode();
+		}
 		else
+		{
 			node = (JDFTreeNode) selectionPath.getLastPathComponent();
+		}
 		if (node == null)
 		{
 			return;
@@ -1665,7 +1681,7 @@ public class JDFTreeModel extends DefaultTreeModel
 	/**
 	 * Finds a JDFTreeNode in the JDFTree.
 	 * 
-	 * @param row - The row in the JTree
+	 * @param row   - The row in the JTree
 	 * @param jTree - The JTree
 	 * @return The JDFTreeNode. Moved 07-08-17
 	 */

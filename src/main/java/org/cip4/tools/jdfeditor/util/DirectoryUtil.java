@@ -2,7 +2,7 @@ package org.cip4.tools.jdfeditor.util;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 /**
  * Util class for defining generic locations on a file system.

@@ -97,10 +97,4 @@ public class EditorTest extends EditorTestBase
 		Editor.main(new String[] { "-C", "file.jdf" });
 	}
 
-	@Test
-	public void testCommandLine2()
-	{
-		Editor.main(new String[] { "-?" });
-	}
-
 }

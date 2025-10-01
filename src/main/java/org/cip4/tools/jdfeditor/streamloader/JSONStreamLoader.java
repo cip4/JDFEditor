@@ -73,7 +73,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.lang.CharUtils;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.util.FileUtil;
@@ -82,6 +81,7 @@ import org.cip4.lib.jdf.jsonutil.JSONReader;
 
 /**
  * simple implementation for a zip stream loader
+ * 
  * @author rainer prosi
  * @date Sep 5, 2013
  */
@@ -97,7 +97,9 @@ public class JSONStreamLoader implements IStreamLoader
 		final String extension = fileJDF == null ? null : UrlUtil.extension(fileJDF.getName());
 
 		if (fileJDF == null || !fileJDF.canRead() || !"json".equalsIgnoreCase(extension) && !"jsn".equalsIgnoreCase(extension))
+		{
 			return null;
+		}
 
 		final BufferedInputStream stream = FileUtil.getBufferedInputStream(fileJDF);
 
@@ -111,23 +113,33 @@ public class JSONStreamLoader implements IStreamLoader
 	public JDFDoc readStream(final InputStream stream, final InputStream schema) throws IOException
 	{
 		if (stream == null)
+		{
 			return null;
+		}
 		stream.mark(422);
-		int i=0;
+		int i = 0;
 		int read = stream.read();
-		while(Character.isWhitespace(read)) {
+		while (Character.isWhitespace(read))
+		{
 			i++;
-			if(i>420)break;
+			if (i > 420)
+			{
+				break;
+			}
 			read = stream.read();
 		}
-		if ('{' != read && '['!=read)
+		if ('{' != read && '[' != read)
+		{
 			return null;
+		}
 		stream.reset();
 		final JSONReader jr = new JSONReader();
 		jr.setXJDF();
 		final KElement e = jr.getElement(stream);
 		if (e == null)
+		{
 			return null;
+		}
 		final JDFDoc jdfDoc = new JDFDoc(e.getOwnerDocument());
 		return jdfDoc;
 	}
