@@ -61,7 +61,8 @@ dependencies {
     implementation 'com.fifesoft:rsyntaxtextarea:3.6.0'
 	
     implementation 'commons-logging:commons-logging-api:1.1'
-    implementation 'commons-lang:commons-lang:2.6'
+    implementation 'org.apache.commons:commons-lang3:3.19.0'
+
     implementation 'commons-io:commons-io:2.19.0'
 	implementation ('com.networknt:json-schema-validator:1.5.9')
 
