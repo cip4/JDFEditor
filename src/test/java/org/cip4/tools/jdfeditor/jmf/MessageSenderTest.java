@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2024 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2025 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -66,147 +66,64 @@
  * <http://www.cip4.org/>.
  *
  */
-package org.cip4.tools.jdfeditor;
+package org.cip4.tools.jdfeditor.jmf;
 
-import java.util.Vector;
+import static org.junit.Assert.assertNotNull;
 
-import org.cip4.jdflib.core.AttributeName;
-import org.cip4.jdflib.core.JDFAudit;
-import org.cip4.jdflib.core.JDFDoc;
+import org.cip4.jdflib.core.ElementName;
+import org.cip4.jdflib.core.JDFElement.EnumVersion;
 import org.cip4.jdflib.core.KElement;
-import org.cip4.jdflib.extensions.MessageHelper;
 import org.cip4.jdflib.extensions.XJMFHelper;
+import org.cip4.jdflib.extensions.xjdfwalker.jdftoxjdf.JDFToXJDF;
 import org.cip4.jdflib.jmf.JDFJMF;
-import org.cip4.jdflib.jmf.JDFMessage;
 import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
 import org.cip4.jdflib.jmf.JDFMessage.EnumType;
 import org.cip4.jdflib.jmf.JDFMessageService;
+import org.cip4.jdflib.jmf.JDFResponse;
 import org.cip4.jdflib.jmf.JMFBuilder;
-import org.cip4.tools.jdfeditor.util.EditorUtils;
-import org.cip4.tools.jdfeditor.view.MainView;
+import org.cip4.jdflib.util.EnumUtil;
+import org.cip4.tools.jdfeditor.EditorTestBase;
+import org.junit.Test;
 
-class MessageSender
+public class MessageSenderTest extends EditorTestBase
 {
 
-	JDFMessageService mService;
-
-	/**
-	 * @param ms
-	 */
-	public MessageSender(final JDFMessageService ms)
+	@Test
+	public void testCreate()
 	{
-		mService = ms;
+		JDFMessageService ms = getMessageService(null);
+
+		MessageSender sender = new MessageSender(ms);
+		assertNotNull(sender);
+		assertNotNull(sender.toString());
 	}
 
-	/**
-	 *
-	 */
-	public void sendJMF()
+	@Test
+	public void testCreateX()
 	{
-		final boolean b = generateDoc();
-		if (b)
-		{
-			final SendToDevice sendTo = new SendToDevice();
-			sendTo.trySend();
-		}
+		JDFMessageService ms = getMessageService(EnumVersion.Version_2_2);
+
+		MessageSender sender = new MessageSender(ms);
+		assertNotNull(sender);
+		assertNotNull(sender.toString());
 	}
 
-	/**
-	 * @return
-	 */
-	boolean generateDoc()
+	JDFMessageService getMessageService(EnumVersion v)
 	{
-		final EditorDocument ed = MainView.getEditorDoc();
-		final JDFDoc doc;
-		final boolean json = ed.isJson();
-		if (ed.isXJDF())
+		JDFJMF kmq = new JMFBuilder().buildKnownMessagesQuery();
+		JDFJMF jmfr = kmq.getQuery().createResponse();
+		JDFResponse kmr = jmfr.getResponse();
+		JDFMessageService ms = kmr.appendMessageService();
+		ms.setFamily(EnumFamily.Command);
+		ms.setType(EnumType.HoldQueueEntry);
+		if (EnumUtil.aLessEqualsThanB(EnumVersion.Version_2_0, v))
 		{
-			doc = generateXJMFDoc();
+			final JDFToXJDF conv = new JDFToXJDF();
+			final KElement xjmf = conv.makeNewJMF(jmfr);
+			ms = (JDFMessageService) new XJMFHelper(xjmf).getMessageHelper(0).getCreateElement(ElementName.MESSAGESERVICE);
+			xjmf.write2File("test/data/temp/knownmessages.xjmf");
 		}
-		else
-		{
-			doc = generateJMFDoc();
-		}
-		if (doc != null)
-		{
-			MainView.getFrame().setJDFDoc(doc, null);
-			final EditorDocument edNew = MainView.getEditorDoc();
-			edNew.setJson(json, false);
-			MainView.getFrame().getJDFTreeArea().drawTreeView(edNew);
-		}
-		return doc != null;
-	}
-
-	JDFDoc generateJMFDoc()
-	{
-		final Vector<EnumFamily> vf = mService.getFamilies();
-		if (vf == null || vf.size() == 0)
-		{
-			return null;
-		}
-		EnumFamily f = vf.get(0);
-		if (vf.contains(EnumFamily.Command))
-		{
-			f = EnumFamily.Command;
-		}
-
-		final JMFBuilder b = new JMFBuilder();
-		b.setSenderID("JDFEditor");
-
-		final JDFJMF jmf = b.newJMF(f, mService.getType());
-		final JDFDoc doc = jmf.getOwnerDocument_JDFElement();
-		doc.setOriginalFileName(EditorUtils.getNewPath("Auto" + mService.getType() + ".jmf"));
-		final JDFMessage m = jmf.getMessageElement(f, EnumType.getEnum(mService.getType()), 0);
-		extendMessage(m);
-
-		return doc;
-	}
-
-	JDFDoc generateXJMFDoc()
-	{
-		final String type = mService.getType();
-
-		final XJMFHelper h = new XJMFHelper();
-		final MessageHelper mh = h.appendMessage(type);
-		final KElement header = h.getHeader();
-		header.setAttribute(AttributeName.AGENTNAME, JDFAudit.getStaticAgentName());
-		header.setAttribute(AttributeName.DESCRIPTIVENAME, "XJMF From MessageService for " + type);
-		extendXJMF(h);
-		final JDFDoc xjmfDoc = new JDFDoc(h.getRoot().getOwnerDocument_KElement());
-		xjmfDoc.setOriginalFileName(EditorUtils.getNewPath("Auto" + type + ".xjmf"));
-
-		return xjmfDoc;
-	}
-
-	void extendXJMF(final XJMFHelper h)
-	{
-		// mService.
-
-	}
-
-	/**
-	 * @param m
-	 */
-	private void extendMessage(final JDFMessage m)
-	{
-		final EnumType t = m == null ? null : EnumType.getEnum(m.getType());
-		if (t == null || m == null)
-		{
-			return;
-		}
-		if (EnumType.AbortQueueEntry.equals(t))
-		{
-			m.appendQueueEntryDef();
-		}
-		else if (EnumType.HoldQueueEntry.equals(t))
-		{
-			m.appendQueueEntryDef();
-		}
-		else if (EnumType.RemoveQueueEntry.equals(t))
-		{
-			m.appendQueueEntryDef();
-		}
-
+		return ms;
 	}
 
 }

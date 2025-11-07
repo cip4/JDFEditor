@@ -128,7 +128,7 @@ import org.cip4.tools.jdfeditor.view.MainView;
 import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;
 import org.w3c.dom.Attr;
 
-import com.networknt.schema.ValidationMessage;
+import com.networknt.schema.Error;
 
 /**
  * @author rainer prosi This is a new dump for some of the JDFFrame classes anything related to the abstract datamodel in the jdf tree belongs here TODO move some of the routines
@@ -302,11 +302,11 @@ public class JDFTreeModel extends DefaultTreeModel
 		final EditorDocument eDoc = MainView.getEditorDoc();
 		final String json = eDoc.getJSONString(eDoc.getJDFDoc().getRoot(), 0);
 		final JSONSchemaReader sr = new JSONSchemaReader(getJsonschemaURL());
-		final Collection<ValidationMessage> results = sr.checkJSON(json);
+		final Collection<Error> results = sr.checkJSON(json);
 		final KElement jsonSchemaResult = KElement.createRoot("JSONSchema", null);
 		jsonSchemaResult.setAttribute("SchemaLocation", getJsonschemaURL());
 		jsonSchemaResult.setAttribute("ValidationResult", ContainerUtil.isEmpty(results) ? "Valid" : "Error");
-		for (final ValidationMessage m : results)
+		for (final Error m : results)
 		{
 			final String loc = m.getInstanceLocation().toString();
 			final String typ = "$".equals(loc) ? "Warning" : "Error";
