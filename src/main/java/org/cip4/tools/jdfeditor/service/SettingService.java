@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2018 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2025 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -96,14 +96,10 @@ public class SettingService
 
 	private static PropertiesConfiguration config;
 
-	private static SettingService theSettingService;
+	private static SettingService theSettingService = new SettingService();
 
 	public static SettingService getSettingService()
 	{
-		if (theSettingService == null)
-		{
-			theSettingService = new SettingService();
-		}
 		return theSettingService;
 	}
 
@@ -161,7 +157,6 @@ public class SettingService
 	}
 
 	/**
-	 *
 	 * @param key
 	 * @return
 	 */
@@ -172,7 +167,6 @@ public class SettingService
 	}
 
 	/**
-	 *
 	 * @param key
 	 * @return
 	 */
@@ -183,7 +177,6 @@ public class SettingService
 	}
 
 	/**
-	 *
 	 * @param key
 	 * @return
 	 */
@@ -195,8 +188,9 @@ public class SettingService
 
 	/**
 	 * Get a typed setting value by key.
+	 *
 	 * @param key The key of the setting value.
-	 * @param c The type of the setting value.
+	 * @param c   The type of the setting value.
 	 * @return The typed setting value.
 	 */
 	public <T> T getSetting(final SettingKey key, final Class<T> c)
@@ -226,7 +220,6 @@ public class SettingService
 	}
 
 	/**
-	 *
 	 * @param key
 	 * @param value
 	 */
@@ -236,7 +229,6 @@ public class SettingService
 	}
 
 	/**
-	 *
 	 * @param key
 	 * @param value
 	 */
@@ -246,7 +238,6 @@ public class SettingService
 	}
 
 	/**
-	 *
 	 * @param key
 	 * @param value
 	 */
@@ -257,6 +248,7 @@ public class SettingService
 
 	/**
 	 * Set a setting value by a key.
+	 *
 	 * @param key   The configuration key.
 	 * @param value The configuration setting value as String.
 	 */
@@ -264,7 +256,9 @@ public class SettingService
 	{
 		final Object oldVal = config.getProperty(key.getKey());
 		if ((oldVal != null) && (value == null || value.toString().equals(oldVal.toString())))
+		{
 			return;
+		}
 		final Class<?> clazz = key.getClazz();
 		LOG.info("Setting " + key + "=" + value);
 
@@ -291,6 +285,7 @@ public class SettingService
 
 	/**
 	 * Returns the path of the logfile.
+	 *
 	 * @return Path to Logfile.
 	 */
 	public File getConfFile()
@@ -298,13 +293,4 @@ public class SettingService
 		return configFile;
 	}
 
-	/**
-	 * Used only in JUnits.
-	 */
-	protected static void clearStateForTesting()
-	{
-		theSettingService = null;
-		configFile = null;
-		config = null;
-	}
 }

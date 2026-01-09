@@ -76,12 +76,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import java.util.StringTokenizer;
 
-import jakarta.mail.Multipart;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
@@ -123,6 +119,8 @@ import org.cip4.tools.jdfeditor.util.EditorUtils;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
 import org.json.simple.JSONObject;
+
+import jakarta.mail.Multipart;
 
 /**
  * @author MRE (Institute for Print and Media Technology) History: 20040903 MRE send MIME multipart/related
@@ -181,11 +179,11 @@ public class SendToDevice extends JPanel implements ActionListener
 			rbRawXML = new JRadioButton(ResourceUtil.getMessage("sendMethodRaw"));
 			rbPackageAll = new JRadioButton(ResourceUtil.getMessage("PackageAll"));
 			cbReturn = new JCheckBox(ResourceUtil.getMessage("returnJMF"));
-			if (settingService.getSetting(SettingKey.SEND_METHOD, String.class).equals("MIME"))
+			if ("MIME".equals(settingService.getSetting(SettingKey.SEND_METHOD, String.class)))
 			{
 				rbMIME.setSelected(true);
 			}
-			else if (settingService.getSetting(SettingKey.SEND_METHOD, String.class).equals("JMF"))
+			else if ("JMF".equals(settingService.getSetting(SettingKey.SEND_METHOD, String.class)))
 			{
 				rbJMF.setSelected(true);
 			}
@@ -221,7 +219,7 @@ public class SendToDevice extends JPanel implements ActionListener
 	}
 
 	/**
-	 * @param url the url label
+	 * @param url    the url label
 	 * @param preset
 	 * @return the set textfield
 	 */
@@ -230,7 +228,7 @@ public class SendToDevice extends JPanel implements ActionListener
 		final Box urlBox = Box.createHorizontalBox();
 		final JLabel urlLabel = new JLabel(url);
 		urlBox.add(urlLabel);
-		final JComboBox<String> tf = new JComboBox<String>();
+		final JComboBox<String> tf = new JComboBox<>();
 		tf.setEditable(true);
 
 		int items = 0;
@@ -239,7 +237,9 @@ public class SendToDevice extends JPanel implements ActionListener
 		{
 			items++;
 			if (items > 5)
+			{
 				break; // support only 5 items, don't show others even if they are in conf file
+			}
 			final String s = st.nextToken();
 			tf.addItem(s);
 			LOG.debug("added item: " + s);
@@ -252,7 +252,6 @@ public class SendToDevice extends JPanel implements ActionListener
 	}
 
 	/**
-	 *
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	@Override
@@ -262,11 +261,17 @@ public class SendToDevice extends JPanel implements ActionListener
 		if (eSrc == rbJMF || eSrc == rbMIME || eSrc == rbRawXML)
 		{
 			if (rbJMF.isSelected())
+			{
 				settingService.setSetting(SettingKey.SEND_METHOD, "JMF");
+			}
 			else if (rbMIME.isSelected())
+			{
 				settingService.setSetting(SettingKey.SEND_METHOD, "MIME");
+			}
 			else if (rbRawXML.isSelected())
+			{
 				settingService.setSetting(SettingKey.SEND_METHOD, "RAW");
+			}
 
 		}
 		else if (eSrc == rbPackageAll)
@@ -282,7 +287,7 @@ public class SendToDevice extends JPanel implements ActionListener
 	 */
 	private boolean sendJDF()
 	{
-		final URL url = getURL(false);
+		final URL url = getURL(false, true);
 		if (url == null)
 		{
 			EditorUtils.errorBox("ErrorSendDevice", "URL = null");
@@ -294,6 +299,7 @@ public class SendToDevice extends JPanel implements ActionListener
 		final XJMFHelper xjmf = XJMFHelper.getHelper(theDoc);
 		if (theJMF != null || xjmf != null || isRaw())
 		{
+			getURL(true, false); // ensure any return url gets saved
 			return sendRaw(url);
 		}
 
@@ -303,7 +309,7 @@ public class SendToDevice extends JPanel implements ActionListener
 		}
 		else
 		{
-			return submitJDFToDevice(url, isMime(), getURL(true), isPackageAll());
+			return submitJDFToDevice(url, isMime(), getURL(true, true), isPackageAll());
 		}
 	}
 
@@ -410,7 +416,9 @@ public class SendToDevice extends JPanel implements ActionListener
 					mw.buildMimePackage(jmfDoc, theDoc, packageAll);
 				}
 				if (up == null)
+				{
 					up = mw.writeToURL(url.toExternalForm());
+				}
 			}
 			else
 			{
@@ -574,20 +582,17 @@ public class SendToDevice extends JPanel implements ActionListener
 
 	/**
 	 * getURL
-	 *
 	 * returns the URL of the device given by the user
-	 * 
-	 * @param bReturn if true, the url is the returnurl, else it is the device url
 	 *
+	 * @param bReturn if true, the url is the returnurl, else it is the device url
 	 * @return URL the url
 	 */
-	public URL getURL(final boolean bReturn)
+	URL getURL(final boolean bReturn, boolean notify)
 	{
 		// returns the URL given by the user
 		URL url = null;
 		final JComboBox<String> tf = bReturn ? urlReturn : urlPath;
-		final String currentStr = (String) tf.getEditor().getItem();
-		final String urlText = currentStr == null ? null : currentStr;
+		final String urlText = (String) tf.getEditor().getItem();
 
 		if (bReturn && KElement.isWildCard(urlText))
 		{
@@ -597,44 +602,17 @@ public class SendToDevice extends JPanel implements ActionListener
 		try
 		{
 			url = new URL(urlText);
-			if (bReturn)
-			{
-				final String s = convertJComboBoxToString(tf);
-				settingService.setSetting(SettingKey.SEND_URL_RETURN, s);
-			}
-			else
-			{
-				final String s = convertJComboBoxToString(tf);
-				settingService.setSetting(SettingKey.SEND_URL_SEND, s);
-			}
+			settingService.setSetting(bReturn ? SettingKey.SEND_URL_RETURN : SettingKey.SEND_URL_SEND, url.toExternalForm());
 		}
 		catch (final MalformedURLException e)
 		{
-			EditorUtils.errorBox("InvalidURL", ":" + urlText);
+			if (notify)
+			{
+				EditorUtils.errorBox("InvalidURL", ":" + urlText);
+			}
 			return null;
 		}
 		return url;
-	}
-
-	private String convertJComboBoxToString(final JComboBox<String> c)
-	{
-		final String currentStr = (String) c.getEditor().getItem();
-
-		final Set<String> set = new LinkedHashSet<String>();
-		set.add(currentStr);
-		for (int i = 0; i < c.getItemCount(); i++)
-		{
-			set.add(c.getItemAt(i));
-		}
-
-		String s = "";
-		final Iterator<String> it = set.iterator();
-		while (it.hasNext())
-		{
-			s += it.next() + ";";
-		}
-
-		return s;
 	}
 
 	/**
@@ -650,8 +628,8 @@ public class SendToDevice extends JPanel implements ActionListener
 		boolean bSendTrue = false;
 		final String[] options = { ResourceUtil.getMessage("OkKey"), ResourceUtil.getMessage("CancelKey") };
 
-		final int option = JOptionPane.showOptionDialog(MainView.getFrame(), this, ResourceUtil.getMessage("JDFSendToDevice"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE,
-				null, options, options[0]);
+		final int option = JOptionPane.showOptionDialog(MainView.getFrame(), this, ResourceUtil.getMessage("JDFSendToDevice"), JOptionPane.OK_OPTION,
+				JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
 		if (option == JOptionPane.OK_OPTION)
 		{
@@ -661,7 +639,7 @@ public class SendToDevice extends JPanel implements ActionListener
 
 		// show success in a popup window
 		String sLabel = (bSendTrue) ? ResourceUtil.getMessage("JDFSent") : ResourceUtil.getMessage("JDFNotSent");
-		final URL url = getURL(false);
+		final URL url = getURL(false, true);
 		sLabel += "\n\nURL= " + url.toExternalForm();
 		if (bSendTrue)
 		{

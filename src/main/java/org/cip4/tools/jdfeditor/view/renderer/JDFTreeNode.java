@@ -44,7 +44,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
 import org.apache.xerces.dom.AttrNSImpl;
-import org.cip4.jdflib.auto.JDFAutoRefAnchor.EnumAnchor;
+import org.cip4.jdflib.auto.JDFAutoRefAnchor.EAnchor;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFAudit;
@@ -116,6 +116,7 @@ import org.cip4.jdflib.resource.process.JDFRuleLength;
 import org.cip4.jdflib.resource.process.JDFSeparationSpec;
 import org.cip4.jdflib.resource.process.JDFSourceResource;
 import org.cip4.jdflib.resource.process.JDFStation;
+import org.cip4.jdflib.resource.process.postpress.JDFCutMark;
 import org.cip4.jdflib.span.JDFSpanBase;
 import org.cip4.jdflib.util.JDFDate;
 import org.cip4.jdflib.util.StringUtil;
@@ -152,7 +153,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 	/**
 	 * constructor for an attribute node
 	 *
-	 * @param atr the attribute
+	 * @param atr          the attribute
 	 * @param _isInherited
 	 */
 	public JDFTreeNode(final Attr atr, final boolean _isInherited)
@@ -184,11 +185,10 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		{
 			return false;
 		}
-		if (!(o instanceof JDFTreeNode))
+		if (!(o instanceof final JDFTreeNode to))
 		{
 			return false;
 		}
-		final JDFTreeNode to = (JDFTreeNode) o;
 		if (userObject == null)
 		{
 			return to.getUserObject() == null;
@@ -345,7 +345,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 	/**
 	 * get the insert index for a child with name name always place attributes in front of elements
 	 *
-	 * @param name the name of the child node
+	 * @param name       the name of the child node
 	 * @param bAttribute if true, the placed element is an attribute, else it is an element
 	 * @return the index for insertinto
 	 */
@@ -450,9 +450,8 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 			return null;
 		}
 
-		if (o instanceof Attr)
+		if (o instanceof final Attr a)
 		{
-			final Attr a = (Attr) o;
 			s = a.getNodeName() + "=\"" + a.getNodeValue() + "\"";
 		}
 		else if (o instanceof String)
@@ -469,7 +468,6 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 	}
 
 	/**
-	 *
 	 * @param o
 	 * @return
 	 */
@@ -504,7 +502,9 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		s += name;
 		final String type = addAttributeValue(e, "type");
 		if (!StringUtil.equals(name, type))
+		{
 			s += type;
+		}
 		s += addAttributeValue(e, "ref", " ref=", null);
 		s += addAttributeValue(e, "use", " ", null);
 		return s;
@@ -601,6 +601,11 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		{
 			s = displayPlacedObject(e, s);
 		}
+		else if (e instanceof JDFCutMark)
+		{
+			s += addAttributeValue(e, AttributeName.MARKTYPE);
+			s += addAttributeValue(e, AttributeName.POSITION);
+		}
 		else if (e instanceof JDFDevice)
 		{
 			s += addAttribute(e, AttributeName.DEVICEID);
@@ -632,8 +637,8 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		}
 		else if (e instanceof JDFPreview)
 		{
+			s += addAttributeValue(e, AttributeName.PREVIEWUSAGE);
 			s += addAttribute(e, AttributeName.URL);
-			s += addAttribute(e, AttributeName.PREVIEWUSAGE);
 		}
 		else if (e instanceof JDFEmployee)
 		{
@@ -676,9 +681,8 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		{
 			s = displayColorantAlias(e, s);
 		}
-		else if (e instanceof JDFEvent)
+		else if (e instanceof final JDFEvent di)
 		{
-			final JDFEvent di = (JDFEvent) e;
 			final String att = di.getEventID();
 			if (!KElement.isWildCard(att))
 			{
@@ -696,9 +700,8 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 				s += addAttribute(e, a);
 			}
 		}
-		else if (e instanceof JDFColor)
+		else if (e instanceof final JDFColor p)
 		{
-			final JDFColor p = (JDFColor) e;
 			final String acn = p.getActualColorName();
 			if (!StringUtil.isEmpty(acn))
 			{
@@ -711,18 +714,15 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		}
 		else if (e instanceof JDFConventionalPrintingParams)
 		{
-			final JDFConventionalPrintingParams p = (JDFConventionalPrintingParams) e;
 			s += addAttribute(e, AttributeName.WORKSTYLE);
 		}
-		else if (e instanceof JDFIdentical)
+		else if (e instanceof final JDFIdentical p)
 		{
-			final JDFIdentical p = (JDFIdentical) e;
 			final JDFAttributeMap map = p.getPartMap();
 			s = addPartMap(s, map);
 		}
-		else if (e instanceof JDFSourceResource)
+		else if (e instanceof final JDFSourceResource p)
 		{
-			final JDFSourceResource p = (JDFSourceResource) e;
 			final JDFRefElement re = p.getRefElement();
 			if (re != null)
 			{
@@ -730,19 +730,16 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 				s = addPartMap(s, re.getPartMap());
 			}
 		}
-		else if (e instanceof JDFGeneralID)
+		else if (e instanceof final JDFGeneralID p)
 		{
-			final JDFGeneralID p = (JDFGeneralID) e;
 			s += JDFConstants.BLANK + p.getIDUsage() + " = " + p.getIDValue();
 		}
-		else if (e instanceof JDFPerson)
+		else if (e instanceof final JDFPerson p)
 		{
-			final JDFPerson p = (JDFPerson) e;
 			s += JDFConstants.BLANK + p.getDescriptiveName();
 		}
-		else if (e instanceof JDFCompany)
+		else if (e instanceof final JDFCompany c)
 		{
-			final JDFCompany c = (JDFCompany) e;
 			s += JDFConstants.BLANK + c.getOrganizationName();
 		}
 		else if (e instanceof JDFBinderySignature)
@@ -751,42 +748,41 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 			s += addAttribute(e, AttributeName.SPREADTYPE);
 			s += addAttribute(e, AttributeName.FOLDCATALOG);
 		}
-		else if (e instanceof JDFRuleLength)
+		else if (e instanceof final JDFRuleLength rl)
 		{
-			final JDFRuleLength rl = (JDFRuleLength) e;
 			s += JDFConstants.BLANK + rl.getDDESCutType();
 			final double l = rl.getLengthJDF();
 			if (l > 0)
+			{
 				s += " Len=" + l;
+			}
 		}
-		else if (e instanceof JDFStation)
+		else if (e instanceof final JDFStation rl)
 		{
-			final JDFStation rl = (JDFStation) e;
 			s += JDFConstants.BLANK + rl.getStationName();
 			final int l = rl.getStationAmount();
 			if (l > 0)
-				s += " Amount=" + l;
-		}
-		else if (e instanceof JDFComChannel)
-		{
-			final JDFComChannel p = (JDFComChannel) e;
-			s += JDFConstants.BLANK + p.getLocator();
-		}
-		else if (e instanceof JDFCustomerInfo)
-		{
-			final JDFCustomerInfo p = (JDFCustomerInfo) e;
-			s += JDFConstants.BLANK + p.getCustomerID();
-		}
-		else if (e instanceof JDFRefAnchor)
-		{
-			final JDFRefAnchor p = (JDFRefAnchor) e;
-			final EnumAnchor anchor = p.getAnchor();
-			if (anchor != null)
 			{
-				s += JDFConstants.BLANK + anchor.getName();
+				s += " Amount=" + l;
 			}
 		}
-		else if (nodeName.endsWith("Set") || nodeName.equals("Intent"))
+		else if (e instanceof final JDFComChannel p)
+		{
+			s += JDFConstants.BLANK + p.getLocator();
+		}
+		else if (e instanceof final JDFCustomerInfo p)
+		{
+			s += JDFConstants.BLANK + p.getCustomerID();
+		}
+		else if (e instanceof final JDFRefAnchor p)
+		{
+			final EAnchor anchor = p.getEAnchor();
+			if (anchor != null)
+			{
+				s += JDFConstants.BLANK + anchor.name();
+			}
+		}
+		else if (nodeName.endsWith("Set") || "Intent".equals(nodeName))
 		{
 			s = displaySet(e, s);
 		}
@@ -802,7 +798,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		{
 			s = displayProduct(e, s);
 		}
-		else if (nodeName.equals(XJDFConstants.ProductList))
+		else if (XJDFConstants.ProductList.equals(nodeName))
 		{
 			s += " [" + e.numChildElements(XJDFConstants.Product, null) + "]";
 		}
@@ -818,15 +814,15 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		{
 			s = displayHeader(e, s);
 		}
-		else if (nodeName.equals("Price"))
+		else if ("Price".equals(nodeName))
 		{
 			s = displayPrice(e, s);
 		}
-		else if (nodeName.equals("Credential"))
+		else if ("Credential".equals(nodeName))
 		{
 			s += " " + e.getAttribute("domain") + "=" + e.getXPathAttribute("Identity", "");
 		}
-		else if (nodeName.equals("Request"))
+		else if ("Request".equals(nodeName))
 		{
 			s += " BusinessID=" + e.getAttribute("BusinessID");
 		}
@@ -855,9 +851,13 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		if (val != null)
 		{
 			if (!StringUtil.isEmpty(suffix))
+			{
 				val += suffix;
+			}
 			if (StringUtil.isEmpty(prefix))
+			{
 				prefix = JDFConstants.BLANK;
+			}
 			return prefix + val;
 		}
 		return JDFConstants.EMPTYSTRING;
@@ -872,7 +872,6 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 	}
 
 	/**
-	 *
 	 * @param e
 	 * @param s
 	 * @return
@@ -895,7 +894,6 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 	}
 
 	/**
-	 *
 	 * @param e
 	 * @param s
 	 * @return
@@ -967,7 +965,7 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 			bUsage = true;
 		}
 		final String pu = rl.getProcessUsage();
-		if (!pu.equals(""))
+		if (!"".equals(pu))
 		{
 			s += " [" + pu + "]";
 		}
@@ -1169,7 +1167,9 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		{
 			final EnumNodeStatus nodeStatus = ((JDFNodeInfo) e).getNodeStatus();
 			if (nodeStatus != null)
+			{
 				s += JDFConstants.BLANK + nodeStatus.getName();
+			}
 		}
 		final JDFResource r = (JDFResource) e;
 		final String partKey = r.getLocalPartitionKey();
@@ -1295,9 +1295,8 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 	public String getXPathAttr()
 	{
 		final KElement element = getElement();
-		if (element instanceof JDFNode)
+		if (element instanceof final JDFNode n)
 		{
-			final JDFNode n = (JDFNode) element;
 			return n.buildXPath(null, 1);
 		}
 
@@ -1319,7 +1318,6 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 	}
 
 	/**
-	 *
 	 * @param attName
 	 * @param prefix
 	 * @param postFix

@@ -70,20 +70,27 @@ package org.cip4.tools.jdfeditor.jmf;
 
 import java.util.Vector;
 
+import org.cip4.jdflib.auto.JDFAutoResourceQuParams.EResourceDetails;
 import org.cip4.jdflib.core.AttributeName;
+import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFAudit;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.extensions.MessageHelper;
+import org.cip4.jdflib.extensions.MessageHelper.EType;
 import org.cip4.jdflib.extensions.XJMFHelper;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFMessage;
 import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
 import org.cip4.jdflib.jmf.JDFMessage.EnumType;
 import org.cip4.jdflib.jmf.JDFMessageService;
+import org.cip4.jdflib.jmf.JDFResourceQuParams;
+import org.cip4.jdflib.jmf.JDFSubscription;
 import org.cip4.jdflib.jmf.JMFBuilder;
 import org.cip4.tools.jdfeditor.EditorDocument;
 import org.cip4.tools.jdfeditor.SendToDevice;
+import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
+import org.cip4.tools.jdfeditor.service.SettingService;
 import org.cip4.tools.jdfeditor.util.EditorUtils;
 import org.cip4.tools.jdfeditor.view.MainView;
 
@@ -179,16 +186,51 @@ public class MessageSender
 		final KElement header = h.getHeader();
 		header.setAttribute(AttributeName.AGENTNAME, JDFAudit.getStaticAgentName());
 		header.setAttribute(AttributeName.DESCRIPTIVENAME, "XJMF From MessageService for " + type);
-		extendXJMF(h);
 		final JDFDoc xjmfDoc = new JDFDoc(h.getRoot().getOwnerDocument_KElement());
 		xjmfDoc.setOriginalFileName(EditorUtils.getNewPath("Auto" + type + ".xjmf"));
+		extendXJMF(mh);
 
 		return xjmfDoc;
 	}
 
-	void extendXJMF(final XJMFHelper h)
+	void extendXJMF(final MessageHelper mh)
 	{
-		// mService.
+		extendSubscription(mh);
+		final EType t = mh.getEType();
+		switch (t)
+		{
+		case Status:
+			extendStatus(mh);
+		case Resource:
+			extendResource(mh);
+
+		default:
+			break;
+		}
+	}
+
+	void extendSubscription(final MessageHelper mh)
+	{
+		if (MessageHelper.EFamily.Signal.equals(mh.getEFamily()) && mService.isSignal())
+		{
+			final String url = SettingService.getSettingService().getString(SettingKey.SEND_URL_RETURN);
+			mh.subscribe(url);
+		}
+	}
+
+	void extendResource(MessageHelper mh)
+	{
+		final JDFResourceQuParams rqp = (JDFResourceQuParams) mh.getCreateElement(ElementName.RESOURCEQUPARAMS);
+		rqp.setResourceDetails(EResourceDetails.Full);
+	}
+
+	void extendStatus(MessageHelper mh)
+	{
+		final JDFSubscription sub = (JDFSubscription) mh.getElement(ElementName.SUBSCRIPTION);
+		if (sub != null)
+		{
+			sub.setRepeatTime(42);
+		}
 
 	}
 
