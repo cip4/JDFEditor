@@ -6,11 +6,8 @@ plugins {
     id 'org.beryx.runtime' version '2.0.1'
 }
 
-mainClassName = 'org.cip4.tools.jdfeditor.Editor'
 def simpleProjectName = "JDFEditor"
 
-sourceCompatibility = 17
-targetCompatibility = 17
 
 if (project.hasProperty('projectVersion')) {
 version = project.projectVersion
@@ -108,8 +105,12 @@ runtime {
 	}
 }
 
+ 
+
 java {
-    archivesBaseName = simpleProjectName
+base.archivesName = simpleProjectName
+sourceCompatibility = 17
+targetCompatibility = 17
 }
 
 startScripts {
