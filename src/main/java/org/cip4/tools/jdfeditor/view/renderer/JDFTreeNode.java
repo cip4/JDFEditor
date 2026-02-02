@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2025 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
+ * Copyright (c) 2001-2026 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  *
@@ -74,6 +74,7 @@ import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFJobPhase;
 import org.cip4.jdflib.jmf.JDFMessage;
 import org.cip4.jdflib.jmf.JDFMessageService;
+import org.cip4.jdflib.jmf.JDFModuleInfo;
 import org.cip4.jdflib.jmf.JDFQueueEntry;
 import org.cip4.jdflib.jmf.JDFResourceInfo;
 import org.cip4.jdflib.node.JDFAncestor;
@@ -81,6 +82,7 @@ import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.resource.JDFDevice;
 import org.cip4.jdflib.resource.JDFEvent;
 import org.cip4.jdflib.resource.JDFMarkObject;
+import org.cip4.jdflib.resource.JDFModuleStatus;
 import org.cip4.jdflib.resource.JDFNotification;
 import org.cip4.jdflib.resource.JDFPart;
 import org.cip4.jdflib.resource.JDFPatch;
@@ -664,6 +666,13 @@ public class JDFTreeNode extends DefaultMutableTreeNode
 		else if (e instanceof JDFDeviceInfo)
 		{
 			s = displayDeviceInfo(e, s);
+		}
+		else if ((e instanceof JDFModuleStatus) || (e instanceof JDFModuleInfo))
+		{
+			s += addAttributeValue(e, AttributeName.MODULEID);
+			s += addAttributeValue(e, AttributeName.MODULETYPE);
+			s += addAttributeValue(e, AttributeName.DEVICESTATUS);
+			s += addAttributeValue(e, XJDFConstants.ModuleStatus);
 		}
 		else if (e instanceof JDFNotification)
 		{
