@@ -3,8 +3,8 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2016 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * Copyright (c) 2001-2026 The International Cooperation for the Integration of
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +12,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -20,17 +20,17 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
+ *        The International Cooperation for the Integration of
  *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of
  *    Processes in  Prepress, Press and Postpress" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact info@cip4.org.
  *
  * 5. Products derived from this software may not be called "CIP4",
@@ -56,17 +56,17 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
+ * individuals on behalf of the The International Cooperation for the Integration
  * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
+ * originally based on software
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V.
+ *
+ * For more information on The International Cooperation for the
  * Integration of Processes in  Prepress, Press and Postpress , please see
  * <http://www.cip4.org/>.
- *  
- * 
+ *
+ *
  */
 package org.cip4.tools.jdfeditor;
 
@@ -90,12 +90,12 @@ import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFResourceLinkPool;
 import org.cip4.jdflib.pool.JDFResourcePool;
 import org.cip4.tools.jdfeditor.controller.MainController;
-import org.cip4.tools.jdfeditor.menu.MenuTools;
+import org.cip4.tools.jdfeditor.menu.MenuEdit;
 import org.cip4.tools.jdfeditor.menu.MenuFile;
 import org.cip4.tools.jdfeditor.menu.MenuInsert;
+import org.cip4.tools.jdfeditor.menu.MenuTools;
 import org.cip4.tools.jdfeditor.menu.MenuValidate;
 import org.cip4.tools.jdfeditor.menu.MenuView;
-import org.cip4.tools.jdfeditor.menu.MenuEdit;
 import org.cip4.tools.jdfeditor.util.EditorUtils;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
 import org.cip4.tools.jdfeditor.view.MainView;
@@ -103,10 +103,9 @@ import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;
 
 /**
  * Class to implement all the menu bar and menu related stuff moved here from JDFFrame
+ *
  * @author prosirai
- * 
- * Code for the menu on the top of the JDFEditor as well as the pop up menus. You can modify the hot key settings here for every menu choice.
- * 
+ *         Code for the menu on the top of the JDFEditor as well as the pop up menus. You can modify the hot key settings here for every menu choice.
  */
 public class EditorMenuBar extends JMenuBar implements ActionListener
 {
@@ -136,7 +135,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	// popup menues
 	JMenuItem m_pastePopupItem;
 
-
 	/**
 	 * Default constructor.
 	 */
@@ -146,6 +144,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 	/**
 	 * Register a MainController for this view (MVC Pattern)
+	 *
 	 * @param mainController The MainController for this view.
 	 */
 	public void registerController(final MainController mainController)
@@ -180,6 +179,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 	/**
 	 * Creates the Help menu.
+	 *
 	 * @return The Help menu with the menu items.
 	 */
 	private JMenu drawHelpMenu()
@@ -209,6 +209,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 	/**
 	 * Creates the Window menu.
+	 *
 	 * @return The Window menu with the menu items.
 	 */
 	private JMenu drawWindowMenu()
@@ -230,6 +231,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 	/**
 	 * Create the different menues and adds them to the menubar.
+	 *
 	 * @return The Menu bar with all its items.
 	 */
 	public JMenuBar drawMenu()
@@ -279,6 +281,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 	/**
 	 * Updates the order in the Recent Files Menu. also updates all windows and the ini file - just in case
+	 *
 	 * @param pathName - The path to the file
 	 */
 	public void updateRecentFilesMenu(final String pathName)
@@ -292,13 +295,13 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	 */
 	public void updateWindowsMenu()
 	{
-		final JDFFrame m_frame = MainView.getFrame();
-		if (m_frame.m_DocPos >= 0)
+		MainView.getFrame();
+		if (EditorDocument.getDocPos() >= 0)
 		{
 			JMenuItem mwindows[] = null;
-			if ((m_Windows == null) || (m_Windows.length != m_frame.m_VjdfDocument.size()))
+			if ((m_Windows == null) || (m_Windows.length != EditorDocument.getEditorDocs().size()))
 			{
-				mwindows = new JMenuItem[m_frame.m_VjdfDocument.size()];
+				mwindows = new JMenuItem[EditorDocument.getEditorDocs().size()];
 				if (m_Windows != null)
 				{
 					for (int i = 0; i < m_Windows.length; i++)
@@ -323,16 +326,16 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 			}
 			for (int i = 0; i < m_Windows.length; i++)
 			{
-				final JDFDoc d = m_frame.m_VjdfDocument.elementAt(i).getJDFDoc();
+				final JDFDoc d = EditorDocument.getEditorDocs().get(i).getJDFDoc();
 				m_Windows[i].setText(d.getOriginalFileName());
 			}
-			setWindowMenuItemColor(m_frame.m_DocPos);
+			setWindowMenuItemColor(EditorDocument.getDocPos());
 		}
 		else if (m_Windows != null)
 		{
-			for (int i = 0; i < m_Windows.length; i++)
+			for (final JMenuItem m_Window : m_Windows)
 			{
-				m_windowMenu.remove(m_Windows[i]);
+				m_windowMenu.remove(m_Window);
 			}
 			m_Windows = null;
 		}
@@ -359,7 +362,6 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 				kElement = node.getElement();
 			}
 
-
 			if (((JDFTreeNode) m_frame.getRootNode().getFirstChild()).equals(node))
 			{
 				menuInsert.setEnabled2(false);
@@ -369,11 +371,11 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 				menuInsert.setEnabled2(true);
 			}
 
-			if (!(kElement instanceof JDFNode) && !kElement.getNodeName().equals("ResourcePool"))
+			if (!(kElement instanceof JDFNode) && !"ResourcePool".equals(kElement.getNodeName()))
 			{
 				menuInsert.m_resourceMenu.setEnabled(false);
 			}
-			if (!(kElement instanceof JDFNode) && !kElement.getNodeName().equals("ResourceLinkPool"))
+			if (!(kElement instanceof JDFNode) && !"ResourceLinkPool".equals(kElement.getNodeName()))
 			{
 				menuInsert.m_resourceLinkMenu.setEnabled(false);
 			}
@@ -382,7 +384,8 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 			{
 				menuInsert.setEnabledJDFResourcePool(false);
 			}
-			else if ((kElement instanceof JDFResourceLinkPool) && EditorUtils.getResourcesAllowedToLink(((JDFResourceLinkPool) kElement).getParentJDF(), null) != null)
+			else if ((kElement instanceof JDFResourceLinkPool)
+					&& EditorUtils.getResourcesAllowedToLink(((JDFResourceLinkPool) kElement).getParentJDF(), null) != null)
 			{
 				menuInsert.setEnabledJDFResourcePool(true);
 			}
@@ -405,7 +408,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	}
 
 	/**
-	 *  
+	 *
 	 */
 	public void setEnableClose()
 	{
@@ -435,7 +438,9 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		{
 			final Object source = e.getSource();
 			if (source instanceof JMenu)
+			{
 				((JMenu) source).setBorderPainted(true);
+			}
 		}
 
 		@Override
@@ -443,12 +448,15 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		{
 			final Object source = e.getSource();
 			if (source instanceof JMenu)
+			{
 				((JMenu) source).setBorderPainted(true);
+			}
 		}
 	}
 
 	/**
 	 * WHERE the process begins when you select File->New from the JDFEditor menu.
+	 *
 	 * @param e
 	 */
 	@Override
@@ -478,6 +486,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 
 	/**
 	 * set the windows menu item background color of pos
+	 *
 	 * @param pos the position in the document list
 	 */
 	public void setWindowMenuItemColor(final int pos)

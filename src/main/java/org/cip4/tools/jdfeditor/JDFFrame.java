@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2024 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2026 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -96,7 +96,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
@@ -133,7 +133,6 @@ import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.core.XMLDoc;
-import org.cip4.jdflib.core.XMLDocUserData.EnumDirtyPolicy;
 import org.cip4.jdflib.elementwalker.FixVersion;
 import org.cip4.jdflib.elementwalker.RemoveEmpty;
 import org.cip4.jdflib.elementwalker.RemovePrivate;
@@ -157,9 +156,7 @@ import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;
 
 /**
  * @author AnderssA ThunellE SvenoniusI Elena Skobchenko
- *
  *         This is the junk dump all in class with gazillions of private members
- *
  *         TODO clean up and move routines to the model
  */
 
@@ -183,13 +180,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	JTree m_searchTree;
 
-	// handles all copying and pasting
-	public JDFTreeCopyNode m_copyNode;
-
-	// quick & dirty hack for multi doc support
-	Vector<EditorDocument> m_VjdfDocument = new Vector<EditorDocument>();
-	int m_DocPos = -1; // document position
-
 	public EditorMenuBar m_menuBar = null;
 	public EditorButtonBar m_buttonBar = null;
 
@@ -203,7 +193,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	/**
 	 * constructor of the frame
-	 *
 	 */
 	public JDFFrame()
 	{
@@ -219,7 +208,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	/**
 	 * Register a MainController for this view (MVC Pattern)
-	 * 
+	 *
 	 * @param mainController The MainController for this view.
 	 */
 	public void registerController(final MainController mainController)
@@ -230,7 +219,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	/**
 	 * Enables JDFEditor to run in full screen mode on a MacOSX System.
-	 * 
+	 *
 	 * @param window This window
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -268,7 +257,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	/**
 	 * Method drawBoxContent.
-	 * 
+	 *
 	 * @return Box
 	 */
 	private Box drawBoxContent()
@@ -287,7 +276,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	/**
 	 * Draws the splitpanes in which the views are to be displayed
-	 * 
+	 *
 	 * @return JSplitPane
 	 */
 	private JSplitPane drawSplitPane()
@@ -295,7 +284,9 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		m_topTabs = new EditorTabbedPaneA();
 		if (m_bottomTabs == null)
+		{
 			m_bottomTabs = new EditorTabbedPaneB();
+		}
 
 		m_treeArea = new JDFTreeArea(this);
 		new DropTarget(m_treeArea, this);
@@ -370,22 +361,26 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		catch (final ClassNotFoundException e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("LookAndFeelErrorKey"), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("LookAndFeelErrorKey"), ResourceUtil.getMessage("ErrorMessKey"),
+					JOptionPane.ERROR_MESSAGE);
 		}
 		catch (final InstantiationException e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("LookAndFeelErrorKey"), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("LookAndFeelErrorKey"), ResourceUtil.getMessage("ErrorMessKey"),
+					JOptionPane.ERROR_MESSAGE);
 		}
 		catch (final IllegalAccessException e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("LookAndFeelErrorKey"), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("LookAndFeelErrorKey"), ResourceUtil.getMessage("ErrorMessKey"),
+					JOptionPane.ERROR_MESSAGE);
 		}
 		catch (final UnsupportedLookAndFeelException e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("LookAndFeelErrorKey"), ResourceUtil.getMessage("ErrorMessKey"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, ResourceUtil.getMessage("LookAndFeelErrorKey"), ResourceUtil.getMessage("ErrorMessKey"),
+					JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -394,8 +389,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		final String[] options = { ResourceUtil.getMessage("OkKey"), ResourceUtil.getMessage("CancelKey") };
 
 		final ComponentChooser cc = new ComponentChooser();
-		final int option = JOptionPane.showOptionDialog(this, cc, ResourceUtil.getMessage("PrintMessKey"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
-				options[0]);
+		final int option = JOptionPane.showOptionDialog(this, cc, ResourceUtil.getMessage("PrintMessKey"), JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE,
+				null, options, options[0]);
 
 		final EditorDocument ed = getEditorDoc();
 		if (option == JOptionPane.OK_OPTION)
@@ -446,7 +441,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	/**
 	 * Method readFile.
-	 * 
+	 *
 	 * @param fileToRead the file to read
 	 * @return true if at least one file was read or selected
 	 */
@@ -456,7 +451,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 		if (fileToRead != null)
 		{
-			final int docIndex = documentService.indexOfFile(fileToRead, m_VjdfDocument);
+			final int docIndex = documentService.indexOfFile(fileToRead, EditorDocument.getEditorDocs());
 			if (docIndex >= 0)
 			{
 				nextFile(docIndex);
@@ -631,7 +626,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	/**
 	 * Get the node to search for in the Process View.
-	 * 
+	 *
 	 * @param src - The location in the Process View that's been selected
 	 */
 	void getProcessSearchNode(final Object src)
@@ -694,7 +689,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	void newJDF()
 	{
 		clearViews();
-		final JDFDoc jdfDoc = new JDFDoc("JDF");
+		final JDFDoc jdfDoc = new JDFDoc(ElementName.JDF);
 		final JDFNode jdfRoot = jdfDoc.getJDFRoot();
 		jdfRoot.setType("Product", true);
 		final int position = setJDFDoc(jdfDoc, null);
@@ -708,7 +703,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	/**
 	 * Method newJMF. creates a new JMF file
-	 * 
+	 *
 	 * @param f
 	 * @param type
 	 */
@@ -720,12 +715,12 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			final JDFJMF jmf = Editor.getEditor().getJMFBuilder().newJMF(f, type);
 			final VString requiredAttributes = jmf.getMissingAttributes(9999999);
 
-			for (int i = 0; i < requiredAttributes.size(); i++)
+			for (final String requiredAttribute : requiredAttributes)
 			{
-				final String s = JDFElement.getValueForNewAttribute(jmf, requiredAttributes.get(i));
-				if (!jmf.hasAttribute(requiredAttributes.get(i)))
+				final String s = JDFElement.getValueForNewAttribute(jmf, requiredAttribute);
+				if (!jmf.hasAttribute(requiredAttribute))
 				{
-					jmf.setAttribute(requiredAttributes.get(i), s);
+					jmf.setAttribute(requiredAttribute, s);
 				}
 			}
 			if (type == null)
@@ -857,7 +852,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	/**
 	 * Asks if the user wants to create a new JDF or JMF file. BMI: Also where can select Golden Ticket
-	 *
 	 * Coming from EditorMenuBar, second stop in the chain. called from frame.NewFile()
 	 */
 	public void newFile()
@@ -866,18 +860,18 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 		final NewFileChooser newFileChooser = new NewFileChooser();
 
-		final int option = JOptionPane.showOptionDialog(this, newFileChooser, ResourceUtil.getMessage("ChooseNewFileKey"), JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE,
-				null, options, options[0]);
+		final int option = JOptionPane.showOptionDialog(this, newFileChooser, ResourceUtil.getMessage("ChooseNewFileKey"), JOptionPane.OK_OPTION,
+				JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 
 		if (option == JOptionPane.OK_OPTION)
 		{
 			final String selection = newFileChooser.getSelection();
 			final EnumVersion v = newFileChooser.getVersionSelected();
-			if (selection.equals("JDF"))
+			if ("JDF".equals(selection))
 			{
 				newJDF();
 			}
-			else if (selection.equals("JMF"))
+			else if ("JMF".equals(selection))
 			{
 				newJMF(EnumFamily.Query, "KnownMessages");
 			}
@@ -901,7 +895,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	/**
 	 * fixes the version of a JDF by calling fixVersion for the selected JDF node ore the closest JDF parent.
-	 *
 	 */
 	public void fixVersion()
 	{
@@ -918,7 +911,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	/**
 	 * fixes the version of a JDF by calling fixVersion for the selected JDF node ore the closest JDF parent.
-	 *
 	 */
 	public void cleanupSelected()
 	{
@@ -949,7 +941,9 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				else
 				{
 					if (element instanceof JDFElement)
+					{
 						((JDFElement) element).eraseDefaultAttributes(true);
+					}
 					rem.walkTreeKidsFirst(element);
 				}
 			}
@@ -966,7 +960,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	/**
 	 * fixes the version of a JDF by calling fixVersion for the selected JDF node ore the closest JDF parent.
-	 *
 	 */
 	public void removeExtensionsfromSelected()
 	{
@@ -981,9 +974,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			// find the closest selectd JDF or JMF element and fix it
 			final TreePath path = m_treeArea.getSelectionPath();
 			final KElement element = EditorUtils.getElement(path);
-			if (element instanceof JDFElement)
+			if (element instanceof final JDFElement n1)
 			{
-				final JDFElement n1 = (JDFElement) element;
 				new RemovePrivate().walkTree(n1, null);
 			}
 			refreshView(getEditorDoc(), path);
@@ -999,7 +991,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	/**
 	 * Creates the SearchDialog.
-	 * 
+	 *
 	 * @param searchComponent - Where to perform the search?
 	 */
 	private void findWhatDialog(final String searchComponent)
@@ -1009,7 +1001,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	/**
 	 * Mother of all action dispatchers TODO remove and distribute over the relevant classes
-	 * 
+	 *
 	 * @param e the event that gets checked
 	 */
 	@Override
@@ -1166,37 +1158,35 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 *
-	 *
 	 * @param pos
 	 * @return
 	 */
 	public EditorDocument nextFile(int pos)
 	{
-		if (m_VjdfDocument.isEmpty())
+		final List<EditorDocument> editorDocs = EditorDocument.getEditorDocs();
+		if (editorDocs.isEmpty())
 		{
 			return null;
 		}
 		if (pos == -1)
 		{
-			pos = m_DocPos + 1;
+			pos = EditorDocument.getDocPos() + 1;
 		}
 
-		if (pos >= m_VjdfDocument.size())
+		if (pos >= editorDocs.size())
 		{
 			pos = 0;
 		}
 
-		EditorDocument ed = m_VjdfDocument.elementAt(m_DocPos);
-		if (pos == m_DocPos)
+		EditorDocument ed = EditorDocument.getEditorDoc();
+		if (pos == EditorDocument.getDocPos())
 		{
 			return ed; // nop
 		}
 
 		m_menuBar.setWindowMenuItemColor(pos);
-		m_DocPos = pos;
-		ed = m_VjdfDocument.elementAt(m_DocPos);
-
+		EditorDocument.setDocPos(pos);
+		ed = EditorDocument.getEditorDoc();
 		refreshView(ed, null);
 		return ed;
 	}
@@ -1263,7 +1253,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			}
 			else
 			{
-				JOptionPane.showMessageDialog(this, "Rename operation was not completed." + "\nNo name selected or an error occured", "Rename", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(this, "Rename operation was not completed." + "\nNo name selected or an error occured", "Rename",
+						JOptionPane.INFORMATION_MESSAGE);
 			}
 			updateViews(path);
 		}
@@ -1278,7 +1269,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		if (path != null)
 		{
 			MainView.getFrame().getEditorDoc().setDirtyFlag();
-			m_copyNode = new JDFTreeCopyNode((JDFTreeNode) path.getLastPathComponent(), false);
+			JDFTreeCopyNode.setCopy((JDFTreeNode) path.getLastPathComponent(), false);
 
 			final CutItemEdit edit = new CutItemEdit(path);
 			undoSupport.postEdit(edit);
@@ -1357,7 +1348,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		final TreePath path = m_treeArea.getSelectionPath();
 		if (path != null)
 		{
-			m_copyNode = new JDFTreeCopyNode((JDFTreeNode) path.getLastPathComponent(), true);
+			JDFTreeCopyNode.setCopy((JDFTreeNode) path.getLastPathComponent(), true);
 		}
 	}
 
@@ -1367,10 +1358,10 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	public void pasteCopiedNode()
 	{
 		final TreePath path = m_treeArea.getSelectionPath();
-		if (path != null && m_copyNode != null)
+		if (path != null && JDFTreeCopyNode.getCopy() != null)
 		{
 			final JDFTreeNode intoNode = (JDFTreeNode) path.getLastPathComponent();
-			final JDFTreeNode pasteNode = m_copyNode.pasteNode(path);
+			final JDFTreeNode pasteNode = JDFTreeCopyNode.getCopy().pasteNode(path, false);
 			if (pasteNode != null)
 			{
 				MainView.getFrame().getEditorDoc().setDirtyFlag();
@@ -1386,10 +1377,11 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	public void pasteRawCopiedNode()
 	{
 		final TreePath path = m_treeArea.getSelectionPath();
-		if (path != null && m_copyNode != null)
+		final JDFTreeCopyNode copyNode = JDFTreeCopyNode.getCopy();
+		if (path != null && copyNode != null)
 		{
 			final JDFTreeNode intoNode = (JDFTreeNode) path.getLastPathComponent();
-			final JDFTreeNode pasteNode = m_copyNode.pasteRawNode(path);
+			final JDFTreeNode pasteNode = copyNode.pasteNode(path, true);
 			if (pasteNode != null)
 			{
 				final PasteItemEdit edit = new PasteItemEdit(path, intoNode, pasteNode);
@@ -1421,7 +1413,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	/**
 	 * returns true if the currently selected document has been modified
-	 * 
+	 *
 	 * @deprecated
 	 * @return
 	 */
@@ -1463,8 +1455,9 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 					{
 						m_menuBar.getMenuTools().setSpawnMergeEnabled(false);
 					}
-					m_menuBar.getMenuEdit().m_pasteItem.setEnabled(m_copyNode != null);
-					m_buttonBar.m_pasteButton.setEnabled(m_copyNode != null);
+					final boolean hasCopy = JDFTreeCopyNode.getCopy() != null;
+					m_menuBar.getMenuEdit().m_pasteItem.setEnabled(hasCopy);
+					m_buttonBar.m_pasteButton.setEnabled(hasCopy);
 
 				}
 				else
@@ -1576,7 +1569,7 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 			}
 			catch (final CannotUndoException ex)
 			{
-				ex.printStackTrace();
+				LOGGER.error("snafu in redo ", ex);
 			}
 			updateRedoState();
 			undoAction.updateUndoState();
@@ -1611,7 +1604,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 *
 	 * @see java.awt.dnd.DragGestureListener#dragGestureRecognized(java.awt.dnd.DragGestureEvent)
 	 */
 	@Override
@@ -1620,7 +1612,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 *
 	 * @see java.awt.dnd.DragSourceListener#dragDropEnd(java.awt.dnd.DragSourceDropEvent)
 	 */
 	@Override
@@ -1629,7 +1620,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 *
 	 * @see java.awt.dnd.DragSourceListener#dragEnter(java.awt.dnd.DragSourceDragEvent)
 	 */
 	@Override
@@ -1638,7 +1628,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 *
 	 * @see java.awt.dnd.DragSourceListener#dragExit(java.awt.dnd.DragSourceEvent)
 	 */
 	@Override
@@ -1647,7 +1636,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 *
 	 * @see java.awt.dnd.DragSourceListener#dragOver(java.awt.dnd.DragSourceDragEvent)
 	 */
 	@Override
@@ -1656,7 +1644,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 *
 	 * @see java.awt.dnd.DragSourceListener#dropActionChanged(java.awt.dnd.DragSourceDragEvent)
 	 */
 	@Override
@@ -1665,7 +1652,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 *
 	 * @see java.awt.dnd.DropTargetListener#dragEnter(java.awt.dnd.DropTargetDragEvent)
 	 */
 	@Override
@@ -1675,7 +1661,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 *
 	 * @see java.awt.dnd.DropTargetListener#dragExit(java.awt.dnd.DropTargetEvent)
 	 */
 	@Override
@@ -1684,7 +1669,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 *
 	 * @see java.awt.dnd.DropTargetListener#dragOver(java.awt.dnd.DropTargetDragEvent)
 	 */
 	@Override
@@ -1693,7 +1677,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 *
 	 * @see java.awt.dnd.DropTargetListener#drop(java.awt.dnd.DropTargetDropEvent)
 	 */
 	@Override
@@ -1708,11 +1691,9 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 				e.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
 				@SuppressWarnings("unchecked")
 				final java.util.List<File> fileList = (java.util.List<File>) flavor.getTransferData(DataFlavor.javaFileListFlavor);
-				final Iterator<File> files = fileList.iterator();
-
-				while (files.hasNext())
+				for (final File element : fileList)
 				{
-					readFile(files.next());
+					readFile(element);
 				}
 				e.getDropTargetContext().dropComplete(true);
 			}
@@ -1734,7 +1715,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 *
 	 * @see java.awt.dnd.DropTargetListener#dropActionChanged(java.awt.dnd.DropTargetDragEvent)
 	 */
 	@Override
@@ -1743,7 +1723,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 *
 	 * @see java.awt.datatransfer.ClipboardOwner#lostOwnership(java.awt.datatransfer.Clipboard, java.awt.datatransfer.Transferable)
 	 */
 	@Override
@@ -1752,8 +1731,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 *
-	 *
 	 * @return
 	 */
 	public TreeSelectionListener getTreeSelectionListener()
@@ -1762,7 +1739,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 *
 	 * @return
 	 */
 	public JDFTreeNode getRootNode()
@@ -1773,45 +1749,18 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 
 	/**
 	 * set the currently displayed doc to doc
-	 * 
+	 *
 	 * @param doc
 	 * @param mimePackage
 	 * @return the index in the list of docs that doc is stored in
 	 */
 	public int setJDFDoc(final JDFDoc doc, final String mimePackage)
 	{
-		int i = m_DocPos;
-		if (doc != null)
-		{
-			i = documentService.indexOfJDF(doc, m_VjdfDocument);
-			final EditorDocument ed = new EditorDocument(doc, mimePackage);
-
-			if (i >= 0)
-			{
-				m_DocPos = i;
-				m_VjdfDocument.set(i, ed);
-			}
-			else
-			{
-				m_VjdfDocument.add(ed);
-				m_DocPos = m_VjdfDocument.size() - 1;
-				// make sure that we have a global dirty policy in force
-				doc.getCreateXMLDocUserData().setDirtyPolicy(EnumDirtyPolicy.Doc);
-			}
-		} // doc==null --> remove this entry
-		else if (m_DocPos >= 0 && m_DocPos < m_VjdfDocument.size())
-		{
-			m_VjdfDocument.remove(m_DocPos);
-			m_DocPos--;
-			// roll over to the end; also ok if size=0, since -1 is the flag for all closed
-			if (m_DocPos == -1)
-			{
-				m_DocPos = m_VjdfDocument.size() - 1;
-			}
-		}
-		if (m_DocPos >= 0)
+		final int docPos = documentService.setJDFDoc(doc, mimePackage);
+		if (docPos >= 0)
 		{
 			setTitle(getEditorDoc().getOriginalFileName());
+			EditorDocument.setDocPos(docPos);
 		}
 		else
 		{
@@ -1819,61 +1768,41 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		}
 		m_menuBar.updateWindowsMenu();
 
-		return m_DocPos;
+		return docPos;
 	}
 
 	/**
 	 * set the currently displayed doc to doc
-	 * 
+	 *
 	 * @param doc
 	 * @param mimePackage
 	 * @return the index in the list of docs that doc is stored in
 	 */
 	public int setEditorDoc(final EditorDocument doc)
 	{
-		int i = m_DocPos;
-		if (doc != null)
-		{
-			i = m_VjdfDocument.indexOf(doc);
-
-			if (i >= 0)
-			{
-				m_DocPos = i;
-			}
-			else
-			{
-				m_VjdfDocument.add(doc);
-				m_DocPos = m_VjdfDocument.size() - 1;
-				// make sure that we have a global dirty policy in force
-				doc.getJDFDoc().getCreateXMLDocUserData().setDirtyPolicy(EnumDirtyPolicy.Doc);
-			}
-		}
-		if (m_DocPos >= 0)
+		final int i = documentService.setEditorDoc(doc);
+		if (i >= 0)
 		{
 			setTitle(doc.getOriginalFileName());
 		}
 		m_menuBar.updateWindowsMenu();
 
-		return m_DocPos;
+		return i;
 	}
 
 	/**
 	 * get the JDFDoc of the currently displayed JDF
-	 * 
+	 *
 	 * @return the JDFDoc that is currently being displayed
 	 */
 	public EditorDocument getEditorDoc()
 	{
-		if (m_DocPos < 0)
-		{
-			return null;
-		}
-		return m_VjdfDocument.elementAt(m_DocPos);
+		return EditorDocument.getEditorDoc();
 	}
 
 	/**
 	 * get the JDFDoc of the currently displayed JDF
-	 * 
+	 *
 	 * @return the JDFDoc that is currently being displayed
 	 */
 	public JDFDoc getJDFDoc()
@@ -1883,8 +1812,6 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 	}
 
 	/**
-	 *
-	 *
 	 * @return
 	 */
 	public JDFTreeModel getModel()

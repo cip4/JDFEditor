@@ -130,7 +130,6 @@ import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;
  * dependencies with JDFFrame
  *
  * @author prosirai
- *
  */
 public class JDFTreeArea extends JTextArea
 {
@@ -177,7 +176,9 @@ public class JDFTreeArea extends JTextArea
 		treeLabel.setBorder(BorderFactory.createLineBorder(Color.black));
 		treeLabel.setOpaque(true);
 		if (isJson != null)
+		{
 			treeLabel.setBackground(isJson ? new Color(255, 142, 142) : new Color(142, 142, 255));
+		}
 		m_treeScroll.setColumnHeaderView(treeLabel);
 	}
 
@@ -188,7 +189,7 @@ public class JDFTreeArea extends JTextArea
 
 	/**
 	 * Expands the TreePath and all of its subelements.
-	 * 
+	 *
 	 * @param p - The TreePath to expand
 	 */
 	public void xpand(TreePath p)
@@ -198,7 +199,9 @@ public class JDFTreeArea extends JTextArea
 			p = getSelectionPath();
 		}
 		final JDFTreeNode node = (JDFTreeNode) p.getLastPathComponent();
-		getJDFTree().expandPath(p);
+		final JTree jdfTree = getJDFTree();
+		jdfTree.expandPath(p);
+		jdfTree.makeVisible(p);
 		final Enumeration<JDFTreeNode> e = node.preorderJdfEnumeration();
 
 		while (e.hasMoreElements())
@@ -207,16 +210,17 @@ public class JDFTreeArea extends JTextArea
 
 			if (treeNode.isElement())
 			{
-				getJDFTree().expandPath(new TreePath(treeNode.getPath()));
+				final TreePath tp = new TreePath(treeNode.getPath());
+				jdfTree.expandPath(tp);
+				jdfTree.makeVisible(tp);
 			}
 		}
-		getJDFTree().makeVisible(p);
 
 	}
 
 	/**
 	 * Collapses the TreePath and all of its subelements.
-	 * 
+	 *
 	 * @param p - The TreePath to collapse
 	 */
 	public void collapse(TreePath p)
@@ -242,7 +246,6 @@ public class JDFTreeArea extends JTextArea
 	}
 
 	/**
-	 *
 	 * @return
 	 */
 	public boolean jdfTreeIsNull()
@@ -256,7 +259,6 @@ public class JDFTreeArea extends JTextArea
 	}
 
 	/**
-	 *
 	 * @return
 	 */
 	public JScrollPane getScrollPane()
@@ -266,7 +268,7 @@ public class JDFTreeArea extends JTextArea
 
 	/**
 	 * Method drawTreeView.
-	 * 
+	 *
 	 * @param eDoc
 	 */
 	public void drawTreeView(final EditorDocument eDoc)
@@ -302,7 +304,7 @@ public class JDFTreeArea extends JTextArea
 
 	/**
 	 * Sets focus on the correct node in the Tree View from a selected node in the In & Output View. Called from method findNode().
-	 * 
+	 *
 	 * @param p - The path which you want to show
 	 */
 	public void goToPath(final TreePath p)
@@ -337,7 +339,8 @@ public class JDFTreeArea extends JTextArea
 			final JTree jdfTree = ed.getJDFTree();
 			final TreePath path = jdfTree.getPathForLocation(e.getX(), e.getY());
 
-			if ((SwingUtilities.isRightMouseButton(e) || e.isAltDown()) && path != null && !settingService.getSetting(SettingKey.GENERAL_READ_ONLY, Boolean.class))
+			if ((SwingUtilities.isRightMouseButton(e) || e.isAltDown()) && path != null
+					&& !settingService.getSetting(SettingKey.GENERAL_READ_ONLY, Boolean.class))
 			{
 				jdfTree.removeTreeSelectionListener(m_treeSelectionListener);
 				ed.setSelectionPath(path, true);
@@ -415,7 +418,7 @@ public class JDFTreeArea extends JTextArea
 			{
 				final KElement element = attrNode.getElement();
 
-				final VString vValues = (element instanceof JDFElement) ? ((JDFElement) element).getNamesVector(attributeName) : null;
+				final VString vValues = (element instanceof final JDFElement j) ? j.getNamesVector(attributeName) : null;
 				String selectedValue = null;
 
 				if (vValues != null && !vValues.isEmpty())
@@ -432,14 +435,14 @@ public class JDFTreeArea extends JTextArea
 						defVal = oldVal;
 					}
 
-					selectedValue = (String) JOptionPane.showInputDialog(this, ResourceUtil.getMessage("ChooseAttValueKey"), ResourceUtil.getMessage("ModifyAttValueKey"),
-							JOptionPane.QUESTION_MESSAGE, null, vValues.toArray(), defVal);
+					selectedValue = (String) JOptionPane.showInputDialog(this, ResourceUtil.getMessage("ChooseAttValueKey"),
+							ResourceUtil.getMessage("ModifyAttValueKey"), JOptionPane.QUESTION_MESSAGE, null, vValues.toArray(), defVal);
 				}
 				else
 				{
 					selectedValue = JOptionPane.showInputDialog(this, ResourceUtil.getMessage("InsertNewAttValueKey"), oldVal);
 				}
-				if (selectedValue != null && selectedValue.equals("Other.."))
+				if (selectedValue != null && "Other..".equals(selectedValue))
 				{
 					selectedValue = JOptionPane.showInputDialog(this, ResourceUtil.getMessage("InsertNewAttValueKey"), oldVal);
 				}
@@ -458,7 +461,7 @@ public class JDFTreeArea extends JTextArea
 
 	/**
 	 * inserts element before selected node
-	 * 
+	 *
 	 * @param iPos -1: before, 0: into, 1: after
 	 */
 	public void insertElementAtSelectedNode(final int iPos)
@@ -492,12 +495,12 @@ public class JDFTreeArea extends JTextArea
 
 	/**
 	 * Find the node in the m_jdfTree after clicking in the validation list
-	 * 
+	 *
 	 * @param path - path to the node you want to find
 	 */
 	public void findInNode(final String path)
 	{
-		if (path != null && !path.equals(JDFConstants.EMPTYSTRING))
+		if (path != null && !JDFConstants.EMPTYSTRING.equals(path))
 		{
 			final JDFTreeNode theRoot = MainView.getModel().getRootNode();
 
@@ -551,10 +554,10 @@ public class JDFTreeArea extends JTextArea
 		Arrays.sort(validValues);
 		validValues[size] = "Other..";
 
-		String selectedResource = (String) JOptionPane.showInputDialog(this, "Choose a resource to insert", "Insert new resource", JOptionPane.PLAIN_MESSAGE, null, validValues,
-				validValues[0]);
+		String selectedResource = (String) JOptionPane.showInputDialog(this, "Choose a resource to insert", "Insert new resource", JOptionPane.PLAIN_MESSAGE,
+				null, validValues, validValues[0]);
 
-		if (selectedResource != null && (selectedResource.equals("Other..") || selectedResource.equals("*")))
+		if (selectedResource != null && ("Other..".equals(selectedResource) || "*".equals(selectedResource)))
 		{
 			selectedResource = JOptionPane.showInputDialog(this, "Insert new resource", "");
 		}
@@ -563,9 +566,9 @@ public class JDFTreeArea extends JTextArea
 
 	/**
 	 * choose Resource to link
-	 * 
+	 *
 	 * @param jdfNode where ResourceLink must be added
-	 * @param usage input, output or any
+	 * @param usage   input, output or any
 	 * @return - selected ResourceName
 	 */
 	public JDFResource chooseResourceToLink(final JDFNode jdfNode, final EnumUsage usage)
@@ -583,11 +586,11 @@ public class JDFTreeArea extends JTextArea
 		String selectedResource = null;
 		if (resourceName_Id.length > 0)
 		{
-			selectedResource = (String) JOptionPane.showInputDialog(this, "Choose the resource you want to link", "Insert new resource link", JOptionPane.PLAIN_MESSAGE, null,
-					resourceName_Id, resourceName_Id[0]);
+			selectedResource = (String) JOptionPane.showInputDialog(this, "Choose the resource you want to link", "Insert new resource link",
+					JOptionPane.PLAIN_MESSAGE, null, resourceName_Id, resourceName_Id[0]);
 		}
 
-		if (selectedResource != null && !selectedResource.equals(JDFConstants.EMPTYSTRING))
+		if (selectedResource != null && !JDFConstants.EMPTYSTRING.equals(selectedResource))
 		{
 			for (int i = 0; i < resourceName_Id.length && resource == null; i++)
 			{
@@ -601,9 +604,8 @@ public class JDFTreeArea extends JTextArea
 	}
 
 	/**
-	 *
 	 * get the tree view
-	 * 
+	 *
 	 * @return
 	 */
 	public JViewport getTreeView()
@@ -613,7 +615,7 @@ public class JDFTreeArea extends JTextArea
 
 	/**
 	 * Finds and sets focus on a node in the Tree View when a node is selected in the In & Output View
-	 * 
+	 *
 	 * @param searchNode - The Node from the In & Output View which you want to find in the Tree View
 	 */
 	void findNode(final JDFTreeNode searchNode)
@@ -678,7 +680,7 @@ public class JDFTreeArea extends JTextArea
 		}
 
 		lastPath = JOptionPane.showInputDialog(this, "Input XPath", lastPath);
-		if (lastPath == null || lastPath.equals(JDFConstants.EMPTYSTRING))
+		if (lastPath == null || JDFConstants.EMPTYSTRING.equals(lastPath))
 		{
 			JOptionPane.showMessageDialog(this, "XPath was not chosen", "Error", JOptionPane.ERROR_MESSAGE);
 			lastPath = "/JDF";
@@ -743,9 +745,8 @@ public class JDFTreeArea extends JTextArea
 	}
 
 	/**
-	 *
 	 * get thr currently selected path
-	 * 
+	 *
 	 * @return
 	 */
 	public TreePath getSelectionPath()
@@ -758,7 +759,7 @@ public class JDFTreeArea extends JTextArea
 
 	/**
 	 * Creates a new link, that links to an already existing resource in the m_jdfTree
-	 * 
+	 *
 	 * @param usage - resource link usage
 	 */
 	public void insertResourceLink(final EnumUsage usage)
@@ -775,9 +776,8 @@ public class JDFTreeArea extends JTextArea
 				node = (JDFTreeNode) node.getParent();
 			}
 
-			if (parent != null && parent instanceof JDFNode)
+			if (parent != null && parent instanceof final JDFNode jdfNode)
 			{
-				final JDFNode jdfNode = (JDFNode) parent;
 				final boolean hasResourceLinkPool = jdfNode.hasChildElement("ResourceLinkPool", null);
 
 				final JDFResource resource = chooseResourceToLink(jdfNode, usage);
@@ -795,13 +795,14 @@ public class JDFTreeArea extends JTextArea
 						}
 						else
 						{
-							JOptionPane.showMessageDialog(this, "Insert ResourceLink operation was not completed." + "\nInternal error occured", "Insert ResourceLink",
-									JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(this, "Insert ResourceLink operation was not completed." + "\nInternal error occured",
+									"Insert ResourceLink", JOptionPane.ERROR_MESSAGE);
 						}
 					}
 					else
 					{
-						JOptionPane.showMessageDialog(this, "Insert ResourceLink operation was aborted", "Insert ResourceLink", JOptionPane.INFORMATION_MESSAGE);
+						JOptionPane.showMessageDialog(this, "Insert ResourceLink operation was aborted", "Insert ResourceLink",
+								JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
 			}
@@ -810,9 +811,9 @@ public class JDFTreeArea extends JTextArea
 
 	/**
 	 * Method insertResourceWithLink
-	 * 
+	 *
 	 * @param withLink - if true insert Resource + Link, false - insert only Resource
-	 * @param input - resource link usage, true - input, false - output
+	 * @param input    - resource link usage, true - input, false - output
 	 */
 	public void insertResourceWithLink(final boolean withLink, final boolean input)
 	{
@@ -830,15 +831,14 @@ public class JDFTreeArea extends JTextArea
 
 			JDFTreeNode resNode = null;
 			JDFTreeNode resLinkNode = null;
-			if (parent != null && parent instanceof JDFNode)
+			if (parent != null && parent instanceof final JDFNode jdfNode)
 			{
-				final JDFNode jdfNode = (JDFNode) parent;
 				final boolean hasResourcePool = jdfNode.hasChildElement(ElementName.RESOURCEPOOL, null);
 				final boolean hasResourceLinkPool = jdfNode.hasChildElement(ElementName.RESOURCELINKPOOL, null);
 
 				final String selectedResource = chooseResourceName(jdfNode);
 
-				if (selectedResource != null && !selectedResource.equals(JDFConstants.EMPTYSTRING))
+				if (selectedResource != null && !JDFConstants.EMPTYSTRING.equals(selectedResource))
 				{
 					EnumUsage usage = null;
 					if (withLink)
@@ -857,7 +857,8 @@ public class JDFTreeArea extends JTextArea
 					}
 					if (resNode != null) // resLinkNode may be == null in case when withLink == false
 					{
-						final InsertResourceAndLinkEdit edit = new InsertResourceAndLinkEdit(m_frame, node, hasResourcePool, hasResourceLinkPool, resNode, resLinkNode);
+						final InsertResourceAndLinkEdit edit = new InsertResourceAndLinkEdit(m_frame, node, hasResourcePool, hasResourceLinkPool, resNode,
+								resLinkNode);
 						m_frame.undoSupport.postEdit(edit);
 					}
 					else
@@ -898,7 +899,6 @@ public class JDFTreeArea extends JTextArea
 	}
 
 	/**
-	 *
 	 * @return
 	 */
 	public KElement getPathTarget()
@@ -921,8 +921,8 @@ public class JDFTreeArea extends JTextArea
 		if (node.isElement())
 		{
 
-			if ((JDFResourceLink.isResourceLink(kElement)) || (kElement instanceof JDFRefElement) || (kElement instanceof JDFPart) || (kElement instanceof JDFCreated)
-					|| (kElement instanceof JDFModified))
+			if ((JDFResourceLink.isResourceLink(kElement)) || (kElement instanceof JDFRefElement) || (kElement instanceof JDFPart)
+					|| (kElement instanceof JDFCreated) || (kElement instanceof JDFModified))
 			{
 				kElementTarget = getLinkTarget(kElement);
 			}
@@ -985,13 +985,11 @@ public class JDFTreeArea extends JTextArea
 				target = j.getParentJDF().getXPathElement(rRef);
 			}
 		}
-		else if (kElement instanceof JDFPart)
+		else if (kElement instanceof final JDFPart part)
 		{
 			final KElement parentTarget = getLinkTarget(kElement.getParentNode_KElement());
-			if (parentTarget instanceof JDFResource)
+			if (parentTarget instanceof final JDFResource r)
 			{
-				final JDFResource r = (JDFResource) parentTarget;
-				final JDFPart part = (JDFPart) kElement;
 				target = r.getPartition(part.getPartMap(), null);
 				if (target == null)
 				{

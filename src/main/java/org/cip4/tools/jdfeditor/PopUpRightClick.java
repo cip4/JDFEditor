@@ -104,9 +104,8 @@ import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;
 
 /**
  * Class to implement all the menu bar and menu related stuff moved here from JDFFrame
- * 
- * @author prosirai
  *
+ * @author prosirai
  */
 public class PopUpRightClick extends JPopupMenu implements ActionListener
 {
@@ -151,7 +150,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 
 	/**
 	 * Creates the popupmenu after a right mouse click on node in the Tree View.
-	 * 
+	 *
 	 * @param path - The path to the clicked node
 	 */
 	public PopUpRightClick(final TreePath path)
@@ -317,7 +316,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 
 	/**
 	 * Disables the MenuItems in the MouseMenu that isn't selectable for the selected JDFTreeNode.
-	 * 
+	 *
 	 * @param node - The selected node
 	 * @param elem - The KElement for the selected node, can be null
 	 */
@@ -332,7 +331,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 				m_insertElemBeforePopupItem.setEnabled(true);
 				m_insertElemAfterPopupItem.setEnabled(true);
 
-				if (elem.getTagName().equals("Comment"))
+				if ("Comment".equals(elem.getTagName()))
 				{
 					m_insertElemIntoPopupItem.setEnabled(false);
 					m_insertTextPopupItem.setEnabled(true);
@@ -350,7 +349,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 				m_insertElemIntoPopupItem.setEnabled(true);
 			}
 
-			final boolean bMayContainResources = elem instanceof JDFNode || elem.getNodeName().equals("ResourcePool");
+			final boolean bMayContainResources = elem instanceof JDFNode || "ResourcePool".equals(elem.getNodeName());
 
 			m_insertInResPopupItem.setEnabled(bMayContainResources);
 			m_insertOutResPopupItem.setEnabled(bMayContainResources);
@@ -390,7 +389,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 			}
 		}
 
-		m_pastePopupItem.setEnabled(m_frame.m_copyNode != null && elem != null);
+		m_pastePopupItem.setEnabled(JDFTreeCopyNode.getCopy() != null && elem != null);
 		final TreeNode parentNode = node.getParent();
 		final Object parent = parentNode == null ? null : ((JDFTreeNode) parentNode).getUserObject();
 		m_renamePopupItem.setEnabled(parent != null);
@@ -399,7 +398,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 
 	/**
 	 * perform any actions that this relates to
-	 * 
+	 *
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 * @param e
 	 */
@@ -565,9 +564,8 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 			return;
 		}
 		final KElement e = node.getElement();
-		if (e instanceof JDFMessageService)
+		if (e instanceof final JDFMessageService ms)
 		{
-			final JDFMessageService ms = (JDFMessageService) e;
 			if (send)
 			{
 				new MessageSender(ms).sendJMF();
@@ -591,7 +589,7 @@ public class PopUpRightClick extends JPopupMenu implements ActionListener
 
 	/**
 	 * copies the content of the marked node to the system clip board
-	 * 
+	 *
 	 * @param p - The TreePath to collapse
 	 */
 	private void copyToClipBoard(final TreePath p)

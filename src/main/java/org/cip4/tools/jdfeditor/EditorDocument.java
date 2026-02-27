@@ -76,8 +76,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
 
-import jakarta.mail.BodyPart;
-import jakarta.mail.Multipart;
 import javax.swing.JOptionPane;
 import javax.swing.JTree;
 import javax.swing.event.TreeModelEvent;
@@ -117,30 +115,50 @@ import org.cip4.tools.jdfeditor.view.MainView;
 import org.cip4.tools.jdfeditor.view.renderer.JDFTreeNode;
 import org.json.simple.JSONObject;
 
+import jakarta.mail.BodyPart;
+import jakarta.mail.Multipart;
+
 /**
  * The Document model.
  */
 public class EditorDocument
 {
+	// quick & dirty hack for multi doc support
+	private final static ArrayList<EditorDocument> m_VjdfDocument = new ArrayList<>();
+	private static int m_DocPos = -1; // document position
 
-	/**
-	 * get the JDFDoc of the currently displayed JDF
-	 * 
-	 * @return the JDFDoc that is currently being displayed
-	 */
-	public static EditorDocument getEditorDoc()
+	public static int getDocPos()
 	{
-		return MainView.getFrame().getEditorDoc();
+		return m_DocPos;
+	}
+
+	public static void setDocPos(int m_DocPos)
+	{
+		EditorDocument.m_DocPos = m_DocPos;
 	}
 
 	/**
 	 * get the JDFDoc of the currently displayed JDF
-	 * 
+	 *
+	 * @return the JDFDoc that is currently being displayed
+	 */
+	public static EditorDocument getEditorDoc()
+	{
+		if (m_DocPos < 0)
+		{
+			return null;
+		}
+		return m_VjdfDocument.get(m_DocPos);
+	}
+
+	/**
+	 * get the JDFDoc of the currently displayed JDF
+	 *
 	 * @return the JDFDoc that is currently being displayed
 	 */
 	public static List<EditorDocument> getEditorDocs()
 	{
-		return MainView.getFrame().m_VjdfDocument;
+		return m_VjdfDocument;
 	}
 
 	private final static SettingService settingService = SettingService.getSettingService();
@@ -214,7 +232,9 @@ public class EditorDocument
 			if (jdfDoc != null && checkFile)
 			{
 				if (!checkSave(UrlUtil.urlToFile(newExtension)))
+				{
 					return;
+				}
 			}
 			this.json = json;
 
@@ -244,8 +264,8 @@ public class EditorDocument
 			final String[] options = { ResourceUtil.getMessage("YesKey"), ResourceUtil.getMessage("NoKey") };
 			String message = ResourceUtil.getMessage("FileExistsKey");
 			message = StringUtil.replaceString(message, "$$$", newFile.getName());
-			final int overwriteExistingFileAnswer = JOptionPane.showOptionDialog(MainView.getFrame(), message, null, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-					options, options[0]);
+			final int overwriteExistingFileAnswer = JOptionPane.showOptionDialog(MainView.getFrame(), message, null, JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 			if (overwriteExistingFileAnswer != JOptionPane.OK_OPTION)
 			{
 				log.info("denied save " + newFile);
@@ -257,15 +277,15 @@ public class EditorDocument
 
 	/**
 	 * Custom constructor. Accepting several attributes for initializing.
-	 * 
-	 * @param jdfDoc The JDFDoc object.
+	 *
+	 * @param jdfDoc      The JDFDoc object.
 	 * @param mimeContent The package name as String
 	 */
 	public EditorDocument(final JDFDoc jdfDoc, final String mimeContent)
 	{
 		this.historyPos = -1;
 		this.jdfDoc = jdfDoc;
-		this.jdfTreeNodesHistory = new Vector<JDFTreeNode>();
+		this.jdfTreeNodesHistory = new Vector<>();
 		this.packageName = mimeContent;
 		this.zoom = EditorButtonBar.DEFAULT_ZOOM;
 		json = false;
@@ -298,7 +318,7 @@ public class EditorDocument
 
 	/**
 	 * Getter for the jdfDoc attribute value.
-	 * 
+	 *
 	 * @return The JDFDoc attribute value.
 	 */
 	public JDFDoc getJDFDoc()
@@ -308,7 +328,7 @@ public class EditorDocument
 
 	/**
 	 * Getter for the PackageName attribute value.
-	 * 
+	 *
 	 * @return The PackageName value as String.
 	 */
 	public String getPackageName()
@@ -321,7 +341,9 @@ public class EditorDocument
 		final XMLDoc theDoc = getEditorDoc().getJDFDoc();
 		EnumVersion v = EnumVersion.getEnum(theDoc.getRoot().getAttribute(AttributeName.VERSION));
 		if (v == null)
+		{
 			v = XJDF20.getDefaultVersion();
+		}
 		final File schema = EditorUtils.getSchemaFile(v);
 		final URL url = ResourceUtil.class.getResource(EditorUtils.RES_SCHEMA_20);
 		final String sUrl = schema == null ? url.toExternalForm() : UrlUtil.fileToUrl(schema, false);
@@ -340,7 +362,7 @@ public class EditorDocument
 
 	/**
 	 * Returns the original file name of a JDF Document.
-	 * 
+	 *
 	 * @return The original file name of a JDF Document as String.
 	 */
 	public String getOriginalFileName()
@@ -355,7 +377,7 @@ public class EditorDocument
 
 	/**
 	 * Returns the original file name of a JDF Document.
-	 * 
+	 *
 	 * @return The original file name of a JDF Document as String.
 	 */
 	public EnumVersion getVersion()
@@ -367,7 +389,9 @@ public class EditorDocument
 		final KElement root = jdfDoc.getRoot();
 		final String v = root.getNonEmpty(AttributeName.VERSION);
 		if (v != null)
+		{
 			return ((JDFElement) root).getVersion(true);
+		}
 		else
 		{
 			return EditorUtils.isJSONEnabled(root.getLocalName()) ? XJDFHelper.defaultVersion() : JDFElement.getDefaultJDFVersion();
@@ -375,7 +399,6 @@ public class EditorDocument
 	}
 
 	/**
-	 *
 	 * @param model
 	 */
 	public void setModel(final JDFTreeModel model)
@@ -384,19 +407,20 @@ public class EditorDocument
 	}
 
 	/**
-	 *
 	 * @return
 	 */
 	public JDFTreeModel getModel()
 	{
 		if (jdfTreeModel == null)
+		{
 			createModel();
+		}
 		return jdfTreeModel;
 	}
 
 	/**
 	 * sets the selection path for this document
-	 * 
+	 *
 	 * @param path
 	 * @param trackHistory
 	 */
@@ -427,7 +451,6 @@ public class EditorDocument
 	}
 
 	/**
-	 *
 	 * @return
 	 */
 	public TreePath getSelectionPath()
@@ -440,7 +463,6 @@ public class EditorDocument
 	}
 
 	/**
-	 *
 	 * @return
 	 */
 	public TreePath[] getSelectionPaths()
@@ -453,7 +475,6 @@ public class EditorDocument
 	}
 
 	/**
-	 *
 	 * @param jdfTree
 	 */
 	public void setJDFTree(final JTree jdfTree)
@@ -464,7 +485,6 @@ public class EditorDocument
 	}
 
 	/**
-	 *
 	 * @return
 	 */
 	public JTree getJDFTree()
@@ -473,7 +493,6 @@ public class EditorDocument
 	}
 
 	/**
-	 *
 	 * @return
 	 */
 	public JDFTreeNode getRootNode()
@@ -504,7 +523,6 @@ public class EditorDocument
 	/**
 	 * @param selNode
 	 * @param trackHistory
-	 *
 	 */
 	private void setSelectionNode(final JDFTreeNode selNode, final boolean trackHistory)
 	{
@@ -553,7 +571,6 @@ public class EditorDocument
 	}
 
 	/**
-	 *
 	 * @return
 	 */
 	public TreePath getLastSelection()
@@ -563,7 +580,6 @@ public class EditorDocument
 	}
 
 	/**
-	 *
 	 * @return
 	 */
 	public JDFTreeNode getLastTreeNode()
@@ -613,7 +629,7 @@ public class EditorDocument
 
 	/**
 	 * Method createModel. create the treeModel
-	 * 
+	 *
 	 * @param root
 	 * @return TreeModel
 	 */
@@ -735,8 +751,8 @@ public class EditorDocument
 			}
 			else
 			{
-				JOptionPane.showMessageDialog(MainView.getFrame(), ResourceUtil.getMessage("SaveJDFErrorKey") + "\n" + file, ResourceUtil.getMessage("SaveJDFErrorKey"),
-						JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(MainView.getFrame(), ResourceUtil.getMessage("SaveJDFErrorKey") + "\n" + file,
+						ResourceUtil.getMessage("SaveJDFErrorKey"), JOptionPane.ERROR_MESSAGE);
 			}
 		}
 		else
@@ -766,8 +782,6 @@ public class EditorDocument
 	}
 
 	/**
-	 *
-	 *
 	 * @param file
 	 */
 	void writeToRTF(final File file)
@@ -809,7 +823,7 @@ public class EditorDocument
 	String getJSONString(final KElement root, final int indent)
 	{
 		final JSONWriter jw = Editor.getEditor().getJSonWriter();
-		final List<JSONObject> l = new ArrayList<JSONObject>();
+		final List<JSONObject> l = new ArrayList<>();
 		if (XJDFConstants.XJMF.equalsIgnoreCase(root.getLocalName()))
 		{
 			l.addAll(jw.splitConvert(root));
@@ -847,8 +861,6 @@ public class EditorDocument
 	}
 
 	/**
-	 *
-	 *
 	 * @param file
 	 */
 	boolean writeToFile(final File file)
@@ -875,7 +887,7 @@ public class EditorDocument
 
 	/**
 	 * * get the name of the file that this document was originally loaded from. the mime package name, if ti was a mime package, otherwise the jdf file name
-	 * 
+	 *
 	 * @return
 	 */
 	public String getSaveFileName()
@@ -919,7 +931,6 @@ public class EditorDocument
 	// ////////////////////////////////////////////////////////
 	/**
 	 * @return
-	 *
 	 */
 	public boolean isDirty()
 	{
