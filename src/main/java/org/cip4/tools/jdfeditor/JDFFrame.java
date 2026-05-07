@@ -1759,8 +1759,8 @@ public class JDFFrame extends JFrame implements ActionListener, DropTargetListen
 		final int docPos = documentService.setJDFDoc(doc, mimePackage);
 		if (docPos >= 0)
 		{
-			setTitle(getEditorDoc().getOriginalFileName());
 			EditorDocument.setDocPos(docPos);
+			setTitle(getEditorDoc().getOriginalFileName());
 		}
 		else
 		{

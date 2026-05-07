@@ -592,7 +592,7 @@ public class SendToDevice extends JPanel implements ActionListener
 		// returns the URL given by the user
 		URL url = null;
 		final JComboBox<String> tf = bReturn ? urlReturn : urlPath;
-		final String urlText = (String) tf.getEditor().getItem();
+		final String urlText = tf == null ? null : (String) tf.getEditor().getItem();
 
 		if (bReturn && KElement.isWildCard(urlText))
 		{

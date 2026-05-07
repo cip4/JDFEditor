@@ -148,7 +148,7 @@ public class EditorDocument
 		{
 			return null;
 		}
-		return m_VjdfDocument.get(m_DocPos);
+		return ContainerUtil.get(m_VjdfDocument, m_DocPos);
 	}
 
 	/**
@@ -229,12 +229,9 @@ public class EditorDocument
 		{
 			final String extension = EditorUtils.getExtension(jdfDoc.getRoot(), json);
 			final String newExtension = UrlUtil.newExtension(getOriginalFileName(), extension);
-			if (jdfDoc != null && checkFile)
+			if ((jdfDoc != null && checkFile) && !checkSave(UrlUtil.urlToFile(newExtension)))
 			{
-				if (!checkSave(UrlUtil.urlToFile(newExtension)))
-				{
-					return;
-				}
+				return;
 			}
 			this.json = json;
 
@@ -346,8 +343,7 @@ public class EditorDocument
 		}
 		final File schema = EditorUtils.getSchemaFile(v);
 		final URL url = ResourceUtil.class.getResource(EditorUtils.RES_SCHEMA_20);
-		final String sUrl = schema == null ? url.toExternalForm() : UrlUtil.fileToUrl(schema, false);
-		return sUrl;
+		return schema == null ? url.toExternalForm() : UrlUtil.fileToUrl(schema, false);
 	}
 
 	@Override

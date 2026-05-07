@@ -87,6 +87,7 @@ import org.cip4.jdflib.jmf.JDFMessageService;
 import org.cip4.jdflib.jmf.JDFResourceQuParams;
 import org.cip4.jdflib.jmf.JDFSubscription;
 import org.cip4.jdflib.jmf.JMFBuilder;
+import org.cip4.jdflib.util.ContainerUtil;
 import org.cip4.tools.jdfeditor.EditorDocument;
 import org.cip4.tools.jdfeditor.SendToDevice;
 import org.cip4.tools.jdfeditor.model.enumeration.SettingKey;
@@ -155,7 +156,7 @@ public class MessageSender
 	JDFDoc generateJMFDoc()
 	{
 		final Vector<EnumFamily> vf = mService.getFamilies();
-		if (vf == null || vf.size() == 0)
+		if (ContainerUtil.isEmpty(vf))
 		{
 			return null;
 		}
@@ -163,6 +164,10 @@ public class MessageSender
 		if (vf.contains(EnumFamily.Command))
 		{
 			f = EnumFamily.Command;
+		}
+		else if (vf.contains(EnumFamily.Query))
+		{
+			f = EnumFamily.Query;
 		}
 
 		final JMFBuilder b = new JMFBuilder();
