@@ -75,6 +75,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import jakarta.mail.BodyPart;
 import jakarta.mail.MessagingException;
@@ -135,7 +137,7 @@ public class JMFServlet extends HttpServlet
 	private static final String CONTENT_PDF = "application/pdf";
 
 	private String lastDump;
-	private RollingBackupDirectory dumpDir;
+	private final Map<String, RollingBackupDirectory> dumpDirs = new HashMap<>();
 	private final JDFFrame jdfFrame = MainView.getFrame();
 
 	/**
@@ -145,16 +147,59 @@ public class JMFServlet extends HttpServlet
 	{
 	}
 
-	private RollingBackupDirectory getDump()
+	private synchronized RollingBackupDirectory getDump(final String relPath)
 	{
 		final SettingService settingService = SettingService.getSettingService();
-		final String dump = settingService.getSetting(SettingKey.HTTP_STORE_PATH, String.class);
-		if (!ContainerUtil.equals(dump, lastDump))
+		final String store = settingService.getSetting(SettingKey.HTTP_STORE_PATH, String.class);
+		if (store == null)
+			return null;
+
+		if (!ContainerUtil.equals(store, lastDump))
 		{
-			dumpDir = new RollingBackupDirectory(new File(dump), 666, "http_received");
-			lastDump = dump;
+			dumpDirs.clear();
+			lastDump = store;
 		}
-		return dumpDir;
+
+		final File baseDir = new File(store);
+		File targetDir = relPath == null || relPath.isEmpty() ? baseDir : new File(baseDir, relPath.replace('/', File.separatorChar));
+		try
+		{
+			final String basePath = baseDir.getCanonicalPath();
+			final String basePathWithSeparator = basePath.endsWith(File.separator) ? basePath : basePath + File.separator;
+			final String targetPath = targetDir.getCanonicalPath();
+			if (!(targetPath.equals(basePath) || targetPath.startsWith(basePathWithSeparator)))
+				targetDir = baseDir;
+		}
+		catch (final IOException e)
+		{
+			targetDir = baseDir;
+		}
+
+		targetDir.mkdirs();
+		final String targetKey = targetDir.getAbsolutePath();
+		RollingBackupDirectory dump = dumpDirs.get(targetKey);
+		if (dump == null)
+		{
+			dump = new RollingBackupDirectory(targetDir, 666, "http_received");
+			dumpDirs.put(targetKey, dump);
+		}
+		return dump;
+	}
+
+	private static String sanitizeRelativePath(final String pathInfo)
+	{
+		if (pathInfo == null)
+			return "";
+		final StringBuilder sb = new StringBuilder();
+		for (final String seg : pathInfo.split("/"))
+		{
+			if (seg.isEmpty() || ".".equals(seg) || "..".equals(seg))
+				continue;
+			if (sb.length() > 0)
+				sb.append('/');
+			sb.append(seg);
+		}
+		return sb.toString();
 	}
 
 	@Override
@@ -190,10 +235,11 @@ public class JMFServlet extends HttpServlet
 		LOGGER.info("header Content-type: " + headerContentType);
 
 		final boolean isMultipart = MimeUtil.isMimeMultiPart(headerContentType);
+		final String relPath = sanitizeRelativePath(req.getPathInfo());
 
 		final InputStream inputStream = req.getInputStream();
 
-		if (getDump() == null)
+		if (getDump(relPath) == null)
 		{
 			LOGGER.error("no http dump defined");
 			return;
@@ -201,18 +247,19 @@ public class JMFServlet extends HttpServlet
 
 		if (isMultipart)
 		{
-			processMultipartPostMessage2(inputStream, headerContentType);
+			processMultipartPostMessage2(inputStream, headerContentType, relPath);
 		}
 		else
 		{
-			processPlainPostMessage(inputStream, headerContentType);
+			processPlainPostMessage(inputStream, headerContentType, relPath);
 		}
 	}
 
-	private void processPlainPostMessage(final InputStream inputStream, final String headerContentType) throws IOException
+	private void processPlainPostMessage(final InputStream inputStream, final String headerContentType, final String relPath) throws IOException
 	{
 
 		final ByteArrayIOStream byteArrayIOStream = new ByteArrayIOStream(inputStream);
+		final RollingBackupDirectory dump = getDump(relPath);
 		final JDFDoc doc = EditorUtils.parseInStream(byteArrayIOStream, null);
 
 		String extension = UrlUtil.getExtensionFromMimeType(headerContentType);
@@ -251,19 +298,21 @@ public class JMFServlet extends HttpServlet
 				extension = "jmf";
 			}
 		}
-		final File dumpFile = dumpDir.getNewFileWithExt(type + "." + extension);
+		final File dumpFile = dump.getNewFileWithExt(type + "." + extension);
 		FileUtil.streamToFile(byteArrayIOStream.getInputStream(), dumpFile);
 		if (timestamp == null)
 			timestamp = new JDFDate();
 		final MessageBean msg = new MessageBean(device, timestamp, type + "." + extension, dumpFile);
+		msg.setReceiverUrl(relPath);
 		jdfFrame.getBottomTabs().getHttpPanel().addMessage(msg);
 
 	}
 
-	private void processMultipartPostMessage2(final InputStream inputStream, final String headerContentType) throws IOException
+	private void processMultipartPostMessage2(final InputStream inputStream, final String headerContentType, final String relPath) throws IOException
 	{
 		final String type = "MJM";
-		final File dumpFile = dumpDir.getNewFileWithExt(type);
+		final RollingBackupDirectory dump = getDump(relPath);
+		final File dumpFile = dump.getNewFileWithExt(type);
 		LOGGER.debug("dumpFile path: " + dumpFile.getAbsolutePath());
 		FileUtil.streamToFile(ByteArrayIOStream.getBufferedInputStream(inputStream), dumpFile);
 
@@ -320,6 +369,7 @@ public class JMFServlet extends HttpServlet
 
 		fileInputStream.close();
 		final MessageBean msg = new MessageBean("---", new JDFDate(0), messageTypeFull, dumpFile);
+		msg.setReceiverUrl(relPath);
 		jdfFrame.getBottomTabs().getHttpPanel().addMessage(msg);
 	}
 

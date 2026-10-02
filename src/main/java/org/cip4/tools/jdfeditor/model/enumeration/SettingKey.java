@@ -92,7 +92,7 @@ public enum SettingKey
 	GOLDENTICKET_MISURL("goldenticket.misurl", null), GOLDENTICKET_BASELEVEL("goldenticket.baselevel", 1), GOLDENTICKET_MISLEVEL("goldenticket.mislevel",
 			1), GOLDENTICKET_JMFLEVEL("goldenticket.jmflevel", 1),
 
-	HTTP_STORE_PATH("http.store.path", EditorUtils.getReceivedMessagesDir()), HTTP_PRESELECTED_ADDRESS("http.preselected.address", "127.0.0.1"),
+	HTTP_STORE_PATH("http.store.path", EditorUtils.getReceivedMessagesDir()), PLAYER_FILE_PATH("player.file.path", null), PLAYER_URL("player.url", null), PLAYER_REPEAT("player.repeat", false), PLAYER_CONSTANT_DELAY("player.constant.delay", true), PLAYER_DELAY_SECONDS("player.delay.seconds", 1), PLAYER_TIMELAPSE_FACTOR("player.timelapse.factor", 1), HTTP_PRESELECTED_ADDRESS("http.preselected.address", "127.0.0.1"),
 
 	FONT_SIZE_ENLARGED("font.size.enlarged", "100"),
 

@@ -84,6 +84,7 @@ import javax.swing.tree.TreePath;
 
 import org.cip4.jdflib.core.KElement;
 import org.cip4.tools.jdfeditor.pane.HttpServerPane;
+import org.cip4.tools.jdfeditor.pane.PlayerPane;
 import org.cip4.tools.jdfeditor.service.RuntimeProperties;
 import org.cip4.tools.jdfeditor.util.FontUtil;
 import org.cip4.tools.jdfeditor.util.ResourceUtil;
@@ -113,6 +114,7 @@ public class EditorTabbedPaneB extends JTabbedPane implements Runnable
 	// Pane containing XML editor
 	private final RSyntaxTextArea xmlEditorTextArea;
 	private final HttpServerPane httpPanel;
+	private final PlayerPane playerPanel;
 
 	public EditorTabbedPaneB()
 	{
@@ -135,6 +137,7 @@ public class EditorTabbedPaneB extends JTabbedPane implements Runnable
 
 		// HTTP server tab
 		httpPanel = new HttpServerPane();
+		playerPanel = new PlayerPane();
 		new Thread(this).start();
 	}
 
@@ -316,6 +319,11 @@ public class EditorTabbedPaneB extends JTabbedPane implements Runnable
 		return httpPanel;
 	}
 
+	public PlayerPane getPlayerPanel()
+	{
+		return playerPanel;
+	}
+
 	/**
 	 * take this guy offline
 	 */
@@ -323,6 +331,7 @@ public class EditorTabbedPaneB extends JTabbedPane implements Runnable
 	public void run()
 	{
 		addTab(ResourceUtil.getMessage("HTTPserver"), null, getHttpPanel().createPane(), ResourceUtil.getMessage("HTTPserver"));
+		addTab(ResourceUtil.getMessage("PlayerKey"), null, getPlayerPanel().createPane(), ResourceUtil.getMessage("PlayerKey"));
 	}
 
 }

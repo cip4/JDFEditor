@@ -77,6 +77,7 @@ import javax.swing.table.AbstractTableModel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cip4.tools.jdfeditor.util.ResourceUtil;
 
 /**
  * 
@@ -94,7 +95,7 @@ public class MessageTableModel extends AbstractTableModel
 
 	private static final Log LOGGER = LogFactory.getLog(MessageTableModel.class);
 
-	private final String[] columnNames = { "Sender ID", "Message Type", "Time Received", "Message Time", "Size" };
+	private final String[] columnNames = { ResourceUtil.getMessage("MessageIndexKey"), ResourceUtil.getMessage("MessageReceiverUrlKey"), ResourceUtil.getMessage("MessageSenderIdKey"), ResourceUtil.getMessage("MessageTypeKey"), ResourceUtil.getMessage("MessageTimeReceivedKey"), ResourceUtil.getMessage("MessageTimeKey"), ResourceUtil.getMessage("MessageSizeKey") };
 
 	private final List<MessageBean> data = new ArrayList<MessageBean>();
 
@@ -115,21 +116,29 @@ public class MessageTableModel extends AbstractTableModel
 	{
 		if (columnIndex == 0)
 		{
-			return data.get(rowIndex).getSenderId();
+			return Integer.valueOf(data.get(rowIndex).getRunningIndex());
 		}
 		else if (columnIndex == 1)
 		{
-			return data.get(rowIndex).getMessageType();
+			return data.get(rowIndex).getReceiverUrl();
 		}
 		else if (columnIndex == 2)
 		{
-			return data.get(rowIndex).getTimeReceived();
+			return data.get(rowIndex).getSenderId();
 		}
 		else if (columnIndex == 3)
 		{
-			return data.get(rowIndex).getMessageDate();
+			return data.get(rowIndex).getMessageType();
 		}
 		else if (columnIndex == 4)
+		{
+			return data.get(rowIndex).getTimeReceived();
+		}
+		else if (columnIndex == 5)
+		{
+			return data.get(rowIndex).getMessageDate();
+		}
+		else if (columnIndex == 6)
 		{
 			return data.get(rowIndex).getSize();
 		}
@@ -141,6 +150,16 @@ public class MessageTableModel extends AbstractTableModel
 	}
 
 	@Override
+	public Class<?> getColumnClass(final int columnIndex)
+	{
+		if (columnIndex == 0)
+		{
+			return Integer.class;
+		}
+		return super.getColumnClass(columnIndex);
+	}
+
+	@Override
 	public String getColumnName(final int col)
 	{
 		return columnNames[col];
@@ -148,8 +167,9 @@ public class MessageTableModel extends AbstractTableModel
 
 	public synchronized void addMessage(final MessageBean msg)
 	{
-		data.add(msg);
 		received++;
+		msg.setRunningIndex((int) received);
+		data.add(msg);
 		while (data.size() > 666)
 		{
 			data.remove(0);

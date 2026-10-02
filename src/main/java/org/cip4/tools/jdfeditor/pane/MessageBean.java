@@ -87,6 +87,8 @@ public class MessageBean
 	final private JDFDate timeReceived;
 	private final String size;
 	final private JDFDate messageDate;
+	private int runningIndex;
+	private String receiverUrl = "";
 
 	public MessageBean(final JDFMessage jmf, final File f)
 	{
@@ -95,7 +97,7 @@ public class MessageBean
 		messageDate = jmf.getTime();
 		messageType = jmf.getType();
 		filePathName = f.getAbsolutePath();
-		size = FileUtils.byteCountToDisplaySize(f.length());
+		size = formatSize(f.length());
 	}
 
 	public MessageBean(final String senderId, final JDFDate jmfTime, final String jmfType, final File f)
@@ -105,7 +107,12 @@ public class MessageBean
 		messageDate = jmfTime;
 		messageType = jmfType;
 		filePathName = f.getAbsolutePath();
-		size = FileUtils.byteCountToDisplaySize(f.length());
+		size = formatSize(f.length());
+	}
+
+	private String formatSize(final long length)
+	{
+		return length < 10000 ? length + " bytes" : FileUtils.byteCountToDisplaySize(length);
 	}
 
 	public String getFilePathName()
@@ -125,7 +132,7 @@ public class MessageBean
 
 	public String getTimeReceived()
 	{
-		return timeReceived.getFormattedDateTime(JDFDate.DATETIMEREADABLE);
+		return timeReceived.getFormattedDateTime("dd MMM yyyy HH:mm:ss");
 	}
 
 	public String getSize()
@@ -135,7 +142,27 @@ public class MessageBean
 
 	public String getMessageDate()
 	{
-		return messageDate.getFormattedDateTime(JDFDate.DATETIMEREADABLE);
+		return messageDate.getFormattedDateTime("dd MMM yyyy HH:mm:ss");
+	}
+
+	public int getRunningIndex()
+	{
+		return runningIndex;
+	}
+
+	public void setRunningIndex(final int runningIndex)
+	{
+		this.runningIndex = runningIndex;
+	}
+
+	public String getReceiverUrl()
+	{
+		return receiverUrl;
+	}
+
+	public void setReceiverUrl(final String receiverUrl)
+	{
+		this.receiverUrl = receiverUrl == null ? "" : receiverUrl;
 	}
 
 	@Override

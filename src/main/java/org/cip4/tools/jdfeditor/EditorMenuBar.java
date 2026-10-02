@@ -93,6 +93,7 @@ import org.cip4.tools.jdfeditor.controller.MainController;
 import org.cip4.tools.jdfeditor.menu.MenuEdit;
 import org.cip4.tools.jdfeditor.menu.MenuFile;
 import org.cip4.tools.jdfeditor.menu.MenuInsert;
+import org.cip4.tools.jdfeditor.menu.MenuPlayer;
 import org.cip4.tools.jdfeditor.menu.MenuTools;
 import org.cip4.tools.jdfeditor.menu.MenuValidate;
 import org.cip4.tools.jdfeditor.menu.MenuView;
@@ -119,6 +120,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 	private MenuEdit menuEdit;
 	private MenuView menuView;
 	private MenuInsert menuInsert;
+	private MenuPlayer menuPlayer;
 	private MenuTools menuTools;
 	private MenuValidate menuValidate;
 
@@ -257,6 +259,11 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		final JMenu insertMenu = menuInsert.createMenu();
 		insertMenu.setMnemonic('I');
 		add(insertMenu);
+
+		menuPlayer = new MenuPlayer(mainController);
+		final JMenu playerMenu = menuPlayer.createMenu();
+		playerMenu.setMnemonic('P');
+		add(playerMenu);
 
 		menuTools = new MenuTools(mainController);
 		final JMenu m_toolsMenu = menuTools.createMenu();
@@ -416,6 +423,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		menuEdit.setEnableClose();
 		menuTools.setEnableClose();
 		menuInsert.setEnableClose();
+		menuPlayer.setEnableClose();
 		menuValidate.setEnableClose();
 	}
 
@@ -428,6 +436,7 @@ public class EditorMenuBar extends JMenuBar implements ActionListener
 		menuEdit.setEnableOpen(mode);
 		menuTools.setEnableOpen(mode);
 		menuInsert.setEnableOpen(mode);
+		menuPlayer.setEnableOpen(mode);
 		menuValidate.setEnableOpen(mode);
 	}
 

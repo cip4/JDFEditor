@@ -173,7 +173,7 @@ public class HttpServerPane implements ActionListener
 		settingsLayout.putConstraint(SpringLayout.WEST, portValueLabel, 0, SpringLayout.WEST, ipComboBox);
 		settingsLayout.putConstraint(SpringLayout.NORTH, portValueLabel, 10, SpringLayout.SOUTH, ipLabel);
 
-		final JLabel sslLabel = new JLabel("SSL:");
+		final JLabel sslLabel = new JLabel(ResourceUtil.getMessage("SslKey") + ":");
 		settingsLayout.putConstraint(SpringLayout.WEST, sslLabel, 5, SpringLayout.WEST, settingsPanel);
 		settingsLayout.putConstraint(SpringLayout.NORTH, sslLabel, 10, SpringLayout.SOUTH, portLabel);
 
@@ -258,7 +258,7 @@ public class HttpServerPane implements ActionListener
 		final TableRowSorter<MessageTableModel> sorter = new TableRowSorter<MessageTableModel>((MessageTableModel) table.getModel());
 		table.setRowSorter(sorter);
 		final List<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
-		sortKeys.add(new RowSorter.SortKey(2, SortOrder.DESCENDING));
+		sortKeys.add(new RowSorter.SortKey(4, SortOrder.DESCENDING));
 		sorter.setSortKeys(sortKeys);
 
 		rightTopPanel.add(scrollPane, BorderLayout.CENTER);
