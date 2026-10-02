@@ -85,10 +85,10 @@ runtime {
         def currentOs = org.gradle.internal.os.OperatingSystem.current()
         def icon = "src/main/dist/windows/jdfeditor_128.ico"
         if (currentOs.macOsX) {
-//    		"--mac-sign",
-//			"--mac-signing-key-user-name", "CIP4 Organization (4DL5XX9SG8)",
-        imageOptions += [
-				"--mac-package-identifier", "org.cip4.jdfeditor"
+            imageOptions += [
+			"--mac-sign",
+			"--mac-signing-key-user-name", "CIP4 Organization (4DL5XX9SG8)",
+			"--mac-package-identifier", "org.cip4.jdfeditor"
             ]
             icon = "src/main/dist/macosx/jdfeditor.icns"
 		}
