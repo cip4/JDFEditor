@@ -709,12 +709,9 @@ public class JDFTreeModel extends DefaultTreeModel
 		if (kElement instanceof JDFElement)
 		{
 			final VString requiredAttributes = ((JDFElement) kElement).getMissingAttributes(9999999);
-			if (kElement instanceof JDFNode)
+			if ((kElement instanceof JDFNode) && !kElement.hasAttribute(AttributeName.JOBPARTID))
 			{
-				if (!kElement.hasAttribute(AttributeName.JOBPARTID))
-				{
-					requiredAttributes.add(AttributeName.JOBPARTID);
-				}
+				requiredAttributes.add(AttributeName.JOBPARTID);
 			}
 
 			for (final String requiredAttribute : requiredAttributes)
@@ -1567,11 +1564,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		{
 			return;
 		}
-		walker.setMethod(0);
-		walker.setAttribute(true);
-		walker.setAttributeValue(true);
-		walker.setSeparator(",");
-		walker.setDatatype(true);
+		walker.setXJDF();
 		final KElement e = node.getElement();
 		walker.walkAll(e);
 	}
