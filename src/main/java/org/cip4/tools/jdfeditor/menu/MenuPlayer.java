@@ -79,11 +79,13 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.swing.ButtonGroup;
-import javax.swing.JComponent;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -93,6 +95,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.cip4.tools.jdfeditor.EditorMenuBar;
@@ -196,15 +199,41 @@ public class MenuPlayer implements MenuInterface, ActionListener
 
 	private void selectFile()
 	{
-		final String lang = mainController.getSetting(SettingKey.GENERAL_LANGUAGE, String.class);
-		final String code = (lang == null || lang.trim().isEmpty()) ? "en" : lang.trim();
-		final Locale locale = new Locale("jp".equalsIgnoreCase(code) ? "ja" : code);
-		final Locale previousDefault = Locale.getDefault();
+		final Map<String, String> fileChooserEnglishKeys = new LinkedHashMap<>();
+		fileChooserEnglishKeys.put("FileChooser.lookInLabelText", "Look In:");
+		fileChooserEnglishKeys.put("FileChooser.saveInLabelText", "Save In:");
+		fileChooserEnglishKeys.put("FileChooser.fileNameLabelText", "File Name:");
+		fileChooserEnglishKeys.put("FileChooser.filesOfTypeLabelText", "Files of Type:");
+		fileChooserEnglishKeys.put("FileChooser.upFolderToolTipText", "Up One Level");
+		fileChooserEnglishKeys.put("FileChooser.homeFolderToolTipText", "Desktop");
+		fileChooserEnglishKeys.put("FileChooser.newFolderToolTipText", "Create New Folder");
+		fileChooserEnglishKeys.put("FileChooser.listViewButtonToolTipText", "List");
+		fileChooserEnglishKeys.put("FileChooser.detailsViewButtonToolTipText", "Details");
+		fileChooserEnglishKeys.put("FileChooser.fileNameHeaderText", "Name");
+		fileChooserEnglishKeys.put("FileChooser.fileSizeHeaderText", "Size");
+		fileChooserEnglishKeys.put("FileChooser.fileTypeHeaderText", "Type");
+		fileChooserEnglishKeys.put("FileChooser.fileDateHeaderText", "Date Modified");
+		fileChooserEnglishKeys.put("FileChooser.fileAttrHeaderText", "Attributes");
+		fileChooserEnglishKeys.put("FileChooser.openButtonText", "Open");
+		fileChooserEnglishKeys.put("FileChooser.openDialogTitleText", "Open");
+		fileChooserEnglishKeys.put("FileChooser.directoryOpenButtonText", "Open");
+		fileChooserEnglishKeys.put("FileChooser.cancelButtonText", "Cancel");
+		fileChooserEnglishKeys.put("FileChooser.openButtonToolTipText", "Open selected file");
+		fileChooserEnglishKeys.put("FileChooser.cancelButtonToolTipText", "Abort file chooser dialog");
+		fileChooserEnglishKeys.put("FileChooser.saveButtonText", "Save");
+		fileChooserEnglishKeys.put("FileChooser.saveDialogTitleText", "Save");
+		fileChooserEnglishKeys.put("FileChooser.updateButtonText", "Update");
+		fileChooserEnglishKeys.put("FileChooser.helpButtonText", "Help");
+
+		final Map<String, Object> previousUiValues = new LinkedHashMap<>();
 		try
 		{
-			// JFileChooser UI strings resolve from default locale bundles, so set defaults before creating it.
-			Locale.setDefault(locale);
-			JComponent.setDefaultLocale(locale);
+			// Override FileChooser keys directly so chooser chrome stays English regardless of OS locale.
+			for (final Map.Entry<String, String> entry : fileChooserEnglishKeys.entrySet())
+			{
+				previousUiValues.put(entry.getKey(), UIManager.get(entry.getKey()));
+				UIManager.put(entry.getKey(), entry.getValue());
+			}
 
 			final JFileChooser chooser = new JFileChooser();
 			final String configuredPath = mainController.getSetting(SettingKey.PLAYER_FILE_PATH, String.class);
@@ -221,7 +250,7 @@ public class MenuPlayer implements MenuInterface, ActionListener
 			chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 			chooser.setAcceptAllFileFilterUsed(false);
 			chooser.setFileFilter(new FileNameExtensionFilter(ResourceUtil.getMessage("PlayerZipFilterKey"), "zip"));
-			chooser.setLocale(locale);
+			chooser.setLocale(Locale.ENGLISH);
 			chooser.updateUI();
 
 			if (chooser.showOpenDialog(MainView.getFrame()) == JFileChooser.APPROVE_OPTION)
@@ -232,8 +261,10 @@ public class MenuPlayer implements MenuInterface, ActionListener
 		}
 		finally
 		{
-			Locale.setDefault(previousDefault);
-			JComponent.setDefaultLocale(previousDefault);
+			for (final Map.Entry<String, Object> entry : previousUiValues.entrySet())
+			{
+				UIManager.put(entry.getKey(), entry.getValue());
+			}
 		}
 	}
 
@@ -338,6 +369,42 @@ public class MenuPlayer implements MenuInterface, ActionListener
 		gbc.weightx = 1;
 		panel.add(timelapseField, gbc);
 
+		final boolean setCurrentTimestamp = mainController.getSetting(SettingKey.PLAYER_SET_CURRENT_TIMESTAMP, Boolean.class);
+		final boolean generateUniqueIds = mainController.getSetting(SettingKey.PLAYER_GENERATE_UNIQUE_IDS, Boolean.class);
+		final JCheckBox setCurrentTimestampCheck = new JCheckBox(ResourceUtil.getMessage("main.menu.player.settings.setcurrenttimestamp"), setCurrentTimestamp);
+		final JCheckBox generateUniqueIdsCheck = new JCheckBox(ResourceUtil.getMessage("main.menu.player.settings.generateuniqueids"), generateUniqueIds);
+
+		gbc.gridy = 7;
+		gbc.gridx = 0;
+		gbc.gridwidth = 2;
+		gbc.weightx = 1;
+		panel.add(setCurrentTimestampCheck, gbc);
+
+		gbc.gridy = 8;
+		panel.add(generateUniqueIdsCheck, gbc);
+
+		final String deviceId = mainController.getSetting(SettingKey.PLAYER_DEVICE_ID, String.class);
+		final JTextField deviceIdField = new JTextField(deviceId == null ? "" : deviceId);
+
+		gbc.gridy = 9;
+		gbc.gridwidth = 1;
+		gbc.gridx = 0;
+		gbc.weightx = 0;
+		panel.add(new JLabel(ResourceUtil.getMessage("main.menu.player.settings.deviceid")), gbc);
+
+		gbc.gridx = 1;
+		gbc.weightx = 1;
+		panel.add(deviceIdField, gbc);
+
+		final boolean updateDeviceId = mainController.getSetting(SettingKey.PLAYER_UPDATE_DEVICE_ID, Boolean.class);
+		final JCheckBox updateDeviceIdCheck = new JCheckBox(ResourceUtil.getMessage("main.menu.player.settings.updatedeviceid"), updateDeviceId);
+
+		gbc.gridy = 10;
+		gbc.gridx = 0;
+		gbc.gridwidth = 2;
+		gbc.weightx = 1;
+		panel.add(updateDeviceIdCheck, gbc);
+
 		final String[] options = { ResourceUtil.getMessage("OkKey"), ResourceUtil.getMessage("CancelKey") };
 		while (true)
 		{
@@ -376,6 +443,10 @@ public class MenuPlayer implements MenuInterface, ActionListener
 
 			mainController.setSetting(SettingKey.PLAYER_REPEAT, repeatRadio.isSelected());
 			mainController.setSetting(SettingKey.PLAYER_CONSTANT_DELAY, constantDelayRadio.isSelected());
+			mainController.setSetting(SettingKey.PLAYER_SET_CURRENT_TIMESTAMP, setCurrentTimestampCheck.isSelected());
+			mainController.setSetting(SettingKey.PLAYER_GENERATE_UNIQUE_IDS, generateUniqueIdsCheck.isSelected());
+			mainController.setSetting(SettingKey.PLAYER_DEVICE_ID, deviceIdField.getText().trim());
+			mainController.setSetting(SettingKey.PLAYER_UPDATE_DEVICE_ID, updateDeviceIdCheck.isSelected());
 
 			try
 			{

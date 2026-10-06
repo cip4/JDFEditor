@@ -363,6 +363,7 @@ public class PlayerPane implements PlayerStatusListener, ActionListener
 			public void run()
 			{
 				updateLabels();
+				updateButtons();
 			}
 		});
 	}
@@ -451,8 +452,15 @@ public class PlayerPane implements PlayerStatusListener, ActionListener
 			pauseButton.setEnabled(false);
 			stopButton.setEnabled(false);
 			resumeButton.setEnabled(false);
-			sendNextButton.setEnabled(false);
+			sendNextButton.setEnabled(isSendNextConfigured());
 		}
+	}
+
+	private boolean isSendNextConfigured()
+	{
+		final String source = playerBackend.getCurrentSource();
+		final String targetUrl = playerBackend.getCurrentTargetUrl();
+		return source != null && !source.isEmpty() && targetUrl != null && !targetUrl.isEmpty();
 	}
 
 	private PlayerStatus determineCurrentStatus()

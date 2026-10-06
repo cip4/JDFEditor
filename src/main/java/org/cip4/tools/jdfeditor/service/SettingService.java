@@ -141,10 +141,10 @@ public class SettingService
 			return null;
 		}
 
-		if (!configFile.exists())
+		// Seed defaults for any missing keys, including keys added after the config file was first created.
+		for (final SettingKey key : SettingKey.values())
 		{
-			// create config file
-			for (final SettingKey key : SettingKey.values())
+			if (!config.containsKey(key.getKey()))
 			{
 				config.addProperty(key.getKey(), key.getDefaultValue());
 			}
