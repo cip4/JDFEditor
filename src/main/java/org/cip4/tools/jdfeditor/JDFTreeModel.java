@@ -1539,13 +1539,16 @@ public class JDFTreeModel extends DefaultTreeModel
 	public void saveAsCSV(final TreePath selectionPath)
 	{
 		final JDFTreeNode node;
+		final String path;
 		if (selectionPath == null)
 		{
+			path = "";
 			node = getRootNode();
 		}
 		else
 		{
 			node = (JDFTreeNode) selectionPath.getLastPathComponent();
+			path = node == null ? "" : node.getName() + ".";
 		}
 		if (node == null)
 		{
@@ -1553,7 +1556,7 @@ public class JDFTreeModel extends DefaultTreeModel
 		}
 		final EditorDocument eDoc = MainView.getEditorDoc();
 		String fn = eDoc.getOriginalFileName();
-		fn = UrlUtil.newExtension(fn, "csv");
+		fn = UrlUtil.newExtension(fn, path + "csv");
 
 		XPathWalker walker;
 		try

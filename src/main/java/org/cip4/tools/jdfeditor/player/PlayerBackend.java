@@ -512,8 +512,9 @@ public class PlayerBackend implements Runnable
 
 				if (LOG.isInfoEnabled())
 				{
-					LOG.info("Player backend sent '" + playbackItem.name + "' -> " + targetUrl + " HTTP=" + rc + " result=" + (ok ? "ok" : "fail")
-							+ " responseJMF=" + (responseJmf != null));
+					LOG.info("Player backend sent '" + playbackItem.name + "' -> " + targetUrl + " HTTP=" + rc + " result="
+							+ (ok ? successCount + " ok" : (rc <= 0 ? noConnectionFailureCount : invalidResponseFailureCount) + " fail") + " responseJMF="
+							+ (responseJmf != null));
 				}
 				if (LOG.isDebugEnabled())
 				{
@@ -661,6 +662,7 @@ public class PlayerBackend implements Runnable
 					}
 				}
 			}
+			LOG.info("Player backend loaded " + playbackItems.size() + " playable documents from directory: " + sourcePath);
 			return playbackItems;
 		}
 
